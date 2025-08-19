@@ -1,0 +1,42 @@
+/* 
+  Localizable.strings
+  iosApp
+
+  Created by Esther Elzek on 16/07/2025.
+  Copyright © 2025 orgName. All rights reserved.
+*/
+"chapter_page_format" = "%@: الصفحة %d من %d";
+"book_page_format" = "الصفحة %d (الجزء %d) من %d";
+
+"save_for_later" = "احفظه لوقت لاحق";
+"table_of_contents" = "جدول المحتويات";
+"notes_and_highlights" = "ملاحظات ونصوص مميزة";
+"share" = "شارك";
+"group_link" = "ربط مجموعة:";
+"go_to_page" = "انتقل إلى الصفحة";
+"about_book" = "عن الكتاب";
+"report_problem" = "الإبلاغ عن مشكلة";
+
+"rotate_screen" = "تدوير الشاشة";
+"lock_screen" = " إطفاء الشاشة";
+"line_spacing" = "تباعد الأسطر";
+"font_size" = "حجم الخط";
+"scroll_screen" = "اتجاه التمرير" ;
+"theme" = "الأوضاع";
+"brightness" = "الإضاءة";
+
+"write_note" = "اكتب ملاحظة";
+"delete" = "حذف";
+"save" = "حفظ";
+
+"highlight_button" = "النصوص المظللة";
+"bookmark_button" = "العلامات";
+"note_button" = "الملحوظات";
+
+"table_of_contents" = "جدول المحتويات";
+"page_and_chapter_format" = "صفحة %d | فصل %d";
+
+"chapter_number_and_name" = "الفصل %d:   %@";
+"chapter_number_only" = "الفصل %d";
+"page_number" = "صفحة %d";
+

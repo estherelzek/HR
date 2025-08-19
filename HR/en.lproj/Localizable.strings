@@ -1,0 +1,13 @@
+/* 
+  Localizable.strings
+  iosApp
+
+  Created by Esther Elzek on 16/07/2025.
+  Copyright © 2025 orgName. All rights reserved.
+*/
+"change_company" = "Change Company";
+"language" = "Language";
+"dark_mode" = "Dark Mode";
+"change_protection" = "Change Protection Method";
+"notifications" = "Notifications";
+"logout" = "Logout";
