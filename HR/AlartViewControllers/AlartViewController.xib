@@ -4,25 +4,29 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AlartViewController" customModule="HR" customModuleProvider="target">
             <connections>
+                <outlet property="contentView" destination="zP2-wS-ALq" id="UCg-Qd-eSE"/>
+                <outlet property="firstLabel" destination="n3I-Wj-3A6" id="QtR-ZH-bgQ"/>
+                <outlet property="outSideView" destination="i5M-Pr-FkT" id="e6h-0i-64V"/>
+                <outlet property="secondLabel" destination="MU8-Hm-gIb" id="Wcl-Hd-2Qz"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="AlartViewController" id="i5M-Pr-FkT">
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zP2-wS-ALq">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zP2-wS-ALq" customClass="InspectableView" customModule="HR" customModuleProvider="target">
                     <rect key="frame" x="34.666666666666657" y="225.66666666666663" width="324" height="426"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Validation Error" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oJk-ll-mbr">
                             <rect key="frame" x="16" y="60.000000000000028" width="292" height="30"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="qIf-ZB-2C2"/>
                             </constraints>
@@ -42,28 +46,35 @@
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Attempting to double  -book your time off won't magically make your vavation 2X better!" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MU8-Hm-gIb">
                                     <rect key="frame" x="0.0" y="125" width="308" height="125"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                    <nil key="textColor"/>
+                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
-                            <color key="backgroundColor" red="0.85882352939999995" green="0.69411764710000001" blue="0.89019607840000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="250" id="IpF-tV-4JG"/>
                             </constraints>
                         </stackView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7YK-xJ-Myf">
                             <rect key="frame" x="259.66666666666663" y="18" width="46.333333333333314" height="35"/>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="35" id="n5w-e6-P6t"/>
                             </constraints>
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain" image="xmark" catalog="system"/>
+                            <connections>
+                                <action selector="XButtonTapped:" destination="-1" eventType="touchUpInside" id="9HP-JS-TAk"/>
+                            </connections>
                         </button>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dgS-Fe-Nid" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="210" y="378" width="97" height="39"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dgS-Fe-Nid" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                            <rect key="frame" x="208" y="386" width="100" height="32"/>
                             <color key="backgroundColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="32" id="ON4-nX-UXB"/>
+                                <constraint firstAttribute="width" constant="100" id="jjG-wQ-2Kb"/>
+                            </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                             <color key="tintColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -73,19 +84,30 @@
                                     <real key="value" value="10"/>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="CloseButtonTapped:" destination="-1" eventType="touchUpInside" id="DPi-ec-X6c"/>
+                            </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
+                        <constraint firstItem="dgS-Fe-Nid" firstAttribute="top" secondItem="qPC-K1-Ahq" secondAttribute="bottom" constant="16" id="2TI-2R-c0w"/>
                         <constraint firstAttribute="trailing" secondItem="oJk-ll-mbr" secondAttribute="trailing" constant="16" id="92L-hH-qrQ"/>
                         <constraint firstItem="qPC-K1-Ahq" firstAttribute="leading" secondItem="zP2-wS-ALq" secondAttribute="leading" constant="8" id="Lyx-3j-LWu"/>
                         <constraint firstAttribute="trailing" secondItem="7YK-xJ-Myf" secondAttribute="trailing" constant="18" id="Z3f-Dz-g5K"/>
+                        <constraint firstAttribute="bottom" secondItem="dgS-Fe-Nid" secondAttribute="bottom" constant="8" id="fIh-vv-QXn"/>
                         <constraint firstItem="7YK-xJ-Myf" firstAttribute="top" secondItem="zP2-wS-ALq" secondAttribute="top" constant="18" id="g8d-U8-xJE"/>
+                        <constraint firstAttribute="trailing" secondItem="dgS-Fe-Nid" secondAttribute="trailing" constant="16" id="nmM-54-LA3"/>
                         <constraint firstItem="oJk-ll-mbr" firstAttribute="top" secondItem="zP2-wS-ALq" secondAttribute="top" constant="60" id="pCc-ew-ftG"/>
                         <constraint firstItem="oJk-ll-mbr" firstAttribute="leading" secondItem="zP2-wS-ALq" secondAttribute="leading" constant="16" id="t2c-uq-abI"/>
                         <constraint firstAttribute="trailing" secondItem="qPC-K1-Ahq" secondAttribute="trailing" constant="8" id="tOA-hp-D8d"/>
                         <constraint firstItem="qPC-K1-Ahq" firstAttribute="top" secondItem="oJk-ll-mbr" secondAttribute="bottom" constant="30" id="tyB-q5-MuH"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="15"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
@@ -101,8 +123,5 @@
     </objects>
     <resources>
         <image name="xmark" catalog="system" width="128" height="113"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>

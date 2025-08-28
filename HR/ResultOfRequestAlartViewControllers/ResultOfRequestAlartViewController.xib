@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -13,6 +14,7 @@
                 <outlet property="coloredButton" destination="X2l-fl-Blb" id="fST-vD-3hw"/>
                 <outlet property="contentView" destination="CMg-8i-Jlr" id="BHw-R0-zSo"/>
                 <outlet property="dateLabel" destination="wHp-fD-cmQ" id="xb4-mZ-X7w"/>
+                <outlet property="numberOfAnnualLeaveLabel" destination="EVC-0R-Ecz" id="xR1-me-LEe"/>
                 <outlet property="outSideView" destination="i5M-Pr-FkT" id="zWK-pX-ZQ2"/>
                 <outlet property="requestData" destination="15K-kD-r98" id="Gyk-C1-ehj"/>
                 <outlet property="tilteLabel" destination="EFf-WB-fLA" id="yPX-8f-ogY"/>
@@ -27,10 +29,10 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CMg-8i-Jlr" customClass="InspectableView" customModule="HR" customModuleProvider="target">
                     <rect key="frame" x="58.666666666666657" y="304" width="276" height="269"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 September 2025" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wHp-fD-cmQ">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 September 2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wHp-fD-cmQ">
                             <rect key="frame" x="8" y="87" width="260" height="29"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                            <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="textColor" name="basecolorText"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="15K-kD-r98">
@@ -53,7 +55,7 @@
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="annual leave: 1.0 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EVC-0R-Ecz">
                                     <rect key="frame" x="28" y="0.0" width="232" height="20"/>
                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
-                                    <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="textColor" name="basecolorText"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
@@ -90,7 +92,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" name="alartColor "/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="QVb-ca-29j" secondAttribute="trailing" constant="8" id="789-9I-6hT"/>
                         <constraint firstItem="15K-kD-r98" firstAttribute="top" secondItem="wHp-fD-cmQ" secondAttribute="bottom" id="C4h-Ck-CIl"/>
@@ -119,10 +121,17 @@
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.70229" id="5t5-Gg-1wX"/>
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="VBG-XK-YSe"/>
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="YpM-Wi-Xwt"/>
-                <constraint firstItem="CMg-8i-Jlr" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="245" id="doj-No-GkN"/>
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.315728" id="lTe-kO-eaE"/>
             </constraints>
             <point key="canvasLocation" x="-495.41984732824426" y="16.901408450704228"/>
         </view>
     </objects>
+    <resources>
+        <namedColor name="alartColor ">
+            <color red="0.99999994039535522" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="basecolorText">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

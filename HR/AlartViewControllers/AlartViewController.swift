@@ -9,21 +9,30 @@ import UIKit
 
 class AlartViewController: UIViewController {
 
+    @IBOutlet weak var firstLabel: UILabel!
+    @IBOutlet weak var secondLabel: UILabel!
+    @IBOutlet var outSideView: UIView!
+    @IBOutlet weak var contentView: InspectableView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
+        tapGesture.cancelsTouchesInView = false
+        outSideView.addGestureRecognizer(tapGesture)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func CloseButtonTapped(_ sender: Any) {
+        self.dismiss(animated: true)
     }
-    */
-
+   
+    @IBAction func XButtonTapped(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
+    
+    @objc private func handleOutsideTap(_ gesture: UITapGestureRecognizer) {
+        let touchPoint = gesture.location(in: contentView)
+        if !contentView.bounds.contains(touchPoint) {
+            dismiss(animated: true, completion: nil)
+        }
+    }
 }

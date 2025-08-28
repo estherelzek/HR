@@ -6,3 +6,17 @@
 //
 
 import Foundation
+// APIError.swift
+enum APIError: Error {
+    case invalidURL
+    case requestFailed(String)
+    case decodingError
+    case noData
+    case unknown
+}
+//enum APIError: Error {
+//    case invalidURL
+//    case networkError(Error)
+//    case noData
+//    case decodingError
+//}

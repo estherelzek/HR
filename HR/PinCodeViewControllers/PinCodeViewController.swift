@@ -8,7 +8,7 @@
 import UIKit
 
 class PinCodeViewController: UIViewController {
-
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var firstNum: UITextField!
     @IBOutlet weak var secoundNum: UITextField!
@@ -18,20 +18,27 @@ class PinCodeViewController: UIViewController {
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var hintLabel: UILabel!
     
+    let pinKey = "savedPIN" // key for UserDefaults
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTexts()
         setUpTextFields()
-        NotificationCenter.default.addObserver(
-                   self,
-                   selector: #selector(languageChanged),
-                   name: NSNotification.Name("LanguageChanged"),
-                   object: nil
-               )
+        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
+        if UserDefaults.standard.string(forKey: pinKey) == nil {
+            UserDefaults.standard.set("1234", forKey: pinKey)
+        }
     }
     
     @IBAction func nextButtonTapped(_ sender: Any) {
-        navigateToTimeOffVC()
+        let enteredPin = "\(firstNum.text ?? "")\(secoundNum.text ?? "")\(thirdNum.text ?? "")\(fouthNum.text ?? "")"
+        let savedPin = UserDefaults.standard.string(forKey: pinKey)
+        if enteredPin == savedPin {
+            navigateToTimeOffVC()
+        } else {
+            hintLabel.text = "❌ Wrong PIN, try again"
+            hintLabel.textColor = .red
+        }
     }
     
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -39,7 +46,9 @@ class PinCodeViewController: UIViewController {
     }
     
     @IBAction func forgetpasswordButtonTapped(_ sender: Any) {
-        // Handle forget password
+        UserDefaults.standard.removeObject(forKey: pinKey)
+        hintLabel.text = "PIN reset. Please set a new one."
+        hintLabel.textColor = .orange
     }
     
     func navigateToTimeOffVC() {
@@ -50,8 +59,9 @@ class PinCodeViewController: UIViewController {
     
     @objc private func languageChanged() {
         setUpTexts()
-       }
+    }
 }
+
 
 extension PinCodeViewController {
     func setUpTexts() {

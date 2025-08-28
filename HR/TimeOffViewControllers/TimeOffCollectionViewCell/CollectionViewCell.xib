@@ -88,12 +88,20 @@
                 <constraint firstAttribute="trailing" secondItem="0o8-AZ-h80" secondAttribute="trailing" constant="16" id="xJM-AU-BkS"/>
             </constraints>
             <size key="customSize" width="201" height="166"/>
+            <userDefinedRuntimeAttributes>
+                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                    <real key="value" value="5"/>
+                </userDefinedRuntimeAttribute>
+                <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                    <color key="value" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </userDefinedRuntimeAttribute>
+            </userDefinedRuntimeAttributes>
             <connections>
-                <outlet property="descriptLabel" destination="8GI-X8-AxV" id="mmy-sN-5tA"/>
-                <outlet property="logoImage" destination="7Zh-wk-Uic" id="aSw-bU-IsW"/>
-                <outlet property="nameOfLeaveType" destination="VG3-vy-IOO" id="kVq-mB-vFP"/>
-                <outlet property="remainingBlalance" destination="xUk-us-axn" id="Afs-ay-1c7"/>
-                <outlet property="validUntilDate" destination="0o8-AZ-h80" id="PuN-Cw-Fih"/>
+                <outlet property="descriptLabel" destination="8GI-X8-AxV" id="iEP-36-1mv"/>
+                <outlet property="logoImage" destination="7Zh-wk-Uic" id="tuw-z6-A53"/>
+                <outlet property="nameOfLeaveType" destination="VG3-vy-IOO" id="g9j-ga-2O7"/>
+                <outlet property="remainingBlalance" destination="xUk-us-axn" id="gpB-qe-gc8"/>
+                <outlet property="validUntilDate" destination="0o8-AZ-h80" id="gGa-TI-yYe"/>
             </connections>
             <point key="canvasLocation" x="26.717557251908396" y="-16.197183098591552"/>
         </collectionViewCell>

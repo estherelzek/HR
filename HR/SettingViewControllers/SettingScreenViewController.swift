@@ -6,19 +6,228 @@
 //
 
 import UIKit
+protocol SettingScreenCellDelegate: AnyObject {
+    func didTapDropdown(in cell: SettingScreenTableViewCell)
+}
+
 
 class SettingScreenViewController: UIViewController {
     
     @IBOutlet weak var generalStettingTableView: InspectableTableView!
     @IBOutlet weak var securityTabelView: InspectableTableView!
     @IBOutlet weak var accountTabelView: InspectableTableView!
+    @IBOutlet weak var generalLabel: UILabel!
+    @IBOutlet weak var accountLabel: UILabel!
+    @IBOutlet weak var securityLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var backButton: UIButton!
     
+    var isLanguageExpanded = false
+    var selectedLanguage: (String, String)? = nil
+    let languages = [(NSLocalizedString("english", comment: ""), "english"),(NSLocalizedString("arabic", comment: ""), "egypt")]
+    let generalItemsKeys = [("change_company", "building.2"),("language", "globe"),("dark_mode", "moon.fill")]
+    let securityItemsKeys = [("change_protection", "lock.fill"),("notifications", "bell.fill")]
+    let accountItemsKeys = [("logout", "rectangle.portrait.and.arrow.right")]
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupTableViews()
+        reloadTexts()
+        NotificationCenter.default.addObserver(self,selector: #selector(handleLanguageChange),name: NSNotification.Name("LanguageChanged"),object: nil)
+    }
+   
+    @IBAction func backButtonTapped(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
+    
+    private func setupTableViews() {
+        [generalStettingTableView, securityTabelView, accountTabelView].forEach { tableView in
+            tableView?.delegate = self
+            tableView?.dataSource = self
+            tableView?.register(
+                UINib(nibName: "SettingScreenTableViewCell", bundle: nil),
+                forCellReuseIdentifier: "SettingScreenTableViewCell"
+            )
+            tableView?.tableFooterView = UIView() // remove empty cells
+        }
+    }
+    
+    @objc private func handleLanguageChange() {
+        reloadTexts()
+    }
+}
 
-        // Do any additional setup after loading the view.
+extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSource, SettingScreenTableViewCellDelegate {
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if tableView == generalStettingTableView {
+            return generalItemsKeys.count + (isLanguageExpanded ? languages.count : 0)
+        } else if tableView == securityTabelView {
+            return securityItemsKeys.count
+        } else if tableView == accountTabelView {
+            return accountItemsKeys.count
+        }
+        return 0
     }
 
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let rows: Int
+        if tableView == generalStettingTableView {
+            rows = generalItemsKeys.count + (isLanguageExpanded ? languages.count : 0)
+        } else if tableView == securityTabelView {
+            rows = securityItemsKeys.count
+        } else if tableView == accountTabelView {
+            rows = accountItemsKeys.count
+        } else {
+            rows = 1
+        }
+        guard rows > 0 else { return 44 }
+        return tableView.frame.height / CGFloat(rows)
+    }
 
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: "SettingScreenTableViewCell",
+            for: indexPath
+        ) as? SettingScreenTableViewCell else {
+            return UITableViewCell()
+        }
+
+        cell.delegate = self
+        var item: SettingItem
+        if tableView == generalStettingTableView {
+            if indexPath.row <= 1 {
+                let general = generalItemsKeys[indexPath.row]
+                item = SettingItem(titleKey: general.0, iconName: general.1, isDropdownVisible: indexPath.row == 1, isDarkModeRow: false)
+                
+            } else if isLanguageExpanded && indexPath.row > 1 && indexPath.row <= 1 + languages.count {
+                let lang = languages[indexPath.row - 2]
+                item = SettingItem(titleKey: lang.0, iconName: lang.1, isDropdownVisible: false, isDarkModeRow: false)
+                
+            } else {
+                let adjustedIndex = indexPath.row - (isLanguageExpanded ? languages.count : 0)
+                let general = generalItemsKeys[adjustedIndex]
+                item = SettingItem(titleKey: general.0, iconName: general.1, isDropdownVisible: false, isDarkModeRow: adjustedIndex == generalItemsKeys.count - 1)
+            }
+            
+        } else if tableView == securityTabelView {
+            let security = securityItemsKeys[indexPath.row]
+            item = SettingItem(titleKey: security.0, iconName: security.1, isDropdownVisible: false, isDarkModeRow: false)
+            
+        } else {
+            let account = accountItemsKeys[indexPath.row]
+            item = SettingItem(titleKey: account.0, iconName: account.1, isDropdownVisible: false, isDarkModeRow: false)
+        }
+        
+        cell.configure(with: item, trait: traitCollection)
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if tableView == generalStettingTableView {
+            if isLanguageExpanded && indexPath.row > 1 && indexPath.row <= 1 + languages.count {
+                let lang = languages[indexPath.row - 2]
+                selectedLanguage = lang
+                isLanguageExpanded = false
+                let code = (lang.0 == NSLocalizedString("english", comment: "")) ? "en" : "ar"
+                LanguageManager.shared.setLanguage(code)
+                tableView.reloadData()
+               // print("Switched to language: \(lang.0)")
+                
+            } else {
+                let adjustedIndex = indexPath.row - (isLanguageExpanded && indexPath.row > 1 + languages.count ? languages.count : 0)
+                switch adjustedIndex {
+                case 0: navigateToResultOfRequest()
+                case 1: break
+                case 2:
+                    print("Dark Mode tapped")
+                    toggleDarkMode()
+
+                default: break
+                }
+            }
+        } else if tableView == securityTabelView {
+            switch indexPath.row {
+            case 0: navigateToChangeProtectionViewController()
+            case 1: print("Notifications tapped")
+            default: break
+            }
+        } else if tableView == accountTabelView {
+            navigateToCheckingViewcontroller()
+        }
+    }
+
+    func didTapDropdown(in cell: SettingScreenTableViewCell) {
+        guard let indexPath = generalStettingTableView.indexPath(for: cell) else { return }
+        if indexPath.row == 1 { // Language row only
+            isLanguageExpanded.toggle()
+            generalStettingTableView.reloadData()
+        }
+    }
+}
+
+extension SettingScreenViewController: Localizable {
+    func reloadTexts() {
+        generalLabel.text = NSLocalizedString("general_settings", comment: "")
+        securityLabel.text = NSLocalizedString("security_settings", comment: "")
+        accountLabel.text = NSLocalizedString("account_settings", comment: "")
+        titleLabel.text = NSLocalizedString("settings_screen", comment: "")
+        generalStettingTableView.reloadData()
+        securityTabelView.reloadData()
+        accountTabelView.reloadData()
+    }
+    
+    func navigateToResultOfRequest() {
+        let resultOfRequestVC = ResultOfRequestAlartViewController()
+        resultOfRequestVC.modalPresentationStyle = .overFullScreen
+        resultOfRequestVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        resultOfRequestVC.modalTransitionStyle = .crossDissolve
+        present(resultOfRequestVC, animated: true, completion: nil)
+    }
+    
+    func navigateToCheckingViewcontroller() {
+        let checkingVC = CheckingViewController()
+        checkingVC.modalPresentationStyle = .overFullScreen
+        checkingVC.modalTransitionStyle = .crossDissolve
+        present(checkingVC, animated: true, completion: nil)
+    }
+    
+    func navigateToChangeProtectionViewController(){
+    let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController",bundle: nil)
+    protectionMethodVC.modalPresentationStyle = .fullScreen
+        self.present(protectionMethodVC, animated: true)
+   }
+}
+
+extension SettingScreenViewController {
+    private func toggleDarkMode() {
+        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+           let window = windowScene.windows.first {
+
+            if window.overrideUserInterfaceStyle == .dark {
+                window.overrideUserInterfaceStyle = .light
+                UserDefaults.standard.set("light", forKey: "AppTheme")
+            } else {
+                window.overrideUserInterfaceStyle = .dark
+                UserDefaults.standard.set("dark", forKey: "AppTheme")
+            }
+
+            if let row = generalItemsKeys.firstIndex(where: { $0.0 == "dark_mode" }) {
+                let indexPath = IndexPath(row: row + (isLanguageExpanded ? languages.count : 0), section: 0)
+                generalStettingTableView.reloadRows(at: [indexPath], with: .fade)
+            }
+        }
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            generalStettingTableView.reloadData()
+        }
+    }
 }

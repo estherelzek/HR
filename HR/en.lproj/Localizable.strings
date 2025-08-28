@@ -8,6 +8,123 @@
 "change_company" = "Change Company";
 "language" = "Language";
 "dark_mode" = "Dark Mode";
+"light_mode" = "Light Mode";
 "change_protection" = "Change Protection Method";
 "notifications" = "Notifications";
 "logout" = "Logout";
+// launch
+"scan-QR" = "Scan QR";
+"done_button" = "Done";
+"enter-company-info" = "Enter Your Company Information";
+"or" = "OR";
+//setting
+"general_settings" = "General Settings";
+"security_settings" = "Security Settings";
+"account_settings" = "Account Settings";
+"settings_screen" =  "Setting Screen";
+"english" = "English";
+"arabic" = "Arabic";
+
+// sign in screen
+"sign_in_title" = "Sign In";
+"company_id" = "Company ID";
+"api_key" = "API Key";
+"enter_email" = "Enter Email";
+"enter_password" = "Enter Password";
+
+//chose protection method
+"choose_protection_method" = "Choose Protection Method";
+"use_fingerprint" = "Use Fingerprint";
+"use_pin_code" = "Use Pin Code";
+"dont_show_this_again" = "Don't show this again";
+"dont_show_button" = "Don't Show";
+"no_protection" = "No Protection";
+
+// set your pin
+"pin_code_title" = "Enter Your PIN Code";
+"pin_code_hint" = "Please enter the 4-digit PIN";
+"forget_password" = "Forgot Password?";
+"next_button" = "Next";
+"digit_placeholder" = "•";
+
+// timeoff screen
+"time_off_title" = "Time Off";
+
+"annual_leaves" = "Annual Leaves";
+"number_of_days" = "31";
+"valid_until" = "Valid Until";
+"days_available" = "Days Available";
+
+"permission_title" = "Permission";
+"number_of_hours" = "12";
+"hours_available" = "Hours Available";
+
+"to_approve" = "To Approve";
+"first_approval" = "First Approval";
+"second_approval" = "Second Approval";
+"refused" = "Refused";
+
+
+// result of request view controller
+"pending_approval" = "Pending Approval";
+"delete" = "Delete";
+"annual_leave_days" = "Annual leave: %.1f days";
+
+//FingerprintViewController
+"fingerprint_title" = "Use Fingerprint";
+"success" = "Success";
+"error" = "Error";
+"fingerprint_recognized" = "Fingerprint recognized.";
+"authentication_failed" = "Authentication failed.";
+
+/* Checked In */
+"checked_in_title" = "You are checked in";
+"checked_in_button" = "Check out";
+"checked_in_description_with_time" = "You have successfully checked in at %@. Have a blessed day.";
+"checked_in_description" = "You are currently checked in.";
+
+/* Checked Out */
+"checked_out_title" = "You are checked out";
+"checked_out_button" = "Check in";
+"checked_out_description_with_time" = "You have successfully checked out on %@ after %.2f h. Great job today.";
+"checked_out_description" = "You are currently checked out.";
+
+// attention Alart View Controller
+"attention_title" = "Attention";
+"worked_hours" = "You have spent 8:07";
+"worked_hours_format" = "You have spent %@ hours.";
+
+"confirm_checkout_question" = "Are you sure you want to check out?";
+"ok_button" = "OK";
+"cancel_button" = "Cancel";
+
+"error" = "Error";
+"success" = "Success";
+"no_pin_set" = "No PIN is set. Please set your PIN first.";
+"wrong_pin" = "Wrong PIN, try again.";
+"fingerprint_recognized" = "Fingerprint recognized!";
+"authentication_failed" = "Authentication failed. Please try again.";
+
+"authenticate_with_fingerprint" = "Authenticate with Fingerprint";
+"success" = "Success";
+"fingerprint_recognized" = "Fingerprint recognized successfully.";
+"error" = "Error";
+"authentication_failed" = "Authentication failed. Please try again.";
+"biometrics_not_available" = "Biometrics not available on this device.";
+/* English */
+"Employee not found or invalid credentials." = "Employee not found or invalid credentials.";
+"login_failed" = "Login Failed";
+
+//timeoffrequest vc
+"TimeOffRequest_Title" = "Time Off Request";
+"TimeOffRequest_Type" = "Type of Leave";
+"TimeOffRequest_SelectLeave" = "Select Leave Type";
+"TimeOffRequest_Dates" = "Dates";
+"TimeOffRequest_StartDate" = "Start Date";
+"TimeOffRequest_EndDate" = "End Date";
+"TimeOffRequest_MorningOrNight" = "Morning or Night";
+"TimeOffRequest_HalfDay" = "Half Day";
+"TimeOffRequest_CustomHours" = "Custom Hours";
+"TimeOffRequest_Duration" = "Duration";
+"TimeOffRequest_AddDescription" = "Add Description";
+

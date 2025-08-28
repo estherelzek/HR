@@ -1,0 +1,129 @@
+/* 
+  Localizable.strings
+  iosApp
+
+  Created by Esther Elzek on 16/07/2025.
+  Copyright © 2025 orgName. All rights reserved.
+*/
+
+
+
+"logout" = "تسجيل الخروج";
+// launch
+"scan-QR" = "مسح رمز QR";
+"done_button" = "تم";
+"enter-company-info" = "أدخل معلومات شركتك";
+"or" = "أو";
+// setting
+"general_settings" = "الإعدادات العامة";
+"security_settings" = "إعدادات الأمان";
+"account_settings" = "إعدادات الحساب";
+"settings_screen" = "الإعدادات";
+"change_company" = "تغيير الشركة";
+"language" = "اللغة";
+"dark_mode" = "الوضع الداكن";
+"light_mode" = "الوضع الفاتح";
+
+"change_protection" = "تغيير طريقة الحماية";
+"notifications" = "الإشعارات";
+"english" = "الإنجليزية";
+"arabic" = "العربية";
+
+
+// sign in screen
+"sign_in_title" = "تسجيل الدخول";
+"company_id" = "معرّف الشركة";
+"api_key" = "مفتاح API";
+"enter_email" = "أدخل البريد الإلكتروني";
+"enter_password" = "أدخل كلمة المرور";
+//chose protection method
+"choose_protection_method" = "اختر طريقة الحماية";
+"use_fingerprint" = "استخدام البصمة";
+"use_pin_code" = "استخدام رمز PIN";
+"dont_show_this_again" = "لا تظهر هذا مرة أخرى";
+"dont_show_button" = "لا تعرض";
+"no_protection" = "بدون حماية";
+// set your pin
+"pin_code_title" = "أدخل رمز PIN الخاص بك";
+"pin_code_hint" = "الرجاء إدخال رمز PIN المكون من ٤ أرقام";
+"forget_password" = "هل نسيت كلمة المرور؟";
+"next_button" = "التالي";
+"digit_placeholder" = "•";
+
+// timeoff screen
+"time_off_title" = "الإجازات";
+
+"annual_leaves" = "الإجازات السنوية";
+"number_of_days" = "عدد الأيام";
+"valid_until" = "صالح حتى";
+"days_available" = "الأيام المتاحة";
+
+"permission_title" = "الإذن";
+"number_of_hours" = "عدد الساعات";
+"hours_available" = "الساعات المتاحة";
+
+"to_approve" = "للموافقة";
+"first_approval" = "الموافقة الأولى";
+"second_approval" = "الموافقة الثانية";
+"refused" = "مرفوض";
+// result of request view controller
+"pending_approval" = "قيد الموافقة";
+"delete" = "حذف";
+"annual_leave_days" = "إجازة سنوية: %.1f يوم";
+
+//FingerprintViewController
+"fingerprint_title" = "استخدم بصمة الإصبع ";
+"success" = "نجاح";
+"error" = "خطأ";
+"fingerprint_recognized" = "تم التعرف على البصمة.";
+"authentication_failed" = "فشل في التحقق.";
+
+/* Checked In */
+"checked_in_title" = "أنت مسجل دخول";
+"checked_in_button" = "تسجيل الخروج";
+"checked_in_description_with_time" = "تم تسجيل دخولك بنجاح في %@. نتمنى لك يوماً سعيداً.";
+"checked_in_description" = "أنت حالياً مسجل دخول.";
+
+/* Checked Out */
+"checked_out_title" = "أنت مسجل خروج";
+"checked_out_button" = "تسجيل الدخول";
+"checked_out_description_with_time" = "تم تسجيل خروجك بنجاح في %@ بعد %.2f ساعة. عمل رائع اليوم.";
+"checked_out_description" = "أنت حالياً مسجل خروج.";
+"worked_hours_format" = "لقد قضيت %@ ساعات.";
+
+
+// attention Alart View Controller
+"attention_title" = "تنبيه";
+"worked_hours" = "لقد قضيت 8:07";
+"confirm_checkout_question" = "هل أنت متأكد أنك تريد تسجيل الخروج؟";
+"ok_button" = "موافق";
+"cancel_button" = "إلغاء";
+
+
+"error" = "خطأ";
+"success" = "نجاح";
+"no_pin_set" = "لم يتم تعيين رقم التعريف الشخصي. يرجى تعيينه أولاً.";
+"wrong_pin" = "رقم التعريف الشخصي غير صحيح، حاول مرة أخرى.";
+"fingerprint_recognized" = "تم التعرف على بصمة الإصبع!";
+"authentication_failed" = "فشل التحقق. حاول مرة أخرى.";
+"authenticate_with_fingerprint" = "سجّل الدخول ببصمة الإصبع";
+"success" = "نجاح";
+"fingerprint_recognized" = "تم التعرّف على بصمة الإصبع بنجاح.";
+"error" = "خطأ";
+"authentication_failed" = "فشل التحقق. حاول مرة أخرى.";
+"biometrics_not_available" = "البصمة غير متوفرة على هذا الجهاز.";
+/* Arabic */
+"Employee not found or invalid credentials." = "الموظف غير موجود أو بيانات الاعتماد غير صحيحة.";
+"login_failed" = "فشل تسجيل الدخول";
+// timeoffrequest vc
+"TimeOffRequest_Title" = "طلب إجازة";
+"TimeOffRequest_Type" = "نوع الإجازة";
+"TimeOffRequest_SelectLeave" = "اختر نوع الإجازة";
+"TimeOffRequest_Dates" = "التواريخ";
+"TimeOffRequest_StartDate" = "تاريخ البداية";
+"TimeOffRequest_EndDate" = "تاريخ النهاية";
+"TimeOffRequest_MorningOrNight" = "صباحاً أو مساءً";
+"TimeOffRequest_HalfDay" = "نصف يوم";
+"TimeOffRequest_CustomHours" = "ساعات مخصصة";
+"TimeOffRequest_Duration" = "المدة";
+"TimeOffRequest_AddDescription" = "إضافة وصف";
