@@ -63,7 +63,8 @@
 "hours_available" = "الساعات المتاحة";
 
 "to_approve" = "للموافقة";
-"first_approval" = "الموافقة الأولى";
+"approved" = "موافق عليه";
+
 "second_approval" = "الموافقة الثانية";
 "refused" = "مرفوض";
 // result of request view controller
@@ -127,3 +128,7 @@
 "TimeOffRequest_CustomHours" = "ساعات مخصصة";
 "TimeOffRequest_Duration" = "المدة";
 "TimeOffRequest_AddDescription" = "إضافة وصف";
+"Clock" = "الساعه";
+"Save" = "حفظ";
+"Cancel" = "إلغاء";
+

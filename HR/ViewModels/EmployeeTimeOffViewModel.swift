@@ -6,3 +6,25 @@
 //
 
 import Foundation
+
+import Foundation
+
+final class EmployeeTimeOffViewModel {
+    
+    /// Fetch all employee time off records
+    func fetchEmployeeTimeOffs(
+        token: String,
+        completion: @escaping (Result<EmployeeTimeOffResult, APIError>) -> Void
+    ) {
+        let endpoint = API.getEmployeeTimeOffs(token: token, action: "time_off_status")
+        
+        NetworkManager.shared.requestDecodable(endpoint, as: EmployeeTimeOffResponse.self) { result in
+            switch result {
+            case .success(let response):
+                completion(.success(response.result))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+}

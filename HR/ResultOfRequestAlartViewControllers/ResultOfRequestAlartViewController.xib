@@ -40,7 +40,7 @@
                             <subviews>
                                 <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X2l-fl-Blb" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
-                                    <color key="backgroundColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="backgroundColor" name="purplecolor"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="20" id="8If-fe-B4L"/>
                                     </constraints>
@@ -65,14 +65,14 @@
                         </stackView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QVb-ca-29j" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="150" y="213" width="118" height="40"/>
-                            <color key="backgroundColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" name="purplecolor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="40" id="GIm-QK-dsX"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" title="Delete"/>
+                            <state key="normal" title="Cancel"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                     <real key="value" value="10"/>
@@ -88,7 +88,7 @@
                                 <constraint firstAttribute="height" constant="30" id="uhe-4l-M1o"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
-                            <color key="textColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" name="purplecolor"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
@@ -128,10 +128,13 @@
     </objects>
     <resources>
         <namedColor name="alartColor ">
-            <color red="0.99999994039535522" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="basecolorText">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="purplecolor">
+            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

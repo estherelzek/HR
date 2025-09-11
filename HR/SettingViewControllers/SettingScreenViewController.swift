@@ -11,8 +11,8 @@ protocol SettingScreenCellDelegate: AnyObject {
 }
 
 
-class SettingScreenViewController: UIViewController {
-    
+class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelegate {
+   
     @IBOutlet weak var generalStettingTableView: InspectableTableView!
     @IBOutlet weak var securityTabelView: InspectableTableView!
     @IBOutlet weak var accountTabelView: InspectableTableView!
@@ -34,6 +34,10 @@ class SettingScreenViewController: UIViewController {
         setupTableViews()
         reloadTexts()
         NotificationCenter.default.addObserver(self,selector: #selector(handleLanguageChange),name: NSNotification.Name("LanguageChanged"),object: nil)
+        let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkModeEnabled")
+        if let window = UIApplication.shared.windows.first {
+            window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
+        }
     }
    
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -48,6 +52,10 @@ class SettingScreenViewController: UIViewController {
                 UINib(nibName: "SettingScreenTableViewCell", bundle: nil),
                 forCellReuseIdentifier: "SettingScreenTableViewCell"
             )
+            tableView?.register(
+                UINib(nibName: "DarkModeTableViewCell", bundle: nil),
+                forCellReuseIdentifier: "DarkModeTableViewCell"
+            )
             tableView?.tableFooterView = UIView() // remove empty cells
         }
     }
@@ -55,14 +63,23 @@ class SettingScreenViewController: UIViewController {
     @objc private func handleLanguageChange() {
         reloadTexts()
     }
+    
+    func darkModeSwitchChanged(isOn: Bool) {
+        if let window = UIApplication.shared.windows.first {
+            window.overrideUserInterfaceStyle = isOn ? .dark : .light
+        }
+        UserDefaults.standard.set(isOn, forKey: "isDarkModeEnabled")
+        UserDefaults.standard.synchronize()
+    }
+    
 }
 
 extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSource, SettingScreenTableViewCellDelegate {
-    
+
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tableView == generalStettingTableView {
             return generalItemsKeys.count + (isLanguageExpanded ? languages.count : 0)
@@ -90,45 +107,53 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "SettingScreenTableViewCell",
-            for: indexPath
-        ) as? SettingScreenTableViewCell else {
-            return UITableViewCell()
-        }
-
-        cell.delegate = self
         var item: SettingItem
+        
         if tableView == generalStettingTableView {
             if indexPath.row <= 1 {
                 let general = generalItemsKeys[indexPath.row]
-                item = SettingItem(titleKey: general.0, iconName: general.1, isDropdownVisible: indexPath.row == 1, isDarkModeRow: false)
-                
+                item = SettingItem(titleKey: general.0,iconName: general.1,isDropdownVisible: indexPath.row == 1,isDarkModeRow: false)
+
             } else if isLanguageExpanded && indexPath.row > 1 && indexPath.row <= 1 + languages.count {
                 let lang = languages[indexPath.row - 2]
-                item = SettingItem(titleKey: lang.0, iconName: lang.1, isDropdownVisible: false, isDarkModeRow: false)
-                
+                item = SettingItem(titleKey: lang.0,iconName: lang.1,isDropdownVisible: false,isDarkModeRow: false)
+
             } else {
                 let adjustedIndex = indexPath.row - (isLanguageExpanded ? languages.count : 0)
                 let general = generalItemsKeys[adjustedIndex]
-                item = SettingItem(titleKey: general.0, iconName: general.1, isDropdownVisible: false, isDarkModeRow: adjustedIndex == generalItemsKeys.count - 1)
+                item = SettingItem(titleKey: general.0,iconName: general.1,isDropdownVisible: false,isDarkModeRow: general.0 == "dark_mode")
             }
-            
+
         } else if tableView == securityTabelView {
             let security = securityItemsKeys[indexPath.row]
-            item = SettingItem(titleKey: security.0, iconName: security.1, isDropdownVisible: false, isDarkModeRow: false)
-            
+            item = SettingItem(titleKey: security.0,iconName: security.1,isDropdownVisible: false,isDarkModeRow: false)
+
         } else {
             let account = accountItemsKeys[indexPath.row]
-            item = SettingItem(titleKey: account.0, iconName: account.1, isDropdownVisible: false, isDarkModeRow: false)
+            item = SettingItem(titleKey: account.0,iconName: account.1,isDropdownVisible: false,isDarkModeRow: false)
         }
-        
+
+        if item.isDarkModeRow {
+            guard let darkModeCell = tableView.dequeueReusableCell(
+                withIdentifier: "DarkModeTableViewCell",for: indexPath) as? DarkModeTableViewCell else {
+                return UITableViewCell()
+            }
+            darkModeCell.delegate = self
+            darkModeCell.configure(with: item, trait: traitCollection)
+            return darkModeCell
+        }
+
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "SettingScreenTableViewCell",for: indexPath) as? SettingScreenTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.delegate = self
         cell.configure(with: item, trait: traitCollection)
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
         if tableView == generalStettingTableView {
             if isLanguageExpanded && indexPath.row > 1 && indexPath.row <= 1 + languages.count {
                 let lang = languages[indexPath.row - 2]
@@ -137,17 +162,12 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
                 let code = (lang.0 == NSLocalizedString("english", comment: "")) ? "en" : "ar"
                 LanguageManager.shared.setLanguage(code)
                 tableView.reloadData()
-               // print("Switched to language: \(lang.0)")
-                
             } else {
                 let adjustedIndex = indexPath.row - (isLanguageExpanded && indexPath.row > 1 + languages.count ? languages.count : 0)
                 switch adjustedIndex {
                 case 0: navigateToResultOfRequest()
                 case 1: break
-                case 2:
-                    print("Dark Mode tapped")
-                    toggleDarkMode()
-
+                case 2: print("Dark Mode tapped") // handled by switch now
                 default: break
                 }
             }
@@ -158,7 +178,7 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             default: break
             }
         } else if tableView == accountTabelView {
-            navigateToCheckingViewcontroller()
+            goToChecking()
         }
     }
 
@@ -190,13 +210,6 @@ extension SettingScreenViewController: Localizable {
         present(resultOfRequestVC, animated: true, completion: nil)
     }
     
-    func navigateToCheckingViewcontroller() {
-        let checkingVC = CheckingViewController()
-        checkingVC.modalPresentationStyle = .overFullScreen
-        checkingVC.modalTransitionStyle = .crossDissolve
-        present(checkingVC, animated: true, completion: nil)
-    }
-    
     func navigateToChangeProtectionViewController(){
     let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController",bundle: nil)
     protectionMethodVC.modalPresentationStyle = .fullScreen
@@ -205,25 +218,6 @@ extension SettingScreenViewController: Localizable {
 }
 
 extension SettingScreenViewController {
-    private func toggleDarkMode() {
-        if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
-           let window = windowScene.windows.first {
-
-            if window.overrideUserInterfaceStyle == .dark {
-                window.overrideUserInterfaceStyle = .light
-                UserDefaults.standard.set("light", forKey: "AppTheme")
-            } else {
-                window.overrideUserInterfaceStyle = .dark
-                UserDefaults.standard.set("dark", forKey: "AppTheme")
-            }
-
-            if let row = generalItemsKeys.firstIndex(where: { $0.0 == "dark_mode" }) {
-                let indexPath = IndexPath(row: row + (isLanguageExpanded ? languages.count : 0), section: 0)
-                generalStettingTableView.reloadRows(at: [indexPath], with: .fade)
-            }
-        }
-    }
-
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {

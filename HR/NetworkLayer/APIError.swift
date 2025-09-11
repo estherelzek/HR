@@ -14,9 +14,3 @@ enum APIError: Error {
     case noData
     case unknown
 }
-//enum APIError: Error {
-//    case invalidURL
-//    case networkError(Error)
-//    case noData
-//    case decodingError
-//}

@@ -26,13 +26,13 @@ class ProtectionMethodViewController: UIViewController {
    
     @IBAction func noProductionButtonTapped(_ sender: Any) {
             print("➡️ No Protection selected")
-            dismiss(animated: true, completion: nil) // or push to home
+           goToChecking()
         }
         
         @IBAction func dontShowThisAgain(_ sender: Any) {
             UserDefaults.standard.dontShowProtectionScreen = true
             print("✅ Saved: Don't show this screen again")
-            dismiss(animated: true, completion: nil)
+            goToChecking()
         }
     
     func navigateToFingerprintVC() {
@@ -50,6 +50,7 @@ class ProtectionMethodViewController: UIViewController {
     @objc private func languageChanged() {
         setUpTexts()
        }
+    
 }
 
 extension ProtectionMethodViewController: UITextFieldDelegate {

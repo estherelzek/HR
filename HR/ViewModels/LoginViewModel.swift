@@ -58,6 +58,21 @@ final class LoginViewModel {
                         let toSave = url.hasSuffix("/") ? String(url.dropLast()) : url
                         UserDefaults.standard.baseURL = toSave
                     }
+                    if let detail = res.message?.objectValue {
+                        // Save employee token
+                        if let token = detail.employeeData?.employeeToken {
+                            UserDefaults.standard.employeeToken = token
+                        }
+
+                        // Save company lat/lng/allowedDistance
+                        if let company = detail.company?.first,
+                           let address = company.address {
+                            UserDefaults.standard.companyLatitude = address.latitude
+                            UserDefaults.standard.companyLongitude = address.longitude
+                            UserDefaults.standard.allowedDistance = address.allowedDistance
+                        }
+                    }
+
                     self.onLoginSuccess?()
 
                 case .failure(let error):

@@ -3,6 +3,7 @@
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -31,7 +32,7 @@
                                 <constraint firstAttribute="height" constant="30" id="qIf-ZB-2C2"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="22"/>
-                            <color key="textColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="textColor" name="purplecolor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="qPC-K1-Ahq">
@@ -70,7 +71,7 @@
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dgS-Fe-Nid" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="208" y="386" width="100" height="32"/>
-                            <color key="backgroundColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" name="purplecolor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="32" id="ON4-nX-UXB"/>
                                 <constraint firstAttribute="width" constant="100" id="jjG-wQ-2Kb"/>
@@ -118,10 +119,13 @@
                 <constraint firstItem="zP2-wS-ALq" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.824427" id="spG-cR-n8q"/>
                 <constraint firstItem="zP2-wS-ALq" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="y6C-mA-2Mb"/>
             </constraints>
-            <point key="canvasLocation" x="258.77862595419845" y="-44.366197183098592"/>
+            <point key="canvasLocation" x="-2" y="-36"/>
         </view>
     </objects>
     <resources>
         <image name="xmark" catalog="system" width="128" height="113"/>
+        <namedColor name="purplecolor">
+            <color red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>

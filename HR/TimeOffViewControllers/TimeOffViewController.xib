@@ -14,6 +14,7 @@
                 <outlet property="calender" destination="Cfq-eG-WfE" id="AjK-Jb-EjU"/>
                 <outlet property="collectionView" destination="XKW-oP-nZV" id="rPk-BT-u0B"/>
                 <outlet property="firstAprroveLabel" destination="CTI-wx-COy" id="sYQ-eH-DRh"/>
+                <outlet property="loaderIndicator" destination="HXh-gY-wEX" id="3di-RB-mQ9"/>
                 <outlet property="refusedLabel" destination="Y8w-gh-x27" id="4fP-TB-Pvq"/>
                 <outlet property="secondApproveLabel" destination="zQY-k1-8VN" id="avL-ic-xVw"/>
                 <outlet property="timeOffScreenTitle" destination="mvI-vj-dth" id="nqT-9P-NZn"/>
@@ -29,7 +30,7 @@
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="UJ1-VY-VS1">
                     <rect key="frame" x="0.0" y="59" width="393" height="50"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qRi-he-hD7">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qRi-he-hD7">
                             <rect key="frame" x="0.0" y="0.0" width="40" height="50"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="40" id="xsP-kJ-Ydr"/>
@@ -42,20 +43,34 @@
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TimeOff" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mvI-vj-dth">
-                            <rect key="frame" x="40" y="0.0" width="353" height="50"/>
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="50"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="29"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" name="purplecolor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="Upd-5L-gHp"/>
                     </constraints>
                 </stackView>
                 <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Cfq-eG-WfE" customClass="FSCalendar">
                     <rect key="frame" x="8" y="309" width="377" height="364"/>
-                    <color key="backgroundColor" name="alartColor "/>
+                    <subviews>
+                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="HXh-gY-wEX">
+                            <rect key="frame" x="144" y="-35" width="74" height="121"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="121" id="C2J-Aa-Y2u"/>
+                                <constraint firstAttribute="width" constant="74" id="stn-iN-Mfc"/>
+                            </constraints>
+                            <color key="color" red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </activityIndicatorView>
+                    </subviews>
+                    <color key="backgroundColor" name="baseColorView"/>
+                    <constraints>
+                        <constraint firstItem="HXh-gY-wEX" firstAttribute="leading" secondItem="Cfq-eG-WfE" secondAttribute="leading" constant="144" id="6GS-Xu-bfQ"/>
+                        <constraint firstItem="HXh-gY-wEX" firstAttribute="top" secondItem="Cfq-eG-WfE" secondAttribute="top" constant="-35" id="F7E-k2-kps"/>
+                    </constraints>
                     <connections>
                         <outlet property="dataSource" destination="i5M-Pr-FkT" id="jnq-AP-ebj"/>
                         <outlet property="delegate" destination="i5M-Pr-FkT" id="6pS-iG-vgG"/>
@@ -75,7 +90,7 @@
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dfc-ds-Fnn" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="8" y="12" width="20" height="18"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.72867466500090261" green="0.79702165959818816" blue="0.90588235294117647" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" red="0.98039215686274506" green="0.93725490196078431" blue="0.89411764705882346" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain"/>
                             <userDefinedRuntimeAttributes>
@@ -87,7 +102,7 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="First Approved" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTI-wx-COy">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Second Approved" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTI-wx-COy">
                             <rect key="frame" x="248" y="9" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" name="baseColorView"/>
@@ -95,7 +110,7 @@
                             <color key="textColor" name="basecolorText"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Second Approved" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zQY-k1-8VN">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Approved" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zQY-k1-8VN">
                             <rect key="frame" x="36" y="54" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" name="baseColorView"/>
@@ -106,7 +121,7 @@
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GG5-2l-QCV" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="8" y="56" width="20" height="19"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.72156862745098038" green="0.83137254901960778" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" red="0.75294117647058822" green="0.87450980392156863" blue="0.73333333333333328" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain"/>
                             <userDefinedRuntimeAttributes>
@@ -123,19 +138,10 @@
                             <color key="textColor" name="basecolorText"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="d8L-44-wzs">
-                            <rect key="frame" x="220" y="54" width="20" height="24"/>
-                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" title="---">
-                                <color key="titleColor" systemColor="systemRedColor"/>
-                            </state>
-                        </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yQP-PV-IzJ" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="211" y="9" width="20" height="18"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                            <color key="backgroundColor" red="0.90588235294117647" green="0.80784313725490198" blue="0.90196078431372551" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" red="0.85882352941176465" green="0.76862745098039209" blue="0.86274509803921573" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" title="Button"/>
                             <buttonConfiguration key="configuration" style="plain"/>
                             <userDefinedRuntimeAttributes>
@@ -144,6 +150,19 @@
                                 </userDefinedRuntimeAttribute>
                                 <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
                                     <real key="value" value="0.0"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZyL-YT-fKn" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                            <rect key="frame" x="220" y="56" width="20" height="19"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <color key="backgroundColor" red="0.8862745098" green="0.73333333329999995" blue="0.72549019609999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="tintColor" systemColor="systemRedColor"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="--"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="10"/>
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </button>
@@ -191,19 +210,19 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="UJ1-VY-VS1" secondAttribute="trailing" id="fQy-tQ-5nC"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="4nV-b2-Con" secondAttribute="bottom" constant="37" id="jhz-HM-smR"/>
             </constraints>
-            <point key="canvasLocation" x="-349" y="-505"/>
+            <point key="canvasLocation" x="-1618" y="-539"/>
         </view>
     </objects>
     <resources>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
-        <namedColor name="alartColor ">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <namedColor name="baseColorView">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="basecolorText">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="purplecolor">
+            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -7,16 +7,16 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "25126E50-B0AE-43D7-99DD-372EC0EA2510"
+            uuid = "151E4092-4234-4050-8988-438BBFFEC35C"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HR/TimeOffRequestViewControllers/TimeOffRequestViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "125"
-            endingLineNumber = "125"
-            landmarkName = "getDuration()"
+            startingLineNumber = "248"
+            endingLineNumber = "248"
+            landmarkName = "setUpOtherMode()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

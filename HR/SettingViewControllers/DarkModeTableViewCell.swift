@@ -7,17 +7,45 @@
 
 import UIKit
 
+protocol DarkModeTableViewCellDelegate: AnyObject {
+    func darkModeSwitchChanged(isOn: Bool)
+}
+
 class DarkModeTableViewCell: UITableViewCell {
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var logoImage: UIImageView!
+    @IBOutlet weak var modeSwitch: UISwitch!
+    
+    weak var delegate: DarkModeTableViewCellDelegate?
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        modeSwitch.isOn = traitCollection.userInterfaceStyle == .dark
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+    func configure(with item: SettingItem, trait: UITraitCollection) {
+        titleLabel.text = NSLocalizedString(item.titleKey, comment: "")
+        
+        if let iconName = item.iconName {
+            logoImage.image = UIImage(systemName: iconName) ?? UIImage(named: iconName)
+        } else {
+            logoImage.image = nil
+        }
+        
+        if item.isDarkModeRow {
+            if trait.userInterfaceStyle == .dark {
+//                titleLabel.text = NSLocalizedString("light_mode", comment: "")
+//                logoImage.image = UIImage(systemName: "sun.max.fill")
+                modeSwitch.isOn = true
+            } else {
+//                titleLabel.text = NSLocalizedString("dark_mode", comment: "")
+//                logoImage.image = UIImage(systemName: "moon.fill")
+                modeSwitch.isOn = false
+            }
+        }
     }
-    
+
+    @IBAction func switchButtonTapped(_ sender: UISwitch) {
+        delegate?.darkModeSwitchChanged(isOn: sender.isOn)
+    }
 }

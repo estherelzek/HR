@@ -28,21 +28,7 @@ class LanguageManager {
         NotificationCenter.default.post(name: NSNotification.Name("LanguageChanged"), object: nil)
         reloadAllViewControllers()
     }
-
-    private func resetRootViewController() {
-        guard let window = UIApplication.shared.windows.first else { return }
-      let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if let rootVC = storyboard.instantiateInitialViewController() {
-            window.rootViewController = rootVC
-            window.makeKeyAndVisible()
-            UIView.transition(with: window,
-                              duration: 0.4,
-                              options: .transitionFlipFromRight,
-                              animations: nil,
-                              completion: nil)
-        }
-    }
-
+    
     private func reloadAllViewControllers() {
         guard let window = UIApplication.shared.windows.first,
               let root = window.rootViewController else { return }
@@ -77,12 +63,10 @@ extension Bundle {
 
     class func setLanguage(_ language: String) {
         Bundle.once
-        objc_setAssociatedObject(
-            Bundle.main,
-            &bundleKey,
-            Bundle(path: Bundle.main.path(forResource: language, ofType: "lproj")!),
-            .OBJC_ASSOCIATION_RETAIN_NONATOMIC
-        )
+        let path = Bundle.main.path(forResource: language, ofType: "lproj")
+        let safePath = path ?? Bundle.main.path(forResource: "en", ofType: "lproj")
+        let bundle = safePath != nil ? Bundle(path: safePath!) : Bundle.main
+        objc_setAssociatedObject(Bundle.main,&bundleKey,bundle,.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
     private class PrivateBundle: Bundle {

@@ -34,17 +34,11 @@ class AttentionViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
         tapGesture.cancelsTouchesInView = false
         outSideView.addGestureRecognizer(tapGesture)
-
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handleLanguageChange),
-            name: NSNotification.Name("LanguageChanged"),
+        NotificationCenter.default.addObserver(self,selector:#selector(handleLanguageChange),name:NSNotification.Name("LanguageChanged"),
             object: nil
         )
         if let hoursText = workedHoursText {
-            workedHoursLabel.text = String(
-                format: NSLocalizedString("worked_hours_format", comment: ""),
-                hoursText
+            workedHoursLabel.text = String(format: NSLocalizedString("worked_hours_format", comment: ""),hoursText
             )
         }
         reloadTexts()
@@ -56,14 +50,12 @@ class AttentionViewController: UIViewController {
 
     private func reloadTexts() {
         attentionTltleLabel.text = NSLocalizedString("attention_title", comment: "")
-
         if let hoursText = workedHoursText {
             workedHoursLabel.text = String(
                 format: NSLocalizedString("worked_hours_format", comment: ""),
                 hoursText
             )
         }
-
         confirmQuestion.text = NSLocalizedString("confirm_checkout_question", comment: "")
         okButton.setTitle(NSLocalizedString("ok_button", comment: ""), for: .normal)
         cancelButton.setTitle(NSLocalizedString("cancel_button", comment: ""), for: .normal)

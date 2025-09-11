@@ -60,7 +60,7 @@
 "hours_available" = "Hours Available";
 
 "to_approve" = "To Approve";
-"first_approval" = "First Approval";
+"approved" = "Approved";
 "second_approval" = "Second Approval";
 "refused" = "Refused";
 
@@ -127,4 +127,8 @@
 "TimeOffRequest_CustomHours" = "Custom Hours";
 "TimeOffRequest_Duration" = "Duration";
 "TimeOffRequest_AddDescription" = "Add Description";
+"Clock" = "Clock";
+"Save" = "Save";
+"Cancel" = "Cancel";
+
 
