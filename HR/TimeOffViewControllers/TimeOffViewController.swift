@@ -178,9 +178,7 @@ extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
 
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         selectedDates.append(date)
-
         let normalizedDate = Calendar.current.startOfDay(for: date)
-
         if let daily = leaveDayRecords[normalizedDate] {
             goToResultOfRequest(with: daily)
         } else if let hourly = leaveHourRecords[normalizedDate] {
@@ -189,7 +187,6 @@ extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
             navigateToTimeOffRequest()
         }
     }
-
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
             super.traitCollectionDidChange(previousTraitCollection)

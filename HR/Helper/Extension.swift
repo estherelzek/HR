@@ -68,6 +68,24 @@ extension UIViewController {
            dismiss(animated: true, completion: nil)
        }
     
+    func goToScanVC() {
+           let checkingVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
+           if let rootVC = self.view.window?.rootViewController as? ViewController {
+               rootVC.switchTo(viewController: checkingVC)
+               rootVC.bottomBarView.isHidden = true
+           }
+          
+       }
+    
+    func goToLogInViewController() {
+           let checkingVC = LogInViewController(nibName: "LogInViewController", bundle: nil)
+           if let rootVC = self.view.window?.rootViewController as? ViewController {
+               rootVC.switchTo(viewController: checkingVC)
+               rootVC.bottomBarView.isHidden = true
+           }
+           dismiss(animated: true, completion: nil)
+       }
+    
     func goToTimeOff() {
            let checkingVC = TimeOffViewController(nibName: "TimeOffViewController", bundle: nil)
            if let rootVC = self.view.window?.rootViewController as? ViewController {

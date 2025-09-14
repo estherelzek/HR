@@ -34,12 +34,8 @@ class DarkModeTableViewCell: UITableViewCell {
         
         if item.isDarkModeRow {
             if trait.userInterfaceStyle == .dark {
-//                titleLabel.text = NSLocalizedString("light_mode", comment: "")
-//                logoImage.image = UIImage(systemName: "sun.max.fill")
                 modeSwitch.isOn = true
             } else {
-//                titleLabel.text = NSLocalizedString("dark_mode", comment: "")
-//                logoImage.image = UIImage(systemName: "moon.fill")
                 modeSwitch.isOn = false
             }
         }

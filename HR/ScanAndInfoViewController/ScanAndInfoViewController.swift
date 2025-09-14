@@ -51,7 +51,6 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
         let metadataOutput = AVCaptureMetadataOutput()
         if captureSession.canAddOutput(metadataOutput) {
             captureSession.addOutput(metadataOutput)
-
             metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
             metadataOutput.metadataObjectTypes = [.qr]
         } else {
@@ -65,17 +64,15 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
         captureSession.startRunning()
     }
 
-    
-   
     @IBAction func doneButtonTapped(_ sender: Any) {
-        let encryptedText =  "BNJgRRKVLXYFZVTvArEwFmIxjbMbddXbOZX5eKENRAIAe8RcwIUYQqWrSQj/9DDLpX1OBj46EBJzJNQMjWWtYOuFcAoaMRqtn6mAN/Da/x1aQ4GLkAxguZZhbXwN4OS/"
+        let encryptedText =  companyInformationTextField.text ?? ""
         do {
             let middleware = try Middleware.initialize(encryptedText)
             UserDefaults.standard.set(middleware.companyId, forKey: "companyId")
             UserDefaults.standard.set(middleware.apiKey, forKey: "apiKey")
             UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
             print("middleware : success : \(middleware.apiKey) : \(middleware.companyId): \(middleware.baseUrl)")
-            goToChecking()
+            goToLogInViewController()
         } catch {
             print("Failed to decrypt: \(error)")
         }
@@ -93,13 +90,11 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     }
 }
 
-
 extension ScanAndInfoViewController {
     func metadataOutput(_ output: AVCaptureMetadataOutput,
                         didOutput metadataObjects: [AVMetadataObject],
                         from connection: AVCaptureConnection) {
         captureSession.stopRunning()
-
         if let metadataObject = metadataObjects.first,
            let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
            let stringValue = readableObject.stringValue {
@@ -108,5 +103,4 @@ extension ScanAndInfoViewController {
             previewLayer.removeFromSuperlayer()
         }
     }
-
 }

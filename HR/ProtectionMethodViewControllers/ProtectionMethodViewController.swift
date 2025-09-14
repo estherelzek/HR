@@ -8,6 +8,12 @@
 import UIKit
 import LocalAuthentication
 
+enum ProtectionMethod: String {
+    case fingerprint
+    case pin
+    case none
+}
+
 class ProtectionMethodViewController: UIViewController {
     
     @IBOutlet weak var chooseProtectionMethod: UILabel!
@@ -25,8 +31,9 @@ class ProtectionMethodViewController: UIViewController {
     }
    
     @IBAction func noProductionButtonTapped(_ sender: Any) {
-            print("➡️ No Protection selected")
-           goToChecking()
+        print("➡️ No Protection selected")
+        UserDefaults.standard.set(ProtectionMethod.none.rawValue, forKey: "selectedProtectionMethod")
+        goToChecking()
         }
         
         @IBAction func dontShowThisAgain(_ sender: Any) {
@@ -34,19 +41,21 @@ class ProtectionMethodViewController: UIViewController {
             print("✅ Saved: Don't show this screen again")
             goToChecking()
         }
-    
+
     func navigateToFingerprintVC() {
+        UserDefaults.standard.set(ProtectionMethod.fingerprint.rawValue, forKey: "selectedProtectionMethod")
         let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
         fingerprintVC.modalPresentationStyle = .fullScreen
         present(fingerprintVC, animated: true, completion: nil)
     }
-    
+
     func navigateToPinCodeVC() {
+        UserDefaults.standard.set(ProtectionMethod.pin.rawValue, forKey: "selectedProtectionMethod")
         let pinCodeVC = PinCodeViewController(nibName: "PinCodeViewController", bundle: nil)
         pinCodeVC.modalPresentationStyle = .fullScreen
-        present(pinCodeVC, animated: true, completion: nil)
+        present(pinCodeVC, animated: true)
     }
-    
+
     @objc private func languageChanged() {
         setUpTexts()
        }

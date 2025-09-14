@@ -56,21 +56,7 @@
                 </stackView>
                 <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Cfq-eG-WfE" customClass="FSCalendar">
                     <rect key="frame" x="8" y="309" width="377" height="364"/>
-                    <subviews>
-                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="HXh-gY-wEX">
-                            <rect key="frame" x="144" y="-35" width="74" height="121"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="121" id="C2J-Aa-Y2u"/>
-                                <constraint firstAttribute="width" constant="74" id="stn-iN-Mfc"/>
-                            </constraints>
-                            <color key="color" red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </activityIndicatorView>
-                    </subviews>
                     <color key="backgroundColor" name="baseColorView"/>
-                    <constraints>
-                        <constraint firstItem="HXh-gY-wEX" firstAttribute="leading" secondItem="Cfq-eG-WfE" secondAttribute="leading" constant="144" id="6GS-Xu-bfQ"/>
-                        <constraint firstItem="HXh-gY-wEX" firstAttribute="top" secondItem="Cfq-eG-WfE" secondAttribute="top" constant="-35" id="F7E-k2-kps"/>
-                    </constraints>
                     <connections>
                         <outlet property="dataSource" destination="i5M-Pr-FkT" id="jnq-AP-ebj"/>
                         <outlet property="delegate" destination="i5M-Pr-FkT" id="6pS-iG-vgG"/>
@@ -189,11 +175,20 @@
                         <outlet property="delegate" destination="i5M-Pr-FkT" id="79m-7H-i5F"/>
                     </connections>
                 </collectionView>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="HXh-gY-wEX">
+                    <rect key="frame" x="156.66666666666666" y="378.66666666666669" width="80" height="120"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="120" id="Dms-Fo-C3C"/>
+                        <constraint firstAttribute="width" constant="80" id="xJn-UR-Ht5"/>
+                    </constraints>
+                    <color key="color" red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                </activityIndicatorView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" name="baseColorView"/>
             <constraints>
                 <constraint firstItem="4nV-b2-Con" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="3JW-nD-Xcy"/>
+                <constraint firstItem="HXh-gY-wEX" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="4b7-et-9af"/>
                 <constraint firstItem="4nV-b2-Con" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="6uX-56-cOq"/>
                 <constraint firstItem="UJ1-VY-VS1" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="8AV-Eb-Lky"/>
                 <constraint firstItem="XKW-oP-nZV" firstAttribute="top" secondItem="UJ1-VY-VS1" secondAttribute="bottom" constant="8" id="K7a-lM-clj"/>
@@ -209,6 +204,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Cfq-eG-WfE" secondAttribute="trailing" constant="8" id="fMh-UQ-oue"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="UJ1-VY-VS1" secondAttribute="trailing" id="fQy-tQ-5nC"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="4nV-b2-Con" secondAttribute="bottom" constant="37" id="jhz-HM-smR"/>
+                <constraint firstItem="HXh-gY-wEX" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="wuf-wV-VPm"/>
             </constraints>
             <point key="canvasLocation" x="-1618" y="-539"/>
         </view>

@@ -10,7 +10,6 @@ protocol SettingScreenCellDelegate: AnyObject {
     func didTapDropdown(in cell: SettingScreenTableViewCell)
 }
 
-
 class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelegate {
    
     @IBOutlet weak var generalStettingTableView: InspectableTableView!
@@ -165,7 +164,7 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             } else {
                 let adjustedIndex = indexPath.row - (isLanguageExpanded && indexPath.row > 1 + languages.count ? languages.count : 0)
                 switch adjustedIndex {
-                case 0: navigateToResultOfRequest()
+                case 0: goToScanVC()
                 case 1: break
                 case 2: print("Dark Mode tapped") // handled by switch now
                 default: break
@@ -178,8 +177,10 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             default: break
             }
         } else if tableView == accountTabelView {
-            goToChecking()
+            UserDefaults.standard.removeObject(forKey: "employeeToken")
+            goToLogInViewController()
         }
+
     }
 
     func didTapDropdown(in cell: SettingScreenTableViewCell) {

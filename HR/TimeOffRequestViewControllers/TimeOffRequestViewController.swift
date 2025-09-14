@@ -148,7 +148,6 @@ class TimeOffRequestViewController: UIViewController {
                     print("✅ Request Success: \(response.result?.message ?? "Success")")
                     if response.result?.status == "success" {
                         self.showAlert(title: "Success", message: "Time off request submitted successfully.", completion: {
-                  //          self.parentobject.setupBindings()
                             self.dismiss(animated: true)
                         })
                     } else {
@@ -188,7 +187,6 @@ class TimeOffRequestViewController: UIViewController {
 
         let requestDateFrom = startDateObj.toAPIDateString() // "09-07-2025"
         var requestDateTo   = endDateObj.toAPIDateString()   // "09-07-2025"
-
         let requestDateFromPeriod = MorningOrNightTextField.text?.lowercased() == "morning" ? "am" : "pm"
         let isHalfDay = halfDayButton.isSelected
         let isCustomHours = customHoursButton.isSelected
@@ -196,7 +194,6 @@ class TimeOffRequestViewController: UIViewController {
         var hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
         if endDateCalender.isHidden {
             requestDateTo = requestDateFrom
-         
         }
         print("hourTo: \(requestDateTo)")
         leaveDurationVM.fetchLeaveDuration(
@@ -283,16 +280,14 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
         leaveTypePicker.delegate = self
         leaveTypePicker.dataSource = self
         selectLeaveTypeTextField.inputView = leaveTypePicker
-        
         morningNightPicker.delegate = self
         morningNightPicker.dataSource = self
         MorningOrNightTextField.inputView = morningNightPicker
         morningNightPicker.selectRow(0, inComponent: 0, animated: false)
         MorningOrNightTextField.text = pickerView(morningNightPicker, titleForRow: 0, forComponent: 0)
-        
         startDatePicker.datePickerMode = .date
         endDatePicker.datePickerMode = .date
-        
+    
         // ⏰ Setup time pickers
         clockFromPicker.datePickerMode = .time
         clockToPicker.datePickerMode = .time
@@ -349,7 +344,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
     @objc func doneTapped() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .medium
-        
         if startDateCalender.isFirstResponder {
             startDateCalender.text = dateFormatter.string(from: startDatePicker.date)
         } else if endDateCalender.isFirstResponder {

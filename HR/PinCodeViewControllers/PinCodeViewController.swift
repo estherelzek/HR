@@ -33,13 +33,28 @@ class PinCodeViewController: UIViewController {
     @IBAction func nextButtonTapped(_ sender: Any) {
         let enteredPin = "\(firstNum.text ?? "")\(secoundNum.text ?? "")\(thirdNum.text ?? "")\(fouthNum.text ?? "")"
         let savedPin = UserDefaults.standard.string(forKey: pinKey)
+        
         if enteredPin == savedPin {
-            navigateToTimeOffVC()
+            print("hi to next button after protection success")
+            
+            if let rootVC = self.view.window?.rootViewController as? ViewController {
+                let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+                rootVC.switchTo(viewController: checkVC)
+                rootVC.bottomBarView.isHidden = false
+                rootVC.homeButton.tintColor = .purplecolor
+                rootVC.timeOffButton.tintColor = .lightGray
+                rootVC.settingButton.tintColor = .lightGray
+            }
+            
+            // dismiss *all* modal stack after switching
+            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+            
         } else {
             hintLabel.text = "❌ Wrong PIN, try again"
             hintLabel.textColor = .red
         }
     }
+
     
     @IBAction func backButtonTapped(_ sender: Any) {
         dismiss(animated: true, completion: nil)

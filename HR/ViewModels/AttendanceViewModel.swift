@@ -24,7 +24,7 @@ final class AttendanceViewModel {
     
     func checkOut(token: String, lat: String, lng: String, completion: @escaping (Result<AttendanceResponse, APIError>) -> Void) {
         print("📤 Sending CHECK-OUT request with token=\(token), lat=\(lat), lng=\(lng)")
-        let endpoint = API.employeeAttendance(action: "check_out", token: token, lat: "0", lng: "0")
+        let endpoint = API.employeeAttendance(action: "check_out", token: token, lat: "30.09891506772385", lng: "31.3375401")
         NetworkManager.shared.requestDecodable(endpoint, as: AttendanceResponse.self, completion: completion)
     }
     

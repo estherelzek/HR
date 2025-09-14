@@ -22,9 +22,7 @@ class AttentionViewController: UIViewController {
         didSet {
             if isViewLoaded {
                 workedHoursLabel.text = String(
-                    format: NSLocalizedString("worked_hours_format", comment: ""),
-                    workedHoursText ?? "0"
-                )
+                    format: NSLocalizedString("worked_hours_format", comment: ""),workedHoursText ?? "0")
             }
         }
     }
@@ -34,9 +32,7 @@ class AttentionViewController: UIViewController {
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
         tapGesture.cancelsTouchesInView = false
         outSideView.addGestureRecognizer(tapGesture)
-        NotificationCenter.default.addObserver(self,selector:#selector(handleLanguageChange),name:NSNotification.Name("LanguageChanged"),
-            object: nil
-        )
+        NotificationCenter.default.addObserver(self,selector:#selector(handleLanguageChange),name:NSNotification.Name("LanguageChanged"),object: nil)
         if let hoursText = workedHoursText {
             workedHoursLabel.text = String(format: NSLocalizedString("worked_hours_format", comment: ""),hoursText
             )

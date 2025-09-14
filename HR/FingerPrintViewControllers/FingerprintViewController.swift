@@ -37,6 +37,7 @@ class FingerprintViewController: UIViewController {
                             title: NSLocalizedString("success", comment: ""),
                             message: NSLocalizedString("fingerprint_recognized", comment: "")
                         )
+                        self.goToChecking()
                     } else {
                         self.showAlert(
                             title: NSLocalizedString("error", comment: ""),

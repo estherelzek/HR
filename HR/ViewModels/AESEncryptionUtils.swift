@@ -9,7 +9,7 @@ import Foundation
 import CommonCrypto
  
 class AESEncryptionUtils {
-    // Replace these Base64 strings with your actual key + IV
+    
     private static let ENCRYPTION_KEY: Data = Data(base64Encoded: "/uHLGNxBtGI9WutDnPfiNoGNiKjdaNivKAoVRu1t/ks=")!
     private static let INITIALIZATION_VECTOR: Data = Data(base64Encoded: "IH+8WIrwsLOZNhUfRk6GKg==")!
     static func encryptData(_ obj: Any) throws -> String {
@@ -44,9 +44,11 @@ class AESEncryptionUtils {
     private static func aesCBCEncrypt(data: Data, key: Data, iv: Data) throws -> Data {
         return try crypt(data: data, key: key, iv: iv, operation: CCOperation(kCCEncrypt))
     }
+    
     private static func aesCBCDecrypt(data: Data, key: Data, iv: Data) throws -> Data {
         return try crypt(data: data, key: key, iv: iv, operation: CCOperation(kCCDecrypt))
     }
+    
     private static func crypt(data: Data, key: Data, iv: Data, operation: CCOperation) throws -> Data {
         let keyLength = key.count
         guard [kCCKeySizeAES128, kCCKeySizeAES192, kCCKeySizeAES256].contains(keyLength) else {

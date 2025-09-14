@@ -59,7 +59,6 @@ class ResultOfRequestAlartViewController: UIViewController {
                 }
             }
             .store(in: &cancellables)
-
     }
 
     
