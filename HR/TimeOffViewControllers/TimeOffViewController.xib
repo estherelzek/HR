@@ -140,7 +140,7 @@
                             </userDefinedRuntimeAttributes>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZyL-YT-fKn" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="220" y="56" width="20" height="19"/>
+                            <rect key="frame" x="211" y="56" width="20" height="19"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.8862745098" green="0.73333333329999995" blue="0.72549019609999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <color key="tintColor" systemColor="systemRedColor"/>
