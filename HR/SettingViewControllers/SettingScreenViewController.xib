@@ -28,7 +28,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X8L-hv-QOy">
-                    <rect key="frame" x="0.0" y="57" width="393" height="45"/>
+                    <rect key="frame" x="0.0" y="49" width="393" height="45"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="7jP-Dy-USd">
                             <rect key="frame" x="0.0" y="8" width="393" height="29"/>
@@ -47,7 +47,7 @@
                                 </button>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings Screen" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ds4-Kk-Dlh">
                                     <rect key="frame" x="0.0" y="0.0" width="393" height="29"/>
-                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="24"/>
+                                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="24"/>
                                     <color key="textColor" red="0.99999600649999998" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
@@ -151,7 +151,7 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="S0t-mE-05A" firstAttribute="top" secondItem="X8L-hv-QOy" secondAttribute="bottom" constant="8" id="5Ra-wJ-E0P"/>
+                <constraint firstItem="S0t-mE-05A" firstAttribute="top" secondItem="X8L-hv-QOy" secondAttribute="bottom" constant="16" id="5Ra-wJ-E0P"/>
                 <constraint firstItem="Bm3-wN-Ffw" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="24" id="6rG-b7-z2k"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="jyH-6F-4ZW" secondAttribute="trailing" constant="16" id="B8x-WT-Rjp"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="2AV-ra-9Dd" secondAttribute="trailing" constant="16" id="HXv-1c-Xsc"/>
@@ -182,7 +182,7 @@
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

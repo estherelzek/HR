@@ -79,6 +79,7 @@ class CheckingViewController: UIViewController {
            }
            self.reloadTexts()
        }
+    
     func setUpLisgnerstoViewModel() {
         viewModel.onSuccess = { [weak self] response in
             DispatchQueue.main.async {

@@ -83,7 +83,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="45" id="szv-sb-EER"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="32"/>
                     <color key="textColor" name="purplecolor"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -112,7 +112,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="21" id="Blb-8N-zcP"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="13"/>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="13"/>
                     <color key="textColor" name="basecolorText"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -148,7 +148,7 @@
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

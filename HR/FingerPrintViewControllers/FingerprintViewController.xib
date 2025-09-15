@@ -20,10 +20,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="piY-b6-Jrg">
-                    <rect key="frame" x="16" y="75" width="361" height="34.666666666666657"/>
+                    <rect key="frame" x="16" y="75" width="361" height="34.333333333333343"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Eb-Af-2Qt">
-                            <rect key="frame" x="0.0" y="0.0" width="30" height="34.666666666666664"/>
+                            <rect key="frame" x="0.0" y="0.0" width="30" height="34.333333333333336"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="30" id="5v5-2M-GoV"/>
                             </constraints>
@@ -35,8 +35,8 @@
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Put Your Finger" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="24W-ou-XG7">
-                            <rect key="frame" x="30" y="0.0" width="331" height="34.666666666666664"/>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="29"/>
+                            <rect key="frame" x="30" y="0.0" width="331" height="34.333333333333336"/>
+                            <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="29"/>
                             <color key="textColor" name="purplecolor"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -73,7 +73,7 @@
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

@@ -69,13 +69,18 @@ extension UIViewController {
        }
     
     func goToScanVC() {
-           let checkingVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
-           if let rootVC = self.view.window?.rootViewController as? ViewController {
-               rootVC.switchTo(viewController: checkingVC)
-               rootVC.bottomBarView.isHidden = true
-           }
-          
-       }
+        // clear all saved defaults
+        if let appDomain = Bundle.main.bundleIdentifier {
+            UserDefaults.standard.removePersistentDomain(forName: appDomain)
+        }
+        
+        let checkingVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
+        if let rootVC = self.view.window?.rootViewController as? ViewController {
+            rootVC.switchTo(viewController: checkingVC)
+            rootVC.bottomBarView.isHidden = true
+        }
+    }
+
     
     func goToLogInViewController() {
            let checkingVC = LogInViewController(nibName: "LogInViewController", bundle: nil)

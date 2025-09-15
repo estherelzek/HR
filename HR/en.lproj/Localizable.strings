@@ -132,3 +132,23 @@
 "Cancel" = "Cancel";
 
 
+//
+/* Titles */
+"pin_set_title" = "Set your new 4-digit PIN";
+"pin_confirm_title" = "Confirm your PIN";
+"pin_enter_title" = "Enter your PIN";
+
+/* Hints */
+"pin_set_hint" = "Please enter 4 digits to create a PIN";
+"pin_confirm_hint" = "Re-enter the same PIN to confirm";
+"pin_enter_hint" = "Enter your saved PIN to continue";
+
+/* Buttons */
+"forget_password" = "Forgot PIN?";
+"next_button_set" = "Next";
+"next_button_confirm" = "Confirm";
+"next_button_enter" = "Unlock";
+
+/* Placeholder */
+"digit_placeholder" = "•";
+

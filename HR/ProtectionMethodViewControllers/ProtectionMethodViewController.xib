@@ -29,7 +29,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="M6d-1Y-arI"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="21"/>
                     <color key="textColor" name="purplecolor"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -195,7 +195,7 @@
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

@@ -7,7 +7,13 @@
 
 import UIKit
 
-class PinCodeViewController: UIViewController {
+enum PinMode {
+    case set
+    case confirm
+    case enter
+}
+
+class PinCodeViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var firstNum: UITextField!
@@ -18,80 +24,197 @@ class PinCodeViewController: UIViewController {
     @IBOutlet weak var nextButton: UIButton!
     @IBOutlet weak var hintLabel: UILabel!
     
-    let pinKey = "savedPIN" // key for UserDefaults
-    
+    let pinKey = "savedPIN"
+    var mode: PinMode = .set
+    private var tempPin: String? // for storing first PIN before confirm
+    var needToChangeProtectionMethod: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
-        setUpTexts()
-        setUpTextFields()
-        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
-        if UserDefaults.standard.string(forKey: pinKey) == nil {
-            UserDefaults.standard.set("1234", forKey: pinKey)
+        
+        // Decide mode at startup
+        if let _ = UserDefaults.standard.string(forKey: pinKey) {
+            mode = .enter
+        } else {
+            mode = .set
         }
+        
+        setUpLabelsTexts()
+        setUpTextFields()
+        setUpplaceholderTextFields()
+        configureUIForMode()
     }
     
+    // MARK: - Next Button Action
     @IBAction func nextButtonTapped(_ sender: Any) {
         let enteredPin = "\(firstNum.text ?? "")\(secoundNum.text ?? "")\(thirdNum.text ?? "")\(fouthNum.text ?? "")"
-        let savedPin = UserDefaults.standard.string(forKey: pinKey)
         
-        if enteredPin == savedPin {
-            print("hi to next button after protection success")
-            
-            if let rootVC = self.view.window?.rootViewController as? ViewController {
-                let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
-                rootVC.switchTo(viewController: checkVC)
-                rootVC.bottomBarView.isHidden = false
-                rootVC.homeButton.tintColor = .purplecolor
-                rootVC.timeOffButton.tintColor = .lightGray
-                rootVC.settingButton.tintColor = .lightGray
+        switch mode {
+        case .set:
+            if enteredPin.count == 4 {
+                tempPin = enteredPin
+                mode = .confirm
+                clearTextFields()
+                configureUIForMode()
             }
             
-            // dismiss *all* modal stack after switching
-            self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+        case .confirm:
+            if enteredPin == tempPin {
+                UserDefaults.standard.set(enteredPin, forKey: pinKey)
+                mode = .enter
+                clearTextFields()
+                configureUIForMode()
+                hintLabel.text = "✅ PIN saved successfully! Now enter to continue."
+                hintLabel.textColor = .green
+            } else {
+                hintLabel.text = "❌ PINs do not match. Try again."
+                hintLabel.textColor = .red
+                mode = .set
+                clearTextFields()
+                configureUIForMode()
+            }
             
-        } else {
-            hintLabel.text = "❌ Wrong PIN, try again"
-            hintLabel.textColor = .red
+        case .enter:
+            let savedPin = UserDefaults.standard.string(forKey: pinKey)
+            if enteredPin == savedPin {
+                print("🎉 PIN correct → Continue to app")
+                if needToChangeProtectionMethod{
+                    UserDefaults.standard.removeObject(forKey: pinKey)
+                    mode = .set
+                    clearTextFields()
+                    configureUIForMode()
+                    goToProtectionMethod()
+                }else {
+                    goToCheckingVC()
+                }
+               
+            } else {
+                hintLabel.text = "❌ Wrong PIN, try again."
+                hintLabel.textColor = .red
+                clearTextFields()
+            }
         }
-    }
-
-    
-    @IBAction func backButtonTapped(_ sender: Any) {
-        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func forgetpasswordButtonTapped(_ sender: Any) {
         UserDefaults.standard.removeObject(forKey: pinKey)
-        hintLabel.text = "PIN reset. Please set a new one."
+        mode = .set
+        configureUIForMode()
+        clearTextFields()
+        hintLabel.text = "🔄 PIN reset. Please set a new one."
         hintLabel.textColor = .orange
     }
     
-    func navigateToTimeOffVC() {
-        let timeOffVC = TimeOffViewController(nibName: "TimeOffViewController", bundle: nil)
-        timeOffVC.modalPresentationStyle = .fullScreen
-        present(timeOffVC, animated: true, completion: nil)
+    // MARK: - Helpers
+    private func configureUIForMode() {
+        switch mode {
+        case .set:
+            titleLabel.text = "Set your new 4-digit PIN"
+            nextButton.setTitle("Next", for: .normal)
+        case .confirm:
+            titleLabel.text = "Confirm your PIN"
+            nextButton.setTitle("Confirm", for: .normal)
+        case .enter:
+            titleLabel.text = "Enter your PIN"
+            nextButton.setTitle("Unlock", for: .normal)
+        }
     }
     
-    @objc private func languageChanged() {
-        setUpTexts()
+    private func clearTextFields() {
+        [firstNum, secoundNum, thirdNum, fouthNum].forEach { $0?.text = "" }
+        firstNum.becomeFirstResponder()
+    }
+    
+    private func goToCheckingVC() {
+        if let rootVC = self.view.window?.rootViewController as? ViewController {
+            let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+            rootVC.switchTo(viewController: checkVC)
+            rootVC.bottomBarView.isHidden = false
+            rootVC.homeButton.tintColor = .purplecolor
+            rootVC.timeOffButton.tintColor = .lightGray
+            rootVC.settingButton.tintColor = .lightGray
+        }
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+    private func goToProtectionMethod() {
+        if let rootVC  = self.view.window?.rootViewController as? ViewController {
+            let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController", bundle: nil)
+            rootVC.switchTo(viewController: protectionMethodVC)
+            rootVC.bottomBarView.isHidden = false
+            rootVC.homeButton.tintColor = .lightGray
+            rootVC.timeOffButton.tintColor = .lightGray
+            rootVC.settingButton.tintColor = .lightGray
+        }
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
     }
 }
 
 
 extension PinCodeViewController {
-    func setUpTexts() {
-        titleLabel.text = NSLocalizedString("pin_code_title", comment: "")
-        hintLabel.text = NSLocalizedString("pin_code_hint", comment: "")
+    func setUpLabelsTexts() {
+        switch mode {
+        case .set:
+            titleLabel.text = NSLocalizedString("pin_set_title", comment: "")
+            hintLabel.text = NSLocalizedString("pin_set_hint", comment: "")
+            nextButton.setTitle(NSLocalizedString("next_button_set", comment: ""), for: .normal)
+            
+        case .confirm:
+            titleLabel.text = NSLocalizedString("pin_confirm_title", comment: "")
+            hintLabel.text = NSLocalizedString("pin_confirm_hint", comment: "")
+            nextButton.setTitle(NSLocalizedString("next_button_confirm", comment: ""), for: .normal)
+            
+        case .enter:
+            titleLabel.text = NSLocalizedString("pin_enter_title", comment: "")
+            hintLabel.text = NSLocalizedString("pin_enter_hint", comment: "")
+            nextButton.setTitle(NSLocalizedString("next_button_enter", comment: ""), for: .normal)
+        }
+        
         forgetPasswardButton.setTitle(NSLocalizedString("forget_password", comment: ""), for: .normal)
-        nextButton.setTitle(NSLocalizedString("next_button", comment: ""), for: .normal)
     }
     
-    func setUpTextFields() {
-        firstNum.placeholder = NSLocalizedString("digit_placeholder", comment: "")
-        secoundNum.placeholder = NSLocalizedString("digit_placeholder", comment: "")
-        thirdNum.placeholder = NSLocalizedString("digit_placeholder", comment: "")
-        fouthNum.placeholder = NSLocalizedString("digit_placeholder", comment: "")
+    func setUpplaceholderTextFields() {
+        let placeholder = NSLocalizedString("digit_placeholder", comment: "")
+        [firstNum, secoundNum, thirdNum, fouthNum].forEach {
+            $0?.placeholder = placeholder
+        }
     }
 }
 
 
+
+extension PinCodeViewController {
+    func setUpTextFields() {
+        let fields = [firstNum, secoundNum, thirdNum, fouthNum]
+        fields.forEach {
+            $0?.delegate = self
+            $0?.keyboardType = .numberPad
+            $0?.textAlignment = .center
+            $0?.isSecureTextEntry = true
+        }
+        firstNum.becomeFirstResponder()
+    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        guard string.count <= 1 else { return false } // prevent pasting multiple digits
+        if string.isEmpty { // backspace
+            textField.text = ""
+            switch textField {
+            case secoundNum: firstNum.becomeFirstResponder()
+            case thirdNum: secoundNum.becomeFirstResponder()
+            case fouthNum: thirdNum.becomeFirstResponder()
+            default: break
+            }
+            return false
+        } else {
+            textField.text = string
+            switch textField {
+            case firstNum: secoundNum.becomeFirstResponder()
+            case secoundNum: thirdNum.becomeFirstResponder()
+            case thirdNum: fouthNum.becomeFirstResponder()
+            case fouthNum:
+                fouthNum.resignFirstResponder()
+            default: break
+            }
+            return false
+        }
+    }
+}

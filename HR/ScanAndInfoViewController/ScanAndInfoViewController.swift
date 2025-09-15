@@ -27,7 +27,6 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     
     @IBAction func scanButtonTapped(_ sender: Any) {
         captureSession = AVCaptureSession()
-
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
             print("No camera available")
             return

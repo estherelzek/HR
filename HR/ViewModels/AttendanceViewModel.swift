@@ -41,14 +41,14 @@ final class AttendanceViewModel {
         print("🔘 performCheckInOut called")
         print("➡️ Current state: isCheckedIn=\(isCheckedIn), action=\(action), workedHours=\(String(describing: workedHours))")
         
-        if action == "check_out" {
-//            print("⚠️ Worked hours < 8, showing alert before checkout")
-//            onShowAlert?("Worked hours are less than 8. Are you sure you want to check out?") { [weak self] in
-//                print("✅ User confirmed checkout after alert")
-//                self?.proceedAttendanceAction(action, token: token)
-//            }
+        if action == "check_out" , let workedHours = workedHours , workedHours < 8 {
+            print("⚠️ Worked hours < 8, showing alert before checkout")
+            onShowAlert?("Worked hours are less than 8. Are you sure you want to check out?") { [weak self] in
+                print("✅ User confirmed checkout after alert")
+                self?.proceedAttendanceAction(action, token: token)
+            }
             print("✅ Proceeding with \(action) directly")
-            proceedAttendanceAction(action, token: token)
+         //   proceedAttendanceAction(action, token: token)
         } else {
             print("✅ Proceeding with \(action) directly")
             proceedAttendanceAction(action, token: token)

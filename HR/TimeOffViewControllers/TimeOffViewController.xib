@@ -28,10 +28,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="UJ1-VY-VS1">
-                    <rect key="frame" x="0.0" y="59" width="393" height="50"/>
+                    <rect key="frame" x="0.0" y="59" width="393" height="40"/>
                     <subviews>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qRi-he-hD7">
-                            <rect key="frame" x="0.0" y="0.0" width="40" height="50"/>
+                            <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="40" id="xsP-kJ-Ydr"/>
                             </constraints>
@@ -43,19 +43,24 @@
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TimeOff" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mvI-vj-dth">
-                            <rect key="frame" x="0.0" y="0.0" width="393" height="50"/>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="29"/>
+                            <rect key="frame" x="0.0" y="0.0" width="393" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="Iyh-Op-26d"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="29"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
                     <color key="backgroundColor" name="purplecolor"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="50" id="Upd-5L-gHp"/>
+                        <constraint firstItem="mvI-vj-dth" firstAttribute="leading" secondItem="UJ1-VY-VS1" secondAttribute="leading" id="LRQ-UM-bX6"/>
+                        <constraint firstAttribute="trailing" secondItem="mvI-vj-dth" secondAttribute="trailing" id="iMf-xX-ELq"/>
+                        <constraint firstItem="mvI-vj-dth" firstAttribute="top" secondItem="UJ1-VY-VS1" secondAttribute="top" id="zV2-8T-viJ"/>
                     </constraints>
                 </stackView>
                 <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Cfq-eG-WfE" customClass="FSCalendar">
-                    <rect key="frame" x="8" y="309" width="377" height="364"/>
+                    <rect key="frame" x="8" y="299" width="377" height="374"/>
                     <color key="backgroundColor" name="baseColorView"/>
                     <connections>
                         <outlet property="dataSource" destination="i5M-Pr-FkT" id="jnq-AP-ebj"/>
@@ -69,7 +74,7 @@
                             <rect key="frame" x="36" y="8" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" name="baseColorView"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="17"/>
                             <color key="textColor" name="basecolorText"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -92,7 +97,7 @@
                             <rect key="frame" x="248" y="9" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" name="baseColorView"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="16"/>
                             <color key="textColor" name="basecolorText"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -100,7 +105,7 @@
                             <rect key="frame" x="36" y="54" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" name="baseColorView"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="17"/>
                             <color key="textColor" name="basecolorText"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -120,7 +125,7 @@
                             <rect key="frame" x="248" y="54" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" name="baseColorView"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="17"/>
                             <color key="textColor" name="basecolorText"/>
                             <nil key="highlightedColor"/>
                         </label>
@@ -159,7 +164,7 @@
                     </constraints>
                 </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="XKW-oP-nZV">
-                    <rect key="frame" x="8" y="117" width="377" height="184"/>
+                    <rect key="frame" x="8" y="107" width="377" height="184"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="184" id="QaL-Bw-qXl"/>
@@ -206,7 +211,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="4nV-b2-Con" secondAttribute="bottom" constant="37" id="jhz-HM-smR"/>
                 <constraint firstItem="HXh-gY-wEX" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="wuf-wV-VPm"/>
             </constraints>
-            <point key="canvasLocation" x="-1618" y="-539"/>
+            <point key="canvasLocation" x="-2509" y="-587"/>
         </view>
     </objects>
     <resources>

@@ -6,6 +6,7 @@
 //
 
 import UIKit
+
 protocol SettingScreenCellDelegate: AnyObject {
     func didTapDropdown(in cell: SettingScreenTableViewCell)
 }
@@ -43,6 +44,19 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
         self.dismiss(animated: true)
     }
     
+    
+    @objc private func handleLanguageChange() {
+        reloadTexts()
+    }
+    
+    func darkModeSwitchChanged(isOn: Bool) {
+        if let window = UIApplication.shared.windows.first {
+            window.overrideUserInterfaceStyle = isOn ? .dark : .light
+        }
+        UserDefaults.standard.set(isOn, forKey: "isDarkModeEnabled")
+        UserDefaults.standard.synchronize()
+    }
+    
     private func setupTableViews() {
         [generalStettingTableView, securityTabelView, accountTabelView].forEach { tableView in
             tableView?.delegate = self
@@ -58,19 +72,6 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
             tableView?.tableFooterView = UIView() // remove empty cells
         }
     }
-    
-    @objc private func handleLanguageChange() {
-        reloadTexts()
-    }
-    
-    func darkModeSwitchChanged(isOn: Bool) {
-        if let window = UIApplication.shared.windows.first {
-            window.overrideUserInterfaceStyle = isOn ? .dark : .light
-        }
-        UserDefaults.standard.set(isOn, forKey: "isDarkModeEnabled")
-        UserDefaults.standard.synchronize()
-    }
-    
 }
 
 extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSource, SettingScreenTableViewCellDelegate {
@@ -212,9 +213,22 @@ extension SettingScreenViewController: Localizable {
     }
     
     func navigateToChangeProtectionViewController(){
-    let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController",bundle: nil)
-    protectionMethodVC.modalPresentationStyle = .fullScreen
-        self.present(protectionMethodVC, animated: true)
+        let protectionMethod = UserDefaults.standard.string(forKey: "selectedProtectionMethod") ?? ""
+        if protectionMethod == "pin" {
+            let pinVC = PinCodeViewController(nibName: "PinCodeViewController", bundle: nil)
+            pinVC.modalPresentationStyle = .fullScreen
+            pinVC.mode = .enter
+            pinVC.needToChangeProtectionMethod = true
+            self.present(pinVC, animated: true)
+        } else if protectionMethod == "fingerprint" {
+            let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
+            fingerprintVC.modalPresentationStyle = .fullScreen
+                self.present(fingerprintVC, animated: true)
+        } else {
+            let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController",bundle: nil)
+            protectionMethodVC.modalPresentationStyle = .fullScreen
+                self.present(protectionMethodVC, animated: true)
+    }
    }
 }
 

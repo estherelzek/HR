@@ -32,7 +32,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="lhp-5j-EGv"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="29"/>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="29"/>
                     <color key="textColor" name="purplecolor"/>
                     <nil key="highlightedColor"/>
                 </label>

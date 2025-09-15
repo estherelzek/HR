@@ -132,3 +132,22 @@
 "Save" = "حفظ";
 "Cancel" = "إلغاء";
 
+
+/* Titles */
+"pin_set_title" = "قم بتعيين رقم سري مكون من 4 أرقام";
+"pin_confirm_title" = "أكد الرقم السري";
+"pin_enter_title" = "أدخل الرقم السري";
+
+/* Hints */
+"pin_set_hint" = "من فضلك أدخل 4 أرقام لإنشاء الرقم السري";
+"pin_confirm_hint" = "أعد إدخال نفس الرقم السري للتأكيد";
+"pin_enter_hint" = "أدخل الرقم السري المحفوظ للمتابعة";
+
+/* Buttons */
+"forget_password" = "هل نسيت الرقم السري؟";
+"next_button_set" = "التالي";
+"next_button_confirm" = "تأكيد";
+"next_button_enter" = "دخول";
+
+/* Placeholder */
+"digit_placeholder" = "•";

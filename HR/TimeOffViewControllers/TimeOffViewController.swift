@@ -41,17 +41,7 @@ class TimeOffViewController: UIViewController {
     var employeeTimeOffRecords: EmployeeTimeOffRecords?
     var leaveDayRecords: [Date: DailyRecord] = [:]
     var leaveHourRecords: [Date: HourlyRecord] = [:]
-    
-//    override func viewDidLoad() {
-//        super.viewDidLoad()
-//        setUpTexts()
-//        loadHolidays()
-//        loadTimeOffData()
-//        setupBindings()
-//        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
-//        collectionView.register(nib, forCellWithReuseIdentifier: "CollectionViewCell")
-//        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
-//    }
+  
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTexts()
@@ -133,7 +123,6 @@ class TimeOffViewController: UIViewController {
                         let formatter = DateFormatter()
                         formatter.dateFormat = "yyyy-MM-dd"
                         
-                        // ✅ Handle Daily Records
                         for record in records.records.dailyRecords {
                             guard
                                 let start = formatter.date(from: record.startDate),
@@ -148,17 +137,14 @@ class TimeOffViewController: UIViewController {
                                 self?.leaveDayRecords[day] = record
                             }
                         }
-                        
-                        // ✅ Handle Hourly Records
+                    
                         for record in records.records.hourlyRecords {
                             guard
                                 let start = formatter.date(from: record.startDate),
                                 let end = formatter.date(from: record.endDate)
                             else { continue }
-                            
                             let color = self?.color(for: record.state) ?? .blue
                             let days = self?.datesBetween(start: start, end: end) ?? []
-                            
                             for day in days {
                                 self?.leaveHourRecords[day] = record
                                 if self?.leaveDayColors[day] == nil {
@@ -166,13 +152,10 @@ class TimeOffViewController: UIViewController {
                                 }
                             }
                         }
-                        
                         self?.calender.reloadData()
-                        
                     case .failure(let error):
                         print("❌ Error: \(error)")
                     }
-                    
                     self?.loaderIndicator.stopAnimating()
                     self?.loaderIndicator.hidesWhenStopped = true
                     completion() // ✅ tell DispatchGroup we’re done
@@ -182,34 +165,28 @@ class TimeOffViewController: UIViewController {
             completion() // no token, finish immediately
         }
     }
-
-
+    
     private func loadAllData(completion: @escaping () -> Void) {
         let group = DispatchGroup()
 
-        // Holidays
         group.enter()
         loadHolidays {
             group.leave()
         }
 
-        // Time off data
         group.enter()
         loadTimeOffData {
             group.leave()
         }
 
-        // Employee records
         group.enter()
         setupBindings {
             group.leave()
         }
-
         group.notify(queue: .main) {
             completion()
         }
     }
-
 }
 
 extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {

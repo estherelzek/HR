@@ -46,13 +46,13 @@
                             <rect key="frame" x="8" y="15" width="345" height="40"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Time Off Request" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kSU-Zb-Z68">
-                                    <rect key="frame" x="0.0" y="0.0" width="210.66666666666666" height="40"/>
-                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="26"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="199.66666666666666" height="40"/>
+                                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="23"/>
                                     <color key="textColor" name="basecolorText"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <button opaque="NO" contentMode="scaleToFill" horizontalCompressionResistancePriority="751" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ixA-z4-ghu">
-                                    <rect key="frame" x="298.66666666666669" y="0.0" width="46.333333333333314" height="40"/>
+                                    <rect key="frame" x="287.66666666666669" y="0.0" width="57.333333333333314" height="40"/>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" image="xmark" catalog="system">
@@ -310,7 +310,7 @@
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.44313725490196076" green="0.29411764705882354" blue="0.40392156862745099" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

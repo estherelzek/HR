@@ -77,6 +77,7 @@ class ViewController: UIViewController {
         switchTo(viewController: loginVC)
     }
     
+    
     func switchTo(viewController newVC: UIViewController) {
             if let current = currentVC {
                 current.willMove(toParent: nil)
@@ -89,6 +90,7 @@ class ViewController: UIViewController {
             newVC.didMove(toParent: self)
             currentVC = newVC
         }
+    
     
     // MARK: - Bottom Bar Button Actions
     @IBAction func homeButoonTapped(_ sender: Any) {
