@@ -357,7 +357,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
             timeFormatter.timeStyle = .short
             ClockTo.text = timeFormatter.string(from: clockToPicker.date)
         }
-        
         getDuration()
         view.endEditing(true)
     }

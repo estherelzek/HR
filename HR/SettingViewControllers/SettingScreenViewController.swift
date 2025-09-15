@@ -181,7 +181,6 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             UserDefaults.standard.removeObject(forKey: "employeeToken")
             goToLogInViewController()
         }
-
     }
 
     func didTapDropdown(in cell: SettingScreenTableViewCell) {
@@ -223,12 +222,12 @@ extension SettingScreenViewController: Localizable {
         } else if protectionMethod == "fingerprint" {
             let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
             fingerprintVC.modalPresentationStyle = .fullScreen
-                self.present(fingerprintVC, animated: true)
+            self.present(fingerprintVC, animated: true)
         } else {
             let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController",bundle: nil)
             protectionMethodVC.modalPresentationStyle = .fullScreen
-                self.present(protectionMethodVC, animated: true)
-    }
+            self.present(protectionMethodVC, animated: true)
+     }
    }
 }
 
