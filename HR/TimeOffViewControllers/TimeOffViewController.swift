@@ -42,22 +42,27 @@ class TimeOffViewController: UIViewController {
     var leaveDayRecords: [Date: DailyRecord] = [:]
     var leaveHourRecords: [Date: HourlyRecord] = [:]
     
+//    override func viewDidLoad() {
+//        super.viewDidLoad()
+//        setUpTexts()
+//        loadHolidays()
+//        loadTimeOffData()
+//        setupBindings()
+//        let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
+//        collectionView.register(nib, forCellWithReuseIdentifier: "CollectionViewCell")
+//        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
+//    }
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadHolidays()
-        loadTimeOffData()
         setUpTexts()
-        setupBindings()
+        loaderIndicator.startAnimating()
+        loadAllData { [weak self] in
+            self?.loaderIndicator.stopAnimating()
+            print("✅ All APIs finished")
+        }
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: "CollectionViewCell")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        loadHolidays()
-        loadTimeOffData()
-        setupBindings()
     }
 
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -68,8 +73,8 @@ class TimeOffViewController: UIViewController {
         setUpTexts()
     }
 
-    private func loadHolidays() {
-        guard let token = UserDefaults.standard.employeeToken else { return }
+    private func loadHolidays(completion: @escaping () -> Void) {
+        guard let token = UserDefaults.standard.employeeToken else { return completion() }
         viewModel.fetchHolidays(token: token) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -86,12 +91,13 @@ class TimeOffViewController: UIViewController {
                 case .failure(let error):
                     print("❌ Holiday API Error:", error)
                 }
+                completion() // ✅ always call completion
             }
         }
     }
-    
-    private func loadTimeOffData() {
-        guard let token = UserDefaults.standard.employeeToken else { return }
+
+    private func loadTimeOffData(completion: @escaping () -> Void) {
+        guard let token = UserDefaults.standard.employeeToken else { return completion() }
         viewModel.fetchTimeOff(token: token) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -99,20 +105,20 @@ class TimeOffViewController: UIViewController {
                     if let leaveTypes = response.result?.leaveTypes {
                         self?.leaveTypes = leaveTypes
                         self?.filteredLeaveTypes = leaveTypes.filter { leave in
-                                !(leave.requiresAllocation == "no")
-                            }
-                        
+                            !(leave.requiresAllocation == "no")
+                        }
                         self?.collectionView.reloadData()
                     }
                 case .failure(let error):
                     print("❌ TimeOff API Error:", error)
                 }
+                completion()
             }
         }
     }
-    
-     func setupBindings() {
-         loaderIndicator.startAnimating()
+
+    private func setupBindings(completion: @escaping () -> Void) {
+        loaderIndicator.startAnimating()
         if let token = UserDefaults.standard.string(forKey: "employeeToken") {
             viewModelTimeOff.fetchEmployeeTimeOffs(token: token) { [weak self] result in
                 DispatchQueue.main.async {
@@ -143,13 +149,14 @@ class TimeOffViewController: UIViewController {
                             }
                         }
                         
+                        // ✅ Handle Hourly Records
                         for record in records.records.hourlyRecords {
                             guard
                                 let start = formatter.date(from: record.startDate),
                                 let end = formatter.date(from: record.endDate)
                             else { continue }
                             
-                            let color = self?.color(for: record.state) ?? .blue // maybe another distinct color
+                            let color = self?.color(for: record.state) ?? .blue
                             let days = self?.datesBetween(start: start, end: end) ?? []
                             
                             for day in days {
@@ -159,19 +166,50 @@ class TimeOffViewController: UIViewController {
                                 }
                             }
                         }
-                        self?.loaderIndicator.stopAnimating()
-                        self?.loaderIndicator.hidesWhenStopped = true
-                        print("leaveDayRecords: \(self?.leaveDayRecords.count ?? 0)")
-                        print("leaveHourRecords: \(self?.leaveHourRecords.count ?? 0)")
+                        
                         self?.calender.reloadData()
                         
                     case .failure(let error):
                         print("❌ Error: \(error)")
                     }
+                    
+                    self?.loaderIndicator.stopAnimating()
+                    self?.loaderIndicator.hidesWhenStopped = true
+                    completion() // ✅ tell DispatchGroup we’re done
                 }
             }
+        } else {
+            completion() // no token, finish immediately
         }
     }
+
+
+    private func loadAllData(completion: @escaping () -> Void) {
+        let group = DispatchGroup()
+
+        // Holidays
+        group.enter()
+        loadHolidays {
+            group.leave()
+        }
+
+        // Time off data
+        group.enter()
+        loadTimeOffData {
+            group.leave()
+        }
+
+        // Employee records
+        group.enter()
+        setupBindings {
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            completion()
+        }
+    }
+
 }
 
 extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
