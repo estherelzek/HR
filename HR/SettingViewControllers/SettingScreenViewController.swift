@@ -26,7 +26,7 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
     var selectedLanguage: (String, String)? = nil
     let languages = [(NSLocalizedString("english", comment: ""), "english"),(NSLocalizedString("arabic", comment: ""), "egypt")]
     let generalItemsKeys = [("change_company", "building.2"),("language", "globe"),("dark_mode", "moon.fill")]
-    let securityItemsKeys = [("change_protection", "lock.fill"),("notifications", "bell.fill")]
+    let securityItemsKeys = [("change_protection", "lock.fill")]
     let accountItemsKeys = [("logout", "rectangle.portrait.and.arrow.right")]
 
     override func viewDidLoad() {
@@ -97,8 +97,10 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             rows = generalItemsKeys.count + (isLanguageExpanded ? languages.count : 0)
         } else if tableView == securityTabelView {
             rows = securityItemsKeys.count
+            print("rows count in security table view: \(rows)")
         } else if tableView == accountTabelView {
             rows = accountItemsKeys.count
+            print("rows count in account table view: \(rows)")
         } else {
             rows = 1
         }
@@ -174,7 +176,6 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
         } else if tableView == securityTabelView {
             switch indexPath.row {
             case 0: navigateToChangeProtectionViewController()
-            case 1: print("Notifications tapped")
             default: break
             }
         } else if tableView == accountTabelView {
