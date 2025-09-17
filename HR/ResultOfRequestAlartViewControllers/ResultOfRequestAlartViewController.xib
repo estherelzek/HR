@@ -30,37 +30,37 @@
                     <rect key="frame" x="58.666666666666657" y="304" width="276" height="269"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 September 2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wHp-fD-cmQ">
-                            <rect key="frame" x="8" y="87" width="260" height="29"/>
+                            <rect key="frame" x="8" y="87" width="260" height="34"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                            <color key="textColor" name="basecolorText"/>
+                            <color key="textColor" name="textinsettingvc"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="15K-kD-r98">
-                            <rect key="frame" x="8" y="116" width="260" height="20"/>
+                            <rect key="frame" x="8" y="121" width="260" height="15"/>
                             <subviews>
                                 <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X2l-fl-Blb" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="15" height="15"/>
                                     <color key="backgroundColor" name="purplecolor"/>
                                     <constraints>
-                                        <constraint firstAttribute="width" constant="20" id="8If-fe-B4L"/>
+                                        <constraint firstAttribute="width" constant="15" id="8If-fe-B4L"/>
                                     </constraints>
                                     <state key="normal" title="Button"/>
                                     <buttonConfiguration key="configuration" style="plain" title=""/>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                            <real key="value" value="10"/>
+                                            <real key="value" value="5"/>
                                         </userDefinedRuntimeAttribute>
                                     </userDefinedRuntimeAttributes>
                                 </button>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="annual leave: 1.0 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EVC-0R-Ecz">
-                                    <rect key="frame" x="28" y="0.0" width="232" height="20"/>
+                                    <rect key="frame" x="23" y="0.0" width="237" height="15"/>
                                     <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
-                                    <color key="textColor" name="basecolorText"/>
+                                    <color key="textColor" name="textinsettingvc"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
                             <constraints>
-                                <constraint firstAttribute="height" constant="20" id="au5-vp-EhS"/>
+                                <constraint firstAttribute="height" constant="15" id="au5-vp-EhS"/>
                             </constraints>
                         </stackView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QVb-ca-29j" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
@@ -70,7 +70,7 @@
                                 <constraint firstAttribute="height" constant="40" id="GIm-QK-dsX"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <color key="tintColor" name="buttonTextColor"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="Cancel"/>
                             <userDefinedRuntimeAttributes>
@@ -130,11 +130,14 @@
         <namedColor name="alartColor ">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
-        <namedColor name="basecolorText">
-            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="buttonTextColor">
+            <color red="0.99999994039535522" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="textinsettingvc">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

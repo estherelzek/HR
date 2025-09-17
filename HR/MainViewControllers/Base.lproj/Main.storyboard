@@ -36,7 +36,7 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vvg-n2-7qS">
                                                 <rect key="frame" x="137.66666666666666" y="0.0" width="117.66666666666666" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
-                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="beach.umbrella" catalog="system" title="TimeOff"/>
                                                 <connections>
@@ -46,7 +46,7 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="so6-hV-IqR">
                                                 <rect key="frame" x="275.33333333333331" y="0.0" width="117.66666666666669" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
-                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="Button"/>
                                                 <buttonConfiguration key="configuration" style="plain" image="gearshape" catalog="system" title="Setting"/>
                                                 <connections>
@@ -73,12 +73,12 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="baseColorView"/>
                         <constraints>
-                            <constraint firstItem="L6o-rw-Jee" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="2JO-Oi-S26"/>
                             <constraint firstItem="L6o-rw-Jee" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="0.846244" id="9PM-CD-R0m"/>
                             <constraint firstAttribute="trailing" secondItem="Qse-5y-C4X" secondAttribute="trailing" id="Pw9-D3-MPM"/>
+                            <constraint firstAttribute="trailing" secondItem="L6o-rw-Jee" secondAttribute="trailing" id="UPv-dN-qIK"/>
                             <constraint firstItem="L6o-rw-Jee" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="f9L-ty-a0A"/>
-                            <constraint firstItem="L6o-rw-Jee" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="gmz-FC-M26"/>
                             <constraint firstItem="Qse-5y-C4X" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="jav-2a-6Jt"/>
+                            <constraint firstItem="L6o-rw-Jee" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="okt-ay-9Dq"/>
                             <constraint firstItem="L6o-rw-Jee" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="se0-ww-aYH"/>
                             <constraint firstAttribute="bottom" secondItem="Qse-5y-C4X" secondAttribute="bottom" constant="14" id="zu2-A6-fBr"/>
                         </constraints>
@@ -106,7 +106,7 @@
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemGray2Color">
             <color red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

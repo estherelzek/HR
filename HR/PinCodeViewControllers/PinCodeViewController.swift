@@ -124,17 +124,17 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
         firstNum.becomeFirstResponder()
     }
     
-    private func goToCheckingVC() {
-        if let rootVC = self.view.window?.rootViewController as? ViewController {
-            let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
-            rootVC.switchTo(viewController: checkVC)
-            rootVC.bottomBarView.isHidden = false
-            rootVC.homeButton.tintColor = .purplecolor
-            rootVC.timeOffButton.tintColor = .lightGray
-            rootVC.settingButton.tintColor = .lightGray
-        }
-        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
-    }
+//    private func goToCheckingVC() {
+//        if let rootVC = self.view.window?.rootViewController as? ViewController {
+//            let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+//            rootVC.switchTo(viewController: checkVC)
+//            rootVC.bottomBarView.isHidden = false
+//            rootVC.homeButton.tintColor = .purplecolor
+//            rootVC.timeOffButton.tintColor = .lightGray
+//            rootVC.settingButton.tintColor = .lightGray
+//        }
+//        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+//    }
     private func goToProtectionMethod() {
         if let rootVC  = self.view.window?.rootViewController as? ViewController {
             let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController", bundle: nil)

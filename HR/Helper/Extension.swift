@@ -68,6 +68,18 @@ extension UIViewController {
            dismiss(animated: true, completion: nil)
        }
     
+     func goToCheckingVC() {
+        if let rootVC = self.view.window?.rootViewController as? ViewController {
+            let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+            rootVC.switchTo(viewController: checkVC)
+            rootVC.bottomBarView.isHidden = false
+            rootVC.homeButton.tintColor = .purplecolor
+            rootVC.timeOffButton.tintColor = .lightGray
+            rootVC.settingButton.tintColor = .lightGray
+        }
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+    }
+
     func goToScanVC() {
         // clear all saved defaults
         if let appDomain = Bundle.main.bundleIdentifier {
@@ -157,6 +169,24 @@ extension UIViewController {
 
 @IBDesignable
 class InspectableTextField: UITextField {
+    
+    @IBInspectable var cornerRadius: CGFloat = 0 {
+        didSet {
+            layer.cornerRadius = cornerRadius
+            layer.masksToBounds = true
+        }
+    }
+    
+    @IBInspectable var borderWidth: CGFloat = 0 {
+        didSet { layer.borderWidth = borderWidth }
+    }
+    
+    @IBInspectable var borderColor: UIColor? {
+        didSet { layer.borderColor = borderColor?.cgColor }
+    }
+}
+@IBDesignable
+class Inspectablelabel: UILabel {
     
     @IBInspectable var cornerRadius: CGFloat = 0 {
         didSet {
@@ -267,6 +297,52 @@ class InspectableView: UIView {
         }
     }
 }
+@IBDesignable
+class InspectableStackView: UIStackView {
+    
+    @IBInspectable var cornerRadius: CGFloat = 0 {
+        didSet {
+            layer.cornerRadius = cornerRadius
+            layer.masksToBounds = true
+        }
+    }
+    
+    @IBInspectable var borderWidth: CGFloat = 0 {
+        didSet {
+            layer.borderWidth = borderWidth
+        }
+    }
+    
+    @IBInspectable var borderColor: UIColor? {
+        didSet {
+            layer.borderColor = borderColor?.cgColor
+        }
+    }
+    
+    @IBInspectable var shadowColor: UIColor? {
+        didSet {
+            layer.shadowColor = shadowColor?.cgColor
+        }
+    }
+    
+    @IBInspectable var shadowOpacity: Float = 0 {
+        didSet {
+            layer.shadowOpacity = shadowOpacity
+        }
+    }
+    
+    @IBInspectable var shadowOffset: CGSize = .zero {
+        didSet {
+            layer.shadowOffset = shadowOffset
+        }
+    }
+    
+    @IBInspectable var shadowRadius: CGFloat = 0 {
+        didSet {
+            layer.shadowRadius = shadowRadius
+        }
+    }
+}
 
 extension UIViewController {
     func showToast(message: String, duration: TimeInterval = 5.0) {
@@ -314,13 +390,13 @@ extension TimeOffViewController {
     func color(for state: String) -> UIColor {
         switch state {
         case "confirm":
-            return UIColor.fromHex("FAEFE4")
+            return UIColor.fromHex("4B644A")
         case "validate1":
-            return UIColor.fromHex("DBC4DC")
+            return UIColor.fromHex("ACAAAC")
         case "validate":
-            return UIColor.fromHex("C0DFBB")
+            return UIColor.fromHex("B7F73E")
         case "refuse":
-            return UIColor.fromHex("E2BBB9")
+            return UIColor.fromHex("4808C1")
         default:
             return .clear
         }

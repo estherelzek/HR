@@ -71,7 +71,7 @@ class ResultOfRequestAlartViewController: UIViewController {
 
     func setUpTexts() {
         tilteLabel.text = NSLocalizedString("pending_approval", comment: "")
-        ActionButton.setTitle(NSLocalizedString("cancel", comment: ""), for: .normal)
+        ActionButton.setTitle(NSLocalizedString("Cancel", comment: ""), for: .normal)
         let formatter = DateFormatter()
         if LanguageManager.shared.currentLanguage() == "ar" {
             formatter.locale = Locale(identifier: "ar")

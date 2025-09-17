@@ -180,6 +180,8 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             }
         } else if tableView == accountTabelView {
             UserDefaults.standard.removeObject(forKey: "employeeToken")
+           UserDefaults.standard.removeObject(forKey: "dontShowProtectionScreen")
+            UserDefaults.standard.removeObject(forKey: "selectedProtectionMethod")
             goToLogInViewController()
         }
     }

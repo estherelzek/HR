@@ -34,7 +34,7 @@
                                     <constraint firstAttribute="height" constant="40" id="s8n-xx-LYp"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                                <color key="textColor" name="purplecolor"/>
+                                <color key="textColor" name="textinsettingvc"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" title="ON" translatesAutoresizingMaskIntoConstraints="NO" id="U7k-s2-5J0">
@@ -81,7 +81,10 @@
     <resources>
         <image name="moon.fill" catalog="system" width="128" height="125"/>
         <namedColor name="purplecolor">
-            <color red="0.44299998879432678" green="0.29399999976158142" blue="0.40400001406669617" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="textinsettingvc">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

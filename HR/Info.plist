@@ -28,5 +28,9 @@
 
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>We need your location to record check-in and check-out.</string>
+    
+    <key>NSFaceIDUsageDescription</key>
+    <string>We use Face ID / Touch ID to quickly and securely log you in.</string>
+
 </dict>
 </plist>
