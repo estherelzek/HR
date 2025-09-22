@@ -1,0 +1,20 @@
+PODS:
+  - FSCalendar (2.8.4)
+  - SwiftGifOrigin (1.7.0)
+
+DEPENDENCIES:
+  - FSCalendar
+  - SwiftGifOrigin
+
+SPEC REPOS:
+  trunk:
+    - FSCalendar
+    - SwiftGifOrigin
+
+SPEC CHECKSUMS:
+  FSCalendar: 2d1d0d9398f12d439f55c1fe0f01525b151b8260
+  SwiftGifOrigin: fbd6cf37afcfcf97a5c3db996ddc0492e5c5c145
+
+PODFILE CHECKSUM: 445f86c2134044fbb821963a69e64f89dd11c705
+
+COCOAPODS: 1.16.2

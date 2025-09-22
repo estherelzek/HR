@@ -30,8 +30,11 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
     var needToChangeProtectionMethod: Bool = false
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Decide mode at startup
+        let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkModeEnabled")
+        if let window = UIApplication.shared.windows.first {
+            window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
+            
+        }
         if let _ = UserDefaults.standard.string(forKey: pinKey) {
             mode = .enter
         } else {

@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -10,10 +11,10 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CheckingViewController" customModule="HR" customModuleProvider="target">
             <connections>
-                <outlet property="checkingButton" destination="uVd-ht-Hv8" id="c1u-PS-pQ3"/>
-                <outlet property="discreptionOfCurrecntAttendence" destination="I2b-KB-dBF" id="8qq-bM-3Ol"/>
-                <outlet property="loader" destination="aRH-ES-t7P" id="H2f-DL-zJI"/>
-                <outlet property="titleOfCheckingInOrOut" destination="FOv-Sv-TS4" id="DZZ-cM-FBS"/>
+                <outlet property="checkingButton" destination="gbh-3T-qJ8" id="sx3-0a-R7t"/>
+                <outlet property="discreptionOfCurrecntAttendence" destination="raz-tZ-1qf" id="4eM-6d-thJ"/>
+                <outlet property="loader" destination="llr-1E-zR8" id="coH-35-uPs"/>
+                <outlet property="titleOfCheckingInOrOut" destination="82F-kr-olz" id="QZN-RB-xy5"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -22,87 +23,95 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="aRH-ES-t7P">
-                    <rect key="frame" x="166.66666666666666" y="313.66666666666669" width="60" height="60"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82F-kr-olz">
+                    <rect key="frame" x="16" y="67" width="361" height="40"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="60" id="3b3-aM-tjH"/>
-                        <constraint firstAttribute="width" constant="60" id="mPl-Ce-41Y"/>
+                        <constraint firstAttribute="height" constant="40" id="nUq-ut-Ezv"/>
                     </constraints>
-                    <color key="color" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="31"/>
+                    <color key="textColor" name="purplecolor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="checkingImage" translatesAutoresizingMaskIntoConstraints="NO" id="TE3-1c-sLN">
+                    <rect key="frame" x="20" y="123" width="353" height="400"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="400" id="wnq-37-YVV"/>
+                    </constraints>
+                </imageView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Loading Data" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="raz-tZ-1qf">
+                    <rect key="frame" x="16" y="623" width="361" height="60"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="lv3-2O-eg1"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" name="textinsettingvc"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gbh-3T-qJ8" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                    <rect key="frame" x="50" y="707" width="293" height="40"/>
+                    <color key="backgroundColor" name="purplecolor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="1ti-Ls-b1h"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" title="Button">
+                        <color key="titleColor" name="buttonTextColor"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="8"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="checkingButtonTapped:" destination="-1" eventType="touchUpInside" id="cje-PG-T4H"/>
+                    </connections>
+                </button>
+                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="llr-1E-zR8">
+                    <rect key="frame" x="155" y="543" width="83" height="50"/>
+                    <color key="tintColor" name="borderColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="wAW-yn-Yzl"/>
+                    </constraints>
+                    <color key="color" name="borderColor"/>
                 </activityIndicatorView>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="181" translatesAutoresizingMaskIntoConstraints="NO" id="1rl-kz-8fq">
-                    <rect key="frame" x="28" y="115.66666666666669" width="337" height="481.00000000000006"/>
-                    <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="You are Checked In" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FOv-Sv-TS4">
-                            <rect key="frame" x="18" y="0.0" width="301" height="29"/>
-                            <color key="backgroundColor" name="baseColorView"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="65" id="LYI-au-F5u"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="29"/>
-                            <color key="textColor" name="purplecolor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="You have sucessfully checked in at ...." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="I2b-KB-dBF">
-                            <rect key="frame" x="33.666666666666657" y="210" width="269.66666666666674" height="50"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="50" id="QeA-Ae-9qv"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
-                            <color key="textColor" name="lightGrayinDarkModeText "/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uVd-ht-Hv8" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="43.666666666666686" y="440.99999999999994" width="250" height="40"/>
-                            <color key="backgroundColor" name="purplecolor"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="40" id="ubP-dO-MOm"/>
-                                <constraint firstAttribute="width" constant="250" id="xOO-5N-dZV"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                            <color key="tintColor" name="buttonTextColor"/>
-                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" title="Check In "/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                    <real key="value" value="10"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                            <connections>
-                                <action selector="checkingButtonTapped:" destination="-1" eventType="touchUpInside" id="hRp-ua-XGc"/>
-                            </connections>
-                        </button>
-                    </subviews>
-                    <constraints>
-                        <constraint firstItem="FOv-Sv-TS4" firstAttribute="leading" secondItem="1rl-kz-8fq" secondAttribute="leading" constant="18" id="24a-6w-Goa"/>
-                        <constraint firstAttribute="trailing" secondItem="FOv-Sv-TS4" secondAttribute="trailing" constant="18" id="QdE-N2-JAS"/>
-                    </constraints>
-                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" name="baseColorView"/>
             <constraints>
-                <constraint firstItem="aRH-ES-t7P" firstAttribute="centerX" secondItem="1rl-kz-8fq" secondAttribute="centerX" id="5iD-mu-Uyk"/>
-                <constraint firstItem="aRH-ES-t7P" firstAttribute="centerY" secondItem="i5M-Pr-FkT" secondAttribute="centerY" id="GOf-a2-Yk0"/>
-                <constraint firstItem="1rl-kz-8fq" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.7" id="Lu9-fZ-RLE"/>
-                <constraint firstItem="1rl-kz-8fq" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.857506" id="QCv-kW-c13"/>
-                <constraint firstItem="1rl-kz-8fq" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="mBe-LS-XgH"/>
-                <constraint firstItem="1rl-kz-8fq" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="zXh-e7-YPD"/>
+                <constraint firstItem="82F-kr-olz" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="8" id="4jL-Tm-ec2"/>
+                <constraint firstItem="TE3-1c-sLN" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="8bp-Zp-XX9"/>
+                <constraint firstItem="llr-1E-zR8" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="155" id="EuQ-35-WS1"/>
+                <constraint firstItem="82F-kr-olz" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="HCV-LM-ZNq"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="llr-1E-zR8" secondAttribute="trailing" constant="155" id="KRn-4f-MIu"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="raz-tZ-1qf" secondAttribute="trailing" constant="16" id="QaI-ka-AFX"/>
+                <constraint firstItem="gbh-3T-qJ8" firstAttribute="top" secondItem="raz-tZ-1qf" secondAttribute="bottom" constant="24" id="RQc-MT-sSv"/>
+                <constraint firstItem="raz-tZ-1qf" firstAttribute="top" secondItem="llr-1E-zR8" secondAttribute="bottom" constant="30" id="Srn-PS-jMF"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="gbh-3T-qJ8" secondAttribute="trailing" constant="50" id="ViE-gb-DVJ"/>
+                <constraint firstItem="llr-1E-zR8" firstAttribute="top" secondItem="TE3-1c-sLN" secondAttribute="bottom" constant="20" id="Z5x-1u-ssA"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="82F-kr-olz" secondAttribute="trailing" constant="16" id="oHY-cF-2wi"/>
+                <constraint firstItem="TE3-1c-sLN" firstAttribute="top" secondItem="82F-kr-olz" secondAttribute="bottom" constant="16" id="oPk-cb-zgb"/>
+                <constraint firstItem="gbh-3T-qJ8" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="50" id="sUl-8D-UrA"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="TE3-1c-sLN" secondAttribute="trailing" constant="20" id="v4x-YY-3dw"/>
+                <constraint firstItem="raz-tZ-1qf" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="ykm-i2-I0b"/>
             </constraints>
-            <point key="canvasLocation" x="-167" y="-12"/>
+            <point key="canvasLocation" x="-48" y="-26"/>
         </view>
     </objects>
     <resources>
+        <image name="checkingImage" width="10000" height="10000"/>
         <namedColor name="baseColorView">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
-        <namedColor name="buttonTextColor">
-            <color red="0.99999994039535522" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="borderColor">
+            <color red="0.28200000524520874" green="0.030999999493360519" blue="0.75700002908706665" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
-        <namedColor name="lightGrayinDarkModeText ">
-            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="buttonTextColor">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="textinsettingvc">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>

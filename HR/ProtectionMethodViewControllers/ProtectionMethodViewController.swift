@@ -28,6 +28,10 @@ class ProtectionMethodViewController: UIViewController {
         setUpTexts()
         setUpTextFields()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
+        let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkModeEnabled")
+        if let window = UIApplication.shared.windows.first {
+            window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
+        }
     }
    
     @IBAction func noProductionButtonTapped(_ sender: Any) {
