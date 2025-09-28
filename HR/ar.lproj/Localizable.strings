@@ -148,6 +148,9 @@
 "next_button_set" = "التالي";
 "next_button_confirm" = "تأكيد";
 "next_button_enter" = "دخول";
+"Home" = "الرئيسية";
+"Settings" = "الإعدادات";
+"timeOff" = "الإجازات";
 
 /* Placeholder */
 "digit_placeholder" = "•";

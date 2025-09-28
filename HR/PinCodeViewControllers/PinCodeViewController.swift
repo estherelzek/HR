@@ -33,6 +33,8 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
         let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkModeEnabled")
         if let window = UIApplication.shared.windows.first {
             window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
+            print("Current interface style: \(window.overrideUserInterfaceStyle ?? .unspecified)")
+            applyBorderColors()
             
         }
         if let _ = UserDefaults.standard.string(forKey: pinKey) {
@@ -40,13 +42,16 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
         } else {
             mode = .set
         }
-        
+        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         setUpLabelsTexts()
         setUpTextFields()
         setUpplaceholderTextFields()
         configureUIForMode()
     }
     
+    @IBAction func backButtonTapped(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
     // MARK: - Next Button Action
     @IBAction func nextButtonTapped(_ sender: Any) {
         let enteredPin = "\(firstNum.text ?? "")\(secoundNum.text ?? "")\(thirdNum.text ?? "")\(fouthNum.text ?? "")"
@@ -111,14 +116,14 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
     private func configureUIForMode() {
         switch mode {
         case .set:
-            titleLabel.text = "Set your new 4-digit PIN"
-            nextButton.setTitle("Next", for: .normal)
+            titleLabel.text = NSLocalizedString("pin_set_title", comment: "")
+            nextButton.setTitle(NSLocalizedString("next_button_set", comment: ""), for: .normal)
         case .confirm:
-            titleLabel.text = "Confirm your PIN"
-            nextButton.setTitle("Confirm", for: .normal)
+            titleLabel.text = NSLocalizedString("pin_confirm_title", comment: "")
+            nextButton.setTitle(NSLocalizedString("next_button_confirm", comment: ""), for: .normal)
         case .enter:
-            titleLabel.text = "Enter your PIN"
-            nextButton.setTitle("Unlock", for: .normal)
+            titleLabel.text = NSLocalizedString("pin_enter_title", comment: "")
+            nextButton.setTitle(NSLocalizedString("next_button_enter", comment: ""), for: .normal)
         }
     }
     
@@ -126,18 +131,6 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
         [firstNum, secoundNum, thirdNum, fouthNum].forEach { $0?.text = "" }
         firstNum.becomeFirstResponder()
     }
-    
-//    private func goToCheckingVC() {
-//        if let rootVC = self.view.window?.rootViewController as? ViewController {
-//            let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
-//            rootVC.switchTo(viewController: checkVC)
-//            rootVC.bottomBarView.isHidden = false
-//            rootVC.homeButton.tintColor = .purplecolor
-//            rootVC.timeOffButton.tintColor = .lightGray
-//            rootVC.settingButton.tintColor = .lightGray
-//        }
-//        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
-//    }
     private func goToProtectionMethod() {
         if let rootVC  = self.view.window?.rootViewController as? ViewController {
             let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController", bundle: nil)
@@ -172,6 +165,7 @@ extension PinCodeViewController {
         }
         
         forgetPasswardButton.setTitle(NSLocalizedString("forget_password", comment: ""), for: .normal)
+        applyBorderColors()
     }
     
     func setUpplaceholderTextFields() {
@@ -195,7 +189,15 @@ extension PinCodeViewController {
         }
         firstNum.becomeFirstResponder()
     }
-    
+    func applyBorderColors() {
+        let fields = [firstNum, secoundNum, thirdNum, fouthNum]
+        fields.forEach {
+            $0?.layer.cornerRadius = 8
+            $0?.layer.borderWidth = 1
+            $0?.layer.borderColor = UIColor(named: "borderColor")?.resolvedColor(with: traitCollection).cgColor
+        }
+    }
+
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard string.count <= 1 else { return false } // prevent pasting multiple digits
         if string.isEmpty { // backspace
@@ -219,5 +221,17 @@ extension PinCodeViewController {
             }
             return false
         }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            applyBorderColors()
+        }
+    }
+    
+    @objc private func languageChanged() {
+        setUpLabelsTexts()
     }
 }

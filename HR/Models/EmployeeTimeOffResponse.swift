@@ -53,17 +53,20 @@ struct DailyRecord: Codable {
 struct HourlyRecord: Codable {
     let leaveID: Int
     let leaveType: String
-    let startDate: String
-    let endDate: String
     let state: String
+    let leaveDay: String
+    let requestHourFrom: String
+    let requestHourTo: String
     let durationHours: Double
 
     enum CodingKeys: String, CodingKey {
         case leaveID = "leave_id"
         case leaveType = "leave_type"
-        case startDate = "start_date"
-        case endDate = "end_date"
         case state
+        case leaveDay = "leave_day"
+        case requestHourFrom = "request_hour_from"
+        case requestHourTo = "request_hour_to"
         case durationHours = "duration_hours"
     }
 }
+

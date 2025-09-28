@@ -28,17 +28,14 @@ class SplashViewController: UIViewController {
             gifImageView.widthAnchor.constraint(equalTo: view.widthAnchor),
             gifImageView.heightAnchor.constraint(equalTo: view.heightAnchor)
         ])
-        
-        // Load GIF
         gifImageView.image = UIImage.gif(name: "splash")
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
-        // Simulate launch delay (e.g., 3 seconds)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
             self.showMainApp()
+           // self.goToTest()
         }
     }
     
@@ -62,5 +59,10 @@ class SplashViewController: UIViewController {
                               completion: nil)
         }
     }
-
+    
+   @objc func goToTest() {
+       let vc = TypesOfLeavesViewController(nibName: "TypesOfLeavesViewController", bundle: nil)
+       // Present
+       present(vc, animated: true)
+       }
 }

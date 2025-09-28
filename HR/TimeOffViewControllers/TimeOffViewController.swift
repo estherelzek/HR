@@ -17,7 +17,17 @@ protocol LeaveRecord {
 }
 
 extension DailyRecord: LeaveRecord {}
-extension HourlyRecord: LeaveRecord {}
+extension HourlyRecord: LeaveRecord {
+    var startDate: String {
+        // Combine leaveDay + requestHourFrom
+        return "\(leaveDay) \(requestHourFrom):00"
+    }
+    
+    var endDate: String {
+        // Combine leaveDay + requestHourTo
+        return "\(leaveDay) \(requestHourTo):00"
+    }
+}
 
 class TimeOffViewController: UIViewController {
 
@@ -29,7 +39,9 @@ class TimeOffViewController: UIViewController {
     @IBOutlet weak var refusedLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var loaderIndicator: UIActivityIndicatorView!
-    
+//    @IBOutlet weak var leaveTypesCollectionView: UICollectionView!
+//    @IBOutlet weak var statesTypesCollectionView: UICollectionView!
+//    
     var selectedDates: [Date] = []
     let viewModel = TimeOffViewModel()
     let viewModelTimeOff = EmployeeTimeOffViewModel()
@@ -53,6 +65,8 @@ class TimeOffViewController: UIViewController {
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: "CollectionViewCell")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
+        calender.register(TimeOffCalendarCell.self, forCellReuseIdentifier: "TimeOffCalendarCell")
+
     }
 
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -140,8 +154,8 @@ class TimeOffViewController: UIViewController {
                     
                         for record in records.records.hourlyRecords {
                             guard
-                                let start = formatter.date(from: record.startDate),
-                                let end = formatter.date(from: record.endDate)
+                                let start = formatter.date(from: record.leaveDay),
+                                let end = formatter.date(from: record.leaveDay)
                             else { continue }
                             let color = self?.color(for: record.state) ?? .blue
                             let days = self?.datesBetween(start: start, end: end) ?? []
@@ -222,24 +236,21 @@ extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
 
 extension TimeOffViewController: FSCalendarDelegateAppearance {
 
-    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, fillDefaultColorFor date: Date) -> UIColor? {
-        let weekday = apiWeekday(for: date)
-        if weekendDays.contains(weekday) {
-            return UIColor.lightGray.withAlphaComponent(0.3)
+    func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
+        let cell = calendar.dequeueReusableCell(withIdentifier: "TimeOffCalendarCell", for: date, at: position) as! TimeOffCalendarCell
+        
+        // Find the state for this date
+        let normalizedDate = Calendar.current.startOfDay(for: date)
+        var state = ""
+        
+        if let record = leaveDayRecords[normalizedDate] {
+            state = record.state // e.g. "refuse", "confirm"
+        } else if let record = leaveHourRecords[normalizedDate] {
+            state = record.state
         }
         
-        if publicHolidays.contains(where: { Calendar.current.isDate($0, inSameDayAs: date) }) {
-            return UIColor.lightGray.withAlphaComponent(0.5)
-        }
-        
-        if let color = leaveDayColors.keys.first(where: { Calendar.current.isDate($0, inSameDayAs: date) }).flatMap({ leaveDayColors[$0] }) {
-                    return color
-        }
-        
-        if selectedDates.contains(date) {
-            return .clear
-        }
-        return nil
+        cell.configure(for: state)
+        return cell
     }
 }
 
@@ -299,6 +310,8 @@ extension TimeOffViewController {
         }
         calender.appearance.headerTitleColor = UIColor.purplecolor
         calender.appearance.weekdayTextColor = UIColor.purplecolor
+        calender.appearance.selectionColor = .clear
+        calender.appearance.todayColor = .clear  // if you also don’t want today colored
         calender.reloadData()
     }
     
@@ -307,7 +320,6 @@ extension TimeOffViewController {
         timeOffRequestVC.filteredLeaveTypes = leaveTypes.filter { leave in
                 (leave.requiresAllocation == "yes" && leave.remainingBalance != nil)
             }
-        print("timeOffRequestVC.filteredLeaveTypes: \(timeOffRequestVC.filteredLeaveTypes)")
         timeOffRequestVC.modalPresentationStyle = .overFullScreen
         timeOffRequestVC.modalTransitionStyle = .crossDissolve
         timeOffRequestVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)

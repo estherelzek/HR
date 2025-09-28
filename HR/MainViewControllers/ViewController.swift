@@ -21,8 +21,35 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         startApp()
+        setUpTextFields()
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
     }
     
+    // MARK: - Bottom Bar Button Actions
+    @IBAction func homeButoonTapped(_ sender: Any) {
+        let homeVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+        homeButton.tintColor = .purplecolor
+        timeOffButton.tintColor = .lightGray
+        settingButton.tintColor = .lightGray
+        switchTo(viewController: homeVC)
+    }
+    
+    @IBAction func timeOffButtonTapped(_ sender: Any) {
+        let timeOffVC = TimeOffViewController(nibName: "TimeOffViewController", bundle: nil)
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .purplecolor
+        settingButton.tintColor = .lightGray
+        switchTo(viewController: timeOffVC)
+    }
+    
+    @IBAction func settingButtonTapped(_ sender: Any) {
+        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .lightGray
+        settingButton.tintColor = .purplecolor
+        switchTo(viewController: settingVC)
+    }
     func startApp() {
         let companyId = UserDefaults.standard.string(forKey: "companyId") ?? ""
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
@@ -91,29 +118,13 @@ class ViewController: UIViewController {
             currentVC = newVC
         }
     
-    
-    // MARK: - Bottom Bar Button Actions
-    @IBAction func homeButoonTapped(_ sender: Any) {
-        let homeVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
-        homeButton.tintColor = .purplecolor
-        timeOffButton.tintColor = .lightGray
-        settingButton.tintColor = .lightGray
-        switchTo(viewController: homeVC)
+    func setUpTextFields() {
+        homeButton.setTitle(NSLocalizedString("Home", comment: ""), for: .normal)
+        settingButton.setTitle(NSLocalizedString("Settings", comment: ""), for: .normal)
+        timeOffButton.setTitle(NSLocalizedString("timeOff", comment: ""), for: .normal)
     }
-    
-    @IBAction func timeOffButtonTapped(_ sender: Any) {
-        let timeOffVC = TimeOffViewController(nibName: "TimeOffViewController", bundle: nil)
-        homeButton.tintColor = .lightGray
-        timeOffButton.tintColor = .purplecolor
-        settingButton.tintColor = .lightGray
-        switchTo(viewController: timeOffVC)
-    }
-    
-    @IBAction func settingButtonTapped(_ sender: Any) {
-        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
-        homeButton.tintColor = .lightGray
-        timeOffButton.tintColor = .lightGray
-        settingButton.tintColor = .purplecolor
-        switchTo(viewController: settingVC)
+
+    @objc private func languageChanged() {
+        setUpTextFields()
     }
 }

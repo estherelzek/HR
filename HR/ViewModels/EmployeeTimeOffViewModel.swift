@@ -10,8 +10,7 @@ import Foundation
 import Foundation
 
 final class EmployeeTimeOffViewModel {
-    
-    /// Fetch all employee time off records
+
     func fetchEmployeeTimeOffs(
         token: String,
         completion: @escaping (Result<EmployeeTimeOffResult, APIError>) -> Void

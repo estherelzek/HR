@@ -22,6 +22,29 @@ extension UIColor {
     }
 }
 
+extension String {
+    /// Convert "13.5" + "2025-10-15" into "1:30 PM"
+    func formattedHour(using leaveDay: String) -> String {
+        let components = self.split(separator: ".")
+        let hour = Int(components[0]) ?? 0
+        let minutes = components.count > 1 ? Int(Double("0.\(components[1])")! * 60) : 0
+        
+        var dateComponents = DateComponents()
+        dateComponents.year = Int(leaveDay.prefix(4))
+        dateComponents.month = Int(leaveDay.dropFirst(5).prefix(2))
+        dateComponents.day = Int(leaveDay.suffix(2))
+        dateComponents.hour = hour
+        dateComponents.minute = minutes
+        
+        let calendar = Calendar.current
+        guard let date = calendar.date(from: dateComponents) else { return self }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "h:mm a" // 12-hour clock
+        return formatter.string(from: date)
+    }
+}
+
 
 extension UIViewController {
     
@@ -85,7 +108,16 @@ extension UIViewController {
         if let appDomain = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: appDomain)
         }
-        
+        // ✅ Reset mode to light after clearing defaults
+        if let window = UIApplication.shared.windows.first {
+            window.overrideUserInterfaceStyle = .light
+        }
+        UserDefaults.standard.set(false, forKey: "isDarkModeEnabled")
+        UserDefaults.standard.synchronize()
+        // debug print
+        let currectMode = UserDefaults.standard.object(forKey: "isDarkModeEnabled")
+        print("currectMode: \(String(describing: currectMode))") // will be false
+        // go to scan VC
         let checkingVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
         if let rootVC = self.view.window?.rootViewController as? ViewController {
             rootVC.switchTo(viewController: checkingVC)
@@ -93,9 +125,11 @@ extension UIViewController {
         }
     }
 
-    
     func goToLogInViewController() {
            let checkingVC = LogInViewController(nibName: "LogInViewController", bundle: nil)
+        UserDefaults.standard.removeObject(forKey: "selectedProtectionMethod")
+        UserDefaults.standard.removeObject(forKey: "savedPIN")
+
            if let rootVC = self.view.window?.rootViewController as? ViewController {
                rootVC.switchTo(viewController: checkingVC)
                rootVC.bottomBarView.isHidden = true
@@ -540,6 +574,8 @@ extension Date {
            formatter.locale = Locale(identifier: "en_US_POSIX")
            return formatter.string(from: self)
        }
+    
+    
 }
 
 

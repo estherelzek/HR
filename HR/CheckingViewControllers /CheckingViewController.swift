@@ -137,10 +137,4 @@ extension CheckingViewController {
             }
         }
     }
-
-    func navigateToTimeOffVC() {
-        let timeOffVC = TimeOffViewController(nibName: "TimeOffViewController", bundle: nil)
-        timeOffVC.modalPresentationStyle = .fullScreen
-        present(timeOffVC, animated: true, completion: nil)
-    }
 }

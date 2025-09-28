@@ -23,7 +23,6 @@ class LogInViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTexts()
-        setUpTextFields()
         setUpLeasenerToViewModel()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
     }
@@ -42,6 +41,22 @@ class LogInViewController: UIViewController {
     @objc private func languageChanged() {
         setUpTexts()
     }
+    
+    func applyBorderColors() {
+        let fields = [emailTextField, passwardTextField]
+        fields.forEach {
+            $0?.layer.cornerRadius = 8
+            $0?.layer.borderWidth = 1
+            $0?.layer.borderColor = UIColor(named: "borderColor")?.resolvedColor(with: traitCollection).cgColor
+        }
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            applyBorderColors()
+        }
+    }
 }
 
 extension LogInViewController {
@@ -50,11 +65,6 @@ extension LogInViewController {
         companyIDlabel.text = NSLocalizedString("company_id", comment: "")
         APIkeyLabel.text = NSLocalizedString("api_key", comment: "")
         signInButton.setTitle(NSLocalizedString("sign_in_title", comment: ""), for: .normal)
-        companyIDlabel.text = viewModel.companyId
-        APIkeyLabel.text = viewModel.apiKey
-    }
-
-    func setUpTextFields() {
         emailTextField.attributedPlaceholder = NSAttributedString(
             string: NSLocalizedString("enter_email", comment: ""),
             attributes: [.foregroundColor: UIColor.lightGray]
@@ -63,6 +73,8 @@ extension LogInViewController {
             string: NSLocalizedString("enter_password", comment: ""),
             attributes: [.foregroundColor: UIColor.lightGray]
         )
+        companyIDlabel.text = viewModel.companyId
+        APIkeyLabel.text = viewModel.apiKey
     }
     
     func setUpLeasenerToViewModel(){

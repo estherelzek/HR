@@ -34,8 +34,7 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         print("📍 Calling manager.requestLocation()")
         manager.requestLocation()
     }
-    
-    // Delegate methods
+   
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("📍 locationManager didUpdateLocations called")
         completion?(locations.first?.coordinate)
@@ -63,5 +62,4 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
             print("❓ Unknown location authorization status")
         }
     }
-
 }

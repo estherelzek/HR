@@ -17,21 +17,14 @@ import UIKit
             
             guard let windowScene = (scene as? UIWindowScene) else { return }
             let window = UIWindow(windowScene: windowScene)
-            
-            // Apply dark/light mode preference
             let isDarkModeEnabled = UserDefaults.standard.bool(forKey: "isDarkModeEnabled")
             window.overrideUserInterfaceStyle = isDarkModeEnabled ? .dark : .light
-            
-            // Always start with SplashViewController (from XIB)
             let splashVC = SplashViewController(nibName: "SplashViewController", bundle: nil)
             window.rootViewController = splashVC
-            
             self.window = window
             window.makeKeyAndVisible()
         }
     
-
-
     func sceneDidDisconnect(_ scene: UIScene) {
      
     }

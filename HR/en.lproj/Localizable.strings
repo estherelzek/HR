@@ -148,6 +148,9 @@
 "next_button_set" = "Next";
 "next_button_confirm" = "Confirm";
 "next_button_enter" = "Unlock";
+"Home" = "Home";
+"Settings" = "Settings";
+"timeOff" = "TimeOff";
 
 /* Placeholder */
 "digit_placeholder" = "•";

@@ -87,6 +87,15 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
         enterCompanyInfoLabel.text = NSLocalizedString("enter-company-info", comment: "")
         orButton.text = NSLocalizedString("or", comment: "")
     }
+    
+    func applyBorderColors() {
+        let fields = [companyInformationTextField]
+        fields.forEach {
+            $0?.layer.cornerRadius = 8
+            $0?.layer.borderWidth = 1
+            $0?.layer.borderColor = UIColor(named: "borderColor")?.resolvedColor(with: traitCollection).cgColor
+        }
+    }
 }
 
 extension ScanAndInfoViewController {
@@ -100,6 +109,13 @@ extension ScanAndInfoViewController {
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
             UserDefaults.standard.set(stringValue, forKey: "scannedQRCode")
             previewLayer.removeFromSuperlayer()
+        }
+    }
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            applyBorderColors()
         }
     }
 }

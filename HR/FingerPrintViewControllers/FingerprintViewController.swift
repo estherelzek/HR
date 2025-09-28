@@ -51,7 +51,7 @@ class FingerprintViewController: UIViewController {
                             title: NSLocalizedString("success", comment: ""),
                             message: NSLocalizedString("fingerprint_recognized", comment: "")
                         )
-                        self.goToCheckingVC()
+                        self.goToChecking()
                     } else {
                         let message: String
                         if let laError = authenticationError as? LAError {

@@ -97,10 +97,8 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             rows = generalItemsKeys.count + (isLanguageExpanded ? languages.count : 0)
         } else if tableView == securityTabelView {
             rows = securityItemsKeys.count
-            print("rows count in security table view: \(rows)")
         } else if tableView == accountTabelView {
             rows = accountItemsKeys.count
-            print("rows count in account table view: \(rows)")
         } else {
             rows = 1
         }
@@ -180,7 +178,7 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             }
         } else if tableView == accountTabelView {
             UserDefaults.standard.removeObject(forKey: "employeeToken")
-           UserDefaults.standard.removeObject(forKey: "dontShowProtectionScreen")
+            UserDefaults.standard.removeObject(forKey: "dontShowProtectionScreen")
             UserDefaults.standard.removeObject(forKey: "selectedProtectionMethod")
             goToLogInViewController()
         }
@@ -205,15 +203,7 @@ extension SettingScreenViewController: Localizable {
         securityTabelView.reloadData()
         accountTabelView.reloadData()
     }
-    
-    func navigateToResultOfRequest() {
-        let resultOfRequestVC = ResultOfRequestAlartViewController()
-        resultOfRequestVC.modalPresentationStyle = .overFullScreen
-        resultOfRequestVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        resultOfRequestVC.modalTransitionStyle = .crossDissolve
-        present(resultOfRequestVC, animated: true, completion: nil)
-    }
-    
+  
     func navigateToChangeProtectionViewController(){
         let protectionMethod = UserDefaults.standard.string(forKey: "selectedProtectionMethod") ?? ""
         if protectionMethod == "pin" {
@@ -222,6 +212,7 @@ extension SettingScreenViewController: Localizable {
             pinVC.mode = .enter
             pinVC.needToChangeProtectionMethod = true
             self.present(pinVC, animated: true)
+            
         } else if protectionMethod == "fingerprint" {
             let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
             fingerprintVC.modalPresentationStyle = .fullScreen
@@ -239,6 +230,7 @@ extension SettingScreenViewController {
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
             generalStettingTableView.reloadData()
+            
         }
     }
 }

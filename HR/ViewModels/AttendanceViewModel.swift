@@ -53,14 +53,6 @@ final class AttendanceViewModel {
             print("✅ Proceeding with \(action) directly")
             proceedAttendanceAction(action, token: token)
         }
-//        if action == "check_out", let workedHours = workedHours , workedHours < 8 {
-//            print("! worked hours < 8 , show alart before checkout !")
-//            onShowAlert?("worked hours are less than 9 . are you sure you want to check out?") {
-//                [weak self] in
-//                print(" user confirmed checkout after alart !")
-//                self?.proceedAttendanceAction(action, token: token)
-//            }
-//        }
     }
     
     private func proceedAttendanceAction(_ action: String, token: String) {
@@ -85,7 +77,6 @@ final class AttendanceViewModel {
                let companyLng = UserDefaults.standard.companyLongitude,
                let allowed = UserDefaults.standard.allowedDistance {
                let officeLocation = CLLocation(latitude: companyLat, longitude: companyLng)
-              // let userLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
                let userLocation = CLLocation(latitude: 0, longitude: 0)
                let distance = userLocation.distance(from: officeLocation) // meters
                 print("companyLat: \(companyLat), companyLng: \(companyLng)")

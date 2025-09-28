@@ -93,18 +93,22 @@ class ResultOfRequestAlartViewController: UIViewController {
         dateLabel.text = "\(record.startDate) : \(record.endDate)"
         numberOfAnnualLeaveLabel.text = "\(record.leaveType): \(record.durationDays)"
     }
-    
     func fillTextFields(record: LeaveRecord) {
         if let daily = record as? DailyRecord {
             dateLabel.text = "\(daily.startDate) : \(daily.endDate)"
             numberOfAnnualLeaveLabel.text = "\(daily.leaveType): \(daily.durationDays)"
-            leaveId =  daily.leaveID
+            leaveId = daily.leaveID
             print("Daily leave for \(daily.durationDays) days")
         } else if let hourly = record as? HourlyRecord {
-            dateLabel.text = "\(hourly.startDate) : \(hourly.endDate)"
+            let from = hourly.requestHourFrom.formattedHour(using: hourly.leaveDay)
+            let to = hourly.requestHourTo.formattedHour(using: hourly.leaveDay)
+
+            dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"
+            dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"
             numberOfAnnualLeaveLabel.text = "\(hourly.leaveType): \(hourly.durationHours)"
-            leaveId =  hourly.leaveID
-            print("Hourly leave for \(hourly.leaveID) hours")
+            leaveId = hourly.leaveID
+            print("Hourly leave for \(hourly.durationHours) hours")
         }
     }
+
 }

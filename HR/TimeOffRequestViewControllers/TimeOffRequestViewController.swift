@@ -129,7 +129,6 @@ class TimeOffRequestViewController: UIViewController {
         let hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
         if endDateCalender.isHidden {
             requestDateTo = requestDateFrom
-            print("hourTo when end date hidden: \(requestDateTo)")
         }
         viewModel.submitTimeOffRequest(
             token: token,
@@ -191,11 +190,10 @@ class TimeOffRequestViewController: UIViewController {
         let isHalfDay = halfDayButton.isSelected
         let isCustomHours = customHoursButton.isSelected
         let hourFrom = isCustomHours ? formatToAPITime(clockFrom.text) : nil
-        var hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
+        let hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
         if endDateCalender.isHidden {
             requestDateTo = requestDateFrom
         }
-        print("hourTo: \(requestDateTo)")
         leaveDurationVM.fetchLeaveDuration(
             token: token,
             leaveTypeId: leaveTypeId,

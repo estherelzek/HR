@@ -28,10 +28,6 @@ class ProtectionMethodViewController: UIViewController {
         setUpTexts()
         setUpTextFields()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
-        let isDarkMode = UserDefaults.standard.bool(forKey: "isDarkModeEnabled")
-        if let window = UIApplication.shared.windows.first {
-            window.overrideUserInterfaceStyle = isDarkMode ? .dark : .light
-        }
     }
    
     @IBAction func noProductionButtonTapped(_ sender: Any) {
@@ -64,6 +60,15 @@ class ProtectionMethodViewController: UIViewController {
         setUpTexts()
        }
     
+    func applyBorderColors() {
+        let fields = [pinCodetextField, fingurePrintTextField ,donotShowAgain]
+        fields.forEach {
+            $0?.layer.cornerRadius = 8
+            $0?.layer.borderWidth = 1
+            $0?.layer.borderColor = UIColor(named: "borderColor")?.resolvedColor(with: traitCollection).cgColor
+        }
+    }
+    
 }
 
 extension ProtectionMethodViewController: UITextFieldDelegate {
@@ -77,6 +82,14 @@ extension ProtectionMethodViewController: UITextFieldDelegate {
             return false
         }
         return true
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if previousTraitCollection?.userInterfaceStyle != traitCollection.userInterfaceStyle {
+            applyBorderColors()
+        }
     }
 }
 

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -28,7 +29,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="UJ1-VY-VS1" customClass="InspectableStackView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="59" width="393" height="40"/>
+                    <rect key="frame" x="0.0" y="118" width="393" height="40"/>
                     <subviews>
                         <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qRi-he-hD7">
                             <rect key="frame" x="0.0" y="0.0" width="40" height="40"/>
@@ -70,7 +71,7 @@
                     </userDefinedRuntimeAttributes>
                 </stackView>
                 <view contentMode="scaleAspectFit" translatesAutoresizingMaskIntoConstraints="NO" id="Cfq-eG-WfE" customClass="FSCalendar">
-                    <rect key="frame" x="8" y="299" width="377" height="374"/>
+                    <rect key="frame" x="8" y="358" width="377" height="281"/>
                     <color key="backgroundColor" name="baseColorView"/>
                     <connections>
                         <outlet property="dataSource" destination="i5M-Pr-FkT" id="jnq-AP-ebj"/>
@@ -78,7 +79,7 @@
                     </connections>
                 </view>
                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="XKW-oP-nZV">
-                    <rect key="frame" x="8" y="107" width="377" height="184"/>
+                    <rect key="frame" x="8" y="166" width="377" height="184"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="184" id="QaL-Bw-qXl"/>
@@ -94,8 +95,8 @@
                         <outlet property="delegate" destination="i5M-Pr-FkT" id="79m-7H-i5F"/>
                     </connections>
                 </collectionView>
-                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="HXh-gY-wEX">
-                    <rect key="frame" x="156.66666666666666" y="378.66666666666669" width="80" height="120"/>
+                <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="HXh-gY-wEX">
+                    <rect key="frame" x="156.66666666666666" y="391" width="80" height="120"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="120" id="Dms-Fo-C3C"/>
                         <constraint firstAttribute="width" constant="80" id="xJn-UR-Ht5"/>
@@ -103,7 +104,7 @@
                     <color key="color" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 </activityIndicatorView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4nV-b2-Con">
-                    <rect key="frame" x="0.0" y="691" width="393" height="90"/>
+                    <rect key="frame" x="0.0" y="657" width="393" height="90"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="To Approve" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4Wq-40-mgm">
                             <rect key="frame" x="36" y="8" width="140" height="21"/>
@@ -128,7 +129,7 @@
                                 </userDefinedRuntimeAttribute>
                             </userDefinedRuntimeAttributes>
                         </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Second Approved" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTI-wx-COy">
+                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Second Approved" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CTI-wx-COy">
                             <rect key="frame" x="248" y="9" width="140" height="21"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" name="baseColorView"/>
@@ -164,7 +165,7 @@
                             <color key="textColor" name="labelcolor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yQP-PV-IzJ" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                        <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yQP-PV-IzJ" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="211" y="9" width="20" height="18"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <color key="backgroundColor" red="0.67450980392156867" green="0.66666666666666663" blue="0.67450980392156867" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -185,7 +186,7 @@
                             <color key="backgroundColor" red="0.28235294117647058" green="0.031372549019607843" blue="0.75686274509803919" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <color key="tintColor" systemColor="systemRedColor"/>
                             <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain" title="--"/>
+                            <buttonConfiguration key="configuration" style="plain"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                     <real key="value" value="10"/>
@@ -221,7 +222,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="4nV-b2-Con" secondAttribute="bottom" constant="37" id="jhz-HM-smR"/>
                 <constraint firstItem="HXh-gY-wEX" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="wuf-wV-VPm"/>
             </constraints>
-            <point key="canvasLocation" x="-2584" y="-844"/>
+            <point key="canvasLocation" x="-3985" y="-1092"/>
         </view>
     </objects>
     <resources>
