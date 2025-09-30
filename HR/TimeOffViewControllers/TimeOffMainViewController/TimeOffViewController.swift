@@ -66,7 +66,6 @@ class TimeOffViewController: UIViewController {
         collectionView.register(nib, forCellWithReuseIdentifier: "CollectionViewCell")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         calender.register(TimeOffCalendarCell.self, forCellReuseIdentifier: "TimeOffCalendarCell")
-
     }
 
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -238,8 +237,6 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
 
     func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
         let cell = calendar.dequeueReusableCell(withIdentifier: "TimeOffCalendarCell", for: date, at: position) as! TimeOffCalendarCell
-        
-        // Find the state for this date
         let normalizedDate = Calendar.current.startOfDay(for: date)
         var state = ""
         
@@ -248,10 +245,30 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
         } else if let record = leaveHourRecords[normalizedDate] {
             state = record.state
         }
-        
         cell.configure(for: state)
         return cell
     }
+    
+    func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
+            let normalizedDate = Calendar.current.startOfDay(for: date)
+            var state = ""
+            
+            if let record = leaveDayRecords[normalizedDate] {
+                state = record.state
+            } else if let record = leaveHourRecords[normalizedDate] {
+                state = record.state
+            }
+            switch state {
+            case "validate":
+                return .black
+            case "confirm":
+                return .label
+            case "refuse":
+                return .label
+            default:
+                return appearance.titleDefaultColor // fallback to calendar default
+            }
+        }
 }
 
 extension TimeOffViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
