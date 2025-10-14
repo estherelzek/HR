@@ -31,9 +31,18 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
             return
         }
         
+        // ✅ Try last known location first
+        if let lastLocation = manager.location {
+            print("📍 Using last known location")
+            completion(lastLocation.coordinate)
+            self.completion = nil
+            return
+        }
+        
         print("📍 Calling manager.requestLocation()")
         manager.requestLocation()
     }
+
    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("📍 locationManager didUpdateLocations called")

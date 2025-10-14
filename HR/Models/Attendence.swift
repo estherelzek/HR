@@ -18,6 +18,7 @@ struct AttendanceResult: Decodable {
     let checkOutTime: String?
     let lastCheckIn: String?
     let lastCheckOut: String?
+   
 
     enum CodingKeys: String, CodingKey {
         case status
@@ -29,5 +30,6 @@ struct AttendanceResult: Decodable {
         case checkOutTime = "check_out_time"
         case lastCheckIn = "last_check_in"
         case lastCheckOut = "last_check_out"
+       
     }
 }

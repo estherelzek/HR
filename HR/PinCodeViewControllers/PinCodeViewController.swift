@@ -176,8 +176,6 @@ extension PinCodeViewController {
     }
 }
 
-
-
 extension PinCodeViewController {
     func setUpTextFields() {
         let fields = [firstNum, secoundNum, thirdNum, fouthNum]
@@ -189,6 +187,7 @@ extension PinCodeViewController {
         }
         firstNum.becomeFirstResponder()
     }
+    
     func applyBorderColors() {
         let fields = [firstNum, secoundNum, thirdNum, fouthNum]
         fields.forEach {

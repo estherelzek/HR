@@ -35,7 +35,6 @@ class SplashViewController: UIViewController {
         super.viewDidAppear(animated)
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.2) {
             self.showMainApp()
-           // self.goToTest()
         }
     }
     
@@ -59,10 +58,4 @@ class SplashViewController: UIViewController {
                               completion: nil)
         }
     }
-    
-   @objc func goToTest() {
-       let vc = TypesOfLeavesViewController(nibName: "TypesOfLeavesViewController", bundle: nil)
-       // Present
-       present(vc, animated: true)
-       }
 }

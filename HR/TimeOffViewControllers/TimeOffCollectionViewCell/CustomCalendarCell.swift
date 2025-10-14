@@ -7,15 +7,20 @@
 
 import Foundation
 import FSCalendar
-
 class TimeOffCalendarCell: FSCalendarCell {
     
     private let customLayer = CALayer()
-    private let circleSize: CGFloat = 34  // adjust to match the circle diameter
+    
+    // Circle size proportional to cell height, but not too large
+    private var circleSize: CGFloat {
+        return min(bounds.width, bounds.height) * 0.7 // 90% of the smaller side
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.layer.insertSublayer(customLayer, at: 0) // behind day label
+        // Allow drawing outside label area (fix for clipping)
+        customLayer.masksToBounds = false
+        contentView.layer.insertSublayer(customLayer, at: 0)
     }
     
     required init!(coder aDecoder: NSCoder!) {
@@ -25,69 +30,89 @@ class TimeOffCalendarCell: FSCalendarCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         customLayer.frame = bounds
+        customLayer.masksToBounds = false
     }
     
-    func configure(for state: String) {
-        customLayer.sublayers?.forEach { $0.removeFromSuperlayer() } // clear old drawings
+    func configure(for state: String, color: String? = "") {
+        // Clean up old drawings
+        customLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        titleLabel.textColor = .label
         
-        // Make a circle centered on the title label
-        let center = titleLabel.center
+        let colorHex = color ?? ""
+        
+        // ✅ Draw circle centered relative to the full cell (not titleLabel)
+        //    and add small vertical adjustment because FSCalendar’s titleLabel
+        //    is slightly lower than center.
+        let verticalAdjustment: CGFloat = -2 // move a bit up to appear perfectly centered
+        let center = CGPoint(x: bounds.midX, y: bounds.midY + verticalAdjustment)
+        
         let circleRect = CGRect(
-            x: center.x - circleSize/2,
-            y: center.y - circleSize/2,
+            x: center.x - circleSize / 2,
+            y: center.y - circleSize / 2,
             width: circleSize,
             height: circleSize
         )
         let circlePath = UIBezierPath(ovalIn: circleRect)
         
         switch state {
-            
         case "refuse":
-            let outlineLayer = CAShapeLayer()
-            outlineLayer.path = circlePath.cgPath
-            outlineLayer.strokeColor = UIColor.fromHex("4808C1").cgColor
-            outlineLayer.fillColor = UIColor.clear.cgColor
-            outlineLayer.lineWidth = 2
-            customLayer.addSublayer(outlineLayer)
+            // Outlined circle with a line
+            let outline = CAShapeLayer()
+            outline.path = circlePath.cgPath
+            outline.strokeColor = UIColor.fromHex(colorHex).cgColor
+            outline.fillColor = UIColor.clear.cgColor
+            outline.lineWidth = 2
+            customLayer.addSublayer(outline)
             
             let linePath = UIBezierPath()
             linePath.move(to: CGPoint(x: circleRect.minX, y: circleRect.midY))
             linePath.addLine(to: CGPoint(x: circleRect.maxX, y: circleRect.midY))
             
-            let lineLayer = CAShapeLayer()
-            lineLayer.path = linePath.cgPath
-            lineLayer.strokeColor = UIColor.fromHex("4808C1").cgColor
-            lineLayer.lineWidth = 2
-            customLayer.addSublayer(lineLayer)
+            let line = CAShapeLayer()
+            line.path = linePath.cgPath
+            line.strokeColor = UIColor.fromHex(colorHex).cgColor
+            line.lineWidth = 2
+            customLayer.addSublayer(line)
             
         case "confirm":
-            let maskLayer = CAShapeLayer()
-            maskLayer.path = circlePath.cgPath
+            // Filled circle background
+            let circle = CAShapeLayer()
+            circle.path = circlePath.cgPath
+            circle.fillColor = UIColor.fromHex(colorHex).withAlphaComponent(0.2).cgColor
+            customLayer.addSublayer(circle)
             
-            let hatchLayer = CAShapeLayer()
+            // Hatch pattern
+            let hatch = CAShapeLayer()
             let hatchPath = UIBezierPath()
+            let spacing: CGFloat = 4
+            let extra: CGFloat = circleRect.height * 2  // ensure full coverage
             
-            let spacing: CGFloat = 8
-            var startX: CGFloat = -circleRect.height
-            while startX < circleRect.width {
-                hatchPath.move(to: CGPoint(x: startX , y: 0))
-                hatchPath.addLine(to: CGPoint(x: startX + circleRect.height, y: circleRect.height))
+            // Extend start beyond both sides so lines always cross full circle
+            var startX: CGFloat = -extra
+            while startX < circleRect.width + extra {
+                hatchPath.move(to: CGPoint(x: startX, y: circleRect.minY - extra))
+                hatchPath.addLine(to: CGPoint(x: startX + circleRect.height + extra, y: circleRect.maxY + extra))
                 startX += spacing
             }
             
-            hatchLayer.path = hatchPath.cgPath
-            hatchLayer.strokeColor = UIColor.fromHex("4B644A").withAlphaComponent(0.7).cgColor
-            hatchLayer.lineWidth = 2
-            hatchLayer.frame = bounds
-            hatchLayer.mask = maskLayer
+            hatch.path = hatchPath.cgPath
+            hatch.strokeColor = UIColor.fromHex(colorHex).cgColor
+            hatch.lineWidth = 1
+            hatch.frame = bounds
             
-            customLayer.addSublayer(hatchLayer)
+            // Mask with circle shape to keep lines inside circle
+            let mask = CAShapeLayer()
+            mask.path = circlePath.cgPath
+            hatch.mask = mask
+            
+            customLayer.addSublayer(hatch)
+
             
         case "validate":
-            let circleLayer = CAShapeLayer()
-            circleLayer.path = circlePath.cgPath
-            circleLayer.fillColor = UIColor.fromHex("B7F73E").cgColor
-            customLayer.addSublayer(circleLayer)
+            let filled = CAShapeLayer()
+            filled.path = circlePath.cgPath
+            filled.fillColor = UIColor.fromHex(colorHex).cgColor
+            customLayer.addSublayer(filled)
             
         default:
             break

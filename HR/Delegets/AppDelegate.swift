@@ -12,19 +12,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        
-        // Setup app language
-        let lang = LanguageManager.shared.currentLanguage()
-        Bundle.setLanguage(lang)
+        NetworkListener.shared.start()
 
-        if lang == "ar" {
-            UIView.appearance().semanticContentAttribute = .forceRightToLeft
-        } else {
-            UIView.appearance().semanticContentAttribute = .forceLeftToRight
-        }
-
+              NetworkListener.shared.onConnected = {
+                  print("🔁 Network is back — resending offline requests...")
+                  NetworkManager.shared.resendOfflineRequests()
+              }
+          
         return true
     }
+
+    func application(_ application: UIApplication,
+                     configurationForConnecting connectingSceneSession: UISceneSession,
+                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        return UISceneConfiguration(name: "Default Configuration",
+                                    sessionRole: connectingSceneSession.role)
+    }
+
+    func application(_ application: UIApplication,
+                     didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {}
+}
 
     // MARK: UISceneSession Lifecycle
     func application(_ application: UIApplication,
@@ -38,5 +45,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
     
     }
-}
+
 

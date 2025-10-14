@@ -38,6 +38,7 @@ struct DailyRecord: Codable {
     let endDate: String
     let state: String
     let durationDays: Double
+    var color: String?
 
     enum CodingKeys: String, CodingKey {
         case leaveID = "leave_id"
@@ -46,6 +47,7 @@ struct DailyRecord: Codable {
         case endDate = "end_date"
         case state
         case durationDays = "duration_days"
+        case color = "color"
     }
 }
 
@@ -58,7 +60,8 @@ struct HourlyRecord: Codable {
     let requestHourFrom: String
     let requestHourTo: String
     let durationHours: Double
-
+    var color: String?
+    
     enum CodingKeys: String, CodingKey {
         case leaveID = "leave_id"
         case leaveType = "leave_type"
@@ -67,6 +70,7 @@ struct HourlyRecord: Codable {
         case requestHourFrom = "request_hour_from"
         case requestHourTo = "request_hour_to"
         case durationHours = "duration_hours"
+        case color = "color"
     }
 }
 

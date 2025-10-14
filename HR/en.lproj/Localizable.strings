@@ -31,6 +31,9 @@
 "api_key" = "API Key";
 "enter_email" = "Enter Email";
 "enter_password" = "Enter Password";
+"email" = "Email";
+"password" = "Password";
+
 
 //chose protection method
 "choose_protection_method" = "Choose Protection Method";
@@ -114,7 +117,7 @@
 /* English */
 "Employee not found or invalid credentials." = "Employee not found or invalid credentials.";
 "login_failed" = "Login Failed";
-
+"weak_connection" = "Weak Connection";
 //timeoffrequest vc
 "TimeOffRequest_Title" = "Time Off Request";
 "TimeOffRequest_Type" = "Type of Leave";
@@ -154,4 +157,11 @@
 
 /* Placeholder */
 "digit_placeholder" = "•";
-
+/* confirmation logout  */
+"logout_title" = "Logout";
+"changeCompany_title" = "Change Company";
+"changeCompany_message" = "Are you sure you want to change company";
+"logout_message" = "Are you sure you want to log out?";
+"logout_ok" = "OK";
+"logout_cancel" = "Cancel";
+"use_face_id" = "Use Face ID";

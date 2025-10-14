@@ -33,15 +33,11 @@ class TimeOffViewController: UIViewController {
 
     @IBOutlet weak var timeOffScreenTitle: UILabel!
     @IBOutlet weak var calender: FSCalendar!
-    @IBOutlet weak var toApproveLabel: UILabel!
-    @IBOutlet weak var firstAprroveLabel: UILabel!
-    @IBOutlet weak var secondApproveLabel: UILabel!
-    @IBOutlet weak var refusedLabel: UILabel!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var loaderIndicator: UIActivityIndicatorView!
-//    @IBOutlet weak var leaveTypesCollectionView: UICollectionView!
-//    @IBOutlet weak var statesTypesCollectionView: UICollectionView!
-//    
+    @IBOutlet weak var leaveTypesCollectionView: UICollectionView!
+    @IBOutlet weak var statesTypesCollectionView: UICollectionView!
+    
     var selectedDates: [Date] = []
     let viewModel = TimeOffViewModel()
     let viewModelTimeOff = EmployeeTimeOffViewModel()
@@ -53,11 +49,17 @@ class TimeOffViewController: UIViewController {
     var employeeTimeOffRecords: EmployeeTimeOffRecords?
     var leaveDayRecords: [Date: DailyRecord] = [:]
     var leaveHourRecords: [Date: HourlyRecord] = [:]
-  
+    let stateTypes: [StateType] = [
+        StateType(title: "Refused", key: "refuse"),
+        StateType(title: "Confirmed", key: "confirm"),
+        StateType(title: "Validated", key: "validate")
+    ]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTexts()
         loaderIndicator.startAnimating()
+        loadTimeOffData() {}
         loadAllData { [weak self] in
             self?.loaderIndicator.stopAnimating()
             print("✅ All APIs finished")
@@ -66,6 +68,15 @@ class TimeOffViewController: UIViewController {
         collectionView.register(nib, forCellWithReuseIdentifier: "CollectionViewCell")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         calender.register(TimeOffCalendarCell.self, forCellReuseIdentifier: "TimeOffCalendarCell")
+        leaveTypesCollectionView.delegate = self
+        leaveTypesCollectionView.dataSource = self
+        statesTypesCollectionView.delegate = self
+        statesTypesCollectionView.dataSource = self
+        leaveTypesCollectionView.register(UINib(nibName: "TypesOfLeavesCollectionViewCell", bundle: nil),
+                forCellWithReuseIdentifier: "TypesOfLeavesCollectionViewCell")
+        statesTypesCollectionView.register(UINib(nibName: "TypesOfLeavesCollectionViewCell", bundle: nil),
+                forCellWithReuseIdentifier: "TypesOfLeavesCollectionViewCell")
+       
     }
 
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -105,8 +116,11 @@ class TimeOffViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
+                    print("raw response: \(response)")
                     if let leaveTypes = response.result?.leaveTypes {
                         self?.leaveTypes = leaveTypes
+                        self?.leaveTypesCollectionView.reloadData()
+                        self?.statesTypesCollectionView.reloadData()
                         self?.filteredLeaveTypes = leaveTypes.filter { leave in
                             !(leave.requiresAllocation == "no")
                         }
@@ -127,8 +141,8 @@ class TimeOffViewController: UIViewController {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let records):
-                        self?.employeeTimeOffRecords = records.records
                         
+                        self?.employeeTimeOffRecords = records.records
                         self?.leaveDayColors.removeAll()
                         self?.leaveDayRecords.removeAll()
                         self?.leaveHourRecords.removeAll()
@@ -141,30 +155,41 @@ class TimeOffViewController: UIViewController {
                                 let start = formatter.date(from: record.startDate),
                                 let end = formatter.date(from: record.endDate)
                             else { continue }
-                            
-                            let color = self?.color(for: record.state) ?? .clear
+
+                            // 🔍 Find the matching leave type by name
+                            let  colorHex = self?.leaveTypes.first(where: { $0.name == record.leaveType })?.color
+                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E" // ✅ Default color if missing or empty
+                            let color = UIColor.fromHex(finalHex)
+
                             let days = self?.datesBetween(start: start, end: end) ?? []
-                            
                             for day in days {
                                 self?.leaveDayColors[day] = color
                                 self?.leaveDayRecords[day] = record
+                                self?.leaveDayRecords[day]?.color = finalHex
                             }
                         }
-                    
+
                         for record in records.records.hourlyRecords {
                             guard
                                 let start = formatter.date(from: record.leaveDay),
                                 let end = formatter.date(from: record.leaveDay)
                             else { continue }
-                            let color = self?.color(for: record.state) ?? .blue
+
+                            // 🔍 Find the matching leave type by name
+                            let colorHex = self?.leaveTypes.first(where: { $0.name == record.leaveType })?.color
+                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E" // ✅ Same default fallback
+                            let color = UIColor.fromHex(finalHex)
+
                             let days = self?.datesBetween(start: start, end: end) ?? []
                             for day in days {
                                 self?.leaveHourRecords[day] = record
                                 if self?.leaveDayColors[day] == nil {
                                     self?.leaveDayColors[day] = color
+                                    self?.leaveHourRecords[day]?.color = finalHex
                                 }
                             }
                         }
+
                         self?.calender.reloadData()
                     case .failure(let error):
                         print("❌ Error: \(error)")
@@ -181,17 +206,14 @@ class TimeOffViewController: UIViewController {
     
     private func loadAllData(completion: @escaping () -> Void) {
         let group = DispatchGroup()
-
         group.enter()
         loadHolidays {
             group.leave()
         }
-
         group.enter()
         loadTimeOffData {
             group.leave()
         }
-
         group.enter()
         setupBindings {
             group.leave()
@@ -239,13 +261,17 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
         let cell = calendar.dequeueReusableCell(withIdentifier: "TimeOffCalendarCell", for: date, at: position) as! TimeOffCalendarCell
         let normalizedDate = Calendar.current.startOfDay(for: date)
         var state = ""
-        
+        var color = ""
         if let record = leaveDayRecords[normalizedDate] {
             state = record.state // e.g. "refuse", "confirm"
+            color = record.color ?? ""
+            
         } else if let record = leaveHourRecords[normalizedDate] {
             state = record.state
+            color = record.color ?? ""
         }
-        cell.configure(for: state)
+        print("color esther: \(color)")
+        cell.configure(for: state ,  color: color)
         return cell
     }
     
@@ -274,22 +300,75 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
 extension TimeOffViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return filteredLeaveTypes.count
-    }
-
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "CollectionViewCell", for: indexPath) as? CollectionViewCell else {
-            return UICollectionViewCell()
+        if collectionView == self.collectionView {
+            return filteredLeaveTypes.count
+        } else if collectionView == self.leaveTypesCollectionView {
+            return leaveTypes.count
+        } else {
+            return stateTypes.count
         }
-        let leave = filteredLeaveTypes[indexPath.item]
-        cell.configure(with: leave)
-        return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if collectionView == self.collectionView {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "CollectionViewCell",
+                for: indexPath
+            ) as? CollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let leave = filteredLeaveTypes[indexPath.item]
+            cell.configure(with: leave)
+            return cell
+        }
+        
+        else if collectionView == self.leaveTypesCollectionView {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "TypesOfLeavesCollectionViewCell",
+                for: indexPath
+            ) as? TypesOfLeavesCollectionViewCell else {
+                return UICollectionViewCell()
+            }
 
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.width / 2, height: 200)
+            let leaveType = leaveTypes[indexPath.item]
+            cell.titleLabel.text = leaveType.name
+
+            // ✅ Use default color if nil or empty
+            let colorHex = (leaveType.color?.isEmpty == false) ? leaveType.color! : "4B644A"
+            cell.coloredButton.backgroundColor = UIColor.fromHex(colorHex)
+
+            return cell
+        }
+
+     
+        else {
+            guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: "TypesOfLeavesCollectionViewCell",
+                for: indexPath
+            ) as? TypesOfLeavesCollectionViewCell else {
+                return UICollectionViewCell()
+            }
+            let state = stateTypes[indexPath.item]
+            cell.titleLabel.text = state.title
+            cell.configureState(for: state.key) // your custom drawing
+            return cell
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        if collectionView == self.collectionView {
+            return CGSize(width: collectionView.frame.width / 2, height: 200)
+        } else {
+            return CGSize(width: 140, height: 33)
+        }
     }
 }
+
 
 extension TimeOffViewController {
     func setUpTexts() {
@@ -298,11 +377,6 @@ extension TimeOffViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         timeOffScreenTitle.text = NSLocalizedString("time_off_title", comment: "")
-        toApproveLabel.text = NSLocalizedString("to_approve", comment: "")
-        firstAprroveLabel.text = NSLocalizedString("second_approval", comment: "")
-        secondApproveLabel.text = NSLocalizedString("approved", comment: "")
-        refusedLabel.text = NSLocalizedString("refused", comment: "")
-
         if LanguageManager.shared.currentLanguage() == "ar" {
             calender.locale = Locale(identifier: "ar")
         } else {

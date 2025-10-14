@@ -23,7 +23,6 @@ extension UIColor {
 }
 
 extension String {
-    /// Convert "13.5" + "2025-10-15" into "1:30 PM"
     func formattedHour(using leaveDay: String) -> String {
         let components = self.split(separator: ".")
         let hour = Int(components[0]) ?? 0
@@ -104,20 +103,17 @@ extension UIViewController {
     }
 
     func goToScanVC() {
-        // clear all saved defaults
         if let appDomain = Bundle.main.bundleIdentifier {
             UserDefaults.standard.removePersistentDomain(forName: appDomain)
         }
-        // ✅ Reset mode to light after clearing defaults
         if let window = UIApplication.shared.windows.first {
-            window.overrideUserInterfaceStyle = .light
+            window.overrideUserInterfaceStyle = .dark
         }
-        UserDefaults.standard.set(false, forKey: "isDarkModeEnabled")
+        UserDefaults.standard.set(true, forKey: "isDarkModeEnabled")
         UserDefaults.standard.synchronize()
-        // debug print
         let currectMode = UserDefaults.standard.object(forKey: "isDarkModeEnabled")
         print("currectMode: \(String(describing: currectMode))") // will be false
-        // go to scan VC
+    
         let checkingVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
         if let rootVC = self.view.window?.rootViewController as? ViewController {
             rootVC.switchTo(viewController: checkingVC)
@@ -141,8 +137,8 @@ extension UIViewController {
            let checkingVC = TimeOffViewController(nibName: "TimeOffViewController", bundle: nil)
            if let rootVC = self.view.window?.rootViewController as? ViewController {
                rootVC.switchTo(viewController: checkingVC)
-               rootVC.homeButton.tintColor = .purplecolor
-               rootVC.timeOffButton.tintColor = .lightGray
+               rootVC.homeButton.tintColor = .lightGray
+               rootVC.timeOffButton.tintColor = .purplecolor
                rootVC.settingButton.tintColor = .lightGray
                rootVC.bottomBarView.isHidden = false
            }
@@ -420,6 +416,7 @@ extension UIViewController {
         }
     }
 }
+
 extension TimeOffViewController {
     func color(for state: String) -> UIColor {
         switch state {
@@ -445,6 +442,23 @@ extension TimeOffViewController {
             current = next
         }
         return dates
+    }
+}
+extension String {
+    func toLocalDateString(from inputFormat: String = "yyyy-MM-dd HH:mm:ss",
+                           to outputFormat: String = "yyyy-MM-dd HH:mm:ss",
+                           timeZoneIdentifier: String = "Africa/Cairo") -> String? {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = inputFormat
+        inputFormatter.timeZone = TimeZone(abbreviation: "UTC")
+
+        guard let date = inputFormatter.date(from: self) else { return nil }
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = outputFormat
+        outputFormatter.timeZone = TimeZone(identifier: timeZoneIdentifier)
+
+        return outputFormatter.string(from: date)
     }
 }
 
@@ -568,17 +582,14 @@ extension Date {
         }
         return nil
     }
+    
     func toApiDateString() -> String {
            let formatter = DateFormatter()
            formatter.dateFormat = "yyyy-MM-dd"   // ✅ correct format
            formatter.locale = Locale(identifier: "en_US_POSIX")
            return formatter.string(from: self)
-       }
-    
-    
+    }
 }
-
-
 
 extension UserDefaults {
     private enum Keys {
@@ -630,5 +641,4 @@ extension UserDefaults {
         get { object(forKey: Keys.allowedDistance) as? Double }
         set { set(newValue, forKey: Keys.allowedDistance) }
     }
-
 }

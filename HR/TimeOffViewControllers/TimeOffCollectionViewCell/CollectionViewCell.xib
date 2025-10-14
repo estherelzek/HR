@@ -42,16 +42,16 @@
                         <rect key="frame" x="50" y="57" width="101" height="30"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clock" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="7Zh-wk-Uic">
-                                <rect key="frame" x="0.0" y="0.66666666666666607" width="30" height="28.666666666666671"/>
+                                <rect key="frame" x="0.0" y="0.66666666666666607" width="25" height="28.666666666666671"/>
                                 <color key="tintColor" name="purplecolor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="b7H-pv-q5b"/>
-                                    <constraint firstAttribute="width" constant="30" id="fhh-9P-AL7"/>
+                                    <constraint firstAttribute="width" constant="25" id="fhh-9P-AL7"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="21" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xUk-us-axn">
-                                <rect key="frame" x="30" y="0.0" width="71" height="30"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                <rect key="frame" x="25" y="0.0" width="76" height="30"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <color key="textColor" name="purplecolor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -104,7 +104,7 @@
                 <outlet property="remainingBlalance" destination="xUk-us-axn" id="gpB-qe-gc8"/>
                 <outlet property="validUntilDate" destination="0o8-AZ-h80" id="gGa-TI-yYe"/>
             </connections>
-            <point key="canvasLocation" x="26.717557251908396" y="-16.197183098591552"/>
+            <point key="canvasLocation" x="5" y="-24"/>
         </collectionViewCell>
     </objects>
     <resources>

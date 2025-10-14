@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -10,78 +11,69 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" restorationIdentifier="DarkModeTableViewCell" selectionStyle="default" indentationWidth="10" rowHeight="63" id="KGk-i7-Jjw" customClass="DarkModeTableViewCell" customModule="HR" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="449" height="63"/>
+        <tableViewCell contentMode="scaleToFill" restorationIdentifier="DarkModeTableViewCell" selectionStyle="default" indentationWidth="10" rowHeight="55" id="KGk-i7-Jjw" customClass="DarkModeTableViewCell" customModule="HR" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="300" height="55"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="449" height="63"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="300" height="55"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillProportionally" spacing="12" translatesAutoresizingMaskIntoConstraints="NO" id="tf4-AK-CeX">
-                        <rect key="frame" x="16" y="4" width="413" height="40"/>
+                    <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillProportionally" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="tf4-AK-CeX">
+                        <rect key="frame" x="16" y="8" width="210" height="43"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="moon.fill" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="1UM-9v-gEB">
-                                <rect key="frame" x="0.0" y="0.99999999999999645" width="30" height="38.333333333333329"/>
+                                <rect key="frame" x="0.0" y="0.66666666666666607" width="30" height="19"/>
                                 <color key="tintColor" name="purplecolor"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="30" id="IjF-79-J4A"/>
+                                    <constraint firstAttribute="width" constant="30" id="LYB-q8-avW"/>
+                                    <constraint firstAttribute="height" constant="20" id="VNr-9A-JWV"/>
                                 </constraints>
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Gdd-8k-1EO">
-                                <rect key="frame" x="42" y="0.0" width="319" height="40"/>
+                                <rect key="frame" x="46" y="0.0" width="164" height="20.333333333333332"/>
                                 <color key="tintColor" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="s8n-xx-LYp"/>
-                                </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <color key="textColor" name="textinsettingvc"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" title="ON" translatesAutoresizingMaskIntoConstraints="NO" id="U7k-s2-5J0">
-                                <rect key="frame" x="373" y="20" width="42" height="16"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="40" id="QvX-QE-ioa"/>
-                                </constraints>
-                                <color key="onTintColor" name="purplecolor"/>
-                                <connections>
-                                    <action selector="switchButtonTapped:" destination="KGk-i7-Jjw" eventType="valueChanged" id="wSX-oi-qxI"/>
-                                </connections>
-                            </switch>
                         </subviews>
-                        <constraints>
-                            <constraint firstAttribute="bottom" secondItem="U7k-s2-5J0" secondAttribute="bottom" constant="4" id="6nN-2P-IKW"/>
-                            <constraint firstAttribute="bottom" secondItem="Gdd-8k-1EO" secondAttribute="bottom" id="Bhb-ZZ-pfb"/>
-                            <constraint firstItem="1UM-9v-gEB" firstAttribute="leading" secondItem="tf4-AK-CeX" secondAttribute="leading" id="Dt5-tu-yWz"/>
-                            <constraint firstAttribute="bottom" secondItem="U7k-s2-5J0" secondAttribute="bottom" constant="4" id="IO7-FA-v6T"/>
-                            <constraint firstItem="Gdd-8k-1EO" firstAttribute="top" secondItem="tf4-AK-CeX" secondAttribute="top" id="U56-Wr-2v3"/>
-                            <constraint firstItem="U7k-s2-5J0" firstAttribute="top" secondItem="tf4-AK-CeX" secondAttribute="top" constant="20" id="Uf4-RU-ESz"/>
-                            <constraint firstAttribute="bottom" secondItem="1UM-9v-gEB" secondAttribute="bottom" id="fjp-6y-sH0"/>
-                            <constraint firstItem="1UM-9v-gEB" firstAttribute="top" secondItem="tf4-AK-CeX" secondAttribute="top" id="rVt-Hk-9hj"/>
-                            <constraint firstAttribute="height" constant="40" id="xHo-J1-ntH"/>
-                            <constraint firstAttribute="trailing" secondItem="U7k-s2-5J0" secondAttribute="trailing" id="zv0-Ip-Jsr"/>
-                        </constraints>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </stackView>
+                    <switch opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VpL-D0-yfn">
+                        <rect key="frame" x="241" y="20" width="45" height="20"/>
+                        <color key="onTintColor" name="borderColor"/>
+                        <connections>
+                            <action selector="switchButtonTapped:" destination="KGk-i7-Jjw" eventType="valueChanged" id="Y1G-wC-1jq"/>
+                        </connections>
+                    </switch>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="tf4-AK-CeX" secondAttribute="bottom" id="99T-Eb-omp"/>
-                    <constraint firstItem="tf4-AK-CeX" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="4" id="RPG-wd-r5G"/>
-                    <constraint firstItem="tf4-AK-CeX" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="Vke-GR-5i8"/>
-                    <constraint firstAttribute="trailing" secondItem="tf4-AK-CeX" secondAttribute="trailing" constant="20" id="pN4-Wn-6jX"/>
+                    <constraint firstAttribute="bottom" secondItem="VpL-D0-yfn" secondAttribute="bottom" constant="15" id="1Dy-pr-U3e"/>
+                    <constraint firstItem="VpL-D0-yfn" firstAttribute="leading" secondItem="tf4-AK-CeX" secondAttribute="trailing" constant="15" id="6gA-86-bbe"/>
+                    <constraint firstItem="tf4-AK-CeX" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="BJb-i8-a7R"/>
+                    <constraint firstItem="tf4-AK-CeX" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="E2P-6b-ws3"/>
+                    <constraint firstAttribute="trailing" secondItem="VpL-D0-yfn" secondAttribute="trailing" constant="16" id="JHM-7T-e7c"/>
+                    <constraint firstItem="VpL-D0-yfn" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="Qjd-EU-4Na"/>
+                    <constraint firstItem="tf4-AK-CeX" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.7" id="aFQ-E4-6jY"/>
+                    <constraint firstAttribute="bottom" secondItem="tf4-AK-CeX" secondAttribute="bottom" constant="4" id="vPP-xG-t1x"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="logoImage" destination="1UM-9v-gEB" id="bnw-Ge-tUg"/>
-                <outlet property="modeSwitch" destination="U7k-s2-5J0" id="Fwk-qh-xEF"/>
+                <outlet property="modeSwitch" destination="VpL-D0-yfn" id="9Ki-az-f7b"/>
                 <outlet property="titleLabel" destination="Gdd-8k-1EO" id="Ytf-1c-yce"/>
             </connections>
-            <point key="canvasLocation" x="-619" y="-118"/>
+            <point key="canvasLocation" x="-2441" y="-277"/>
         </tableViewCell>
     </objects>
     <resources>
-        <image name="moon.fill" catalog="system" width="128" height="125"/>
+        <image name="moon.fill" catalog="system" width="128" height="123"/>
+        <namedColor name="borderColor">
+            <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="textinsettingvc">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

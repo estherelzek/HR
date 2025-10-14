@@ -22,7 +22,6 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         startApp()
         setUpTextFields()
-        
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
     }
     
@@ -50,6 +49,7 @@ class ViewController: UIViewController {
         settingButton.tintColor = .purplecolor
         switchTo(viewController: settingVC)
     }
+    
     func startApp() {
         let companyId = UserDefaults.standard.string(forKey: "companyId") ?? ""
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
@@ -78,7 +78,7 @@ class ViewController: UIViewController {
         } else {
             if dontShowAgain {
                 let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
-                bottomBarView.isHidden = true
+                bottomBarView.isHidden = false
                 switchTo(viewController: checkVC)
             } else {
                 if protectionMethod == "pin" {

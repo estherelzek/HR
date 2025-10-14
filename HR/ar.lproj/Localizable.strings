@@ -36,6 +36,10 @@
 "api_key" = "مفتاح API";
 "enter_email" = "أدخل البريد الإلكتروني";
 "enter_password" = "أدخل كلمة المرور";
+"email" = "البريد الإلكتروني";
+"password" = "كلمة المرور";
+
+
 //chose protection method
 "choose_protection_method" = "اختر طريقة الحماية";
 "use_fingerprint" = "استخدام البصمة";
@@ -116,6 +120,8 @@
 /* Arabic */
 "Employee not found or invalid credentials." = "الموظف غير موجود أو بيانات الاعتماد غير صحيحة.";
 "login_failed" = "فشل تسجيل الدخول";
+"weak_connection" = "اتصال ضعيف";
+
 // timeoffrequest vc
 "TimeOffRequest_Title" = "طلب إجازة";
 "TimeOffRequest_Type" = "نوع الإجازة";
@@ -154,3 +160,12 @@
 
 /* Placeholder */
 "digit_placeholder" = "•";
+/* alart confirmation*/
+"logout_title" = "تسجيل الخروج";
+"logout_message" = "هل أنت متأكد أنك تريد تسجيل الخروج؟";
+"changeCompany_title" = "تغيير الشركة";
+"changeCompany_message" = "هل أنت متأكد أنك تريد تغيير الشركة؟";
+"logout_ok" = "موافق";
+"logout_cancel" = "إلغاء";
+"use_face_id" = "استخدام التعرف على الوجه";
+

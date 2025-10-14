@@ -13,7 +13,11 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     
     private let customLayer = CALayer()
-    private let circleSize: CGFloat = 24  // adjust as needed
+    private var circleSize: CGFloat {
+        // Circle size scales with cell height (about 70%)
+        return bounds.height * 0.7
+        
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,9 +38,10 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
     
     func configureState(for state: String) {
         customLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        
         let circleRect = CGRect(
             x: 4,
-            y: (bounds.height - circleSize)/2,
+            y: (bounds.height - circleSize) / 2,
             width: circleSize,
             height: circleSize
         )
@@ -44,9 +49,10 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
         
         switch state {
         case "refuse":
+            // Outlined circle with a horizontal line
             let outlineLayer = CAShapeLayer()
             outlineLayer.path = circlePath.cgPath
-            outlineLayer.strokeColor = UIColor.fromHex("4808C1").cgColor
+            outlineLayer.strokeColor = UIColor.fromHex("B7F73E").cgColor
             outlineLayer.fillColor = UIColor.clear.cgColor
             outlineLayer.lineWidth = 2
             customLayer.addSublayer(outlineLayer)
@@ -57,30 +63,36 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
             
             let lineLayer = CAShapeLayer()
             lineLayer.path = linePath.cgPath
-            lineLayer.strokeColor = UIColor.fromHex("4808C1").cgColor
+            lineLayer.strokeColor = UIColor.fromHex("B7F73E").cgColor
             lineLayer.lineWidth = 2
             customLayer.addSublayer(lineLayer)
             
         case "confirm":
+            // Circle with diagonal hatch lines
             let maskLayer = CAShapeLayer()
             maskLayer.path = circlePath.cgPath
             
             let hatchLayer = CAShapeLayer()
             let hatchPath = UIBezierPath()
+            
+            let spacing: CGFloat = 5
             var startX: CGFloat = -circleRect.height
+            
             while startX < circleRect.width {
-                hatchPath.move(to: CGPoint(x: startX, y: 0))
-                hatchPath.addLine(to: CGPoint(x: startX + circleRect.height, y: circleRect.height))
-                startX += 6
+                hatchPath.move(to: CGPoint(x: startX, y: circleRect.minY))
+                hatchPath.addLine(to: CGPoint(x: startX + circleRect.height, y: circleRect.maxY))
+                startX += spacing
             }
+            
             hatchLayer.path = hatchPath.cgPath
-            hatchLayer.strokeColor = UIColor.fromHex("4B644A").withAlphaComponent(0.7).cgColor
+            hatchLayer.strokeColor = UIColor.fromHex("B7F73E").withAlphaComponent(0.7).cgColor
             hatchLayer.lineWidth = 2
             hatchLayer.frame = bounds
             hatchLayer.mask = maskLayer
             customLayer.addSublayer(hatchLayer)
             
         case "validate":
+            // Fully filled circle
             let circleLayer = CAShapeLayer()
             circleLayer.path = circlePath.cgPath
             circleLayer.fillColor = UIColor.fromHex("B7F73E").cgColor

@@ -30,6 +30,7 @@ class TimeOffRequestViewController: UIViewController {
     @IBOutlet weak var clockLabel: UILabel!
     @IBOutlet weak var clockStackView: UIStackView!
     @IBOutlet weak var saveButton: InspectableButton!
+    
     // MARK: - Data Sources
     var leaveTypes: [LeaveType] = []  // API fills this
     var filteredLeaveTypes: [LeaveType] = []
@@ -52,7 +53,7 @@ class TimeOffRequestViewController: UIViewController {
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         setUpTexts()
         setupPickers()
-        setUpAnnualMode()
+        launchMode()
         halfDayButton.backgroundColor = .clear
         customHoursButton.backgroundColor = .clear
     }
@@ -89,7 +90,11 @@ class TimeOffRequestViewController: UIViewController {
         if customHoursButton.isSelected {
             setUpCustomHoursMode()
         } else {
-            setUpAnnualMode()
+            if halfDayButton .isHidden {
+                setUpAnnualMode(hideHalfButton: true)
+            }else  {
+                setUpAnnualMode(hideHalfButton: false)
+            }
         }
     }
     
@@ -219,13 +224,24 @@ class TimeOffRequestViewController: UIViewController {
         }
     }
 
-    func setUpAnnualMode() {
+    func setUpAnnualMode(hideHalfButton: Bool = false) {
+        clockStackView.isHidden = true
+        startDateCalender.isHidden = false
+        endDateCalender.isHidden = false
+        selectLeaveTypeTextField.isHidden = false
+        MorningOrNightTextField.isHidden = true
+        customHoursButton.isHidden = false
+        halfDayButton.isHidden = hideHalfButton
+    }
+    
+    func launchMode() {
         clockStackView.isHidden = true
         startDateCalender.isHidden = false
         endDateCalender.isHidden = false
         selectLeaveTypeTextField.isHidden = false
         MorningOrNightTextField.isHidden = true
         customHoursButton.isHidden = true
+       halfDayButton.isHidden = false
     }
     
     func setUpHalfDayMode() {
@@ -240,13 +256,13 @@ class TimeOffRequestViewController: UIViewController {
         MorningOrNightTextField.isHidden = false
     }
     
-    func setUpOtherMode() {
+    func setUpOtherMode(hideHalfDay: Bool = false) {
         startDateCalender.isHidden = false
         endDateCalender.isHidden = false
         selectLeaveTypeTextField.isHidden = false
         MorningOrNightTextField.isHidden = true
         customHoursButton.isHidden = false
-        halfDayButton.isHidden = false
+        halfDayButton.isHidden = hideHalfDay
     }
     
    func setUpCustomHoursMode() {
@@ -272,9 +288,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
         setPickerLocale(picker: endDatePicker, textField: endDateCalender, locale: locale)
         setPickerLocale(picker: clockFromPicker, textField: clockFrom, locale: locale)
         setPickerLocale(picker: clockToPicker, textField: ClockTo, locale: locale)
-        
-        print("✅ Set all pickers to: \(localeIdentifier)")
-        
         leaveTypePicker.delegate = self
         leaveTypePicker.dataSource = self
         selectLeaveTypeTextField.inputView = leaveTypePicker
@@ -285,8 +298,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
         MorningOrNightTextField.text = pickerView(morningNightPicker, titleForRow: 0, forComponent: 0)
         startDatePicker.datePickerMode = .date
         endDatePicker.datePickerMode = .date
-    
-        // ⏰ Setup time pickers
         clockFromPicker.datePickerMode = .time
         clockToPicker.datePickerMode = .time
         clockFromPicker.minuteInterval = 30   // ✅ only allow 30 min steps
@@ -298,7 +309,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
             clockFromPicker.preferredDatePickerStyle = .wheels
             clockToPicker.preferredDatePickerStyle = .wheels
         }
-
         startDateCalender.inputView = startDatePicker
         endDateCalender.inputView = endDatePicker
         startDatePicker.date = Date()
@@ -308,7 +318,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
         startDateCalender.text = formatDate(startDatePicker.date)
         endDateCalender.text = formatDate(endDatePicker.date)
         
-        // 🎛 Toolbar with Done button
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
         let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneTapped))
@@ -382,7 +391,12 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
         if pickerView == leaveTypePicker {
             selectLeaveTypeTextField.text = filteredLeaveTypes[row].name
             if filteredLeaveTypes[row].name != "annual leave" {
-                setUpOtherMode()
+                let showHalfOption = filteredLeaveTypes[row].requestUnit
+                if showHalfOption == "half_day" {
+                    setUpOtherMode(hideHalfDay: false)
+                } else {
+                    setUpOtherMode(hideHalfDay: true)
+                }
             }
             else {
                 setUpAnnualMode()

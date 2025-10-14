@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 struct TimeOffResponse: Decodable {
     let result: TimeOffResult?
 }
@@ -26,12 +27,14 @@ struct LeaveType: Decodable {
     let requestUnit: String?
     let requiresAllocation: String?
     let remainingBalance: Double?
+    let color: String?
     let originalBalance: Double?
 
     enum CodingKeys: String, CodingKey {
         case id, name
         case requestUnit = "request_unit"
         case requiresAllocation = "requires_allocation"
+        case color = "color"
         case remainingBalance = "remaining_balance"
         case originalBalance = "original_balance"
     }

@@ -27,9 +27,10 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gwW-KK-pYD">
                                                 <rect key="frame" x="0.0" y="0.0" width="117.66666666666667" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <color key="tintColor" name="purplecolor"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" image="homekit" catalog="system" title="Home"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="Home" image="homekit" catalog="system"/>
                                                 <connections>
                                                     <action selector="homeButoonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ITm-UH-L0G"/>
                                                 </connections>
@@ -37,9 +38,10 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vvg-n2-7qS">
                                                 <rect key="frame" x="137.66666666666666" y="0.0" width="117.66666666666666" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" image="beach.umbrella" catalog="system" title="TimeOfff"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="TimeOfff" image="beach.umbrella" catalog="system"/>
                                                 <connections>
                                                     <action selector="timeOffButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8Wy-BG-G83"/>
                                                 </connections>
@@ -47,9 +49,10 @@
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="so6-hV-IqR">
                                                 <rect key="frame" x="275.33333333333331" y="0.0" width="117.66666666666669" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <state key="normal" title="Button"/>
-                                                <buttonConfiguration key="configuration" style="plain" image="gearshape" catalog="system" title="Setting"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" title="Setting" image="gearshape" catalog="system"/>
                                                 <connections>
                                                     <action selector="settingButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="agV-fk-Pxx"/>
                                                 </connections>
@@ -96,7 +99,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-738" y="-200"/>
+            <point key="canvasLocation" x="-990" y="-279"/>
         </scene>
     </scenes>
     <resources>
@@ -110,7 +113,7 @@
             <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemGray2Color">
-            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

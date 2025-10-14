@@ -30,7 +30,6 @@ struct LoginResult: Decodable {
     }
 }
 
-// wrapper that can decode either String or Object
 enum LoginMessageUnion: Decodable {
     case text(String)
     case object(LoginMessage)

@@ -25,17 +25,42 @@ class CheckingViewController: UIViewController {
         loader.startAnimating()
         fetchAttendanceStatus()
         setUpLisgnerstoViewModel()
-        NotificationCenter.default.addObserver(self,selector: #selector(handleLanguageChange),name: NSNotification.Name("LanguageChanged"),object: nil)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleLanguageChange),
+            name: NSNotification.Name("LanguageChanged"),
+            object: nil
+        )
+        print("📱 App became active — trying to resend offline requests...")
+        NetworkManager.shared.resendOfflineRequests()
     }
 
     @objc private func handleLanguageChange() {
         reloadTexts()
     }
+  
 
     @IBAction func checkingButtonTapped(_ sender: Any) {
+        isCheckedIn.toggle()
+        print("isCheckedIn: \(isCheckedIn)")
         viewModel.performCheckInOut(isCheckedIn: isCheckedIn, workedHours: workedHours)
-        self.reloadTexts()
-       }
+
+        if NetworkListener.shared.isConnected {
+            print("✅ Online → reloading texts")
+            reloadTexts()
+        } else {
+            print("⚠️ Offline → request saved locally")
+            
+            let action = isCheckedIn ? "check-in" : "check-out"
+            showAlert(
+                title: "Offline Mode",
+                message: "You're currently offline. Your \(action) request has been saved locally and will be sent automatically once you reconnect to the network."
+            )
+            goToTimeOff()
+        }
+    }
+
 
        private func fetchAttendanceStatus() {
            guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
@@ -49,8 +74,14 @@ class CheckingViewController: UIViewController {
                    case .success(let response):
                        if response.result?.status == "success" {
                            self?.isCheckedIn = response.result?.attendanceStatus == "checked_in"
-                           self?.lastCheckIn = response.result?.lastCheckIn
-                           self?.lastCheckOut = response.result?.lastCheckOut ?? response.result?.checkOutTime
+                           if let lastCheckInUTC = response.result?.lastCheckIn {
+                               self?.lastCheckIn = lastCheckInUTC.toLocalDateString()
+                           }
+
+                           if let lastCheckOutUTC = response.result?.lastCheckOut ?? response.result?.checkOutTime {
+                               self?.lastCheckOut = lastCheckOutUTC.toLocalDateString()
+                           }
+
                            self?.workedHours = response.result?.workedHours
                        }
                        self?.reloadTexts()
@@ -65,10 +96,6 @@ class CheckingViewController: UIViewController {
        }
 
        private func handleAttendanceSuccess(_ response: AttendanceResponse) {
-           showAlert(title: "Success", message: response.result?.message ?? "") {
-               self.goToTimeOff()
-           }
-
            if response.result?.attendanceStatus == "checked_in" {
                self.isCheckedIn = true
                self.lastCheckIn = response.result?.checkInTime
@@ -109,11 +136,14 @@ class CheckingViewController: UIViewController {
 
 extension CheckingViewController {
     private func reloadTexts() {
+        print("isCheckedIn : \(isCheckedIn)")
         if isCheckedIn {
             titleOfCheckingInOrOut.text = NSLocalizedString("checked_in_title", comment: "")
             checkingButton.setTitle(NSLocalizedString("checked_in_button", comment: ""), for: .normal)
+            checkingButton.setImage(UIImage(named: "login"), for: .normal)
 
             if let lastCheckIn = lastCheckIn {
+                print("lastCheckIn esther : \(lastCheckIn)")
                 discreptionOfCurrecntAttendence.text = String(
                     format: NSLocalizedString("checked_in_description_with_time", comment: ""),
                     lastCheckIn
@@ -125,8 +155,10 @@ extension CheckingViewController {
         } else {
             titleOfCheckingInOrOut.text = NSLocalizedString("checked_out_title", comment: "")
             checkingButton.setTitle(NSLocalizedString("checked_out_button", comment: ""), for: .normal)
+            checkingButton.setImage(UIImage(named: "logout"), for: .normal)
 
             if let lastCheckOut = lastCheckOut, let hours = workedHours {
+                print("lastCheckOut esther : \(lastCheckOut)")
                 discreptionOfCurrecntAttendence.text = String(
                     format: NSLocalizedString("checked_out_description_with_time", comment: ""),
                     lastCheckOut,
@@ -138,3 +170,4 @@ extension CheckingViewController {
         }
     }
 }
+

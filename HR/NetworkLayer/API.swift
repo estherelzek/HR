@@ -19,7 +19,7 @@ enum API: Endpoint {
     }
 
     var baseURL: String {
-        let defaultURL = "https://ahmedelzupeir-androidapp21.odoo.com"
+        let defaultURL = "https://ahmedelzupeir-androidapp2.odoo.com"
         if let saved = UserDefaults.standard.baseURL, !saved.isEmpty {
             if saved.hasSuffix("/") {
                 return String(saved.dropLast())
@@ -30,13 +30,13 @@ enum API: Endpoint {
     }
     
     case validateCompany(apiKey: String, companyId: String, email: String, password: String)
-    case employeeAttendance(action: String, token: String, lat: String? = nil, lng: String? = nil)
+    case employeeAttendance(action: String, token: String, lat: String? = nil, lng: String? = nil, action_time: String? = nil)
     case requestTimeOff(token: String, action: String)
     case leaveDuration(token: String, leaveTypeId: Int, requestDateFrom: String, requestDateTo: String, requestDateFromPeriod: String, requestUnitHalf: Bool, requestHourFrom: String?, requestHourTo: String?, requestUnitHours: Bool)
     case submitTimeOffRequest(token: String, leaveTypeId: Int, action: String, requestDateFrom: String, requestDateTo: String, requestDateFromPeriod: String, requestUnitHalf: Bool, hourFrom: String?, hourTo: String?) // ✅ NEW
     case getEmployeeTimeOffs(token: String , action: String)
     case unlinkDraftAnnualLeaves(token: String ,action: String , leaveId: Int)
-    
+    case getServerTime(token: String,action: String)
     var path: String {
         switch self {
         case .validateCompany:
@@ -54,6 +54,8 @@ enum API: Endpoint {
             return "/api/employee_time_off"
         case .unlinkDraftAnnualLeaves:
             return "/api/request_time_off"
+        case .getServerTime:
+            return "/api/employee_attendance"
         }
     }
 
@@ -69,10 +71,11 @@ enum API: Endpoint {
             return try? JSONSerialization.data(withJSONObject: payload)
             
 
-        case let .employeeAttendance(action, token, lat, lng):
+        case let .employeeAttendance(action, token, lat, lng , action_time):
                    var payload: [String: Any] = [
                        "action": action,
-                       "employee_token": token
+                       "employee_token": token,
+                       "action_time": action_time
                    ]
             
                    if let lat = lat, let lng = lng {
@@ -139,6 +142,12 @@ enum API: Endpoint {
                 "leave_id": leaveId
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
+        case .getServerTime(token: let token, action: let action):
+            let serverTime: [String: Any] = [
+                "employee_token": token,
+                "action": action
+            ]
+            return try? JSONSerialization.data(withJSONObject: serverTime)
         }
     }
 }

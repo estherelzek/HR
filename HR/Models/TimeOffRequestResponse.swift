@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 struct TimeOffRequestResponse: Decodable {
     let jsonrpc: String?
     let id: String?

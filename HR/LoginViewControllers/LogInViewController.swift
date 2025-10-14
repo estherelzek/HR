@@ -17,7 +17,10 @@ class LogInViewController: UIViewController {
     @IBOutlet weak var passwardTextField: UITextField!
     @IBOutlet weak var signInButton: UIButton!
     @IBOutlet weak var loader: UIActivityIndicatorView!
+    @IBOutlet weak var emailLabel: UILabel!
+    @IBOutlet weak var passwordLabel: UILabel!
     
+    @IBOutlet var uiview: UIView!
     private let viewModel = LoginViewModel()   // ✅ Add ViewModel
     
     override func viewDidLoad() {
@@ -25,6 +28,9 @@ class LogInViewController: UIViewController {
         setUpTexts()
         setUpLeasenerToViewModel()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+          tapGesture.cancelsTouchesInView = false  // allows button taps to still work
+          view.addGestureRecognizer(tapGesture)
     }
     
     @IBAction func SignInButton(_ sender: Any) {
@@ -42,6 +48,10 @@ class LogInViewController: UIViewController {
         setUpTexts()
     }
     
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
+
     func applyBorderColors() {
         let fields = [emailTextField, passwardTextField]
         fields.forEach {
@@ -73,6 +83,8 @@ extension LogInViewController {
             string: NSLocalizedString("enter_password", comment: ""),
             attributes: [.foregroundColor: UIColor.lightGray]
         )
+        emailLabel.text = NSLocalizedString("email", comment: "")
+        passwordLabel.text = NSLocalizedString("password", comment: "")
         companyIDlabel.text = viewModel.companyId
         APIkeyLabel.text = viewModel.apiKey
     }
@@ -85,7 +97,7 @@ extension LogInViewController {
             self.present(protectionMethodVC, animated: true)
         }
         viewModel.onLoginFailure = { [weak self] message in
-            self?.showAlert(title: NSLocalizedString("login_failed", comment: ""), message: message)
+            self?.showAlert(title: NSLocalizedString("login_failed", comment: ""), message: NSLocalizedString("weak_connection", comment: ""))
         }
     }
 }

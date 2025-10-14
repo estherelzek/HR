@@ -71,8 +71,10 @@ final class LoginViewModel {
                             UserDefaults.standard.companyLongitude = address.longitude
                             UserDefaults.standard.allowedDistance = address.allowedDistance
                         }
+                       
                     }
-
+                    print(" UserDefaults.standard.companyLatitude : \( UserDefaults.standard.companyLatitude, default: "")")
+                    print("UserDefaults.standard.companyLongitude: \(String(describing: UserDefaults.standard.companyLongitude))")
                     self.onLoginSuccess?()
 
                 case .failure(let error):

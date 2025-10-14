@@ -6,3 +6,8 @@
 //
 
 import Foundation
+
+struct StateType {
+    let title: String
+    let key: String   // "refuse", "confirm", "validate"
+}

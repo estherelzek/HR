@@ -20,8 +20,8 @@ class ResultOfRequestAlartViewController: UIViewController {
     @IBOutlet weak var numberOfAnnualLeaveLabel: UILabel!
     
     private let viewModel = EmployeeUnlinkTimeOffViewModel()
-    var leaveId: Int?
     private var cancellables = Set<AnyCancellable>()
+    var leaveId: Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -93,6 +93,7 @@ class ResultOfRequestAlartViewController: UIViewController {
         dateLabel.text = "\(record.startDate) : \(record.endDate)"
         numberOfAnnualLeaveLabel.text = "\(record.leaveType): \(record.durationDays)"
     }
+    
     func fillTextFields(record: LeaveRecord) {
         if let daily = record as? DailyRecord {
             dateLabel.text = "\(daily.startDate) : \(daily.endDate)"
@@ -110,5 +111,4 @@ class ResultOfRequestAlartViewController: UIViewController {
             print("Hourly leave for \(hourly.durationHours) hours")
         }
     }
-
 }

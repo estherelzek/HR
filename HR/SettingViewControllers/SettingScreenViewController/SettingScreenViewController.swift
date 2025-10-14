@@ -44,7 +44,6 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
         self.dismiss(animated: true)
     }
     
-    
     @objc private func handleLanguageChange() {
         reloadTexts()
     }
@@ -171,24 +170,20 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
                         message: NSLocalizedString("changeCompany_message", comment: ""),
                         preferredStyle: .alert
                     )
-                    
-                    // OK Action → Logout
-                    let okAction = UIAlertAction(
-                        title: NSLocalizedString("logout_ok", comment: ""),
-                        style: .destructive
-                    ) { _ in
-                        self.goToScanVC() // Navigate to login
+
+                    let okAction = UIAlertAction(title: NSLocalizedString("logout_ok", comment: ""), style: .default) { _ in
+                        self.goToScanVC()
                     }
-                    let cancelAction = UIAlertAction(
-                        title: NSLocalizedString("logout_cancel", comment: ""),
-                        style: .cancel,
-                        handler: nil
-                    )
-                    
+                    okAction.setValue(UIColor.purplecolor, forKey: "titleTextColor")
+
+                    let cancelAction = UIAlertAction(title: NSLocalizedString("logout_cancel", comment: ""), style: .cancel)
+                    cancelAction.setValue(UIColor.systemRed, forKey: "titleTextColor")
+
                     alert.addAction(okAction)
                     alert.addAction(cancelAction)
-                    
-                    present(alert, animated: true, completion: nil)
+
+                    present(alert, animated: true)
+
                 case 1: break
                 case 2: print("Dark Mode tapped") // handled by switch now
                 default: break
@@ -205,32 +200,19 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
                 message: NSLocalizedString("logout_message", comment: ""),
                 preferredStyle: .alert
             )
-            
-            // OK Action → Logout
-            let okAction = UIAlertAction(
-                title: NSLocalizedString("logout_ok", comment: ""),
-                style: .destructive
-            ) { _ in
+            let okAction = UIAlertAction(title: NSLocalizedString("logout_ok", comment: ""), style: .default) { _ in
                 UserDefaults.standard.removeObject(forKey: "employeeToken")
                 UserDefaults.standard.removeObject(forKey: "dontShowProtectionScreen")
                 UserDefaults.standard.removeObject(forKey: "selectedProtectionMethod")
-                
-                self.goToLogInViewController() // Navigate to login
+                self.goToLogInViewController()
             }
-            
-            // Cancel Action → Dismiss
-            let cancelAction = UIAlertAction(
-                title: NSLocalizedString("logout_cancel", comment: ""),
-                style: .cancel,
-                handler: nil
-            )
-            
+            okAction.setValue(UIColor.purplecolor, forKey: "titleTextColor")
+            let cancelAction = UIAlertAction(title: NSLocalizedString("logout_cancel", comment: ""), style: .cancel)
+            cancelAction.setValue(UIColor.systemRed, forKey: "titleTextColor")
             alert.addAction(okAction)
             alert.addAction(cancelAction)
-            
-            present(alert, animated: true, completion: nil)
+            present(alert, animated: true)
         }
-
     }
 
     func didTapDropdown(in cell: SettingScreenTableViewCell) {
@@ -240,7 +222,6 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             generalStettingTableView.reloadData()
         }
     }
-    
 }
 
 extension SettingScreenViewController: Localizable {
