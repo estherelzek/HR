@@ -75,11 +75,11 @@ class CheckingViewController: UIViewController {
                        if response.result?.status == "success" {
                            self?.isCheckedIn = response.result?.attendanceStatus == "checked_in"
                            if let lastCheckInUTC = response.result?.lastCheckIn {
-                               self?.lastCheckIn = lastCheckInUTC.toLocalDateString()
+                               self?.lastCheckIn = lastCheckInUTC
                            }
 
                            if let lastCheckOutUTC = response.result?.lastCheckOut ?? response.result?.checkOutTime {
-                               self?.lastCheckOut = lastCheckOutUTC.toLocalDateString()
+                               self?.lastCheckOut = lastCheckOutUTC
                            }
 
                            self?.workedHours = response.result?.workedHours
@@ -142,7 +142,7 @@ extension CheckingViewController {
             checkingButton.setTitle(NSLocalizedString("checked_in_button", comment: ""), for: .normal)
             checkingButton.setImage(UIImage(named: "login"), for: .normal)
 
-            if let lastCheckIn = lastCheckIn {
+            if let lastCheckIn = lastCheckIn?.toLocalDateString() {
                 print("lastCheckIn esther : \(lastCheckIn)")
                 discreptionOfCurrecntAttendence.text = String(
                     format: NSLocalizedString("checked_in_description_with_time", comment: ""),
@@ -157,7 +157,7 @@ extension CheckingViewController {
             checkingButton.setTitle(NSLocalizedString("checked_out_button", comment: ""), for: .normal)
             checkingButton.setImage(UIImage(named: "logout"), for: .normal)
 
-            if let lastCheckOut = lastCheckOut, let hours = workedHours {
+            if let lastCheckOut = lastCheckOut?.toLocalDateString(), let hours = workedHours {
                 print("lastCheckOut esther : \(lastCheckOut)")
                 discreptionOfCurrecntAttendence.text = String(
                     format: NSLocalizedString("checked_out_description_with_time", comment: ""),
@@ -169,5 +169,6 @@ extension CheckingViewController {
             }
         }
     }
+ 
 }
 

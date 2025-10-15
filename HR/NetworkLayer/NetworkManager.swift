@@ -4,9 +4,10 @@
 //
 //  Created by Esther Elzek on 24/08/2025.
 //
-
 // NetworkManager.swift
+
 import Foundation
+
 struct OfflineRequest: Codable, Equatable {
     let url: String
     let method: String
@@ -14,10 +15,11 @@ struct OfflineRequest: Codable, Equatable {
     let body: String?
     let timestamp: Date
 }
+
 final class OfflineURLStorage {
+    
     static let shared = OfflineURLStorage()
     private let key = "OfflineFailedRequests"
-
     private init() {}
 
     func save(_ request: OfflineRequest) {
@@ -48,6 +50,17 @@ final class OfflineURLStorage {
 
     func clear() {
         UserDefaults.standard.removeObject(forKey: key)
+    }
+    
+    func isTimeSetAutomatically() -> Bool {
+        guard let automatic = CFPreferencesCopyAppValue(
+            "TMAutomaticTimeEnabled" as CFString,
+            "com.apple.preferences.datetime" as CFString
+        ) as? Bool else {
+           print("If we can’t read it, assume false (manual)") 
+            return false
+        }
+        return automatic
     }
 }
 
@@ -82,7 +95,14 @@ final class NetworkManager {
             if let error = error {
                 print("❌ Network error: \(error.localizedDescription)")
 
-                // ⬇️ Save the failed request locally
+//                // ⛔ Skip offline save if user time is manual
+//                if !OfflineURLStorage.shared.isTimeSetAutomatically() {
+//                    print("⚠️ Manual time setting detected — not saving offline request.")
+//                    completion(.failure(.requestFailed("⚠️ Manual time setting detected — not saving offline request")))
+//                    return
+//                }
+
+                // ✅ Otherwise, save offline request
                 let offlineRequest = OfflineRequest(
                     url: request.url?.absoluteString ?? "",
                     method: request.httpMethod ?? "GET",
@@ -90,8 +110,8 @@ final class NetworkManager {
                     body: request.httpBody.flatMap { String(data: $0, encoding: .utf8) },
                     timestamp: Date()
                 )
+                print("offlineRequest: \(offlineRequest)")
                 OfflineURLStorage.shared.save(offlineRequest)
-
                 completion(.failure(.requestFailed(error.localizedDescription)))
                 return
             }

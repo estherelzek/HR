@@ -68,9 +68,6 @@ final class AttendanceViewModel {
                 return
             }
 
-           // let lat = String(coordinate.latitude)
-          //  let lng = String(coordinate.longitude)
-            
             let lat = String(UserDefaults.standard.companyLatitude ?? 0)
             let lng = String(UserDefaults.standard.companyLongitude ?? 0)
             print("📍 Got location: lat=\(lat), lng=\(lng)")
@@ -81,12 +78,10 @@ final class AttendanceViewModel {
                let allowed = UserDefaults.standard.allowedDistance {
 
                 let officeLocation = CLLocation(latitude: companyLat, longitude: companyLng)
-             //   let userLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
                 let userLocation = CLLocation(latitude: companyLat, longitude: companyLng)
                 let distance = userLocation.distance(from: officeLocation)
                 print("📏 Distance from office: \(distance) meters (allowed: \(allowed))")
 
-                // ✅ If distance exceeds allowed range → show alert & stop here
                 if distance > allowed {
                     let message = "You cannot perform this action because you are outside the allowed location."
                     print("🚫 User too far from office! Showing alert.")
@@ -111,29 +106,33 @@ final class AttendanceViewModel {
                     }
 
                     print("✅ Got server time: \(serverTime) | Timezone: \(timezone)")
-
-                    if action == "check_in" {
-                        print("➡️ Calling checkIn API with server time")
-                        self.checkIn(token: token, lat: lat, lng: lng, action_time: serverTime) {
-                            self.handleResult($0, completion: completion)
-                        }
-                    } else {
-                        print("➡️ Calling checkOut API with server time")
-                        self.checkOut(token: token, lat: lat, lng: lng, action_time: serverTime) {
-                            self.handleResult($0, completion: completion)
-                        }
-                    }
+                    self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: serverTime, completion: completion)
 
                 case .failure(let error):
+                    // 🕐 Server time failed → fallback to local UTC time
                     print("❌ Failed to get server time: \(error.localizedDescription)")
-                    self.onError?("Failed to get server time: \(error.localizedDescription)")
-                    completion(false)
+                    let localTime = self.getCurrentActionTime()
+                    print("⚠️ Using local device UTC time instead → \(localTime)")
+                    
+                    self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: localTime, completion: completion)
                 }
             }
+        }
+    }
+    private func performAttendanceAction(action: String, token: String, lat: String, lng: String, time: String, completion: @escaping (Bool) -> Void) {
+        if action == "check_in" {
+            print("➡️ Calling checkIn API with time \(time)")
+            self.checkIn(token: token, lat: lat, lng: lng, action_time: time) {
+                self.handleResult($0, completion: completion)
+            }
+        } else {
+            print("➡️ Calling checkOut API with time \(time)")
+            self.checkOut(token: token, lat: lat, lng: lng, action_time: time) {
+                self.handleResult($0, completion: completion)
+            }
+        }
+    }
 
-             }
-         }
-    
     // MARK: - Result Handling
     private func handleResult(_ result: Result<AttendanceResponse, APIError>, completion: @escaping (Bool) -> Void) {
         switch result {
