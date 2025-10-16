@@ -18,7 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                   print("🔁 Network is back — resending offline requests...")
                   NetworkManager.shared.resendOfflineRequests()
               }
-          
+        _ = ClockChangeDetector.shared
+        
         return true
     }
 

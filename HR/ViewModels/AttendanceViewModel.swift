@@ -40,17 +40,30 @@ final class AttendanceViewModel {
         let endpoint = API.getServerTime(token: token, action: "server_time")
         NetworkManager.shared.requestDecodable(endpoint, as: ServerTimeResponse.self, completion: completion)
     }
-    // MARK: - High-level Online Handling
+    
     func performCheckInOut(isCheckedIn: Bool, workedHours: Double?) {
         print("isCheckedIn : \(isCheckedIn)")
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
         let action = isCheckedIn ? "check_in" : "check_out"
+
+        // ✅ Only check for clock change in offline mode
+        if !NetworkListener.shared.isConnected {
+            if ClockChangeDetector.shared.clockChanged {
+                let message = "You’ve changed your device clock. Please reconnect to the internet before proceeding."
+                print("🚫 Clock tampering detected — blocking offline action.")
+                onShowAlert?(message) {
+                    ClockChangeDetector.shared.resetFlag() // optional, reset after user acknowledges
+                }
+                return
+            }
+        }
 
         print("🔘 performCheckInOut called → isCheckedIn=\(isCheckedIn), action=\(action), workedHours=\(String(describing: workedHours))")
         proceedAttendanceAction(action, token: token) { success in
             print(success ? "✅ \(action) completed successfully." : "❌ \(action) failed.")
         }
     }
+
 
     private func proceedAttendanceAction(_ action: String, token: String, completion: @escaping (Bool) -> Void) {
         print("📍 Requesting location for action=\(action)")
@@ -104,17 +117,32 @@ final class AttendanceViewModel {
                         completion(false)
                         return
                     }
-
+            
                     print("✅ Got server time: \(serverTime) | Timezone: \(timezone)")
                     self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: serverTime, completion: completion)
 
                 case .failure(let error):
-                    // 🕐 Server time failed → fallback to local UTC time
                     print("❌ Failed to get server time: \(error.localizedDescription)")
+
+                    // ✅ Only do clock validation when offline
+                    if !NetworkListener.shared.isConnected {
+                        if ClockChangeDetector.shared.clockChanged {
+                            let message = "You’ve changed your device clock. Please reconnect to the internet before proceeding."
+                            print("🚫 Clock tampering detected — blocking offline check-in/out.")
+                            self.onShowAlert?(message) {
+                                ClockChangeDetector.shared.resetFlag()
+                            }
+                            completion(false)
+                            return
+                        }
+                    }
+
+                    // ✅ If clock is fine, use local time
                     let localTime = self.getCurrentActionTime()
                     print("⚠️ Using local device UTC time instead → \(localTime)")
-                    
                     self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: localTime, completion: completion)
+
+
                 }
             }
         }

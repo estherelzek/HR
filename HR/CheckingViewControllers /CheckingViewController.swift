@@ -34,6 +34,14 @@ class CheckingViewController: UIViewController {
         )
         print("📱 App became active — trying to resend offline requests...")
         NetworkManager.shared.resendOfflineRequests()
+        let token = UserDefaults.standard.string(forKey: "employeeToken")!
+        print("🔑 Token: \(token)")
+//        if NetworkListener.shared.isConnected {
+//               syncServerTime(token: token)
+//           } else {
+//               print("⚠️ Offline — using last saved time sync if available.")
+//           }
+
     }
 
     @objc private func handleLanguageChange() {
@@ -52,15 +60,37 @@ class CheckingViewController: UIViewController {
         } else {
             print("⚠️ Offline → request saved locally")
             
-            let action = isCheckedIn ? "check-in" : "check-out"
-            showAlert(
-                title: "Offline Mode",
-                message: "You're currently offline. Your \(action) request has been saved locally and will be sent automatically once you reconnect to the network."
-            )
-            goToTimeOff()
+//            let action = isCheckedIn ? "check-in" : "check-out"
+//            showAlert(
+//                title: "Offline Mode",
+//                message: "You're currently offline. Your \(action) request has been saved locally and will be sent automatically once you reconnect to the network."
+//            )
+         //   goToTimeOff()
         }
     }
 
+//    private func syncServerTime(token: String) {
+//        viewModel.getServerTime(token: token) { result in
+//            switch result {
+//            case .success(let response):
+//                if let serverTimeString = response.result?.serverTime {
+//                    let formatter = DateFormatter()
+//                    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//                    formatter.timeZone = TimeZone(abbreviation: "UTC")
+//
+//                    if let serverDate = formatter.date(from: serverTimeString) {
+//                        TimeSyncManager.shared.saveSync(serverDate: serverDate)
+//                        print("✅ Time sync successful with server time: \(serverDate)")
+//                    } else {
+//                        print("⚠️ Failed to parse server time string: \(serverTimeString)")
+//                    }
+//                }
+//
+//            case .failure(let error):
+//                print("❌ Failed to get server time: \(error.localizedDescription)")
+//            }
+//        }
+//    }
 
        private func fetchAttendanceStatus() {
            guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {

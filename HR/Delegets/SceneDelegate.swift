@@ -37,6 +37,7 @@ import UIKit
                   }
             print("🔁 bbbb Network is back — resending offline requests...")
             NetworkManager.shared.resendOfflineRequests()
+            _ = ClockChangeDetector.shared
         }
 //        func sceneDidBecomeActive(_ scene: UIScene) {
 //            // Start monitoring the network
