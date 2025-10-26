@@ -14,7 +14,9 @@ struct OfflineRequest: Codable, Equatable {
     let headers: [String: String]
     let body: String?
     let timestamp: Date
+    let actionType: String? // "check_in" or "check_out"
 }
+
 
 final class OfflineURLStorage {
     
@@ -103,13 +105,21 @@ final class NetworkManager {
 //                }
 
                 // ✅ Otherwise, save offline request
+                let actionType: String? = {
+                    if request.url?.absoluteString.contains("check_in") == true { return "check_in" }
+                    if request.url?.absoluteString.contains("check_out") == true { return "check_out" }
+                    return nil
+                }()
+
                 let offlineRequest = OfflineRequest(
                     url: request.url?.absoluteString ?? "",
                     method: request.httpMethod ?? "GET",
                     headers: request.allHTTPHeaderFields ?? [:],
                     body: request.httpBody.flatMap { String(data: $0, encoding: .utf8) },
-                    timestamp: Date()
+                    timestamp: Date(),
+                    actionType: actionType
                 )
+
                 print("offlineRequest: \(offlineRequest)")
                 OfflineURLStorage.shared.save(offlineRequest)
                 completion(.failure(.requestFailed(error.localizedDescription)))
@@ -142,3 +152,61 @@ final class NetworkManager {
     }
 
 }
+//extension NetworkManager {
+//    func resendOfflineRequests() {
+//        var requests = OfflineURLStorage.shared.fetch()
+//        guard !requests.isEmpty else {
+//            print("📭 No offline requests to resend.")
+//            return
+//        }
+//
+//        // Sort by timestamp (oldest first)
+//        requests.sort { $0.timestamp < $1.timestamp }
+//
+//        // Group by date (same calendar day)
+//        let grouped = Dictionary(grouping: requests) {
+//            Calendar.current.startOfDay(for: $0.timestamp)
+//        }
+//
+//        for (day, dayRequests) in grouped.sorted(by: { $0.key < $1.key }) {
+//            print("📅 Resending requests for day: \(day)")
+//
+//            // Ensure check-in comes before check-out
+//            let sortedDayRequests = dayRequests.sorted {
+//                let a = $0.actionType ?? ""
+//                let b = $1.actionType ?? ""
+//                if a == "check_in" && b == "check_out" { return true }
+//                if a == "check_out" && b == "check_in" { return false }
+//                return $0.timestamp < $1.timestamp
+//            }
+//
+//            for request in sortedDayRequests {
+//                resend(request)
+//            }
+//        }
+//    }
+//
+//    private func resend(_ request: OfflineRequest) {
+//        guard let url = URL(string: request.url) else { return }
+//        var urlRequest = URLRequest(url: url)
+//        urlRequest.httpMethod = request.method
+//        urlRequest.allHTTPHeaderFields = request.headers
+//        if let body = request.body {
+//            urlRequest.httpBody = body.data(using: .utf8)
+//        }
+//
+//        URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+//            if let error = error {
+//                print("❌ Failed to resend offline request: \(error.localizedDescription)")
+//                return
+//            }
+//
+//            if let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) {
+//                print("✅ Successfully resent offline \(request.actionType ?? "unknown") request.")
+//                OfflineURLStorage.shared.remove([request])
+//            } else {
+//                print("⚠️ Server responded with non-200 for offline resend.")
+//            }
+//        }.resume()
+//    }
+//}

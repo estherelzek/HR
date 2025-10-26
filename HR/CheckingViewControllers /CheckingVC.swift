@@ -1,14 +1,13 @@
 //
-//  CheckingViewController.swift
+//  CheckingVC.swift
 //  HR
 //
-//  Created by Esther Elzek on 20/08/2025.
+//  Created by Esther Elzek on 20/10/2025.
 //
 
 import UIKit
 
-class CheckingViewController: UIViewController {
-    
+class CheckingVC: UIViewController {
     @IBOutlet weak var titleOfCheckingInOrOut: UILabel!
     @IBOutlet weak var discreptionOfCurrecntAttendence: UILabel!
     @IBOutlet weak var checkingButton: InspectableButton!
@@ -23,26 +22,36 @@ class CheckingViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loader.startAnimating()
-        fetchAttendanceStatus()
         setUpLisgnerstoViewModel()
-        
+
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handleLanguageChange),
             name: NSNotification.Name("LanguageChanged"),
             object: nil
         )
-        print("📱 App became active — trying to resend offline requests...")
-        NetworkManager.shared.resendOfflineRequests()
-        let token = UserDefaults.standard.string(forKey: "employeeToken")!
-        print("🔑 Token: \(token)")
-//        if NetworkListener.shared.isConnected {
-//               syncServerTime(token: token)
-//           } else {
-//               print("⚠️ Offline — using last saved time sync if available.")
-//           }
 
+        // ✅ Observe network restoration
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(networkBecameReachable),
+            name: .networkReachable,
+            object: nil
+        )
+        print("📱 App became active — trying to resend offline requests...")
+        NetworkManager.shared.resendOfflineRequests { [weak self] in
+            print("✅ All offline requests sent → now fetching fresh status.")
+            self?.fetchAttendanceStatus()
+        }
+        calculateClockDifference()
     }
+
+
+    @objc private func networkBecameReachable() {
+        print("🌐 Network became reachable → resending offline requests...")
+        NetworkManager.shared.resendOfflineRequests()
+    }
+
 
     @objc private func handleLanguageChange() {
         reloadTexts()
@@ -50,47 +59,77 @@ class CheckingViewController: UIViewController {
   
 
     @IBAction func checkingButtonTapped(_ sender: Any) {
-        isCheckedIn.toggle()
-        print("isCheckedIn: \(isCheckedIn)")
-        viewModel.performCheckInOut(isCheckedIn: isCheckedIn, workedHours: workedHours)
+        NetworkManager.shared.resendOfflineRequests { [weak self] in
+            print("✅ All offline requests sent → now fetching fresh status.")
+            self?.fetchAttendanceStatus()
+        }
+        if isCheckedIn {
+            // Calculate or show worked hours if available
+            let hoursText: String
+            if let hours = workedHours {
+                hoursText = String(format: "%.2f hours", hours)
+            } else {
+                hoursText = "Unknown"
+            }
 
-        if NetworkListener.shared.isConnected {
-            print("✅ Online → reloading texts")
-            reloadTexts()
+            let alert = UIAlertController(
+                title: "Confirm Check-Out",
+                message: "You’ve worked \(hoursText) today. Are you sure you want to check out?",
+                preferredStyle: .alert
+            )
+
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Check Out", style: .destructive, handler: { [weak self] _ in
+                guard let self = self else { return }
+                self.isCheckedIn.toggle()
+                print("isCheckedIn after confirmation: \(self.isCheckedIn)")
+                self.viewModel.performCheckInOut(isCheckedIn: self.isCheckedIn, workedHours: self.workedHours)
+
+                if NetworkListener.shared.isConnected {
+                    print("✅ Online → reloading texts")
+                    self.reloadTexts()
+                } else{
+                    print("⚠️ Offline → request saved locally")
+                    var def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
+                    print("def : \(def)")
+                    if def == "-1000" {
+                        print("none will be shown becouse the request refused ")
+                    } else  {
+                        showAlert(
+                            title: "Offline Mode",
+                            message: "You're currently offline. Your check-out request has been saved locally and will be sent automatically once you reconnect to the network."
+                        )
+                    }
+                   
+                }            }))
+
+            present(alert, animated: true)
         } else {
-            print("⚠️ Offline → request saved locally")
-            
-//            let action = isCheckedIn ? "check-in" : "check-out"
-//            showAlert(
-//                title: "Offline Mode",
-//                message: "You're currently offline. Your \(action) request has been saved locally and will be sent automatically once you reconnect to the network."
-//            )
-         //   goToTimeOff()
+            // ✅ Regular check-in
+            isCheckedIn.toggle()
+            print("isCheckedIn after check-in: \(isCheckedIn)")
+            viewModel.performCheckInOut(isCheckedIn: isCheckedIn, workedHours: workedHours)
+
+            if NetworkListener.shared.isConnected {
+                print("✅ Online → reloading texts")
+                reloadTexts()
+            } else {
+                print("⚠️ Offline → request saved locally")
+                var def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
+                print("def : \(def)")
+                if def == "-1000" {
+                    print("none will be shown becouse the request refused ")
+                } else  {
+                    showAlert(
+                        title: "Offline Mode",
+                        message: "You're currently offline. Your check-in request has been saved locally and will be sent automatically once you reconnect to the network."
+                    )
+                }
+               
+            }
         }
     }
 
-//    private func syncServerTime(token: String) {
-//        viewModel.getServerTime(token: token) { result in
-//            switch result {
-//            case .success(let response):
-//                if let serverTimeString = response.result?.serverTime {
-//                    let formatter = DateFormatter()
-//                    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-//                    formatter.timeZone = TimeZone(abbreviation: "UTC")
-//
-//                    if let serverDate = formatter.date(from: serverTimeString) {
-//                        TimeSyncManager.shared.saveSync(serverDate: serverDate)
-//                        print("✅ Time sync successful with server time: \(serverDate)")
-//                    } else {
-//                        print("⚠️ Failed to parse server time string: \(serverTimeString)")
-//                    }
-//                }
-//
-//            case .failure(let error):
-//                print("❌ Failed to get server time: \(error.localizedDescription)")
-//            }
-//        }
-//    }
 
        private func fetchAttendanceStatus() {
            guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
@@ -119,7 +158,8 @@ class CheckingViewController: UIViewController {
                        self?.loader.hidesWhenStopped = true
                        
                    case .failure(let error):
-                       self?.showAlert(title: "Error", message: error.localizedDescription)
+                       print("❌ Request Faileddddddd: \(error)")
+                     //  self?.showAlert(title: "Errorrrrrrrr", message: error.localizedDescription)
                    }
                }
            }
@@ -164,11 +204,12 @@ class CheckingViewController: UIViewController {
     }
 }
 
-extension CheckingViewController {
+extension CheckingVC {
     private func reloadTexts() {
         print("isCheckedIn : \(isCheckedIn)")
         if isCheckedIn {
-            titleOfCheckingInOrOut.text = NSLocalizedString("checked_in_title", comment: "")
+           titleOfCheckingInOrOut.text = NSLocalizedString("checked_in_title", comment: "")
+         //   titleOfCheckingInOrOut.text = UserDefaults.standard.string(forKey: "clockDiffMinutes")!
             checkingButton.setTitle(NSLocalizedString("checked_in_button", comment: ""), for: .normal)
             checkingButton.setImage(UIImage(named: "login"), for: .normal)
 
@@ -183,6 +224,7 @@ extension CheckingViewController {
             }
 
         } else {
+         //   titleOfCheckingInOrOut.text = UserDefaults.standard.string(forKey: "clockDiffMinutes")!
             titleOfCheckingInOrOut.text = NSLocalizedString("checked_out_title", comment: "")
             checkingButton.setTitle(NSLocalizedString("checked_out_button", comment: ""), for: .normal)
             checkingButton.setImage(UIImage(named: "logout"), for: .normal)
@@ -201,4 +243,3 @@ extension CheckingViewController {
     }
  
 }
-

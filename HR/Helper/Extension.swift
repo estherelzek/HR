@@ -79,7 +79,7 @@ extension UIViewController {
     }
     
     func goToChecking() {
-           let checkingVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+           let checkingVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
            if let rootVC = self.view.window?.rootViewController as? ViewController {
                rootVC.switchTo(viewController: checkingVC)
                rootVC.homeButton.tintColor = .purplecolor
@@ -92,7 +92,7 @@ extension UIViewController {
     
      func goToCheckingVC() {
         if let rootVC = self.view.window?.rootViewController as? ViewController {
-            let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+            let checkVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
             rootVC.switchTo(viewController: checkVC)
             rootVC.bottomBarView.isHidden = false
             rootVC.homeButton.tintColor = .purplecolor
@@ -195,6 +195,48 @@ extension UIViewController {
             }
         self.present(attentionVC, animated: true, completion: nil)
     }
+    
+    func calculateClockDifference() {
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+            print("❌ No token found.")
+            return
+        }
+        
+          AttendanceViewModel().getServerTime(token: token) { result in
+            switch result {
+            case .success(let response):
+                guard let serverTimeString = response.result?.serverTime else {
+                    print("❌ Server time missing in response.")
+                    return
+                }
+                
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                // Use the server's timezone if available (e.g., "Africa/Cairo")
+                formatter.timeZone = TimeZone(identifier: response.result?.timezone ?? "UTC")
+                
+                guard let serverDate = formatter.date(from: serverTimeString) else {
+                    print("❌ Failed to parse server time: \(serverTimeString)")
+                    return
+                }
+                
+                let localDate = Date() // Local phone time
+                let differenceInSeconds = localDate.timeIntervalSince(serverDate)
+                let differenceInMinutes = differenceInSeconds / 60.0
+                
+                UserDefaults.standard.set(differenceInMinutes, forKey: "clockDiffMinutes")
+                UserDefaults.standard.synchronize()
+                
+                print("🕒 Server time: \(serverTimeString) [\(response.result?.timezone ?? "UTC")]")
+                print("📱 Local phone time: \(localDate)")
+                print("📏 Difference: \(differenceInMinutes) minutes")
+                
+            case .failure(let error):
+                print("❌ Failed to get server time: \(error)")
+            }
+        }
+    }
+
 }
 
 @IBDesignable

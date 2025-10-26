@@ -198,10 +198,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 524P497MGB;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HR/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Inspire HR";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We use Face ID / Touch ID to quickly and securely log you in.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location to record check-in and check-out.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to record check-in and check-out.";
@@ -215,7 +216,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.inspirehub.esterHR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -233,10 +234,11 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 524P497MGB;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HR/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Inspire HR";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "We use Face ID / Touch ID to quickly and securely log you in.";
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "We need your location to record check-in and check-out.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We need your location to record check-in and check-out.";
@@ -250,7 +252,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.inspirehub.esterHR;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";

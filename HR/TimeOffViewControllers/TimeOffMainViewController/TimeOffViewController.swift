@@ -88,27 +88,57 @@ class TimeOffViewController: UIViewController {
     }
 
     private func loadHolidays(completion: @escaping () -> Void) {
-        guard let token = UserDefaults.standard.employeeToken else { return completion() }
+        guard let token = UserDefaults.standard.employeeToken else {
+            print("⚠️ No employee token found.")
+            return completion()
+        }
+
+        print("📡 Fetching holidays and weekends from API...")
+
         viewModel.fetchHolidays(token: token) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
+                    print("✅ Holiday API Success: \(data)")
+
                     if let offs = data.weekly_offs {
                         self?.weekendDays = offs.keys.compactMap { Int($0) }
+                        print("🗓 Weekend days (from API): \(self?.weekendDays ?? [])")
+                    } else {
+                        print("⚠️ No weekend days found in response.")
                     }
+
                     if let holidays = data.public_holidays {
                         let formatter = DateFormatter()
                         formatter.dateFormat = "yyyy-MM-dd"
-                        self?.publicHolidays = holidays.compactMap { formatter.date(from: $0.start_date) }
+
+                        self?.publicHolidays = holidays.compactMap { holiday in
+                            let date = formatter.date(from: holiday.start_date)
+                            if let d = date {
+                                print("🎉 Parsed public holiday: \(holiday.start_date) → \(d)")
+                            } else {
+                                print("⚠️ Failed to parse holiday date: \(holiday.start_date)")
+                            }
+                            return date
+                        }
+
+                        print("📅 All parsed public holidays: \(self?.publicHolidays ?? [])")
+                    } else {
+                        print("⚠️ No public holidays found in response.")
                     }
+
                     self?.calender.reloadData()
+                    print("🔄 Calendar reloaded after holidays update.")
+
                 case .failure(let error):
-                    print("❌ Holiday API Error:", error)
+                    print("❌ Holiday API Error: \(error.localizedDescription)")
                 }
-                completion() // ✅ always call completion
+
+                completion() // ✅ Always call completion
             }
         }
     }
+
 
     private func loadTimeOffData(completion: @escaping () -> Void) {
         guard let token = UserDefaults.standard.employeeToken else { return completion() }
@@ -260,20 +290,41 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
     func calendar(_ calendar: FSCalendar, cellFor date: Date, at position: FSCalendarMonthPosition) -> FSCalendarCell {
         let cell = calendar.dequeueReusableCell(withIdentifier: "TimeOffCalendarCell", for: date, at: position) as! TimeOffCalendarCell
         let normalizedDate = Calendar.current.startOfDay(for: date)
+
         var state = ""
         var color = ""
+
         if let record = leaveDayRecords[normalizedDate] {
-            state = record.state // e.g. "refuse", "confirm"
+            state = record.state
             color = record.color ?? ""
-            
         } else if let record = leaveHourRecords[normalizedDate] {
             state = record.state
             color = record.color ?? ""
         }
-        print("color esther: \(color)")
-        cell.configure(for: state ,  color: color)
+
+        // ✅ Default: clear background
+        cell.backgroundColor = .clear
+
+        // ✅ Public holidays
+        if publicHolidays.contains(where: { Calendar.current.isDate($0, inSameDayAs: normalizedDate) }) {
+            cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
+        }
+
+        if !weekendDays.isEmpty {
+            let weekday = Calendar.current.component(.weekday, from: normalizedDate)
+            // Convert Apple's weekday (1–7, Sunday = 1) → API weekday (0–6, Monday = 0)
+            let convertedIndex = (weekday + 5) % 7
+
+            if weekendDays.contains(convertedIndex) {
+                cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
+            }
+        }
+
+
+        cell.configure(for: state, color: color)
         return cell
     }
+
     
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
             let normalizedDate = Calendar.current.startOfDay(for: date)

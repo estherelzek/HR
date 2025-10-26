@@ -28,30 +28,41 @@ final class NetworkListener {
             guard let self = self else { return }
 
             if path.status == .satisfied {
-                self.isConnected = true
-                print("🌐 Network connected")
-                self.onConnected?()
+                if !self.isConnected {
+                    self.isConnected = true
+                    print("🌐 Network connected")
+                    self.onConnected?()
+                    NotificationCenter.default.post(name: .networkReachable, object: nil) // ✅ notify observers
+                }
             } else {
-                self.isConnected = false
-                print("🚫 Network disconnected")
+                if self.isConnected {
+                    self.isConnected = false
+                    print("🚫 Network disconnected")
+                }
             }
         }
         monitor.start(queue: queue)
     }
+
 }
 
 
 extension NetworkManager {
-    func resendOfflineRequests(token: String? = nil) {
+    func resendOfflineRequests(token: String? = nil, completion: (() -> Void)? = nil) {
         let stored = OfflineURLStorage.shared.fetch()
         guard !stored.isEmpty else {
             print("📭 No offline requests to resend.")
+            completion?()
             return
         }
 
         print("📡 Attempting to resend \(stored.count) offline requests...")
 
-        for request in stored {
+        var successfullyResent: [OfflineRequest] = []
+        let session = URLSession.shared
+        let dispatchGroup = DispatchGroup()
+        
+        for (index, request) in stored.enumerated() {
             guard let url = URL(string: request.url) else { continue }
 
             var urlRequest = URLRequest(url: url)
@@ -61,20 +72,53 @@ extension NetworkManager {
                 urlRequest.httpBody = body.data(using: .utf8)
             }
 
-            URLSession.shared.dataTask(with: urlRequest) { data, response, error in
+            var actualBody = "nil"
+            if let httpBody = urlRequest.httpBody,
+               let bodyString = String(data: httpBody, encoding: .utf8) {
+                actualBody = bodyString
+            }
+
+            print("""
+            🚀 Sending offline request \(index + 1)/\(stored.count)
+            ➡️ URL: \(url)
+            ➡️ Method: \(request.method)
+            ➡️ Body: \(actualBody)
+            """)
+
+            dispatchGroup.enter()
+            session.dataTask(with: urlRequest) { data, response, error in
+                defer { dispatchGroup.leave() }
+
                 if let error = error {
-                    print("❌ Failed to resend \(url): \(error.localizedDescription)")
+                    print("❌ Network failure for \(url.lastPathComponent): \(error.localizedDescription)")
                     return
                 }
 
-                if let httpResponse = response as? HTTPURLResponse {
-                    print("✅ Resent \(url) → Status: \(httpResponse.statusCode)")
-                    if 200...299 ~= httpResponse.statusCode {
-                        OfflineURLStorage.shared.remove([request])
-                        print("🗑️ Removed successfully resent request: \(url)")
-                    }
+                guard let httpResponse = response as? HTTPURLResponse else { return }
+                let bodyText = data.flatMap { String(data: $0, encoding: .utf8) } ?? "nil"
+                print("✅ [\(index + 1)/\(stored.count)] \(url.lastPathComponent) → Status: \(httpResponse.statusCode)\n↳ Response: \(bodyText)")
+
+                // ✅ Check both HTTP and logical success
+                if 200...299 ~= httpResponse.statusCode,
+                   let data = data,
+                   let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let result = json["result"] as? [String: Any],
+                   let status = result["status"] as? String,
+                   status == "success" {
+                    successfullyResent.append(request)
+                } else {
+                    print("⚠️ Logical failure → request will remain for retry.")
                 }
             }.resume()
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            if !successfullyResent.isEmpty {
+                OfflineURLStorage.shared.remove(successfullyResent)
+                print("🗑️ Removed \(successfullyResent.count) truly successful requests.")
+            }
+            print("✅ All resend attempts finished.")
+            completion?()
         }
     }
 }

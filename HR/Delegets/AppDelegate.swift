@@ -19,8 +19,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                   NetworkManager.shared.resendOfflineRequests()
               }
         _ = ClockChangeDetector.shared
-        
+
+//        if let token = UserDefaults.standard.string(forKey: "employeeToken") {
+//            ClockChangeDetector.shared.initializeBaselineIfNeeded(
+//                token: token,
+//                getServerTime: { token, completion in
+//                    AttendanceViewModel().getServerTime(token: token) { result in
+//                        completion(result.mapError { $0 as Error })
+//                    }
+//                }
+//            )
+//        }
+
+        // ✅ Extra verification when app launches
+     //   ClockChangeDetector.shared.verifyClockDifference()
+
         return true
+    }
+    func applicationDidBecomeActive(_ application: UIApplication) {
+ //       ClockChangeDetector.shared.verifyClockDifference()
     }
 
     func application(_ application: UIApplication,

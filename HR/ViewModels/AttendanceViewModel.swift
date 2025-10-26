@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreLocation
+import UIKit
 
 final class AttendanceViewModel {
     private let locationService = LocationService()
@@ -42,21 +43,10 @@ final class AttendanceViewModel {
     }
     
     func performCheckInOut(isCheckedIn: Bool, workedHours: Double?) {
-        print("isCheckedIn : \(isCheckedIn)")
+        var def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
+        print("def : \(def)")
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
         let action = isCheckedIn ? "check_in" : "check_out"
-
-        // ✅ Only check for clock change in offline mode
-        if !NetworkListener.shared.isConnected {
-            if ClockChangeDetector.shared.clockChanged {
-                let message = "You’ve changed your device clock. Please reconnect to the internet before proceeding."
-                print("🚫 Clock tampering detected — blocking offline action.")
-                onShowAlert?(message) {
-                    ClockChangeDetector.shared.resetFlag() // optional, reset after user acknowledges
-                }
-                return
-            }
-        }
 
         print("🔘 performCheckInOut called → isCheckedIn=\(isCheckedIn), action=\(action), workedHours=\(String(describing: workedHours))")
         proceedAttendanceAction(action, token: token) { success in
@@ -117,36 +107,72 @@ final class AttendanceViewModel {
                         completion(false)
                         return
                     }
-            
+
                     print("✅ Got server time: \(serverTime) | Timezone: \(timezone)")
+                    self.calculateClockDifferenceAndWait {
+                        print("new deffrinence : \(UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0")" )
+                    }
                     self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: serverTime, completion: completion)
 
                 case .failure(let error):
                     print("❌ Failed to get server time: \(error.localizedDescription)")
-
-                    // ✅ Only do clock validation when offline
+                   var def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
+                    print("def: \(def)")
                     if !NetworkListener.shared.isConnected {
-                        if ClockChangeDetector.shared.clockChanged {
-                            let message = "You’ve changed your device clock. Please reconnect to the internet before proceeding."
-                            print("🚫 Clock tampering detected — blocking offline check-in/out.")
-                            self.onShowAlert?(message) {
-                                ClockChangeDetector.shared.resetFlag()
-                            }
+                        if def == "-1000" {
+                            self.handleClockTamperingAlertAndRecalculate(action: action)
                             completion(false)
                             return
+                        } else {
+                            // ✅ Device clock not changed → use saved offset
+                            let diffMinutes = UserDefaults.standard.double(forKey: "clockDiffMinutes")
+                            let localTimeString = self.getCurrentActionTime() // returns a string like "2025-10-23 12:15:00"
+
+                            // Convert string to Date first
+                            let formatter = DateFormatter()
+                            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                            formatter.timeZone = TimeZone(abbreviation: "UTC")
+
+                            guard let localNow = formatter.date(from: localTimeString) else {
+                                print("❌ Failed to parse local time string: \(localTimeString)")
+                                completion(false)
+                                return
+                            }
+
+                            // Apply saved difference
+                            let correctedServerTime = localNow.addingTimeInterval(diffMinutes * 60)
+                            let correctedTimeString = formatter.string(from: correctedServerTime)
+
+                            print("""
+                            ⚙️ Offline mode:
+                            Local time: \(localTimeString)
+                            Diff minutes: \(diffMinutes)
+                            → Corrected server-equivalent time: \(correctedTimeString)
+                            """)
+
+                            self.performAttendanceAction(
+                                action: action,
+                                token: token,
+                                lat: lat,
+                                lng: lng,
+                                time: correctedTimeString,
+                                completion: completion
+                            )
+                            return
                         }
+
                     }
 
-                    // ✅ If clock is fine, use local time
+                    // ✅ Online but server failed — fallback to UTC local
                     let localTime = self.getCurrentActionTime()
                     print("⚠️ Using local device UTC time instead → \(localTime)")
                     self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: localTime, completion: completion)
-
-
                 }
             }
+
         }
     }
+    
     private func performAttendanceAction(action: String, token: String, lat: String, lng: String, time: String, completion: @escaping (Bool) -> Void) {
         if action == "check_in" {
             print("➡️ Calling checkIn API with time \(time)")
@@ -160,6 +186,46 @@ final class AttendanceViewModel {
             }
         }
     }
+    func calculateClockDifferenceAndWait(completion: @escaping () -> Void) {
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+            print("❌ No token found.")
+            completion()
+            return
+        }
+
+        getServerTime(token: token) { result in
+            switch result {
+            case .success(let response):
+                guard let serverTimeString = response.result?.serverTime else {
+                    print("❌ Server time missing in response.")
+                    completion()
+                    return
+                }
+
+                let formatter = DateFormatter()
+                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                formatter.timeZone = TimeZone(identifier: response.result?.timezone ?? "UTC")
+
+                guard let serverDate = formatter.date(from: serverTimeString) else {
+                    print("❌ Failed to parse server time: \(serverTimeString)")
+                    completion()
+                    return
+                }
+
+                let localDate = Date()
+                let differenceInMinutes = localDate.timeIntervalSince(serverDate) / 60.0
+                UserDefaults.standard.set(differenceInMinutes, forKey: "clockDiffMinutes")
+                UserDefaults.standard.synchronize()
+
+                print("✅ Clock diff recalculated: \(differenceInMinutes) minutes")
+                completion() // ← Notify caller that we finished
+
+            case .failure(let error):
+                print("❌ Failed to recalculate server time: \(error)")
+                completion()
+            }
+        }
+    }
 
     // MARK: - Result Handling
     private func handleResult(_ result: Result<AttendanceResponse, APIError>, completion: @escaping (Bool) -> Void) {
@@ -170,13 +236,13 @@ final class AttendanceViewModel {
                 onSuccess?(response)
                 completion(true)
             }else {
-                onError?(response.result?.message ?? "Unknown error")
+              //  onError?(response.result?.message ?? "Unknown error")
                 completion(false)
             }
          
         case .failure(let error):
             print("❌ Attendance API failed: \(error.localizedDescription)")
-            onError?(error.localizedDescription)
+        //    onError?(error.localizedDescription)
             completion(false)
         }
     }
@@ -184,17 +250,88 @@ final class AttendanceViewModel {
 
 // MARK: - Simplified Online Check (no offline saving)
 extension AttendanceViewModel {
-   
 
     func resendPending(token: String) {
         // No offline actions anymore
         print("📭 Offline resend skipped — offline storage disabled.")
     }
+    
     private func getCurrentActionTime() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         return formatter.string(from: Date())
     }
-
+//    private func getCurrentActionTime() -> Date {
+//        return Date() // Just return the current Date in UTC
+//    }
+    
+    private func handleClockTamperingAlertAndRecalculate(action: String) {
+        let message = "You’ve changed your device clock. Please reconnect to the internet before proceeding."
+        print("🚫 Clock tampering detected — blocking offline check-in/out.")
+        
+        let alert = UIAlertController(title: "Clock Changed", message: message, preferredStyle: .alert)
+        
+        // Placeholder variable so we can reference it inside the closure
+        var okAction: UIAlertAction!
+        
+        // Define the handler
+        let okHandler: (UIAlertAction) -> Void = { [weak self] _ in
+            guard let self = self else { return }
+            print("🕒 User pressed OK — calling getServerTime()...")
+            
+            guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+                print("❌ No token found.")
+                return
+            }
+            
+            // Disable button and show spinner
+            okAction.isEnabled = false
+            let indicator = UIActivityIndicatorView(style: .medium)
+            indicator.translatesAutoresizingMaskIntoConstraints = false
+            alert.view.addSubview(indicator)
+            NSLayoutConstraint.activate([
+                indicator.centerXAnchor.constraint(equalTo: alert.view.centerXAnchor),
+                indicator.bottomAnchor.constraint(equalTo: alert.view.bottomAnchor, constant: -45)
+            ])
+            indicator.startAnimating()
+            
+            // Call getServerTime until success
+            self.getServerTime(token: token) { result in
+                DispatchQueue.main.async {
+                    switch result {
+                    case .success(let response):
+                        if response.result?.status.lowercased() == "success" {
+                            print("✅ Server time fetched successfully.")
+                            indicator.stopAnimating()
+                            alert.dismiss(animated: true) {
+                                self.performCheckInOut(isCheckedIn: action == "check_in", workedHours: nil)
+                            }
+                        } else {
+                            print("⚠️ Server returned status: \(response.result?.status ?? "unknown")")
+                            indicator.stopAnimating()
+                            okAction.isEnabled = true // allow retry
+                        }
+                        
+                    case .failure(let error):
+                        print("❌ Failed to get server time: \(error.localizedDescription)")
+                        indicator.stopAnimating()
+                        okAction.isEnabled = true // allow retry
+                    }
+                }
+            }
+        }
+        
+        okAction = UIAlertAction(title: "OK", style: .default, handler: okHandler)
+        alert.addAction(okAction)
+        
+        // Present alert on main thread
+        DispatchQueue.main.async {
+            if let topVC = UIApplication.shared.connectedScenes
+                .compactMap({ ($0 as? UIWindowScene)?.keyWindow?.rootViewController })
+                .first {
+                topVC.present(alert, animated: true)
+            }
+        }
+    }
 }

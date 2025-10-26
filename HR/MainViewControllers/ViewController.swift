@@ -27,7 +27,7 @@ class ViewController: UIViewController {
     
     // MARK: - Bottom Bar Button Actions
     @IBAction func homeButoonTapped(_ sender: Any) {
-        let homeVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+        let homeVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
         homeButton.tintColor = .purplecolor
         timeOffButton.tintColor = .lightGray
         settingButton.tintColor = .lightGray
@@ -77,7 +77,7 @@ class ViewController: UIViewController {
             switchTo(viewController: loginVC)
         } else {
             if dontShowAgain {
-                let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+                let checkVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
                 bottomBarView.isHidden = false
                 switchTo(viewController: checkVC)
             } else {
@@ -90,7 +90,7 @@ class ViewController: UIViewController {
                     bottomBarView.isHidden = true
                     switchTo(viewController: fingerprintVC)
                 } else {
-                    let checkVC = CheckingViewController(nibName: "CheckingViewController", bundle: nil)
+                    let checkVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
                     bottomBarView.isHidden = false
                     switchTo(viewController: checkVC)
                 }

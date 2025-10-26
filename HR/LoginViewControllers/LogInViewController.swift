@@ -94,10 +94,13 @@ extension LogInViewController {
             guard let self = self else { return }
             let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController", bundle: nil)
             protectionMethodVC.modalPresentationStyle = .fullScreen
+         calculateClockDifference()
             self.present(protectionMethodVC, animated: true)
         }
         viewModel.onLoginFailure = { [weak self] message in
-            self?.showAlert(title: NSLocalizedString("login_failed", comment: ""), message: NSLocalizedString("weak_connection", comment: ""))
+            self?.showAlert(title: NSLocalizedString("login_failed", comment: ""), message: NSLocalizedString(message, comment: ""))
+            self?.loader.stopAnimating()
+            self?.loader.isHidden = true
         }
     }
 }

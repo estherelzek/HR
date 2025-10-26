@@ -8,10 +8,6 @@
 import UIKit
 import LocalAuthentication
 
-// File: ProtectionMethodViewController.swift
-import UIKit
-import LocalAuthentication
-
 enum ProtectionMethod: String {
     case fingerprint
     case pin
@@ -28,7 +24,6 @@ class ProtectionMethodViewController: UIViewController {
     @IBOutlet weak var donotShowThisLabel: UILabel!
     @IBOutlet weak var noProtectionButton: UIButton!
     @IBOutlet weak var faceAuthentication: InspectableTextField!
-    
     @IBOutlet weak var fingerIcone: UIImageView!
     @IBOutlet weak var faceIcone: UIImageView!
     @IBOutlet weak var pinicone: UIImageView!
@@ -40,12 +35,7 @@ class ProtectionMethodViewController: UIViewController {
         setUpTexts()
         setUpTextFields()
         detectAvailableBiometric()
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(languageChanged),
-            name: NSNotification.Name("LanguageChanged"),
-            object: nil
-        )
+        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
     }
    
     @IBAction func noProductionButtonTapped(_ sender: Any) {

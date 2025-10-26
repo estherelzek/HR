@@ -38,6 +38,24 @@ import UIKit
             print("🔁 bbbb Network is back — resending offline requests...")
             NetworkManager.shared.resendOfflineRequests()
             _ = ClockChangeDetector.shared
+            NotificationCenter.default.addObserver(
+                self,
+                selector: #selector(networkBecameReachable),
+                name: .networkReachable,
+                object: nil
+            )
+
+           
+        }
+        @objc private func networkBecameReachable() {
+            print("🌐 Network became reachable → resending offline requests...")
+            NetworkManager.shared.resendOfflineRequests()
+        }
+
+        // Also, call it when app resumes
+        func applicationDidBecomeActive(_ application: UIApplication) {
+            print("📱 App became active — trying to resend offline requests...")
+            NetworkManager.shared.resendOfflineRequests()
         }
 //        func sceneDidBecomeActive(_ scene: UIScene) {
 //            // Start monitoring the network
