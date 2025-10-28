@@ -63,37 +63,58 @@ class ProtectionMethodViewController: UIViewController {
     }
 
     private func detectAvailableBiometric() {
+        let device = UIDevice.current
+        print("📱 Device name: \(device.name)")
+        print("💻 System: \(device.systemName) \(device.systemVersion)")
+        print("🔧 Model: \(device.model)")
+        
         let context = LAContext()
         var error: NSError?
 
-        guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) {
+            switch context.biometryType {
+            case .faceID:
+                print("✅ Face ID is available on this device")
+                availableMethod = .faceID
+                fingurePrintTextField.isHidden = true
+                fingerIcone.isHidden = true
+                faceAuthentication.isHidden = false
+                faceIcone.isHidden = false
+                
+            case .touchID:
+                print("✅ Touch ID (Fingerprint) is available on this device")
+                availableMethod = .fingerprint
+                fingurePrintTextField.isHidden = false
+                fingerIcone.isHidden = false
+                faceAuthentication.isHidden = true
+                faceIcone.isHidden = true
+                
+            default:
+                print("❌ No biometric authentication available (default case)")
+                availableMethod = .none
+                fingurePrintTextField.isHidden = true
+                fingerIcone.isHidden = true
+                faceAuthentication.isHidden = true
+                faceIcone.isHidden = true
+            }
+        } else {
+            print("⚠️ Biometrics not available or not enrolled: \(error?.localizedDescription ?? "Unknown error")")
             availableMethod = .none
             fingurePrintTextField.isHidden = true
             fingerIcone.isHidden = true
-            
             faceAuthentication.isHidden = true
             faceIcone.isHidden = true
-            return
         }
 
-        switch context.biometryType {
-        case .faceID:
-            availableMethod = .faceID
-            fingurePrintTextField.isHidden = true
-            fingerIcone.isHidden = true
-            faceAuthentication.isHidden = false
-        case .touchID:
-            availableMethod = .fingerprint
-            fingurePrintTextField.isHidden = false
-            faceIcone.isHidden = true
-            faceAuthentication.isHidden = true
-        default:
-            availableMethod = .none
-            fingurePrintTextField.isHidden = true
-            faceIcone.isHidden = true
-            fingerIcone.isHidden = true
-            faceAuthentication.isHidden = true
+        // Print all possible authentication methods on this device
+        print("🔍 Available authentication methods:")
+        if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: nil) {
+            print("- Device Owner Authentication (PIN/Passcode) available")
         }
+        if context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) {
+            print("- Biometric Authentication (Face ID or Touch ID) available")
+        }
+        print("--------------------------------------------")
     }
 
     @objc private func languageChanged() {

@@ -116,8 +116,9 @@ final class AttendanceViewModel {
 
                 case .failure(let error):
                     print("❌ Failed to get server time: \(error.localizedDescription)")
-                   var def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
+                    let def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
                     print("def: \(def)")
+
                     if !NetworkListener.shared.isConnected {
                         if def == "-1000" {
                             self.handleClockTamperingAlertAndRecalculate(action: action)
@@ -126,9 +127,9 @@ final class AttendanceViewModel {
                         } else {
                             // ✅ Device clock not changed → use saved offset
                             let diffMinutes = UserDefaults.standard.double(forKey: "clockDiffMinutes")
-                            let localTimeString = self.getCurrentActionTime() // returns a string like "2025-10-23 12:15:00"
+                            let localTimeString = self.getCurrentActionTime() // e.g. "2025-10-23 12:15:00"
 
-                            // Convert string to Date first
+                            // Convert string to Date
                             let formatter = DateFormatter()
                             formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                             formatter.timeZone = TimeZone(abbreviation: "UTC")
@@ -139,8 +140,8 @@ final class AttendanceViewModel {
                                 return
                             }
 
-                            // Apply saved difference
-                            let correctedServerTime = localNow.addingTimeInterval(diffMinutes * 60)
+                            // 🧠 FIXED: Subtract the difference, not add
+                            let correctedServerTime = localNow.addingTimeInterval(-diffMinutes * 60)
                             let correctedTimeString = formatter.string(from: correctedServerTime)
 
                             print("""
@@ -160,13 +161,13 @@ final class AttendanceViewModel {
                             )
                             return
                         }
-
                     }
 
                     // ✅ Online but server failed — fallback to UTC local
                     let localTime = self.getCurrentActionTime()
                     print("⚠️ Using local device UTC time instead → \(localTime)")
                     self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: localTime, completion: completion)
+
                 }
             }
 
@@ -229,12 +230,49 @@ final class AttendanceViewModel {
 
     // MARK: - Result Handling
     private func handleResult(_ result: Result<AttendanceResponse, APIError>, completion: @escaping (Bool) -> Void) {
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+//showAlert(title: "Error", message: "No token found. Please log in again.")
+            return
+        }
+        guard let companyIdKey = UserDefaults.standard.string(forKey: "companyIdKey") else {
+         //   showAlert(title: "Error", message: "No companyIdKey found. Please log in again.")
+            return
+        }
+        guard let apiKeyKey = UserDefaults.standard.string(forKey: "apiKeyKey") else {
+    //        showAlert(title: "Error", message: "No apiKeyKey found. Please log in again.")
+            return
+        }
+
         switch result {
         case .success(let response):
             print("✅ Attendance API success: \(response)")
             if response.result?.status == "success" {
                 onSuccess?(response)
                 completion(true)
+            }else if response.result?.status == "error" {
+                if response.result?.errorCode == "INVALID_TOKEN" {
+                    // esther here
+                    // 🔁 Generate new token and retry
+                    let tokenVM = GenerateTokenViewModel()
+                    tokenVM.generateNewToken(
+                        employeeToken: token,
+                        companyId: companyIdKey,
+                        apiKey: apiKeyKey
+                    ) {
+                        if let result = tokenVM.tokenResponse {
+                            print("✅ New token generated: \(result.newToken)")
+                            UserDefaults.standard.set(result.newToken, forKey: "employeeToken")
+                            
+                         //   // 🔁 Retry the call after getting new token
+                        //    self.fetchAttendanceStatus()
+                        } else if let error = tokenVM.errorMessage {
+                            print("❌ Failed to regenerate token: \(error)")
+                         //   self.showAlert(title: "Error", message: error)
+                        }
+                    }
+                }
+
+                
             }else {
               //  onError?(response.result?.message ?? "Unknown error")
                 completion(false)

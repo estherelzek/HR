@@ -22,9 +22,34 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTexts()
+        companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText")
+        
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
-    }
-    
+        NotificationCenter.default.addObserver(self,
+                 selector: #selector(companyFileImported),
+                 name: NSNotification.Name("CompanyFileImported"),
+                 object: nil)
+         }
+
+         // ✅ Update text field when .ihkey file is imported
+         @objc private func companyFileImported() {
+             if let text = UserDefaults.standard.string(forKey: "encryptedText") {
+                 companyInformationTextField.text = text
+                 print("🔐 Updated text field with imported encrypted text.")
+             }
+         }
+
+         override func viewWillAppear(_ animated: Bool) {
+             super.viewWillAppear(animated)
+             companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText")
+         }
+
+         override func viewDidAppear(_ animated: Bool) {
+             super.viewDidAppear(animated)
+             companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText")
+         }
+
+      
     @IBAction func scanButtonTapped(_ sender: Any) {
         captureSession = AVCaptureSession()
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else {
@@ -64,17 +89,25 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     }
 
     @IBAction func doneButtonTapped(_ sender: Any) {
-        let encryptedText =  companyInformationTextField.text ?? ""
-        do {
-            let middleware = try Middleware.initialize(encryptedText)
-            UserDefaults.standard.set(middleware.companyId, forKey: "companyId")
-            UserDefaults.standard.set(middleware.apiKey, forKey: "apiKey")
-            UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
-            print("middleware : success : \(middleware.apiKey) : \(middleware.companyId): \(middleware.baseUrl)")
+//        let encryptedText =  companyInformationTextField.text ?? ""
+//        do {
+//            let middleware = try Middleware.initialize(encryptedText)
+//            UserDefaults.standard.set(middleware.companyId, forKey: "companyIdKey")
+//            UserDefaults.standard.set("HKP0Pt4zTDVf3ZHcGNmM4yx6", forKey: "apiKeyKey")
+//            UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
+//            print("middleware : success : \(middleware.apiKey) : \(middleware.companyId): \(middleware.baseUrl)")
+        
+        if companyInformationTextField.text == nil {
+            let alert = UIAlertController(title: "Error", message: "Please enter your company information", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(alert, animated: true, completion: nil)
+        } else  {
             goToLogInViewController()
-        } catch {
-            print("Failed to decrypt: \(error)")
         }
+            
+//        } catch {
+//            print("Failed to decrypt: \(error)")
+//        }
     }
 
     @objc private func languageChanged() {
@@ -96,6 +129,8 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
             $0?.layer.borderColor = UIColor(named: "borderColor")?.resolvedColor(with: traitCollection).cgColor
         }
     }
+    
+
 }
 
 extension ScanAndInfoViewController {

@@ -22,6 +22,7 @@ class CheckingVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loader.startAnimating()
+        
         setUpLisgnerstoViewModel()
 
         NotificationCenter.default.addObserver(
@@ -42,6 +43,7 @@ class CheckingVC: UIViewController {
         NetworkManager.shared.resendOfflineRequests { [weak self] in
             print("✅ All offline requests sent → now fetching fresh status.")
             self?.fetchAttendanceStatus()
+            print("isCheckedIn after resend: \(self?.isCheckedIn ?? false)")
         }
         calculateClockDifference()
     }
@@ -59,10 +61,10 @@ class CheckingVC: UIViewController {
   
 
     @IBAction func checkingButtonTapped(_ sender: Any) {
-        NetworkManager.shared.resendOfflineRequests { [weak self] in
-            print("✅ All offline requests sent → now fetching fresh status.")
-            self?.fetchAttendanceStatus()
-        }
+//        NetworkManager.shared.resendOfflineRequests { [weak self] in
+//            print("✅ All offline requests sent → now fetching fresh status.")
+//            self?.fetchAttendanceStatus()
+//        }
         if isCheckedIn {
             // Calculate or show worked hours if available
             let hoursText: String
@@ -131,39 +133,65 @@ class CheckingVC: UIViewController {
     }
 
 
-       private func fetchAttendanceStatus() {
-           guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
-               showAlert(title: "Error", message: "No token found. Please log in again.")
-               return
-           }
+    private func fetchAttendanceStatus() {
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+            showAlert(title: "Error", message: "No token found. Please log in again.")
+            return
+        }
+        guard let companyIdKey = UserDefaults.standard.string(forKey: "companyIdKey") else {
+            showAlert(title: "Error", message: "No companyIdKey found. Please log in again.")
+            return
+        }
+        guard let apiKeyKey = UserDefaults.standard.string(forKey: "apiKeyKey") else {
+            showAlert(title: "Error", message: "No apiKeyKey found. Please log in again.")
+            return
+        }
 
-           viewModel.status(token: token) { [weak self] result in
-               DispatchQueue.main.async {
-                   switch result {
-                   case .success(let response):
-                       if response.result?.status == "success" {
-                           self?.isCheckedIn = response.result?.attendanceStatus == "checked_in"
-                           if let lastCheckInUTC = response.result?.lastCheckIn {
-                               self?.lastCheckIn = lastCheckInUTC
-                           }
+        viewModel.status(token: token) { [weak self] result in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                switch result {
+                case .success(let response):
+                    if response.result?.status == "success" {
+                        self.isCheckedIn = response.result?.attendanceStatus == "checked_in"
+                        self.lastCheckIn = response.result?.lastCheckIn
+                        self.lastCheckOut = response.result?.lastCheckOut ?? response.result?.checkOutTime
+                        self.workedHours = response.result?.workedHours
+                        
+                    } else if response.result?.status == "error",
+                              response.result?.errorCode == "INVALID_TOKEN" {
+                        
+                        // 🔁 Generate new token and retry
+                        let tokenVM = GenerateTokenViewModel()
+                        tokenVM.generateNewToken(
+                            employeeToken: token,
+                            companyId: companyIdKey,
+                            apiKey: apiKeyKey
+                        ) {
+                            if let result = tokenVM.tokenResponse {
+                                print("✅ New token generated: \(result.newToken)")
+                                UserDefaults.standard.set(result.newToken, forKey: "employeeToken")
+                                
+                                // 🔁 Retry the call after getting new token
+                                self.fetchAttendanceStatus()
+                            } else if let error = tokenVM.errorMessage {
+                                print("❌ Failed to regenerate token: \(error)")
+                                self.showAlert(title: "Error", message: error)
+                            }
+                        }
+                    }
 
-                           if let lastCheckOutUTC = response.result?.lastCheckOut ?? response.result?.checkOutTime {
-                               self?.lastCheckOut = lastCheckOutUTC
-                           }
+                    self.reloadTexts()
+                    self.loader.stopAnimating()
+                    self.loader.hidesWhenStopped = true
 
-                           self?.workedHours = response.result?.workedHours
-                       }
-                       self?.reloadTexts()
-                       self?.loader.stopAnimating()
-                       self?.loader.hidesWhenStopped = true
-                       
-                   case .failure(let error):
-                       print("❌ Request Faileddddddd: \(error)")
-                     //  self?.showAlert(title: "Errorrrrrrrr", message: error.localizedDescription)
-                   }
-               }
-           }
-       }
+                case .failure(let error):
+                    print("❌ Request failed: \(error.localizedDescription)")
+                    self.showAlert(title: "Error", message: error.localizedDescription)
+                }
+            }
+        }
+    }
 
        private func handleAttendanceSuccess(_ response: AttendanceResponse) {
            if response.result?.attendanceStatus == "checked_in" {

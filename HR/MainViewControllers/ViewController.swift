@@ -51,7 +51,7 @@ class ViewController: UIViewController {
     }
     
     func startApp() {
-        let companyId = UserDefaults.standard.string(forKey: "companyId") ?? ""
+        let companyId = UserDefaults.standard.string(forKey: "companyIdKey") ?? ""
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
         let dontShowAgain = UserDefaults.standard.bool(forKey: "dontShowProtectionScreen") // store as Bool, not "true"/"false" string
         let protectionMethod = UserDefaults.standard.string(forKey: "selectedProtectionMethod") ?? ""
@@ -65,6 +65,7 @@ class ViewController: UIViewController {
         if companyId.isEmpty  {
             print("companyId is empty , so we go to scan view controller")
             let checkVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
+          //  checkVC.companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText") ?? ""
             bottomBarView.isHidden = true
             switchTo(viewController: checkVC)
            return

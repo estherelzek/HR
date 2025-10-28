@@ -63,5 +63,29 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
     
     }
-
+func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+    handleImportedFile(url: url)
+    return true
+}
+private func handleImportedFile(url: URL) {
+    do {
+        let encryptedText = try String(contentsOf: url, encoding: .utf8)
+        let middleware = try Middleware.initialize(encryptedText)
+        UserDefaults.standard.set(encryptedText, forKey: "encryptedText")
+        UserDefaults.standard.set(middleware.companyId, forKey: "companyIdKey")
+        UserDefaults.standard.set("HKP0Pt4zTDVf3ZHcGNmM4yx6", forKey: "apiKeyKey")
+        UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
+        
+        print("✅ Imported CompanyAccess.ihkey successfully")
+        print("middleware: \(middleware.companyId) | \(middleware.baseUrl)")
+        print("encryptedText: \(encryptedText) ")
+        // Optionally navigate to your login view:
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: Notification.Name("CompanyFileImported"), object: nil)
+        }
+        
+    } catch {
+        print("❌ Failed to import or decrypt file: \(error)")
+    }
+}
 

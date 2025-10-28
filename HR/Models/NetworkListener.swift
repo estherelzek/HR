@@ -79,7 +79,7 @@ extension NetworkManager {
             }
 
             print("""
-            🚀 Sending offline request \(index + 1)/\(stored.count)
+                       🚀 Sending offline request \(index + 1)/\(stored.count)
             ➡️ URL: \(url)
             ➡️ Method: \(request.method)
             ➡️ Body: \(actualBody)

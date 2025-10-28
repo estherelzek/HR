@@ -89,5 +89,33 @@ import UIKit
     func sceneDidEnterBackground(_ scene: UIScene) {
       
     }
+        func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+                guard let url = URLContexts.first?.url else { return }
+                handleImportedFile(url: url)
+            }
+
+            private func handleImportedFile(url: URL) {
+                do {
+                    let encryptedText = try String(contentsOf: url, encoding: .utf8)
+                    let middleware = try Middleware.initialize(encryptedText)
+                    
+                    UserDefaults.standard.set(encryptedText, forKey: "encryptedText")
+                    UserDefaults.standard.set(middleware.companyId, forKey: "companyIdKey")
+                    UserDefaults.standard.set("HKP0Pt4zTDVf3ZHcGNmM4yx6", forKey: "apiKeyKey")
+                    UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
+                    
+                    print("✅ Imported CompanyAccess.ihkey successfully")
+                    print("middleware: \(middleware.companyId) | \(middleware.baseUrl)")
+                    print("encryptedText: \(encryptedText)")
+
+                    // Notify your main VC to update or go to login
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(name: Notification.Name("CompanyFileImported"), object: nil)
+                    }
+
+                } catch {
+                    print("❌ Failed to import or decrypt file: \(error)")
+                }
+            }
 }
 
