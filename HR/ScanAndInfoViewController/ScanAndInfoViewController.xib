@@ -16,7 +16,7 @@
                 <outlet property="doneButton" destination="472-Qc-zLu" id="IYB-qn-ehG"/>
                 <outlet property="enterCompanyInfoLabel" destination="eOs-tt-FSu" id="dFD-yC-hOe"/>
                 <outlet property="orButton" destination="cGz-GI-XNF" id="0SG-JR-0s0"/>
-                <outlet property="scanQRbutton" destination="hhe-u6-R5B" id="Q15-rK-bfh"/>
+                <outlet property="scanQRbutton" destination="obm-5H-PTP" id="xgQ-nc-aQh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -25,27 +25,18 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cGz-GI-XNF">
-                    <rect key="frame" x="120" y="151" width="60" height="45"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="45" id="ubV-iy-SlV"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="32"/>
-                    <color key="textColor" name="purplecolor"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="w09-mn-u6J">
-                    <rect key="frame" x="8" y="246" width="304" height="113.5"/>
+                    <rect key="frame" x="16" y="384" width="288" height="85"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Your Company Information" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eOs-tt-FSu">
-                            <rect key="frame" x="0.0" y="0.0" width="304" height="57"/>
+                            <rect key="frame" x="0.0" y="0.0" width="288" height="42.5"/>
                             <color key="backgroundColor" name="baseColorView"/>
-                            <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="11"/>
+                            <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="14"/>
                             <color key="textColor" name="lightGrayinDarkModeText "/>
                             <nil key="highlightedColor"/>
                         </label>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="4Wy-JW-rrS" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="57" width="304" height="56.5"/>
+                            <rect key="frame" x="0.0" y="42.5" width="288" height="42.5"/>
                             <color key="backgroundColor" name="baseColorView"/>
                             <color key="textColor" name="textinsettingvc"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -65,39 +56,9 @@
                         </textField>
                     </subviews>
                 </stackView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hhe-u6-R5B">
-                    <rect key="frame" x="85" y="70" width="150" height="40"/>
-                    <color key="backgroundColor" name="purplecolor"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="40" id="VHu-6Y-zjV"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
-                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" title="Scan QR ">
-                        <color key="titleColor" name="buttonTextColor"/>
-                    </state>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                            <integer key="value" value="10"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                            <integer key="value" value="6"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                            <color key="value" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <action selector="scanButtonTapped:" destination="-1" eventType="touchUpInside" id="4bG-9I-Med"/>
-                    </connections>
-                </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="472-Qc-zLu">
-                    <rect key="frame" x="50" y="448" width="220" height="40"/>
+                    <rect key="frame" x="50" y="488" width="220" height="40"/>
                     <color key="backgroundColor" name="purplecolor"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="40" id="sJn-KK-UQK"/>
-                    </constraints>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     <state key="normal" title="Done">
@@ -119,28 +80,57 @@
                         <action selector="doneButtonTapped:" destination="-1" eventType="touchUpInside" id="mPr-mn-W2Z"/>
                     </connections>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cGz-GI-XNF">
+                    <rect key="frame" x="80" y="274" width="160" height="77.5"/>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="36"/>
+                    <color key="textColor" name="purplecolor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="obm-5H-PTP" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                    <rect key="frame" x="40" y="40" width="240" height="210"/>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                    <state key="normal" image="scan"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="10"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                            <color key="value" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                            <real key="value" value="1"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="scanButtonTapped:" destination="-1" eventType="touchUpInside" id="h01-uZ-t9r"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="50" id="9eP-73-6RO"/>
-                <constraint firstItem="w09-mn-u6J" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.2" id="Ddt-Ti-ge7"/>
-                <constraint firstAttribute="trailing" secondItem="w09-mn-u6J" secondAttribute="trailing" constant="8" id="L5P-GY-V4s"/>
-                <constraint firstItem="w09-mn-u6J" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="8" id="Qbz-oW-zjL"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="cGz-GI-XNF" secondAttribute="trailing" constant="140" id="Qia-CL-LgF"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="472-Qc-zLu" secondAttribute="bottom" constant="80" id="XMG-cL-FSj"/>
-                <constraint firstItem="hhe-u6-R5B" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="50" id="aab-y7-zic"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="hhe-u6-R5B" secondAttribute="trailing" constant="85" id="cqI-96-dYH"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="472-Qc-zLu" secondAttribute="trailing" constant="50" id="dAX-IX-BEe"/>
-                <constraint firstItem="w09-mn-u6J" firstAttribute="top" secondItem="cGz-GI-XNF" secondAttribute="bottom" constant="50" id="f7h-Aa-Jhk"/>
-                <constraint firstItem="cGz-GI-XNF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="120" id="jjd-PB-Vvx"/>
-                <constraint firstItem="cGz-GI-XNF" firstAttribute="top" secondItem="hhe-u6-R5B" secondAttribute="bottom" constant="41" id="mOX-cH-2Ez"/>
-                <constraint firstItem="hhe-u6-R5B" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="85" id="saN-kB-A5k"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="cGz-GI-XNF" secondAttribute="trailing" constant="80" id="3s7-Ay-61v"/>
+                <constraint firstItem="w09-mn-u6J" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.15" id="4ZB-G8-A9D"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="w09-mn-u6J" secondAttribute="trailing" constant="16" id="7b2-Ar-g7V"/>
+                <constraint firstItem="472-Qc-zLu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="50" id="CaJ-oL-5tu"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="obm-5H-PTP" secondAttribute="trailing" constant="40" id="T36-6Y-ZGH"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="472-Qc-zLu" secondAttribute="bottom" constant="40" id="TJ8-p8-0lt"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="472-Qc-zLu" secondAttribute="trailing" constant="50" id="U3m-ub-Ncm"/>
+                <constraint firstItem="obm-5H-PTP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="URF-I3-mYd"/>
+                <constraint firstItem="obm-5H-PTP" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="dcM-mX-Ofn"/>
+                <constraint firstItem="cGz-GI-XNF" firstAttribute="top" secondItem="obm-5H-PTP" secondAttribute="bottom" constant="24" id="ep8-NM-j0g"/>
+                <constraint firstItem="cGz-GI-XNF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="80" id="fN9-LB-Vi0"/>
+                <constraint firstItem="472-Qc-zLu" firstAttribute="top" secondItem="w09-mn-u6J" secondAttribute="bottom" constant="19" id="fRk-Ch-mE4"/>
+                <constraint firstItem="w09-mn-u6J" firstAttribute="top" secondItem="cGz-GI-XNF" secondAttribute="bottom" constant="32.5" id="hem-dV-TcX"/>
+                <constraint firstItem="obm-5H-PTP" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.37" id="iis-jF-hNW"/>
+                <constraint firstItem="w09-mn-u6J" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="it2-Ag-SqI"/>
+                <constraint firstItem="472-Qc-zLu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.0704225" id="vA7-6x-vo3"/>
             </constraints>
-            <point key="canvasLocation" x="-439" y="-107"/>
+            <point key="canvasLocation" x="-542" y="-110"/>
         </view>
     </objects>
     <resources>
+        <image name="scan" width="1024" height="1024"/>
         <namedColor name="baseColorView">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
