@@ -57,15 +57,6 @@ import UIKit
             print("📱 App became active — trying to resend offline requests...")
             NetworkManager.shared.resendOfflineRequests()
         }
-//        func sceneDidBecomeActive(_ scene: UIScene) {
-//            // Start monitoring the network
-//            NetworkListener.shared.start()
-//
-//            // When the network comes back, automatically resend offline requests
-//            NetworkListener.shared.onConnected = {
-//                NetworkManager.shared.resendOfflineRequests()
-//            }
-//        }
 
         func sceneDidBecomeActive(_ scene: UIScene) {
             print("📱 App became active — trying to resend offline requests...")

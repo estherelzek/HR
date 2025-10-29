@@ -47,7 +47,6 @@
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="4Wy-JW-rrS" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="57" width="304" height="56.5"/>
                             <color key="backgroundColor" name="baseColorView"/>
-                            <string key="text">voev4Jd6hmDBb4cvsAFEfrE+UX6SQa7BmhuZuotjz6PUvqmODNWU/8zDAZsY6xGiq+2Ed1QX0osvp5926CnIqkuYmZxEyTusnv9Gq/BWzQaHxgnwwcTc7roFU+L63lEF</string>
                             <color key="textColor" name="textinsettingvc"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits"/>
@@ -138,7 +137,7 @@
                 <constraint firstItem="cGz-GI-XNF" firstAttribute="top" secondItem="hhe-u6-R5B" secondAttribute="bottom" constant="41" id="mOX-cH-2Ez"/>
                 <constraint firstItem="hhe-u6-R5B" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="85" id="saN-kB-A5k"/>
             </constraints>
-            <point key="canvasLocation" x="39.375" y="60.2112676056338"/>
+            <point key="canvasLocation" x="-439" y="-107"/>
         </view>
     </objects>
     <resources>

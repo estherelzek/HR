@@ -38,6 +38,8 @@ enum API: Endpoint {
     case unlinkDraftAnnualLeaves(token: String ,action: String , leaveId: Int)
     case getServerTime(token: String,action: String)
     case generateToken(employee_token: String , company_id : String , api_key : String)
+    case offlineAttendance(token: String, attendanceLogs: [[String: Any]])
+
     var path: String {
         switch self {
         case .validateCompany:
@@ -59,6 +61,9 @@ enum API: Endpoint {
             return "/api/employee_attendance"
         case .generateToken:
             return "/api/employee/renew_token"
+        case .offlineAttendance:
+            return "/api/offline_attendance"
+
         }
     }
 
@@ -151,6 +156,7 @@ enum API: Endpoint {
                 "action": action
             ]
             return try? JSONSerialization.data(withJSONObject: serverTime)
+            
         case .generateToken(employee_token: let employee_token , company_id: let company_id , api_key: let api_key):
             let generateToken: [String: Any] = [
                 "employee_token": employee_token ,
@@ -158,6 +164,19 @@ enum API: Endpoint {
                 "api_key": api_key
             ]
             return try? JSONSerialization.data(withJSONObject: generateToken, options: [])
+            
+        case let .offlineAttendance(token, attendanceLogs):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": [
+                    "employee_token": token,
+                    "attendance_logs": attendanceLogs
+                ],
+                "id": 0
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload, options: [])
+
         }
     }
 }

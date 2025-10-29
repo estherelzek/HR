@@ -61,10 +61,6 @@ class CheckingVC: UIViewController {
   
 
     @IBAction func checkingButtonTapped(_ sender: Any) {
-//        NetworkManager.shared.resendOfflineRequests { [weak self] in
-//            print("✅ All offline requests sent → now fetching fresh status.")
-//            self?.fetchAttendanceStatus()
-//        }
         if isCheckedIn {
             // Calculate or show worked hours if available
             let hoursText: String
