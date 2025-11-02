@@ -112,26 +112,21 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             if indexPath.row <= 1 {
                 let general = generalItemsKeys[indexPath.row]
                 item = SettingItem(titleKey: general.0,iconName: general.1,isDropdownVisible: indexPath.row == 1,isDarkModeRow: false)
-
             } else if isLanguageExpanded && indexPath.row > 1 && indexPath.row <= 1 + languages.count {
                 let lang = languages[indexPath.row - 2]
                 item = SettingItem(titleKey: lang.0,iconName: lang.1,isDropdownVisible: false,isDarkModeRow: false)
-
             } else {
                 let adjustedIndex = indexPath.row - (isLanguageExpanded ? languages.count : 0)
                 let general = generalItemsKeys[adjustedIndex]
                 item = SettingItem(titleKey: general.0,iconName: general.1,isDropdownVisible: false,isDarkModeRow: general.0 == "dark_mode")
             }
-
         } else if tableView == securityTabelView {
             let security = securityItemsKeys[indexPath.row]
             item = SettingItem(titleKey: security.0,iconName: security.1,isDropdownVisible: false,isDarkModeRow: false)
-
         } else {
             let account = accountItemsKeys[indexPath.row]
             item = SettingItem(titleKey: account.0,iconName: account.1,isDropdownVisible: false,isDarkModeRow: false)
         }
-
         if item.isDarkModeRow {
             guard let darkModeCell = tableView.dequeueReusableCell(
                 withIdentifier: "DarkModeTableViewCell",for: indexPath) as? DarkModeTableViewCell else {
@@ -175,15 +170,11 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
                         self.goToScanVC()
                     }
                     okAction.setValue(UIColor.purplecolor, forKey: "titleTextColor")
-
                     let cancelAction = UIAlertAction(title: NSLocalizedString("logout_cancel", comment: ""), style: .cancel)
                     cancelAction.setValue(UIColor.systemRed, forKey: "titleTextColor")
-
                     alert.addAction(okAction)
                     alert.addAction(cancelAction)
-
                     present(alert, animated: true)
-
                 case 1: break
                 case 2: print("Dark Mode tapped") // handled by switch now
                 default: break

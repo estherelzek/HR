@@ -14,9 +14,7 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
     
     private let customLayer = CALayer()
     private var circleSize: CGFloat {
-        // Circle size scales with cell height (about 70%)
         return bounds.height * 0.7
-        
     }
     
     override func awakeFromNib() {
@@ -68,13 +66,10 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
             customLayer.addSublayer(lineLayer)
             
         case "confirm":
-            // Circle with diagonal hatch lines
             let maskLayer = CAShapeLayer()
             maskLayer.path = circlePath.cgPath
-            
             let hatchLayer = CAShapeLayer()
             let hatchPath = UIBezierPath()
-            
             let spacing: CGFloat = 5
             var startX: CGFloat = -circleRect.height
             
@@ -83,7 +78,6 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
                 hatchPath.addLine(to: CGPoint(x: startX + circleRect.height, y: circleRect.maxY))
                 startX += spacing
             }
-            
             hatchLayer.path = hatchPath.cgPath
             hatchLayer.strokeColor = UIColor.fromHex("B7F73E").withAlphaComponent(0.7).cgColor
             hatchLayer.lineWidth = 2
@@ -92,12 +86,10 @@ class TypesOfLeavesCollectionViewCell: UICollectionViewCell {
             customLayer.addSublayer(hatchLayer)
             
         case "validate":
-            // Fully filled circle
             let circleLayer = CAShapeLayer()
             circleLayer.path = circlePath.cgPath
             circleLayer.fillColor = UIColor.fromHex("B7F73E").cgColor
             customLayer.addSublayer(circleLayer)
-            
         default:
             break
         }

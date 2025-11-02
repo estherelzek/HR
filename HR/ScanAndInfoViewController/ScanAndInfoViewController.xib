@@ -26,17 +26,17 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="w09-mn-u6J">
-                    <rect key="frame" x="16" y="384" width="288" height="85"/>
+                    <rect key="frame" x="16" y="388.5" width="288" height="85.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Your Company Information" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eOs-tt-FSu">
-                            <rect key="frame" x="0.0" y="0.0" width="288" height="42.5"/>
+                            <rect key="frame" x="0.0" y="0.0" width="288" height="43"/>
                             <color key="backgroundColor" name="baseColorView"/>
                             <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="14"/>
                             <color key="textColor" name="lightGrayinDarkModeText "/>
                             <nil key="highlightedColor"/>
                         </label>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="4Wy-JW-rrS" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="42.5" width="288" height="42.5"/>
+                            <rect key="frame" x="0.0" y="43" width="288" height="42.5"/>
                             <color key="backgroundColor" name="baseColorView"/>
                             <color key="textColor" name="textinsettingvc"/>
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -57,7 +57,7 @@
                     </subviews>
                 </stackView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="472-Qc-zLu">
-                    <rect key="frame" x="50" y="488" width="220" height="40"/>
+                    <rect key="frame" x="80" y="504" width="160" height="34"/>
                     <color key="backgroundColor" name="purplecolor"/>
                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
@@ -81,7 +81,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cGz-GI-XNF">
-                    <rect key="frame" x="80" y="274" width="160" height="77.5"/>
+                    <rect key="frame" x="80" y="274" width="160" height="82"/>
                     <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="36"/>
                     <color key="textColor" name="purplecolor"/>
                     <nil key="highlightedColor"/>
@@ -112,19 +112,19 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="cGz-GI-XNF" secondAttribute="trailing" constant="80" id="3s7-Ay-61v"/>
                 <constraint firstItem="w09-mn-u6J" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.15" id="4ZB-G8-A9D"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="w09-mn-u6J" secondAttribute="trailing" constant="16" id="7b2-Ar-g7V"/>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="50" id="CaJ-oL-5tu"/>
+                <constraint firstItem="472-Qc-zLu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="80" id="CaJ-oL-5tu"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="obm-5H-PTP" secondAttribute="trailing" constant="40" id="T36-6Y-ZGH"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="472-Qc-zLu" secondAttribute="bottom" constant="40" id="TJ8-p8-0lt"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="472-Qc-zLu" secondAttribute="trailing" constant="50" id="U3m-ub-Ncm"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="472-Qc-zLu" secondAttribute="bottom" constant="30" id="TJ8-p8-0lt"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="472-Qc-zLu" secondAttribute="trailing" constant="80" id="U3m-ub-Ncm"/>
                 <constraint firstItem="obm-5H-PTP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="URF-I3-mYd"/>
                 <constraint firstItem="obm-5H-PTP" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="dcM-mX-Ofn"/>
                 <constraint firstItem="cGz-GI-XNF" firstAttribute="top" secondItem="obm-5H-PTP" secondAttribute="bottom" constant="24" id="ep8-NM-j0g"/>
                 <constraint firstItem="cGz-GI-XNF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="80" id="fN9-LB-Vi0"/>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="top" secondItem="w09-mn-u6J" secondAttribute="bottom" constant="19" id="fRk-Ch-mE4"/>
+                <constraint firstItem="472-Qc-zLu" firstAttribute="top" secondItem="w09-mn-u6J" secondAttribute="bottom" constant="30" id="fRk-Ch-mE4"/>
                 <constraint firstItem="w09-mn-u6J" firstAttribute="top" secondItem="cGz-GI-XNF" secondAttribute="bottom" constant="32.5" id="hem-dV-TcX"/>
                 <constraint firstItem="obm-5H-PTP" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.37" id="iis-jF-hNW"/>
                 <constraint firstItem="w09-mn-u6J" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="it2-Ag-SqI"/>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.0704225" id="vA7-6x-vo3"/>
+                <constraint firstItem="472-Qc-zLu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.06" id="vA7-6x-vo3"/>
             </constraints>
             <point key="canvasLocation" x="-542" y="-110"/>
         </view>

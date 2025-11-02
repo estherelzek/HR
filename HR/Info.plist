@@ -29,11 +29,14 @@
     <key>NSPhotoLibraryUsageDescription</key>
     <string>This app requires access to your photo library to select and upload profile pictures or attachments.</string>
 
+    <!-- 📄 Document Type Configuration -->
     <key>CFBundleDocumentTypes</key>
     <array>
         <dict>
             <key>CFBundleTypeName</key>
             <string>Company Access Key</string>
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
             <key>LSItemContentTypes</key>
             <array>
                 <string>com.yourcompany.ihkey</string>
@@ -41,6 +44,7 @@
         </dict>
     </array>
 
+    <!-- 📂 Custom File Type Definition -->
     <key>UTExportedTypeDeclarations</key>
     <array>
         <dict>
@@ -64,6 +68,10 @@
             </dict>
         </dict>
     </array>
+
+    <!-- ✅ Required for document handling -->
+    <key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
 
 </dict>
 </plist>

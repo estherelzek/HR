@@ -72,11 +72,8 @@ class TimeOffViewController: UIViewController {
         leaveTypesCollectionView.dataSource = self
         statesTypesCollectionView.delegate = self
         statesTypesCollectionView.dataSource = self
-        leaveTypesCollectionView.register(UINib(nibName: "TypesOfLeavesCollectionViewCell", bundle: nil),
-                forCellWithReuseIdentifier: "TypesOfLeavesCollectionViewCell")
-        statesTypesCollectionView.register(UINib(nibName: "TypesOfLeavesCollectionViewCell", bundle: nil),
-                forCellWithReuseIdentifier: "TypesOfLeavesCollectionViewCell")
-       
+        leaveTypesCollectionView.register(UINib(nibName: "TypesOfLeavesCollectionViewCell", bundle: nil),forCellWithReuseIdentifier: "TypesOfLeavesCollectionViewCell")
+        statesTypesCollectionView.register(UINib(nibName: "TypesOfLeavesCollectionViewCell", bundle: nil),forCellWithReuseIdentifier: "TypesOfLeavesCollectionViewCell")
     }
 
     @IBAction func backButtonTapped(_ sender: Any) {
@@ -92,22 +89,18 @@ class TimeOffViewController: UIViewController {
             print("⚠️ No employee token found.")
             return completion()
         }
-
         print("📡 Fetching holidays and weekends from API...")
-
         viewModel.fetchHolidays(token: token) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
                     print("✅ Holiday API Success: \(data)")
-
                     if let offs = data.weekly_offs {
                         self?.weekendDays = offs.keys.compactMap { Int($0) }
                         print("🗓 Weekend days (from API): \(self?.weekendDays ?? [])")
                     } else {
                         print("⚠️ No weekend days found in response.")
                     }
-
                     if let holidays = data.public_holidays {
                         let formatter = DateFormatter()
                         formatter.dateFormat = "yyyy-MM-dd"
@@ -126,19 +119,16 @@ class TimeOffViewController: UIViewController {
                     } else {
                         print("⚠️ No public holidays found in response.")
                     }
-
                     self?.calender.reloadData()
                     print("🔄 Calendar reloaded after holidays update.")
 
                 case .failure(let error):
                     print("❌ Holiday API Error: \(error.localizedDescription)")
                 }
-
                 completion() // ✅ Always call completion
             }
         }
     }
-
 
     private func loadTimeOffData(completion: @escaping () -> Void) {
         guard let token = UserDefaults.standard.employeeToken else { return completion() }
@@ -179,7 +169,6 @@ class TimeOffViewController: UIViewController {
                         
                         let formatter = DateFormatter()
                         formatter.dateFormat = "yyyy-MM-dd"
-                        
                         for record in records.records.dailyRecords {
                             guard
                                 let start = formatter.date(from: record.startDate),
@@ -234,7 +223,7 @@ class TimeOffViewController: UIViewController {
         }
     }
     
-    private func loadAllData(completion: @escaping () -> Void) {
+     func loadAllData(completion: @escaping () -> Void) {
         let group = DispatchGroup()
         group.enter()
         loadHolidays {
@@ -255,16 +244,16 @@ class TimeOffViewController: UIViewController {
 }
 
 extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
-
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         selectedDates.append(date)
         let normalizedDate = Calendar.current.startOfDay(for: date)
+
         if let daily = leaveDayRecords[normalizedDate] {
             goToResultOfRequest(with: daily)
         } else if let hourly = leaveHourRecords[normalizedDate] {
-            goToResultOfRequest(with: hourly) // overload or separate handler
+            goToResultOfRequest(with: hourly)
         } else {
-            navigateToTimeOffRequest()
+            navigateToTimeOffRequest(selectedDate: date) // ✅ Pass it here
         }
     }
 
@@ -301,11 +290,10 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
             state = record.state
             color = record.color ?? ""
         }
-
         // ✅ Default: clear background
         cell.backgroundColor = .clear
-
         // ✅ Public holidays
+        
         if publicHolidays.contains(where: { Calendar.current.isDate($0, inSameDayAs: normalizedDate) }) {
             cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
         }
@@ -319,8 +307,6 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
                 cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
             }
         }
-
-
         cell.configure(for: state, color: color)
         return cell
     }
@@ -382,10 +368,8 @@ extension TimeOffViewController: UICollectionViewDelegate, UICollectionViewDataS
             ) as? TypesOfLeavesCollectionViewCell else {
                 return UICollectionViewCell()
             }
-
             let leaveType = leaveTypes[indexPath.item]
             cell.titleLabel.text = leaveType.name
-
             // ✅ Use default color if nil or empty
             let colorHex = (leaveType.color?.isEmpty == false) ? leaveType.color! : "4B644A"
             cell.coloredButton.backgroundColor = UIColor.fromHex(colorHex)
@@ -457,17 +441,19 @@ extension TimeOffViewController {
         calender.reloadData()
     }
     
-    func navigateToTimeOffRequest() {
+    func navigateToTimeOffRequest(selectedDate: Date? = nil) {
         let timeOffRequestVC = TimeOffRequestViewController()
         timeOffRequestVC.filteredLeaveTypes = leaveTypes.filter { leave in
-                (leave.requiresAllocation == "yes" && leave.remainingBalance != nil)
-            }
+            (leave.requiresAllocation == "yes" && leave.remainingBalance != nil)
+        }
+        timeOffRequestVC.preselectedDate = selectedDate
+        timeOffRequestVC.parentViewControllerRef = self // ✅ Pass real parent reference
         timeOffRequestVC.modalPresentationStyle = .overFullScreen
         timeOffRequestVC.modalTransitionStyle = .crossDissolve
         timeOffRequestVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         present(timeOffRequestVC, animated: true, completion: nil)
     }
-    
+
     func goToResultOfRequest(with record: LeaveRecord) {
         let resultOfRequestVC = ResultOfRequestAlartViewController()
         resultOfRequestVC.modalPresentationStyle = .overFullScreen

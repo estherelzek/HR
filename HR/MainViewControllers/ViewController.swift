@@ -65,7 +65,6 @@ class ViewController: UIViewController {
         if companyId.isEmpty  {
             print("companyId is empty , so we go to scan view controller")
             let checkVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
-          //  checkVC.companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText") ?? ""
             bottomBarView.isHidden = true
             switchTo(viewController: checkVC)
            return

@@ -23,14 +23,13 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
         super.viewDidLoad()
         setUpTexts()
         companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText")
-        
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         NotificationCenter.default.addObserver(self,
                  selector: #selector(companyFileImported),
                  name: NSNotification.Name("CompanyFileImported"),
                  object: nil)
          }
-
+    
          // ✅ Update text field when .ihkey file is imported
          @objc private func companyFileImported() {
              if let text = UserDefaults.standard.string(forKey: "encryptedText") {
@@ -129,8 +128,6 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
             $0?.layer.borderColor = UIColor(named: "borderColor")?.resolvedColor(with: traitCollection).cgColor
         }
     }
-    
-
 }
 
 extension ScanAndInfoViewController {
@@ -138,14 +135,35 @@ extension ScanAndInfoViewController {
                         didOutput metadataObjects: [AVMetadataObject],
                         from connection: AVCaptureConnection) {
         captureSession.stopRunning()
+        
         if let metadataObject = metadataObjects.first,
            let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
            let stringValue = readableObject.stringValue {
+            
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+            
+            // 🧩 Save scanned text
             UserDefaults.standard.set(stringValue, forKey: "scannedQRCode")
+            print("📦 Scanned QR Data: \(stringValue)")
+            
+            // 🧩 Show it in your text field immediately
+            companyInformationTextField.text = stringValue
+            
+            // 🧩 Optional: also store it as "encryptedText" if that’s what you use elsewhere
+            UserDefaults.standard.set(stringValue, forKey: "encryptedText")
+            
+            // Remove preview
             previewLayer.removeFromSuperlayer()
+            
+            // Optional: show confirmation alert
+            let alert = UIAlertController(title: "QR Scanned",
+                                          message: "Company info fetched successfully!",
+                                          preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(alert, animated: true)
         }
     }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 

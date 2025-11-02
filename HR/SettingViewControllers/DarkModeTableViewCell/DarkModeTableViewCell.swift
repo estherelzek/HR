@@ -24,8 +24,8 @@ class DarkModeTableViewCell: UITableViewCell {
     }
 
     func configure(with item: SettingItem, trait: UITraitCollection) {
-        titleLabel.text = NSLocalizedString(item.titleKey, comment: "")
         
+        titleLabel.text = NSLocalizedString(item.titleKey, comment: "")
         if let iconName = item.iconName {
             logoImage.image = UIImage(systemName: iconName) ?? UIImage(named: iconName)
         } else {

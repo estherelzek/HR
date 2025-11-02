@@ -44,7 +44,9 @@ class TimeOffRequestViewController: UIViewController {
     let leaveDurationVM = LeaveDurationViewModel()
     let viewModel = TimeOffRequestViewModel()
     let parentobject = TimeOffViewController()
-    
+    var preselectedDate: Date?
+    weak var parentViewControllerRef: TimeOffViewController?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
@@ -64,8 +66,15 @@ class TimeOffRequestViewController: UIViewController {
         print("🔄 ViewWillAppear - Current language: \(lang)")
         setupPickers()
         print("startDateCalender.text : \(startDateCalender.text ?? "")")
+        if let date = preselectedDate {
+            startDatePicker.date = date
+            endDatePicker.date = date
+            startDateCalender.text = formatDate(date)
+            endDateCalender.text = formatDate(date)
+        }
     }
-    
+   
+
     @IBAction func closeButtonTapped(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -152,9 +161,14 @@ class TimeOffRequestViewController: UIViewController {
                     print("✅ Request Success: \(response.result?.message ?? "Success")")
                     if response.result?.status == "success" {
                         self.showAlert(title: "Success", message: "Time off request submitted successfully.", completion: {
-                            self.dismiss(animated: true)
+                            self.parentViewControllerRef?.loadAllData {
+                                DispatchQueue.main.async {
+                                    self.dismiss(animated: true)
+                                }
+                            }
                         })
-                    } else {
+                    }
+                else {
                         self.showAlert(title: "Alert", message:  response.result?.message ?? "")
                     }
                 case .failure(let error):
@@ -255,6 +269,7 @@ class TimeOffRequestViewController: UIViewController {
         selectLeaveTypeTextField.isHidden = false
         MorningOrNightTextField.isHidden = false
     }
+    
     
     func setUpOtherMode(hideHalfDay: Bool = false) {
         startDateCalender.isHidden = false
