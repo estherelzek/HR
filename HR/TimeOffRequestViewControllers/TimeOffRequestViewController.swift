@@ -74,7 +74,6 @@ class TimeOffRequestViewController: UIViewController {
         }
     }
    
-
     @IBAction func closeButtonTapped(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -133,7 +132,6 @@ class TimeOffRequestViewController: UIViewController {
             print("❌ Invalid date format: \(startDate) / \(endDate)")
             return
         }
-
         let requestDateFrom = startDateObj.toApiDateString() // "2025-09-01"
         var requestDateTo   = endDateObj.toApiDateString()   // "2025-09-03"
         let requestDateFromPeriod = MorningOrNightTextField.text?.lowercased() == "morning" ? "am" : "pm"
@@ -202,7 +200,6 @@ class TimeOffRequestViewController: UIViewController {
             print("❌ Invalid date format: \(startDate) / \(endDate)")
             return
         }
-
         let requestDateFrom = startDateObj.toAPIDateString() // "09-07-2025"
         var requestDateTo   = endDateObj.toAPIDateString()   // "09-07-2025"
         let requestDateFromPeriod = MorningOrNightTextField.text?.lowercased() == "morning" ? "am" : "pm"
@@ -269,7 +266,6 @@ class TimeOffRequestViewController: UIViewController {
         selectLeaveTypeTextField.isHidden = false
         MorningOrNightTextField.isHidden = false
     }
-    
     
     func setUpOtherMode(hideHalfDay: Bool = false) {
         startDateCalender.isHidden = false

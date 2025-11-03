@@ -161,7 +161,7 @@ class TimeOffViewController: UIViewController {
                 DispatchQueue.main.async {
                     switch result {
                     case .success(let records):
-                        
+                        print("records: \(records)")
                         self?.employeeTimeOffRecords = records.records
                         self?.leaveDayColors.removeAll()
                         self?.leaveDayRecords.removeAll()
@@ -244,18 +244,49 @@ class TimeOffViewController: UIViewController {
 }
 
 extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
+//    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
+//        selectedDates.append(date)
+//        let normalizedDate = Calendar.current.startOfDay(for: date)
+//
+//        if let daily = leaveDayRecords[normalizedDate] {
+//            goToResultOfRequest(with: daily)
+//        } else if let hourly = leaveHourRecords[normalizedDate] {
+//            goToResultOfRequest(with: hourly)
+//        } else {
+//            navigateToTimeOffRequest(selectedDate: date) // ✅ Pass it here
+//        }
+//    }
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         selectedDates.append(date)
         let normalizedDate = Calendar.current.startOfDay(for: date)
+        guard let allRecords = employeeTimeOffRecords else { return }
 
-        if let daily = leaveDayRecords[normalizedDate] {
-            goToResultOfRequest(with: daily)
-        } else if let hourly = leaveHourRecords[normalizedDate] {
-            goToResultOfRequest(with: hourly)
+        // Prepare date formatter for comparison
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        let targetDateString = dateFormatter.string(from: normalizedDate)
+
+        // Find all daily + hourly records matching that date
+        let matchingDaily = allRecords.dailyRecords.filter {
+            $0.startDate == targetDateString || $0.endDate == targetDateString
+        }
+
+        let matchingHourly = allRecords.hourlyRecords.filter {
+            $0.leaveDay == targetDateString
+        }
+
+        // ✅ Combine both arrays into [LeaveRecord]
+        let combinedRecords: [LeaveRecord] =
+            matchingDaily.map { $0 as LeaveRecord } + matchingHourly.map { $0 as LeaveRecord }
+
+        if !combinedRecords.isEmpty {
+            goToResultOfRequest(for: normalizedDate, records: combinedRecords)
+
         } else {
-            navigateToTimeOffRequest(selectedDate: date) // ✅ Pass it here
+            navigateToTimeOffRequest(selectedDate: date)
         }
     }
+
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
             super.traitCollectionDidChange(previousTraitCollection)
@@ -454,12 +485,16 @@ extension TimeOffViewController {
         present(timeOffRequestVC, animated: true, completion: nil)
     }
 
-    func goToResultOfRequest(with record: LeaveRecord) {
-        let resultOfRequestVC = ResultOfRequestAlartViewController()
-        resultOfRequestVC.modalPresentationStyle = .overFullScreen
-        resultOfRequestVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        resultOfRequestVC.modalTransitionStyle = .crossDissolve
-        resultOfRequestVC.fillTextFields(record: record) // <-- Make this accept LeaveRecord
-        present(resultOfRequestVC, animated: true, completion: nil)
+    func goToResultOfRequest(for selectedDate: Date, records: [LeaveRecord]) {
+        let resultVC = ResultOfRequestAlartViewController()
+        resultVC.parentObject = self
+        resultVC.selectedDate = selectedDate
+        resultVC.filteredRecords = records
+        resultVC.modalPresentationStyle = .overFullScreen
+        resultVC.view.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        resultVC.modalTransitionStyle = .crossDissolve
+        present(resultVC, animated: true)
     }
+
+
 }

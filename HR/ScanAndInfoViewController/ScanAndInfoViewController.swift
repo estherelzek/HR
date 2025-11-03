@@ -24,10 +24,7 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
         setUpTexts()
         companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
-        NotificationCenter.default.addObserver(self,
-                 selector: #selector(companyFileImported),
-                 name: NSNotification.Name("CompanyFileImported"),
-                 object: nil)
+        NotificationCenter.default.addObserver(self,selector: #selector(companyFileImported),name: NSNotification.Name("CompanyFileImported"),object: nil)
          }
     
          // ✅ Update text field when .ihkey file is imported

@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="23504" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -11,12 +12,10 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ResultOfRequestAlartViewController" customModule="HR" customModuleProvider="target">
             <connections>
                 <outlet property="ActionButton" destination="QVb-ca-29j" id="8Xm-lc-OiU"/>
-                <outlet property="coloredButton" destination="X2l-fl-Blb" id="fST-vD-3hw"/>
                 <outlet property="contentView" destination="CMg-8i-Jlr" id="BHw-R0-zSo"/>
                 <outlet property="dateLabel" destination="wHp-fD-cmQ" id="xb4-mZ-X7w"/>
-                <outlet property="numberOfAnnualLeaveLabel" destination="EVC-0R-Ecz" id="xR1-me-LEe"/>
                 <outlet property="outSideView" destination="i5M-Pr-FkT" id="zWK-pX-ZQ2"/>
-                <outlet property="requestData" destination="15K-kD-r98" id="Gyk-C1-ehj"/>
+                <outlet property="tableView" destination="ukx-Ia-Thv" id="QZW-lA-RfM"/>
                 <outlet property="tilteLabel" destination="EFf-WB-fLA" id="yPX-8f-ogY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -27,44 +26,16 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CMg-8i-Jlr" customClass="InspectableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="58.666666666666657" y="304" width="276" height="269"/>
+                    <rect key="frame" x="58.666666666666657" y="306" width="276" height="290"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 September 2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wHp-fD-cmQ">
-                            <rect key="frame" x="8" y="87" width="260" height="34"/>
+                            <rect key="frame" x="8" y="55.000000000000007" width="260" height="20.333333333333336"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                             <color key="textColor" name="textinsettingvc"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="15K-kD-r98">
-                            <rect key="frame" x="8" y="121" width="260" height="15"/>
-                            <subviews>
-                                <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X2l-fl-Blb" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="15" height="15"/>
-                                    <color key="backgroundColor" name="purplecolor"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="15" id="8If-fe-B4L"/>
-                                    </constraints>
-                                    <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title=""/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                            <real key="value" value="5"/>
-                                        </userDefinedRuntimeAttribute>
-                                    </userDefinedRuntimeAttributes>
-                                </button>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="annual leave: 1.0 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EVC-0R-Ecz">
-                                    <rect key="frame" x="23" y="0.0" width="237" height="15"/>
-                                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
-                                    <color key="textColor" name="textinsettingvc"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="15" id="au5-vp-EhS"/>
-                            </constraints>
-                        </stackView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QVb-ca-29j" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="150" y="213" width="118" height="40"/>
+                            <rect key="frame" x="150" y="234" width="118" height="40"/>
                             <color key="backgroundColor" name="purplecolor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="40" id="GIm-QK-dsX"/>
@@ -91,22 +62,38 @@
                             <color key="textColor" name="purplecolor"/>
                             <nil key="highlightedColor"/>
                         </label>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="ukx-Ia-Thv">
+                            <rect key="frame" x="8" y="72" width="260" height="85"/>
+                            <color key="backgroundColor" name="alartColor "/>
+                        </tableView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x3a-2p-BdQ">
+                            <rect key="frame" x="0.0" y="165" width="276" height="40"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="23"/>
+                            <color key="tintColor" name="purplecolor"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="+ Creat another one">
+                                <color key="titleColor" name="purplecolor"/>
+                            </state>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" name="alartColor "/>
                     <constraints>
+                        <constraint firstItem="x3a-2p-BdQ" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" id="6WN-BR-ZHx"/>
                         <constraint firstAttribute="trailing" secondItem="QVb-ca-29j" secondAttribute="trailing" constant="8" id="789-9I-6hT"/>
-                        <constraint firstItem="15K-kD-r98" firstAttribute="top" secondItem="wHp-fD-cmQ" secondAttribute="bottom" id="C4h-Ck-CIl"/>
-                        <constraint firstItem="wHp-fD-cmQ" firstAttribute="top" secondItem="EFf-WB-fLA" secondAttribute="bottom" constant="40" id="E8W-kr-8FU"/>
+                        <constraint firstAttribute="trailing" secondItem="ukx-Ia-Thv" secondAttribute="trailing" constant="8" id="85F-bB-IHK"/>
+                        <constraint firstItem="QVb-ca-29j" firstAttribute="top" secondItem="x3a-2p-BdQ" secondAttribute="bottom" constant="29" id="DJ7-5Q-dUR"/>
+                        <constraint firstItem="wHp-fD-cmQ" firstAttribute="top" secondItem="EFf-WB-fLA" secondAttribute="bottom" constant="8" id="E8W-kr-8FU"/>
                         <constraint firstAttribute="trailing" secondItem="EFf-WB-fLA" secondAttribute="trailing" constant="50" id="Hvr-gW-3E6"/>
-                        <constraint firstItem="QVb-ca-29j" firstAttribute="top" secondItem="15K-kD-r98" secondAttribute="bottom" constant="77" id="NHF-E9-km4"/>
+                        <constraint firstItem="ukx-Ia-Thv" firstAttribute="height" secondItem="CMg-8i-Jlr" secondAttribute="height" multiplier="0.293103" id="I2A-Lb-uD5"/>
+                        <constraint firstAttribute="trailing" secondItem="x3a-2p-BdQ" secondAttribute="trailing" id="Mnl-pE-bS1"/>
                         <constraint firstItem="EFf-WB-fLA" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="50" id="PJP-4j-ZiG"/>
-                        <constraint firstItem="15K-kD-r98" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="8" id="Z3g-w0-sOa"/>
+                        <constraint firstItem="x3a-2p-BdQ" firstAttribute="top" secondItem="ukx-Ia-Thv" secondAttribute="bottom" constant="8" id="RKa-Vh-gqo"/>
+                        <constraint firstItem="ukx-Ia-Thv" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="8" id="RjJ-Ho-EZ5"/>
                         <constraint firstItem="QVb-ca-29j" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="150" id="ZMe-fx-daQ"/>
                         <constraint firstAttribute="bottom" secondItem="QVb-ca-29j" secondAttribute="bottom" constant="16" id="dLd-V7-5t2"/>
                         <constraint firstAttribute="trailing" secondItem="wHp-fD-cmQ" secondAttribute="trailing" constant="8" id="dpq-nO-pyD"/>
                         <constraint firstItem="EFf-WB-fLA" firstAttribute="top" secondItem="CMg-8i-Jlr" secondAttribute="top" constant="17" id="hS1-xy-DLB"/>
                         <constraint firstItem="wHp-fD-cmQ" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="8" id="pCi-2l-WVR"/>
-                        <constraint firstAttribute="trailing" secondItem="15K-kD-r98" secondAttribute="trailing" constant="8" id="uMp-on-crZ"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -121,9 +108,9 @@
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.70229" id="5t5-Gg-1wX"/>
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="VBG-XK-YSe"/>
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="YpM-Wi-Xwt"/>
-                <constraint firstItem="CMg-8i-Jlr" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.315728" id="lTe-kO-eaE"/>
+                <constraint firstItem="CMg-8i-Jlr" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.34" id="lTe-kO-eaE"/>
             </constraints>
-            <point key="canvasLocation" x="-495.41984732824426" y="16.901408450704228"/>
+            <point key="canvasLocation" x="-703.05343511450383" y="7.746478873239437"/>
         </view>
     </objects>
     <resources>
@@ -131,10 +118,10 @@
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="buttonTextColor">
-            <color red="0.99999994039535522" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
-            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="textinsettingvc">
             <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
