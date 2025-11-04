@@ -8,6 +8,21 @@
 import UIKit
 import FSCalendar
 
+enum LeaveStatePriority: Int {
+    case refuse = 1
+    case confirm = 2
+    case validate = 3
+    
+    static func priority(for state: String) -> Int {
+        switch state.lowercased() {
+        case "validate": return Self.validate.rawValue
+        case "confirm":  return Self.confirm.rawValue
+        case "refuse":   return Self.refuse.rawValue
+        default:          return 0
+        }
+    }
+}
+
 protocol LeaveRecord {
     var leaveID: Int { get }
     var leaveType: String { get }
@@ -47,8 +62,12 @@ class TimeOffViewController: UIViewController {
     var filteredLeaveTypes: [LeaveType] = []
     var leaveDayColors: [Date: UIColor] = [:]
     var employeeTimeOffRecords: EmployeeTimeOffRecords?
-    var leaveDayRecords: [Date: DailyRecord] = [:]
-    var leaveHourRecords: [Date: HourlyRecord] = [:]
+  //  var leaveDayRecords: [Date: DailyRecord] = [:]
+    var leaveDayRecords: [Date: [DailyRecord]] = [:]
+
+   // var leaveHourRecords: [Date: HourlyRecord] = [:]
+    var leaveHourRecords: [Date: [HourlyRecord]] = [:]
+
     let stateTypes: [StateType] = [
         StateType(title: "Refused", key: "refuse"),
         StateType(title: "Confirmed", key: "confirm"),
@@ -169,44 +188,57 @@ class TimeOffViewController: UIViewController {
                         
                         let formatter = DateFormatter()
                         formatter.dateFormat = "yyyy-MM-dd"
+                        
                         for record in records.records.dailyRecords {
                             guard
                                 let start = formatter.date(from: record.startDate),
                                 let end = formatter.date(from: record.endDate)
                             else { continue }
 
-                            // 🔍 Find the matching leave type by name
-                            let  colorHex = self?.leaveTypes.first(where: { $0.name == record.leaveType })?.color
-                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E" // ✅ Default color if missing or empty
+                            let colorHex = self?.leaveTypes.first(where: { $0.name == record.leaveType })?.color
+                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E"
                             let color = UIColor.fromHex(finalHex)
-
                             let days = self?.datesBetween(start: start, end: end) ?? []
+
                             for day in days {
+                                // Append to array like we do for hourly
+                                if var arr = self?.leaveDayRecords[day] {
+                                    arr.append(record)
+                                    arr[arr.count - 1].color = finalHex
+                                    self?.leaveDayRecords[day] = arr
+                                } else {
+                                    var newArr: [DailyRecord] = [record]
+                                    newArr[0].color = finalHex
+                                    self?.leaveDayRecords[day] = newArr
+                                }
                                 self?.leaveDayColors[day] = color
-                                self?.leaveDayRecords[day] = record
-                                self?.leaveDayRecords[day]?.color = finalHex
                             }
                         }
 
                         for record in records.records.hourlyRecords {
-                            guard
-                                let start = formatter.date(from: record.leaveDay),
-                                let end = formatter.date(from: record.leaveDay)
-                            else { continue }
+                            guard let leaveDay = formatter.date(from: record.leaveDay) else { continue }
 
-                            // 🔍 Find the matching leave type by name
+                            // 🎨 Find color for this leave type
                             let colorHex = self?.leaveTypes.first(where: { $0.name == record.leaveType })?.color
-                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E" // ✅ Same default fallback
+                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E"
                             let color = UIColor.fromHex(finalHex)
 
-                            let days = self?.datesBetween(start: start, end: end) ?? []
-                            for day in days {
-                                self?.leaveHourRecords[day] = record
-                                if self?.leaveDayColors[day] == nil {
-                                    self?.leaveDayColors[day] = color
-                                    self?.leaveHourRecords[day]?.color = finalHex
-                                }
+                            // Append the record into the array for that day
+                            if var arr = self?.leaveHourRecords[leaveDay] {
+                                arr.append(record)
+                                // update the color inside the appended value (structs are value types)
+                                arr[arr.count - 1].color = finalHex
+                                self?.leaveHourRecords[leaveDay] = arr
+                                print("🔁 Appended hourly record for \(leaveDay) → now \(arr.count) records")
+                            } else {
+                                var newArr: [HourlyRecord] = [record]
+                                newArr[0].color = finalHex
+                                self?.leaveHourRecords[leaveDay] = newArr
+                                print("➕ Created hourly records array for \(leaveDay)")
                             }
+
+                            // Save color for calendar cell using the last record's color (last wins)
+                            self?.leaveDayColors[leaveDay] = color
                         }
 
                         self?.calender.reloadData()
@@ -314,56 +346,66 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
         var state = ""
         var color = ""
 
-        if let record = leaveDayRecords[normalizedDate] {
-            state = record.state
-            color = record.color ?? ""
-        } else if let record = leaveHourRecords[normalizedDate] {
-            state = record.state
-            color = record.color ?? ""
+        // 🔍 Get last hourly record if multiple exist
+        if let records = leaveHourRecords[normalizedDate], let last = records.last {
+            state = last.state
+            color = last.color ?? ""
         }
-        // ✅ Default: clear background
+        // 🗓️ Get last daily record if multiple exist
+        else if let records = leaveDayRecords[normalizedDate], let last = records.last {
+            state = last.state
+            color = last.color ?? ""
+        }
+
+        // ✅ Default background
         cell.backgroundColor = .clear
-        // ✅ Public holidays
-        
+
+        // 📅 Public holidays
         if publicHolidays.contains(where: { Calendar.current.isDate($0, inSameDayAs: normalizedDate) }) {
             cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
         }
 
+        // 🚫 Weekends
         if !weekendDays.isEmpty {
             let weekday = Calendar.current.component(.weekday, from: normalizedDate)
-            // Convert Apple's weekday (1–7, Sunday = 1) → API weekday (0–6, Monday = 0)
             let convertedIndex = (weekday + 5) % 7
-
             if weekendDays.contains(convertedIndex) {
                 cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
             }
         }
+
+        // 🎨 Apply color and state of last record (daily or hourly)
         cell.configure(for: state, color: color)
         return cell
     }
 
-    
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
-            let normalizedDate = Calendar.current.startOfDay(for: date)
-            var state = ""
-            
-            if let record = leaveDayRecords[normalizedDate] {
-                state = record.state
-            } else if let record = leaveHourRecords[normalizedDate] {
-                state = record.state
-            }
-            switch state {
-            case "validate":
-                return .black
-            case "confirm":
-                return .label
-            case "refuse":
-                return .label
-            default:
-                return appearance.titleDefaultColor // fallback to calendar default
-            }
+        let normalizedDate = Calendar.current.startOfDay(for: date)
+        var state = ""
+
+        // 🔍 Last hourly record if multiple exist
+        if let records = leaveHourRecords[normalizedDate], let last = records.last {
+            state = last.state
         }
+        // 🗓️ Last daily record if multiple exist
+        else if let records = leaveDayRecords[normalizedDate], let last = records.last {
+            state = last.state
+        }
+
+        // 🎨 Set title color based on last record’s state
+        switch state {
+        case "validate":
+            return .black
+        case "confirm":
+            return .label
+        case "refuse":
+            return .label
+        default:
+            return appearance.titleDefaultColor
+        }
+    }
 }
+
 
 extension TimeOffViewController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     

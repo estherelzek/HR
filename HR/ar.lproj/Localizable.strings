@@ -72,7 +72,8 @@
 "second_approval" = "الموافقة الثانية";
 "refused" = "مرفوض";
 // result of request view controller
-"pending_approval" = "قيد الموافقة";
+"pending_approval" = "طلب إجازة قيد الموافقة";
+
 "delete" = "حذف";
 "annual_leave_days" = "إجازة سنوية: %.1f يوم";
 

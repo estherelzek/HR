@@ -69,7 +69,7 @@
 
 
 // result of request view controller
-"pending_approval" = "Pending Approval";
+"pending_approval" = "TimeOff Requested";
 "delete" = "Delete";
 "annual_leave_days" = "Annual leave: %.1f days";
 

@@ -11,7 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ResultOfRequestAlartViewController" customModule="HR" customModuleProvider="target">
             <connections>
-                <outlet property="ActionButton" destination="QVb-ca-29j" id="8Xm-lc-OiU"/>
                 <outlet property="contentView" destination="CMg-8i-Jlr" id="BHw-R0-zSo"/>
                 <outlet property="dateLabel" destination="wHp-fD-cmQ" id="xb4-mZ-X7w"/>
                 <outlet property="outSideView" destination="i5M-Pr-FkT" id="zWK-pX-ZQ2"/>
@@ -26,35 +25,16 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CMg-8i-Jlr" customClass="InspectableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="58.666666666666657" y="306" width="276" height="290"/>
+                    <rect key="frame" x="49" y="259.33333333333337" width="295" height="383.33333333333337"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="3 September 2025" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="wHp-fD-cmQ">
-                            <rect key="frame" x="8" y="55.000000000000007" width="260" height="20.333333333333336"/>
+                            <rect key="frame" x="8" y="55.000000000000007" width="279" height="20.333333333333336"/>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                             <color key="textColor" name="textinsettingvc"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QVb-ca-29j" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="150" y="234" width="118" height="40"/>
-                            <color key="backgroundColor" name="purplecolor"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="40" id="GIm-QK-dsX"/>
-                            </constraints>
-                            <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                            <color key="tintColor" name="buttonTextColor"/>
-                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" title="Cancel"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                    <real key="value" value="10"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                            <connections>
-                                <action selector="ActionButton:" destination="-1" eventType="touchUpInside" id="KZH-79-27t"/>
-                            </connections>
-                        </button>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pending Approval" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EFf-WB-fLA">
-                            <rect key="frame" x="50" y="17" width="176" height="30"/>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="TimeOff " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="EFf-WB-fLA">
+                            <rect key="frame" x="50" y="17" width="195" height="30"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="uhe-4l-M1o"/>
                             </constraints>
@@ -63,35 +43,35 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="ukx-Ia-Thv">
-                            <rect key="frame" x="8" y="72" width="260" height="85"/>
+                            <rect key="frame" x="8" y="91.333333333333371" width="279" height="230"/>
                             <color key="backgroundColor" name="alartColor "/>
                         </tableView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="x3a-2p-BdQ">
-                            <rect key="frame" x="0.0" y="165" width="276" height="40"/>
+                            <rect key="frame" x="0.0" y="319.33333333333331" width="295" height="40"/>
                             <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="23"/>
                             <color key="tintColor" name="purplecolor"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="+ Creat another one">
                                 <color key="titleColor" name="purplecolor"/>
                             </state>
+                            <connections>
+                                <action selector="creatAnotherOneButtonTapped:" destination="-1" eventType="touchUpInside" id="SoQ-CU-1lu"/>
+                            </connections>
                         </button>
                     </subviews>
                     <color key="backgroundColor" name="alartColor "/>
                     <constraints>
                         <constraint firstItem="x3a-2p-BdQ" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" id="6WN-BR-ZHx"/>
-                        <constraint firstAttribute="trailing" secondItem="QVb-ca-29j" secondAttribute="trailing" constant="8" id="789-9I-6hT"/>
                         <constraint firstAttribute="trailing" secondItem="ukx-Ia-Thv" secondAttribute="trailing" constant="8" id="85F-bB-IHK"/>
-                        <constraint firstItem="QVb-ca-29j" firstAttribute="top" secondItem="x3a-2p-BdQ" secondAttribute="bottom" constant="29" id="DJ7-5Q-dUR"/>
                         <constraint firstItem="wHp-fD-cmQ" firstAttribute="top" secondItem="EFf-WB-fLA" secondAttribute="bottom" constant="8" id="E8W-kr-8FU"/>
                         <constraint firstAttribute="trailing" secondItem="EFf-WB-fLA" secondAttribute="trailing" constant="50" id="Hvr-gW-3E6"/>
-                        <constraint firstItem="ukx-Ia-Thv" firstAttribute="height" secondItem="CMg-8i-Jlr" secondAttribute="height" multiplier="0.293103" id="I2A-Lb-uD5"/>
+                        <constraint firstItem="ukx-Ia-Thv" firstAttribute="height" secondItem="CMg-8i-Jlr" secondAttribute="height" multiplier="0.6" id="I2A-Lb-uD5"/>
                         <constraint firstAttribute="trailing" secondItem="x3a-2p-BdQ" secondAttribute="trailing" id="Mnl-pE-bS1"/>
+                        <constraint firstItem="ukx-Ia-Thv" firstAttribute="top" secondItem="wHp-fD-cmQ" secondAttribute="bottom" constant="16" id="PFC-fH-wlt"/>
                         <constraint firstItem="EFf-WB-fLA" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="50" id="PJP-4j-ZiG"/>
-                        <constraint firstItem="x3a-2p-BdQ" firstAttribute="top" secondItem="ukx-Ia-Thv" secondAttribute="bottom" constant="8" id="RKa-Vh-gqo"/>
                         <constraint firstItem="ukx-Ia-Thv" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="8" id="RjJ-Ho-EZ5"/>
-                        <constraint firstItem="QVb-ca-29j" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="150" id="ZMe-fx-daQ"/>
-                        <constraint firstAttribute="bottom" secondItem="QVb-ca-29j" secondAttribute="bottom" constant="16" id="dLd-V7-5t2"/>
                         <constraint firstAttribute="trailing" secondItem="wHp-fD-cmQ" secondAttribute="trailing" constant="8" id="dpq-nO-pyD"/>
+                        <constraint firstAttribute="bottom" secondItem="x3a-2p-BdQ" secondAttribute="bottom" constant="24" id="gkn-tj-sF4"/>
                         <constraint firstItem="EFf-WB-fLA" firstAttribute="top" secondItem="CMg-8i-Jlr" secondAttribute="top" constant="17" id="hS1-xy-DLB"/>
                         <constraint firstItem="wHp-fD-cmQ" firstAttribute="leading" secondItem="CMg-8i-Jlr" secondAttribute="leading" constant="8" id="pCi-2l-WVR"/>
                     </constraints>
@@ -105,19 +85,16 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="CMg-8i-Jlr" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.70229" id="5t5-Gg-1wX"/>
+                <constraint firstItem="CMg-8i-Jlr" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.75" id="5t5-Gg-1wX"/>
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="VBG-XK-YSe"/>
                 <constraint firstItem="CMg-8i-Jlr" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="YpM-Wi-Xwt"/>
-                <constraint firstItem="CMg-8i-Jlr" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.34" id="lTe-kO-eaE"/>
+                <constraint firstItem="CMg-8i-Jlr" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.45" id="lTe-kO-eaE"/>
             </constraints>
             <point key="canvasLocation" x="-703.05343511450383" y="7.746478873239437"/>
         </view>
     </objects>
     <resources>
         <namedColor name="alartColor ">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
-        <namedColor name="buttonTextColor">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="purplecolor">
