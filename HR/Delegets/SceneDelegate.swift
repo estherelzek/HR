@@ -7,7 +7,6 @@
 
 import UIKit
 
-
     class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         var window: UIWindow?
         
@@ -44,15 +43,17 @@ import UIKit
                 name: .networkReachable,
                 object: nil
             )
-
+            if let notificationResponse = connectionOptions.notificationResponse {
+                handleNotificationTap(notificationResponse)
+            }
            
         }
+        
         @objc private func networkBecameReachable() {
             print("🌐 Network became reachable → resending offline requests...")
             NetworkManager.shared.resendOfflineRequests()
         }
 
-        // Also, call it when app resumes
         func applicationDidBecomeActive(_ application: UIApplication) {
             print("📱 App became active — trying to resend offline requests...")
             NetworkManager.shared.resendOfflineRequests()
@@ -63,11 +64,15 @@ import UIKit
             NetworkManager.shared.resendOfflineRequests()
         }
 
-    func sceneDidDisconnect(_ scene: UIScene) {
-     
-    }
+        func sceneDidDisconnect(_ scene: UIScene) {
+            
+        }
 
-    
+        private func handleNotificationTap(_ response: UNNotificationResponse) {
+            print("🔔 User tapped notification: \(response.notification.request.content.userInfo)")
+            // Example: navigate to a specific view controller
+        }
+
 
     func sceneWillResignActive(_ scene: UIScene) {
     

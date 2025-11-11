@@ -276,29 +276,15 @@ class TimeOffViewController: UIViewController {
 }
 
 extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
-//    func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
-//        selectedDates.append(date)
-//        let normalizedDate = Calendar.current.startOfDay(for: date)
-//
-//        if let daily = leaveDayRecords[normalizedDate] {
-//            goToResultOfRequest(with: daily)
-//        } else if let hourly = leaveHourRecords[normalizedDate] {
-//            goToResultOfRequest(with: hourly)
-//        } else {
-//            navigateToTimeOffRequest(selectedDate: date) // ✅ Pass it here
-//        }
-//    }
+
     func calendar(_ calendar: FSCalendar, didSelect date: Date, at monthPosition: FSCalendarMonthPosition) {
         selectedDates.append(date)
         let normalizedDate = Calendar.current.startOfDay(for: date)
         guard let allRecords = employeeTimeOffRecords else { return }
 
-        // Prepare date formatter for comparison
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let targetDateString = dateFormatter.string(from: normalizedDate)
-
-        // Find all daily + hourly records matching that date
         let matchingDaily = allRecords.dailyRecords.filter {
             $0.startDate == targetDateString || $0.endDate == targetDateString
         }
@@ -306,8 +292,6 @@ extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
         let matchingHourly = allRecords.hourlyRecords.filter {
             $0.leaveDay == targetDateString
         }
-
-        // ✅ Combine both arrays into [LeaveRecord]
         let combinedRecords: [LeaveRecord] =
             matchingDaily.map { $0 as LeaveRecord } + matchingHourly.map { $0 as LeaveRecord }
 
@@ -318,7 +302,6 @@ extension TimeOffViewController: FSCalendarDelegate, FSCalendarDataSource {
             navigateToTimeOffRequest(selectedDate: date)
         }
     }
-
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
             super.traitCollectionDidChange(previousTraitCollection)
@@ -346,26 +329,19 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
         var state = ""
         var color = ""
 
-        // 🔍 Get last hourly record if multiple exist
         if let records = leaveHourRecords[normalizedDate], let last = records.last {
             state = last.state
             color = last.color ?? ""
         }
-        // 🗓️ Get last daily record if multiple exist
         else if let records = leaveDayRecords[normalizedDate], let last = records.last {
             state = last.state
             color = last.color ?? ""
         }
-
-        // ✅ Default background
         cell.backgroundColor = .clear
-
-        // 📅 Public holidays
         if publicHolidays.contains(where: { Calendar.current.isDate($0, inSameDayAs: normalizedDate) }) {
             cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
         }
 
-        // 🚫 Weekends
         if !weekendDays.isEmpty {
             let weekday = Calendar.current.component(.weekday, from: normalizedDate)
             let convertedIndex = (weekday + 5) % 7
@@ -373,8 +349,6 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
                 cell.backgroundColor = .lightGray.withAlphaComponent(0.1)
             }
         }
-
-        // 🎨 Apply color and state of last record (daily or hourly)
         cell.configure(for: state, color: color)
         return cell
     }
@@ -382,17 +356,12 @@ extension TimeOffViewController: FSCalendarDelegateAppearance {
     func calendar(_ calendar: FSCalendar, appearance: FSCalendarAppearance, titleDefaultColorFor date: Date) -> UIColor? {
         let normalizedDate = Calendar.current.startOfDay(for: date)
         var state = ""
-
-        // 🔍 Last hourly record if multiple exist
         if let records = leaveHourRecords[normalizedDate], let last = records.last {
             state = last.state
         }
-        // 🗓️ Last daily record if multiple exist
         else if let records = leaveDayRecords[normalizedDate], let last = records.last {
             state = last.state
         }
-
-        // 🎨 Set title color based on last record’s state
         switch state {
         case "validate":
             return .black
@@ -443,7 +412,6 @@ extension TimeOffViewController: UICollectionViewDelegate, UICollectionViewDataS
             }
             let leaveType = leaveTypes[indexPath.item]
             cell.titleLabel.text = leaveType.name
-            // ✅ Use default color if nil or empty
             let colorHex = (leaveType.color?.isEmpty == false) ? leaveType.color! : "4B644A"
             cell.coloredButton.backgroundColor = UIColor.fromHex(colorHex)
 

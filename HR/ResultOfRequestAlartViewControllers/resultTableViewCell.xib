@@ -110,7 +110,7 @@
                 <outlet property="periodLabel" destination="rYE-aG-UeF" id="8RS-n2-OLq"/>
                 <outlet property="statusLabel" destination="VfD-bO-sr7" id="plX-UU-BHg"/>
             </connections>
-            <point key="canvasLocation" x="-1290" y="-173"/>
+            <point key="canvasLocation" x="-1432" y="-297"/>
         </tableViewCell>
     </objects>
     <resources>

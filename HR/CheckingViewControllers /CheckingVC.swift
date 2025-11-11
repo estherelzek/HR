@@ -62,7 +62,6 @@ class CheckingVC: UIViewController {
 
     @IBAction func checkingButtonTapped(_ sender: Any) {
         if isCheckedIn {
-            // Calculate or show worked hours if available
             let hoursText: String
             if let hours = workedHours {
                 hoursText = String(format: "%.2f hours", hours)
@@ -103,7 +102,6 @@ class CheckingVC: UIViewController {
 
             present(alert, animated: true)
         } else {
-            // ✅ Regular check-in
             isCheckedIn.toggle()
             print("isCheckedIn after check-in: \(isCheckedIn)")
             viewModel.performCheckInOut(isCheckedIn: isCheckedIn, workedHours: workedHours)
@@ -156,8 +154,6 @@ class CheckingVC: UIViewController {
                         
                     } else if response.result?.status == "error",
                               response.result?.errorCode == "INVALID_TOKEN" {
-                        
-                        // 🔁 Generate new token and retry
                         let tokenVM = GenerateTokenViewModel()
                         tokenVM.generateNewToken(
                             employeeToken: token,
@@ -167,8 +163,6 @@ class CheckingVC: UIViewController {
                             if let result = tokenVM.tokenResponse {
                                 print("✅ New token generated: \(result.newToken)")
                                 UserDefaults.standard.set(result.newToken, forKey: "employeeToken")
-                                
-                                // 🔁 Retry the call after getting new token
                                 self.fetchAttendanceStatus()
                             } else if let error = tokenVM.errorMessage {
                                 print("❌ Failed to regenerate token: \(error)")
@@ -176,7 +170,6 @@ class CheckingVC: UIViewController {
                             }
                         }
                     }
-
                     self.reloadTexts()
                     self.loader.stopAnimating()
                     self.loader.hidesWhenStopped = true
@@ -233,7 +226,6 @@ extension CheckingVC {
         print("isCheckedIn : \(isCheckedIn)")
         if isCheckedIn {
            titleOfCheckingInOrOut.text = NSLocalizedString("checked_in_title", comment: "")
-         //   titleOfCheckingInOrOut.text = UserDefaults.standard.string(forKey: "clockDiffMinutes")!
             checkingButton.setTitle(NSLocalizedString("checked_in_button", comment: ""), for: .normal)
             checkingButton.setImage(UIImage(named: "login"), for: .normal)
 
@@ -248,7 +240,6 @@ extension CheckingVC {
             }
 
         } else {
-         //   titleOfCheckingInOrOut.text = UserDefaults.standard.string(forKey: "clockDiffMinutes")!
             titleOfCheckingInOrOut.text = NSLocalizedString("checked_out_title", comment: "")
             checkingButton.setTitle(NSLocalizedString("checked_out_button", comment: ""), for: .normal)
             checkingButton.setImage(UIImage(named: "logout"), for: .normal)

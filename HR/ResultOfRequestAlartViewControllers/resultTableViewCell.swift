@@ -37,7 +37,6 @@ class resultTableViewCell: UITableViewCell {
 // MARK: - Shape Drawer for Leave States
 extension UIButton {
     func drawLeaveState(_ state: String, colorHex: String = "#B7F73E") {
-        // Remove any previous layers
         layer.sublayers?.removeAll(where: { $0.name == "stateShape" })
         
         let circleSize = bounds.height * 0.7
@@ -56,7 +55,6 @@ extension UIButton {
 
         switch state {
         case "refuse":
-            // Outlined circle with horizontal line
             let outline = CAShapeLayer()
             outline.path = circlePath.cgPath
             outline.strokeColor = baseColor.cgColor

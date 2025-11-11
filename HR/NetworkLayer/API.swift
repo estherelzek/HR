@@ -19,7 +19,7 @@ enum API: Endpoint {
     }
 
     var baseURL: String {
-        let defaultURL = "https://ahmedelzupeir-androidapp2.odoo.com"
+        let defaultURL = "https://ahmedelzupeir-androidapp21.odoo.com"
         if let saved = UserDefaults.standard.baseURL, !saved.isEmpty {
             if saved.hasSuffix("/") {
                 return String(saved.dropLast())

@@ -27,7 +27,6 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
         NotificationCenter.default.addObserver(self,selector: #selector(companyFileImported),name: NSNotification.Name("CompanyFileImported"),object: nil)
          }
     
-         // ✅ Update text field when .ihkey file is imported
          @objc private func companyFileImported() {
              if let text = UserDefaults.standard.string(forKey: "encryptedText") {
                  companyInformationTextField.text = text
@@ -85,14 +84,7 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     }
 
     @IBAction func doneButtonTapped(_ sender: Any) {
-//        let encryptedText =  companyInformationTextField.text ?? ""
-//        do {
-//            let middleware = try Middleware.initialize(encryptedText)
-//            UserDefaults.standard.set(middleware.companyId, forKey: "companyIdKey")
-//            UserDefaults.standard.set("HKP0Pt4zTDVf3ZHcGNmM4yx6", forKey: "apiKeyKey")
-//            UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
-//            print("middleware : success : \(middleware.apiKey) : \(middleware.companyId): \(middleware.baseUrl)")
-        
+
         if companyInformationTextField.text == nil {
             let alert = UIAlertController(title: "Error", message: "Please enter your company information", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -100,10 +92,6 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
         } else  {
             goToLogInViewController()
         }
-            
-//        } catch {
-//            print("Failed to decrypt: \(error)")
-//        }
     }
 
     @objc private func languageChanged() {
@@ -112,7 +100,6 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
 
     func setUpTexts() {
         doneButton.setTitle(NSLocalizedString("done_button", comment: ""), for: .normal)
-    //    scanQRbutton.setTitle(NSLocalizedString("scan-QR", comment: ""), for: .normal)
         enterCompanyInfoLabel.text = NSLocalizedString("enter-company-info", comment: "")
         orButton.text = NSLocalizedString("or", comment: "")
     }
@@ -138,21 +125,11 @@ extension ScanAndInfoViewController {
            let stringValue = readableObject.stringValue {
             
             AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            
-            // 🧩 Save scanned text
             UserDefaults.standard.set(stringValue, forKey: "scannedQRCode")
             print("📦 Scanned QR Data: \(stringValue)")
-            
-            // 🧩 Show it in your text field immediately
             companyInformationTextField.text = stringValue
-            
-            // 🧩 Optional: also store it as "encryptedText" if that’s what you use elsewhere
             UserDefaults.standard.set(stringValue, forKey: "encryptedText")
-            
-            // Remove preview
             previewLayer.removeFromSuperlayer()
-            
-            // Optional: show confirmation alert
             let alert = UIAlertController(title: "QR Scanned",
                                           message: "Company info fetched successfully!",
                                           preferredStyle: .alert)

@@ -63,9 +63,7 @@ class TimeOffRequestViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let lang = LanguageManager.shared.currentLanguage()
-        print("🔄 ViewWillAppear - Current language: \(lang)")
         setupPickers()
-        print("startDateCalender.text : \(startDateCalender.text ?? "")")
         if let date = preselectedDate {
             startDatePicker.date = date
             endDatePicker.date = date

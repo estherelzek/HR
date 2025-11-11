@@ -27,16 +27,6 @@ class SettingScreenTableViewCell: UITableViewCell {
         }
         
         dropdownButton.isHidden = !item.isDropdownVisible
-//        if item.isDarkModeRow {
-//            if trait.userInterfaceStyle == .dark {
-//                titleLabel.text = NSLocalizedString("light_mode", comment: "")
-//                logoImage.image = UIImage(systemName: "sun.max.fill")
-//            } else {
-//                titleLabel.text = NSLocalizedString("dark_mode", comment: "")
-//                logoImage.image = UIImage(systemName: "moon.fill")
-//            }
-//        } else {            
-//        }
     }
 
     @IBAction func dropDownButtonTapped(_ sender: Any) {

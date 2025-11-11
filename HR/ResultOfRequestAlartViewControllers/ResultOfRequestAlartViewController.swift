@@ -32,7 +32,6 @@ class ResultOfRequestAlartViewController: UIViewController {
         super.viewDidLoad()
         setUpTexts()
         configureTableView()
-        print("selectedDate: \(selectedDate)")
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
         tapGesture.cancelsTouchesInView = false
         outSideView.addGestureRecognizer(tapGesture)
@@ -74,17 +73,14 @@ class ResultOfRequestAlartViewController: UIViewController {
 
            let dateFormatter = DateFormatter()
            dateFormatter.dateFormat = "yyyy-MM-dd"
-
            let targetDateString = dateFormatter.string(from: selectedDate)
-           
            let dailyMatches = records.records.dailyRecords.filter { $0.startDate == targetDateString }
            let hourlyMatches = records.records.hourlyRecords.filter { $0.leaveDay == targetDateString }
-           
            filteredRecords = dailyMatches + hourlyMatches
            print("🗓 Found \(filteredRecords.count) records for \(targetDateString)")
-           
            tableView.reloadData()
        }
+    
     @IBAction func creatAnotherOneButtonTapped(_ sender: Any) {
         self.dismiss(animated: true)
         parentObject?.navigateToTimeOffRequest(selectedDate: selectedDate)
@@ -97,25 +93,8 @@ class ResultOfRequestAlartViewController: UIViewController {
         }
     }
 
-//    func setUpTexts() {
-//        tilteLabel.text = NSLocalizedString("pending_approval", comment: "")
-//        ActionButton.setTitle(NSLocalizedString("Cancel", comment: ""), for: .normal)
-//        let formatter = DateFormatter()
-//        if LanguageManager.shared.currentLanguage() == "ar" {
-//            formatter.locale = Locale(identifier: "ar")
-//        } else {
-//            formatter.locale = Locale(identifier: "en")
-//        }
-//        formatter.dateStyle = .long
-//        formatter.timeStyle = .none
-//        dateLabel.text = formatter.string(from: Date())
-//        let leaveDays: Double = 1.0
-//        numberOfAnnualLeaveLabel.text = String(format: NSLocalizedString("annual_leave_days", comment: ""), leaveDays)
-//    }
     func setUpTexts() {
            tilteLabel.text = NSLocalizedString("pending_approval", comment: "")
-//           ActionButton.setTitle(NSLocalizedString("Cancel", comment: ""), for: .normal)
-//       
            let formatter = DateFormatter()
            formatter.dateStyle = .long
            formatter.timeStyle = .none
@@ -135,7 +114,6 @@ class ResultOfRequestAlartViewController: UIViewController {
     
     func fillTextFields(record: DailyRecord){
         dateLabel.text = "\(record.startDate) : \(record.endDate)"
-   //     numberOfAnnualLeaveLabel.text = "\(record.leaveType): \(record.durationDays)"
     }
     
     private func configureTableView() {
@@ -143,19 +121,11 @@ class ResultOfRequestAlartViewController: UIViewController {
             tableView.dataSource = self
             tableView.register(UINib(nibName: "resultTableViewCell", bundle: nil), forCellReuseIdentifier: "resultCell")
         }
+    
     func fillTextFields(record: LeaveRecord) {
         if let daily = record as? DailyRecord {
             dateLabel.text = "\(daily.startDate) : \(daily.endDate)"
-       //     numberOfAnnualLeaveLabel.text = "\(daily.leaveType): \(daily.durationDays)"
             leaveId = daily.leaveID
-//            if daily.state == "confirm" {
-//                tilteLabel.text = "Final Approval"
-//            } else if daily.state == "validate" {
-//                tilteLabel.text = "Pending Approval"
-//            } else {
-//                tilteLabel.text = "Refused"
-//            }
-        
             print("Daily leave for \(daily.durationDays) days")
         } else if let hourly = record as? HourlyRecord {
             let from = hourly.requestHourFrom.formattedHour(using: hourly.leaveDay)
@@ -163,19 +133,10 @@ class ResultOfRequestAlartViewController: UIViewController {
 
             dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"
             dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"
-       //     numberOfAnnualLeaveLabel.text = "\(hourly.leaveType): \(hourly.durationHours)"
             leaveId = hourly.leaveID
-//            if hourly.state == "confirm" {
-//                tilteLabel.text = "Final Approval"
-//            } else if hourly.state == "validate" {
-//                tilteLabel.text = "Pending Approval"
-//            } else {
-//                tilteLabel.text = "Refused"
-//            }
             print("Hourly leave for \(hourly.durationHours) hours")
         }
     }
-  
 }
 extension ResultOfRequestAlartViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -203,25 +164,18 @@ extension ResultOfRequestAlartViewController: UITableViewDelegate, UITableViewDa
             cell.coloredButton.drawLeaveState(hourly.state, colorHex: hourly.color ?? "#B7F73E")
             leaveId = hourly.leaveID
         }
-
         cell.leaveId = leaveId
-
-        // ✅ Handle delete action via closure
         cell.onDeleteTapped = { [weak self] id in
             guard let self = self else { return }
             self.deleteLeave(withId: id)
         }
-
         return cell
     }
 
     private func deleteLeave(withId id: Int) {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
-
         print("Deleting leave with id: \(id)")
-
         viewModel.unlinkDraftLeave(token: token, leaveId: id)
-
         viewModel.$success
             .dropFirst()
             .sink { [weak self] isSuccess in
@@ -247,26 +201,9 @@ extension ResultOfRequestAlartViewController: UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let record = filteredRecords[indexPath.row]
         print("Selected record:", record)
-        // Optionally handle action on tap
     }
-    
-//    private func color(for state: String) -> UIColor {
-//        switch state {
-//        case "confirm": return .systemGreen
-//        case "validate": return .systemOrange
-//        case "refuse": return .systemRed
-//        default: return .lightGray
-//        }
-//    }
-    
+  
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
           return 120
-        
-        
-        
-        
-        
-        // 👈 fixed height
       }
-
 }
