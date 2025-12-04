@@ -39,6 +39,8 @@ enum API: Endpoint {
     case getServerTime(token: String,action: String)
     case generateToken(employee_token: String , company_id : String , api_key : String)
     case offlineAttendance(token: String, attendanceLogs: [[String: Any]])
+    case sendMobileToken(employeeToken: String, mobileToken: String)
+
 
     var path: String {
         switch self {
@@ -63,6 +65,8 @@ enum API: Endpoint {
             return "/api/employee/renew_token"
         case .offlineAttendance:
             return "/api/offline_attendance"
+        case .sendMobileToken:
+            return "/api/mobile_token"
 
         }
     }
@@ -177,6 +181,15 @@ enum API: Endpoint {
             ]
             return try? JSONSerialization.data(withJSONObject: payload, options: [])
 
+        case let .sendMobileToken(employeeToken, mobileToken):
+            let payload: [String: Any] = [
+                "employee_token": employeeToken,
+                "mobile_token": mobileToken
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+
         }
+        
+    
     }
 }

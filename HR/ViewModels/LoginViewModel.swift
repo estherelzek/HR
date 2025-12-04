@@ -59,24 +59,48 @@ final class LoginViewModel {
                         UserDefaults.standard.baseURL = toSave
                     }
                     if let detail = res.message?.objectValue {
-                        // Save employee token
+                        // 1️⃣ Save employee token
                         if let token = detail.employeeData?.employeeToken {
                             UserDefaults.standard.employeeToken = token
                         }
 
-                        // Save company lat/lng/allowedDistance
-                        if let company = detail.company?.first,
-                           let address = company.address {
-                            UserDefaults.standard.companyLatitude = address.latitude
-                            UserDefaults.standard.companyLongitude = address.longitude
-                            UserDefaults.standard.allowedDistance = address.allowedDistance
+                        // 2️⃣ Save company general info
+                        if let url = res.companyURL {
+                            let base = url.hasSuffix("/") ? String(url.dropLast()) : url
+                            UserDefaults.standard.baseURL = base
                         }
-                       
+
+                        // 3️⃣ Save all company branches as AllowedLocation
+                        if let companies = detail.company {
+                            let branches: [AllowedLocation] = companies.compactMap { comp in
+                                guard let addr = comp.address,
+                                      let id = addr.id,
+                                      let lat = addr.latitude,
+                                      let lng = addr.longitude,
+                                      let allowed = addr.allowedDistance else { return nil }
+                                return AllowedLocation(id: id, latitude: lat, longitude: lng, allowedDistance: allowed)
+                            }
+                            if let encoded = try? JSONEncoder().encode(branches) {
+                                UserDefaults.standard.set(encoded, forKey: "companyBranches")
+                            }
+                            print("🏢 Saved company branches: \(branches.map { $0.id })")
+                        }
+
+                        // Save allowed branch ID for this employee
+                        if let allowedID = detail.employeeData?.companyId {
+                            UserDefaults.standard.allowedBranchID = allowedID
+                            print("🟦 Employee allowed branch: \(UserDefaults.standard.allowedBranchID)")
+                        }
+
                     }
+
+                   
                     print(" UserDefaults.standard.companyLatitude : \( UserDefaults.standard.companyLatitude, default: "")")
                     print("UserDefaults.standard.companyLongitude: \(String(describing: UserDefaults.standard.companyLongitude))")
                     self.onLoginSuccess?()
-
+                    if let fcmToken = UserDefaults.standard.mobileToken {
+                        SendMobileToken().sendDeviceTokenToServer(fcmToken)
+                    }
                 case .failure(let error):
                     self.onLoginFailure?(error.localizedDescription)
                 }

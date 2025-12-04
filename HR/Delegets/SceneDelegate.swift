@@ -90,28 +90,31 @@ import UIKit
                 handleImportedFile(url: url)
             }
 
-            private func handleImportedFile(url: URL) {
-                do {
-                    let encryptedText = try String(contentsOf: url, encoding: .utf8)
-                    let middleware = try Middleware.initialize(encryptedText)
-                    
-                    UserDefaults.standard.set(encryptedText, forKey: "encryptedText")
-                    UserDefaults.standard.set(middleware.companyId, forKey: "companyIdKey")
-                    UserDefaults.standard.set("HKP0Pt4zTDVf3ZHcGNmM4yx6", forKey: "apiKeyKey")
-                    UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
-                    
-                    print("✅ Imported CompanyAccess.ihkey successfully")
-                    print("middleware: \(middleware.companyId) | \(middleware.baseUrl)")
-                    print("encryptedText: \(encryptedText)")
+        private func handleImportedFile(url: URL) {
+            do {
+                let encryptedText = try String(contentsOf: url, encoding: .utf8)
+                let middleware = try Middleware.initialize(encryptedText)
 
-                    // Notify your main VC to update or go to login
-                    DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: Notification.Name("CompanyFileImported"), object: nil)
-                    }
+                let defaults = UserDefaults.standard
+                defaults.set(encryptedText, forKey: "encryptedText")
+                defaults.set(middleware.companyId, forKey: "companyIdKey")
+                defaults.set(middleware.apiKey, forKey: "apiKeyKey")  // FIXED
+                defaults.set(middleware.baseUrl, forKey: "baseURL")   // FIXED
 
-                } catch {
-                    print("❌ Failed to import or decrypt file: \(error)")
+                print("✅ Imported CompanyAccess.ihkey successfully")
+print("🔑 API Key: \(middleware.apiKey)")
+                print("🏠 Base URL: \(middleware.baseUrl)")
+                print("🗯️ Company ID: \(middleware.companyId)")
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("CompanyFileImported"),
+                        object: nil
+                    )
                 }
+
+            } catch {
+                print("❌ Failed to import or decrypt file:", error)
             }
+        }
 }
 

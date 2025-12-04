@@ -55,125 +55,207 @@ final class AttendanceViewModel {
     }
 
 
+//    private func proceedAttendanceAction(_ action: String, token: String, completion: @escaping (Bool) -> Void) {
+//        print("📍 Requesting location for action=\(action)")
+//        locationService.requestLocation { [weak self] coordinate in
+//            guard let self = self else {
+//                print("❌ Self deallocated before location callback")
+//                completion(false)
+//                return
+//            }
+//
+//            guard let coordinate = coordinate else {
+//                print("❌ Failed to fetch location")
+//                self.onLocationError?("Unable to fetch location.")
+//                completion(false)
+//                return
+//            }
+//
+//            let lat = String(UserDefaults.standard.companyLatitude ?? 0)
+//            let lng = String(UserDefaults.standard.companyLongitude ?? 0)
+//            print("📍 Got location: lat=\(lat), lng=\(lng)")
+//
+//            // ✅ Check distance from company location
+//            if let companyLat = UserDefaults.standard.companyLatitude,
+//               let companyLng = UserDefaults.standard.companyLongitude,
+//               let allowed = UserDefaults.standard.allowedDistance {
+//
+//                let officeLocation = CLLocation(latitude: companyLat, longitude: companyLng)
+//                let userLocation = CLLocation(latitude: companyLat, longitude: companyLng)
+//                let distance = userLocation.distance(from: officeLocation)
+//                print("📏 Distance from office: \(distance) meters (allowed: \(allowed))")
+//
+//                if distance > allowed {
+//                    let message = "You cannot perform this action because you are outside the allowed location."
+//                    print("🚫 User too far from office! Showing alert.")
+//                    self.onShowAlert?(message, {})
+//                    completion(false)
+//                    return
+//                }
+//            }
+//
+//            // ✅ Fetch server time before performing check-in/out
+//            print("🕒 Fetching server time before sending \(action.uppercased())")
+//
+//            self.getServerTime(token: token) { result in
+//                switch result {
+//                case .success(let serverResponse):
+//                    guard let serverTime = serverResponse.result?.serverTime,
+//                          let timezone = serverResponse.result?.timezone else {
+//                        print("⚠️ Missing server time or timezone in response.")
+//                        self.onError?("Invalid server time response.")
+//                        completion(false)
+//                        return
+//                    }
+//
+//                    print("✅ Got server time: \(serverTime) | Timezone: \(timezone)")
+//                    self.calculateClockDifferenceAndWait {
+//                        print("new deffrinence : \(UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0")" )
+//                    }
+//                    self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: serverTime, completion: completion)
+//
+//                case .failure(let error):
+//                    print("❌ Failed to get server time: \(error.localizedDescription)")
+//                    let def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
+//                    print("def: \(def)")
+//
+//                    if !NetworkListener.shared.isConnected {
+//                        if def == "-1000" {
+//                            self.handleClockTamperingAlertAndRecalculate(action: action)
+//                            completion(false)
+//                            return
+//                        } else {
+//                            // ✅ Device clock not changed → use saved offset
+//                            let diffMinutes = UserDefaults.standard.double(forKey: "clockDiffMinutes")
+//                            let localTimeString = self.getCurrentActionTime() // e.g. "2025-10-23 12:15:00"
+//
+//                            // Convert string to Date
+//                            let formatter = DateFormatter()
+//                            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+//                            formatter.timeZone = TimeZone(abbreviation: "UTC")
+//
+//                            guard let localNow = formatter.date(from: localTimeString) else {
+//                                print("❌ Failed to parse local time string: \(localTimeString)")
+//                                completion(false)
+//                                return
+//                            }
+//
+//                            // 🧠 FIXED: Subtract the difference, not add
+//                            let correctedServerTime = localNow.addingTimeInterval(-diffMinutes * 60)
+//                            let correctedTimeString = formatter.string(from: correctedServerTime)
+//
+//                            print("""
+//                            ⚙️ Offline mode:
+//                            Local time: \(localTimeString)
+//                            Diff minutes: \(diffMinutes)
+//                            → Corrected server-equivalent time: \(correctedTimeString)
+//                            """)
+//
+//                            self.performAttendanceAction(
+//                                action: action,
+//                                token: token,
+//                                lat: lat,
+//                                lng: lng,
+//                                time: correctedTimeString,
+//                                completion: completion
+//                            )
+//                            return
+//                        }
+//                    }
+//
+//                    // ✅ Online but server failed — fallback to UTC local
+//                    let localTime = self.getCurrentActionTime()
+//                    print("⚠️ Using local device UTC time instead → \(localTime)")
+//                    self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: localTime, completion: completion)
+//
+//                }
+//            }
+//
+//        }
+//    }
+//
     private func proceedAttendanceAction(_ action: String, token: String, completion: @escaping (Bool) -> Void) {
         print("📍 Requesting location for action=\(action)")
-        locationService.requestLocation { [weak self] coordinate in
-            guard let self = self else {
-                print("❌ Self deallocated before location callback")
-                completion(false)
-                return
-            }
 
-            guard let coordinate = coordinate else {
+        locationService.requestLocation { [weak self] coordinate in
+            guard let self = self else { completion(false); return }
+            guard let userCoordinate = coordinate else {
                 print("❌ Failed to fetch location")
                 self.onLocationError?("Unable to fetch location.")
                 completion(false)
                 return
             }
 
-            let lat = String(UserDefaults.standard.companyLatitude ?? 0)
-            let lng = String(UserDefaults.standard.companyLongitude ?? 0)
-            print("📍 Got location: lat=\(lat), lng=\(lng)")
+            print("📍 User Location → lat: \(userCoordinate.latitude), lng: \(userCoordinate.longitude)")
 
-            // ✅ Check distance from company location
-            if let companyLat = UserDefaults.standard.companyLatitude,
-               let companyLng = UserDefaults.standard.companyLongitude,
-               let allowed = UserDefaults.standard.allowedDistance {
+            let allBranches = UserDefaults.standard.companyBranches ?? []
+            let allowedBranchID = UserDefaults.standard.allowedBranchID
 
-                let officeLocation = CLLocation(latitude: companyLat, longitude: companyLng)
-                let userLocation = CLLocation(latitude: companyLat, longitude: companyLng)
-                let distance = userLocation.distance(from: officeLocation)
-                print("📏 Distance from office: \(distance) meters (allowed: \(allowed))")
+            print("🏢 Total Company Branches: \(allBranches.count)")
+            print("🟦 Employee allowed branch: \(allowedBranchID)")
 
-                if distance > allowed {
-                    let message = "You cannot perform this action because you are outside the allowed location."
-                    print("🚫 User too far from office! Showing alert.")
-                    self.onShowAlert?(message, {})
-                    completion(false)
-                    return
+            var matchedBranchID: Int? = nil
+
+            // 1️⃣ Find which branch user is currently in
+            for branch in allBranches {
+                let branchLoc = CLLocation(latitude: branch.latitude, longitude: branch.longitude)
+                let userLoc = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
+                let distance = userLoc.distance(from: branchLoc)
+
+                print("🔍 Checking Branch ID \(branch.id) → Distance: \(distance) / Allowed: \(branch.allowedDistance)")
+
+                if distance <= branch.allowedDistance {
+                    print("✅ User inside branch ID \(branch.id)")
+                    matchedBranchID = branch.id
+                    break
                 }
             }
 
-            // ✅ Fetch server time before performing check-in/out
-            print("🕒 Fetching server time before sending \(action.uppercased())")
+            guard let branchID = matchedBranchID else {
+                print("❌ User not inside any branch")
+                self.onShowAlert?("You are not inside any company location.", {})
+                completion(false)
+                return
+            }
 
+            // 2️⃣ Check if employee is allowed to check in this branch
+            if branchID != allowedBranchID {
+                print("🚫 Access denied → Branch \(branchID) not allowed for employee")
+                self.onShowAlert?("You are not allowed to check in this branch.", {})
+                completion(false)
+                return
+            }
+
+            print("🟢 Access granted → Branch \(branchID)")
+
+            // 3️⃣ Proceed with server time logic
             self.getServerTime(token: token) { result in
                 switch result {
                 case .success(let serverResponse):
-                    guard let serverTime = serverResponse.result?.serverTime,
-                          let timezone = serverResponse.result?.timezone else {
-                        print("⚠️ Missing server time or timezone in response.")
-                        self.onError?("Invalid server time response.")
+                    guard let serverTime = serverResponse.result?.serverTime else {
+                        print("⚠️ Missing server time")
                         completion(false)
                         return
                     }
+                    print("🕒 Server time: \(serverTime)")
 
-                    print("✅ Got server time: \(serverTime) | Timezone: \(timezone)")
-                    self.calculateClockDifferenceAndWait {
-                        print("new deffrinence : \(UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0")" )
-                    }
-                    self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: serverTime, completion: completion)
+                    self.performAttendanceAction(
+                        action: action,
+                        token: token,
+                        lat: "\(userCoordinate.latitude)",
+                        lng: "\(userCoordinate.longitude)",
+                        time: serverTime,
+                        completion: completion
+                    )
 
                 case .failure(let error):
                     print("❌ Failed to get server time: \(error.localizedDescription)")
-                    let def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
-                    print("def: \(def)")
-
-                    if !NetworkListener.shared.isConnected {
-                        if def == "-1000" {
-                            self.handleClockTamperingAlertAndRecalculate(action: action)
-                            completion(false)
-                            return
-                        } else {
-                            // ✅ Device clock not changed → use saved offset
-                            let diffMinutes = UserDefaults.standard.double(forKey: "clockDiffMinutes")
-                            let localTimeString = self.getCurrentActionTime() // e.g. "2025-10-23 12:15:00"
-
-                            // Convert string to Date
-                            let formatter = DateFormatter()
-                            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-                            formatter.timeZone = TimeZone(abbreviation: "UTC")
-
-                            guard let localNow = formatter.date(from: localTimeString) else {
-                                print("❌ Failed to parse local time string: \(localTimeString)")
-                                completion(false)
-                                return
-                            }
-
-                            // 🧠 FIXED: Subtract the difference, not add
-                            let correctedServerTime = localNow.addingTimeInterval(-diffMinutes * 60)
-                            let correctedTimeString = formatter.string(from: correctedServerTime)
-
-                            print("""
-                            ⚙️ Offline mode:
-                            Local time: \(localTimeString)
-                            Diff minutes: \(diffMinutes)
-                            → Corrected server-equivalent time: \(correctedTimeString)
-                            """)
-
-                            self.performAttendanceAction(
-                                action: action,
-                                token: token,
-                                lat: lat,
-                                lng: lng,
-                                time: correctedTimeString,
-                                completion: completion
-                            )
-                            return
-                        }
-                    }
-
-                    // ✅ Online but server failed — fallback to UTC local
-                    let localTime = self.getCurrentActionTime()
-                    print("⚠️ Using local device UTC time instead → \(localTime)")
-                    self.performAttendanceAction(action: action, token: token, lat: lat, lng: lng, time: localTime, completion: completion)
-
+                    completion(false)
                 }
             }
-
         }
     }
-    
+
     private func performAttendanceAction(action: String, token: String, lat: String, lng: String, time: String, completion: @escaping (Bool) -> Void) {
         if action == "check_in" {
             print("➡️ Calling checkIn API with time \(time)")

@@ -50,16 +50,19 @@ class Middleware {
 }
 
 extension Middleware {
-    private static let companyIdKey = "companyIdKey"
-    private static let apiKeyKey = "apiKeyKey"
-    private static let baseUrlKey = "baseURL"
+   
+        private static let companyIdKey = "companyIdKey"
+        private static let apiKeyKey = "apiKeyKey"
+        private static let baseUrlKey = "baseURL"   // FIX: must match UserDefaults
+    
 
     func saveToUserDefaults() {
         let defaults = UserDefaults.standard
-        defaults.set(companyId, forKey: Middleware.companyIdKey)
-        defaults.set(apiKey, forKey: Middleware.apiKeyKey)
-        defaults.set(baseUrl, forKey: Middleware.baseUrlKey)
+        defaults.set(companyId, forKey: "companyIdKey")
+        defaults.set(apiKey, forKey: "apiKeyKey")
+        defaults.set(baseUrl, forKey: "baseURL")
     }
+
 
     static func loadFromUserDefaults() -> Middleware? {
         let defaults = UserDefaults.standard

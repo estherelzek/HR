@@ -661,7 +661,7 @@ extension UserDefaults {
     }
     
     var defaultApiKey: String {
-        get { string(forKey: Keys.apiKeyKey) ?? "HKP0Pt4zTDVf3ZHcGNmM4yx6" }
+        get { string(forKey: Keys.apiKeyKey) ?? "" }
         set { setValue(newValue, forKey: Keys.apiKeyKey) }
     }
 
@@ -682,5 +682,37 @@ extension UserDefaults {
     var allowedDistance: Double? {
         get { object(forKey: Keys.allowedDistance) as? Double }
         set { set(newValue, forKey: Keys.allowedDistance) }
+    }
+}
+extension UserDefaults {
+    var mobileToken: String? {
+        get { string(forKey: "mobileToken") }
+        set { set(newValue, forKey: "mobileToken") }
+    }
+}
+
+
+extension UserDefaults {
+
+    // All company branches (for the employee's company)
+    var companyBranches: [AllowedLocation]? {
+        get {
+            guard let data = data(forKey: "companyBranches") else { return [] }
+            return (try? JSONDecoder().decode([AllowedLocation].self, from: data)) ?? []
+        }
+        set {
+            if let newValue = newValue,
+               let encoded = try? JSONEncoder().encode(newValue) {
+                set(encoded, forKey: "companyBranches")
+            } else {
+                removeObject(forKey: "companyBranches")
+            }
+        }
+    }
+
+    // Single branch ID this employee is allowed to check in
+    var allowedBranchID: Int {
+        get { integer(forKey: "allowedBranchID") }  // ✅ defaults to 0 if not set
+        set { set(newValue, forKey: "allowedBranchID") }
     }
 }

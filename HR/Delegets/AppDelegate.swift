@@ -7,135 +7,203 @@
 
 import UIKit
 import UserNotifications
+import FirebaseCore
+import Firebase
+import FirebaseMessaging
 
 @main
-class AppDelegate: UIResponder, UIApplicationDelegate , UNUserNotificationCenterDelegate{
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
 
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    // MARK: - App Launch
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?
+    ) -> Bool {
+
+        // Network listener
         NetworkListener.shared.start()
+        NetworkListener.shared.onConnected = {
+            print("🔁 Network is back — resending offline requests...")
+            NetworkManager.shared.resendOfflineRequests()
+        }
 
-              NetworkListener.shared.onConnected = {
-                  print("🔁 Network is back — resending offline requests...")
-                  NetworkManager.shared.resendOfflineRequests()
-              }
+        // Clock checker
         _ = ClockChangeDetector.shared
-        registerForPushNotifications()
-        return true
-    }
-    
-    func registerForPushNotifications() {
+
+        // Firebase start
+        FirebaseApp.configure()
+
+        // Notifications
         UNUserNotificationCenter.current().delegate = self
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
-            guard granted else { return }
-            DispatchQueue.main.async {
-                UIApplication.shared.registerForRemoteNotifications()
+        requestNotificationAuthorization()
+        application.registerForRemoteNotifications()
+        Messaging.messaging().delegate = self
+        
+     #if targetEnvironment(simulator)
+ DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+    Messaging.messaging().token { token, error in
+        if let token = token {
+            print("🔧 SIMULATOR FCM TOKEN:", token)
+            UserDefaults.standard.mobileToken = token
+        } else {
+            print("❌ SIMULATOR still no FCM token, retrying...")
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                Messaging.messaging().token { token, error in
+                    print("🔧 Second attempt FCM token:", token ?? "none")
+                }
             }
         }
     }
-
-
-    func applicationDidBecomeActive(_ application: UIApplication) {
- //       ClockChangeDetector.shared.verifyClockDifference()
-    }
-
-    func application(_ application: UIApplication,
-                     configurationForConnecting connectingSceneSession: UISceneSession,
-                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        return UISceneConfiguration(name: "Default Configuration",
-                                    sessionRole: connectingSceneSession.role)
-    }
-
-    func application(_ application: UIApplication,
-                     didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {}
 }
-
-    // MARK: UISceneSession Lifecycle
-    func application(_ application: UIApplication,
-                     configurationForConnecting connectingSceneSession: UISceneSession,
-                     options: UIScene.ConnectionOptions) -> UISceneConfiguration {
-        return UISceneConfiguration(name: "Default Configuration",
-                                    sessionRole: connectingSceneSession.role)
+        
+#endif // targetEnvironment(simulator)
+        return true
     }
-
-  
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {
     
+    func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        print("📲 FCM Token:", fcmToken ?? "none")
+        UserDefaults.standard.mobileToken = fcmToken
     }
 
-  func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-      handleImportedFile(url: url)
-      return true
- }
-
-func application(_ application: UIApplication,
-                 didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-    let token = deviceToken.map { String(format: "%02x", $0) }.joined()
-    print("📱 APNs Token: \(token)")
-    // Send this token to your backend API
-    sendDeviceTokenToServer(token)
-}
-
-
-  func sendDeviceTokenToServer(_ token: String) {
-      guard let baseURL = UserDefaults.standard.baseURL else {
-         print("❌ Missing base URL")
-          return
-    }
-      
-    // Example endpoint: https://yourapi.com/api/registerDeviceToken
-    let url = URL(string: "\(baseURL)/api/registerDeviceToken")!
-    var request = URLRequest(url: url)
-    request.httpMethod = "POST"
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-
-    // Send the token with the user ID or company ID if needed
-    let payload: [String: Any] = [
-        "deviceToken": token,
-        "userId": UserDefaults.standard.employeeToken ?? "",
-        "companyId": UserDefaults.standard.string(forKey: "companyIdKey") ?? ""
-    ]
-
-    request.httpBody = try? JSONSerialization.data(withJSONObject: payload)
-    URLSession.shared.dataTask(with: request) { data, response, error in
-        if let error = error {
-            print("❌ Failed to send device token: \(error)")
-            return
+    // MARK: - Request Permission
+    func requestNotificationAuthorization() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, error in
+            print("🔔 Notification permission: \(granted)")
         }
-        print("✅ Device token sent successfully")
-    }.resume()
-}
-
-    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        print("❌ Failed to register: \(error)")
     }
 
- func userNotificationCenter(_ center: UNUserNotificationCenter,
-                            didReceive response: UNNotificationResponse,
-                            withCompletionHandler completionHandler: @escaping () -> Void) {
-    print("🔔 Notification tapped: \(response.notification.request.content.userInfo)")
-    completionHandler()
-}
+    // MARK: - APNs Device Token
+    func application(
+        _ application: UIApplication,
+        didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
+    ) {
+        let tokenString = deviceToken.map { String(format: "%02x", $0) }.joined()
+        print("📱 APNs Device Token:", tokenString)
+        Messaging.messaging().apnsToken = deviceToken
+        // Send device token to server
+     //   sendDeviceTokenToServer(tokenString)
+    }
 
-private func handleImportedFile(url: URL) {
-    do {
-        let encryptedText = try String(contentsOf: url, encoding: .utf8)
-        let middleware = try Middleware.initialize(encryptedText)
-        UserDefaults.standard.set(encryptedText, forKey: "encryptedText")
-        UserDefaults.standard.set(middleware.companyId, forKey: "companyIdKey")
-        UserDefaults.standard.set("HKP0Pt4zTDVf3ZHcGNmM4yx6", forKey: "apiKeyKey")
-        UserDefaults.standard.set(middleware.baseUrl, forKey: "baseUrl")
-        
-        print("✅ Imported CompanyAccess.ihkey successfully")
-        print("middleware: \(middleware.companyId) | \(middleware.baseUrl)")
-        print("encryptedText: \(encryptedText) ")
-        // Optionally navigate to your login view:
-        DispatchQueue.main.async {
-            NotificationCenter.default.post(name: Notification.Name("CompanyFileImported"), object: nil)
+    func application(
+        _ application: UIApplication,
+        didFailToRegisterForRemoteNotificationsWithError error: Error
+    ) {
+        print("❌ Failed to register for notifications:", error)
+    }
+
+    // MARK: - Handle Notifications (Foreground)
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        let userInfo = notification.request.content.userInfo
+        print("📩 Notification in foreground:", userInfo)
+
+        completionHandler([.banner, .sound, .badge])
+    }
+
+    // MARK: - Handle Notification Tap
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let userInfo = response.notification.request.content.userInfo
+        print("📨 Notification tapped:", userInfo)
+
+        completionHandler()
+    }
+
+    // MARK: - Background Push
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+
+        let title = userInfo["title"] as? String ?? "New"
+        let body = userInfo["body"] as? String ?? "Message"
+        saveNotification(title: title, body: body)
+        showNotification(title: title, body: body)
+        completionHandler(.newData)
+    }
+
+    // MARK: - Show Local Notification
+    func showNotification(title: String, body: String) {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: nil
+        )
+        UNUserNotificationCenter.current().add(request)
+    }
+
+    // MARK: - Save Notification Locally
+    func saveNotification(title: String, body: String) {
+        let notification = NotificationModel(
+            id: UUID().uuidString,
+            title: title,
+            message: body,
+            date: Date()
+        )
+        NotificationStore.shared.save(notification)
+        print("💾 Saved notification:", title)
+    }
+
+    // MARK: - File Import Handler
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey : Any] = [:]
+    ) -> Bool {
+
+        handleImportedFile(url: url)
+        return true
+    }
+
+    private func handleImportedFile(url: URL) {
+        do {
+            let encryptedText = try String(contentsOf: url, encoding: .utf8)
+            let middleware = try Middleware.initialize(encryptedText)
+
+            let defaults = UserDefaults.standard
+            defaults.set(encryptedText, forKey: "encryptedText")
+            defaults.set(middleware.companyId, forKey: "companyIdKey")
+            defaults.set(middleware.apiKey, forKey: "apiKeyKey")  // FIXED
+            defaults.set(middleware.baseUrl, forKey: "baseURL")   // FIXED
+
+            print("✅ Imported CompanyAccess.ihkey successfully")
+
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(
+                    name: Notification.Name("CompanyFileImported"),
+                    object: nil
+                )
+            }
+
+        } catch {
+            print("❌ Failed to import or decrypt file:", error)
         }
-        
-    } catch {
-        print("❌ Failed to import or decrypt file: \(error)")
     }
-}
 
+    // MARK: - Scene Config
+    func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        return UISceneConfiguration(name: "Default Configuration", sessionRole: connectingSceneSession.role)
+    }
+
+    func application(
+        _ application: UIApplication,
+        didDiscardSceneSessions sceneSessions: Set<UISceneSession>
+    ) { }
+}
