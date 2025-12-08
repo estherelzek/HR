@@ -174,11 +174,19 @@ final class AttendanceViewModel {
 //        }
 //    }
 //
-    private func proceedAttendanceAction(_ action: String, token: String, completion: @escaping (Bool) -> Void) {
-        print("📍 Requesting location for action=\(action)")
+    private func proceedAttendanceAction(
+        _ action: String,
+        token: String,
+        completion: @escaping (Bool) -> Void
+    ) {
+        print("📍 Requesting location for action = \(action)")
 
         locationService.requestLocation { [weak self] coordinate in
-            guard let self = self else { completion(false); return }
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
             guard let userCoordinate = coordinate else {
                 print("❌ Failed to fetch location")
                 self.onLocationError?("Unable to fetch location.")
@@ -188,57 +196,73 @@ final class AttendanceViewModel {
 
             print("📍 User Location → lat: \(userCoordinate.latitude), lng: \(userCoordinate.longitude)")
 
-            let allBranches = UserDefaults.standard.companyBranches ?? []
-            let allowedBranchID = UserDefaults.standard.allowedBranchID
+            // ✅ Load stored data
+            let allBranches = UserDefaults.standard.companyBranches
+            let allowedBranchIDs = UserDefaults.standard.allowedBranchIDs
 
             print("🏢 Total Company Branches: \(allBranches.count)")
-            print("🟦 Employee allowed branch: \(allowedBranchID)")
+            print("🟦 Employee allowed branches: \(allowedBranchIDs)")
 
-            var matchedBranchID: Int? = nil
+            var matchedBranchID: Int?
 
-            // 1️⃣ Find which branch user is currently in
+            // 1️⃣ Detect which company branch user is inside
             for branch in allBranches {
-                let branchLoc = CLLocation(latitude: branch.latitude, longitude: branch.longitude)
-                let userLoc = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
-                let distance = userLoc.distance(from: branchLoc)
+                let branchLocation = CLLocation(
+                    latitude: branch.latitude,
+                    longitude: branch.longitude
+                )
+                let userLocation = CLLocation(
+                    latitude: userCoordinate.latitude,
+                    longitude: userCoordinate.longitude
+                )
+           
+//                let userLocation = CLLocation(
+//                    latitude: 30.0988391,
+//                    longitude: 31.3375401
+//                )
 
-                print("🔍 Checking Branch ID \(branch.id) → Distance: \(distance) / Allowed: \(branch.allowedDistance)")
+                let distance = userLocation.distance(from: branchLocation)
+
+                print("🔍 Branch \(branch.id) → dist: \(distance), allowed: \(branch.allowedDistance)")
 
                 if distance <= branch.allowedDistance {
-                    print("✅ User inside branch ID \(branch.id)")
                     matchedBranchID = branch.id
+                    print("✅ User inside branch ID \(branch.id)")
                     break
                 }
             }
 
+            // ❌ Block only if user is outside ALL company locations
             guard let branchID = matchedBranchID else {
-                print("❌ User not inside any branch")
+                print("❌ User not inside any company branch")
                 self.onShowAlert?("You are not inside any company location.", {})
                 completion(false)
                 return
             }
 
-            // 2️⃣ Check if employee is allowed to check in this branch
-            if branchID != allowedBranchID {
-                print("🚫 Access denied → Branch \(branchID) not allowed for employee")
-                self.onShowAlert?("You are not allowed to check in this branch.", {})
-                completion(false)
-                return
+            // 2️⃣ Warning only (NOT blocking)
+            let isAllowed = allowedBranchIDs.contains(branchID)
+
+            if !isAllowed {
+                print("⚠️ Branch \(branchID) is NOT allowed for employee")
+                self.onShowAlert?(
+                    "This is not your allowed company location. Attendance will be recorded with a warning.",
+                    {}
+                )
             }
 
-            print("🟢 Access granted → Branch \(branchID)")
+            print("🟢 Proceeding with attendance → Branch \(branchID)")
 
-            // 3️⃣ Proceed with server time logic
+            // 3️⃣ Continue attendance flow
             self.getServerTime(token: token) { result in
                 switch result {
-                case .success(let serverResponse):
-                    guard let serverTime = serverResponse.result?.serverTime else {
+                case .success(let response):
+                    guard let serverTime = response.result?.serverTime else {
                         print("⚠️ Missing server time")
                         completion(false)
                         return
                     }
                     print("🕒 Server time: \(serverTime)")
-
                     self.performAttendanceAction(
                         action: action,
                         token: token,
@@ -247,7 +271,15 @@ final class AttendanceViewModel {
                         time: serverTime,
                         completion: completion
                     )
-
+                    print("action: \(action)")
+//                    self.performAttendanceAction(
+//                        action: action,
+//                        token: token,
+//                        lat: "30.0988391",
+//                        lng: "31.3375401",
+//                        time: serverTime,
+//                        completion: completion
+//                    )
                 case .failure(let error):
                     print("❌ Failed to get server time: \(error.localizedDescription)")
                     completion(false)
@@ -255,6 +287,7 @@ final class AttendanceViewModel {
             }
         }
     }
+
 
     private func performAttendanceAction(action: String, token: String, lat: String, lng: String, time: String, completion: @escaping (Bool) -> Void) {
         if action == "check_in" {
@@ -269,6 +302,7 @@ final class AttendanceViewModel {
             }
         }
     }
+    
     func calculateClockDifferenceAndWait(completion: @escaping () -> Void) {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
             print("❌ No token found.")

@@ -24,3 +24,9 @@ struct MobileTokenData: Codable {
         case employeeName = "employee_name"
     }
 }
+
+struct MobileTokenAPIResponse: Codable {
+    let jsonrpc: String?
+    let id: Int?
+    let result: MobileTokenResponse
+}

@@ -81,7 +81,7 @@ class CheckingVC: UIViewController {
                 self.isCheckedIn.toggle()
                 print("isCheckedIn after confirmation: \(self.isCheckedIn)")
                 self.viewModel.performCheckInOut(isCheckedIn: self.isCheckedIn, workedHours: self.workedHours)
-
+                
                 if NetworkListener.shared.isConnected {
                     print("✅ Online → reloading texts")
                     self.reloadTexts()
@@ -97,15 +97,13 @@ class CheckingVC: UIViewController {
                             message: "You're currently offline. Your check-out request has been saved locally and will be sent automatically once you reconnect to the network."
                         )
                     }
-                   
-                }            }))
-
+                }
+            }))
             present(alert, animated: true)
         } else {
             isCheckedIn.toggle()
             print("isCheckedIn after check-in: \(isCheckedIn)")
             viewModel.performCheckInOut(isCheckedIn: isCheckedIn, workedHours: workedHours)
-
             if NetworkListener.shared.isConnected {
                 print("✅ Online → reloading texts")
                 reloadTexts()
@@ -121,11 +119,9 @@ class CheckingVC: UIViewController {
                         message: "You're currently offline. Your check-in request has been saved locally and will be sent automatically once you reconnect to the network."
                     )
                 }
-               
             }
         }
     }
-
 
     private func fetchAttendanceStatus() {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {

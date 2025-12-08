@@ -84,13 +84,13 @@ final class LoginViewModel {
                                 UserDefaults.standard.set(encoded, forKey: "companyBranches")
                             }
                             print("🏢 Saved company branches: \(branches.map { $0.id })")
+                            if let allowedIDs = detail.employeeData?.allowedLocationIDs {
+                                UserDefaults.standard.allowedBranchIDs = allowedIDs
+                                print("🟦 Employee allowed branches eee: \(allowedIDs)")
+                            }
                         }
+                        
 
-                        // Save allowed branch ID for this employee
-                        if let allowedID = detail.employeeData?.companyId {
-                            UserDefaults.standard.allowedBranchID = allowedID
-                            print("🟦 Employee allowed branch: \(UserDefaults.standard.allowedBranchID)")
-                        }
 
                     }
 

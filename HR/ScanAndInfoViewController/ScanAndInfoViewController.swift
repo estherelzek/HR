@@ -22,6 +22,7 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTexts()
+        
         companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         NotificationCenter.default.addObserver(self,selector: #selector(companyFileImported),name: NSNotification.Name("CompanyFileImported"),object: nil)
@@ -86,6 +87,7 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     @IBAction func doneButtonTapped(_ sender: Any) {
 
         if companyInformationTextField.text == nil {
+           
             let alert = UIAlertController(title: "Error", message: "Please enter your company information", preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)

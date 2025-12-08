@@ -10,26 +10,27 @@ import Foundation
 // MARK: - LoginResponse
 // MARK: - LoginResponse
 // MARK: - EmployeeData
-struct EmployeeData: Decodable {
-    let id: Int?
-    let name: String?
-    let email: String?
+struct EmployeeData: Codable {
+    let id: Int
+    let name: String
+    let email: String
     let department: String?
-    let companyId: Int?           // ✅ Add company_id
+    let allowedLocationIDs: [Int]
     let jobTitle: String?
-    let isActive: Bool?
-    let employeeToken: String?
-    let tokenExpiry: String?
-    let allowedBranchIDs: [Int]?  // ✅ Branch IDs employee is allowed to check in
+    let isActive: Bool
+    let employeeToken: String
+    let tokenExpiry: String
 
     enum CodingKeys: String, CodingKey {
-        case id, name, email, department
-        case companyId = "company_id"
+        case id
+        case name
+        case email
+        case department
         case jobTitle = "job_title"
         case isActive = "is_active"
         case employeeToken = "employee_token"
         case tokenExpiry = "token_expiry"
-        case allowedBranchIDs = "allowed_branch_ids"  // assuming backend sends it
+        case allowedLocationIDs = "allowed_locations_ids" // ✅ IMPORTANT
     }
 }
 

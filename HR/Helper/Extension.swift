@@ -691,28 +691,28 @@ extension UserDefaults {
     }
 }
 
-
 extension UserDefaults {
 
-    // All company branches (for the employee's company)
-    var companyBranches: [AllowedLocation]? {
+    // كل فروع الشركة (locations)
+    var companyBranches: [AllowedLocation] {
         get {
             guard let data = data(forKey: "companyBranches") else { return [] }
             return (try? JSONDecoder().decode([AllowedLocation].self, from: data)) ?? []
         }
         set {
-            if let newValue = newValue,
-               let encoded = try? JSONEncoder().encode(newValue) {
-                set(encoded, forKey: "companyBranches")
-            } else {
-                removeObject(forKey: "companyBranches")
+            if let data = try? JSONEncoder().encode(newValue) {
+                set(data, forKey: "companyBranches")
             }
         }
     }
 
-    // Single branch ID this employee is allowed to check in
-    var allowedBranchID: Int {
-        get { integer(forKey: "allowedBranchID") }  // ✅ defaults to 0 if not set
-        set { set(newValue, forKey: "allowedBranchID") }
+    // ✅ IDs المسموح بها للموظف
+    var allowedBranchIDs: [Int] {
+        get {
+            array(forKey: "allowedBranchIDs") as? [Int] ?? []
+        }
+        set {
+            set(newValue, forKey: "allowedBranchIDs")
+        }
     }
 }

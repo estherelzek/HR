@@ -485,7 +485,7 @@ extension TimeOffViewController {
     func navigateToTimeOffRequest(selectedDate: Date? = nil) {
         let timeOffRequestVC = TimeOffRequestViewController()
         timeOffRequestVC.filteredLeaveTypes = leaveTypes.filter { leave in
-            (leave.requiresAllocation == "yes" && leave.remainingBalance != nil)
+            (leave.requiresAllocation == "yes" && leave.remainingBalance != nil) || leave.requiresAllocation == "no"
         }
         timeOffRequestVC.preselectedDate = selectedDate
         timeOffRequestVC.parentViewControllerRef = self // ✅ Pass real parent reference

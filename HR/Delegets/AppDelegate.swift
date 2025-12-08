@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?
     ) -> Bool {
-
+       
         // Network listener
         NetworkListener.shared.start()
         NetworkListener.shared.onConnected = {
@@ -170,7 +170,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     private func handleImportedFile(url: URL) {
         do {
-            let encryptedText = try String(contentsOf: url, encoding: .utf8)
+            let encryptedText = try String(contentsOf: url , encoding: .utf8)
+            
             let middleware = try Middleware.initialize(encryptedText)
 
             let defaults = UserDefaults.standard
@@ -178,7 +179,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             defaults.set(middleware.companyId, forKey: "companyIdKey")
             defaults.set(middleware.apiKey, forKey: "apiKeyKey")  // FIXED
             defaults.set(middleware.baseUrl, forKey: "baseURL")   // FIXED
-
             print("✅ Imported CompanyAccess.ihkey successfully")
 
             DispatchQueue.main.async {

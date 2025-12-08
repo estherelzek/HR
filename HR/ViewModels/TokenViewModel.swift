@@ -24,10 +24,12 @@ class SendMobileToken {
         )
 
         // 3️⃣ Make request (decode into MobileTokenResponse)
-        NetworkManager.shared.requestDecodable(endpoint, as: MobileTokenResponse.self) { result in
+        NetworkManager.shared.requestDecodable(endpoint, as: MobileTokenAPIResponse.self) { result in
             switch result {
                 
-            case .success(let response):
+            case .success(let apiResponse):
+                let response = apiResponse.result
+
                 print("✅ Server Response:")
                 print("Status: \(response.status)")
                 print("Message: \(response.message)")
@@ -37,7 +39,6 @@ class SendMobileToken {
                     print("📧 Email: \(data.email)")
                     print("🧑‍💼 Name: \(data.employeeName)")
 
-                    // OPTIONAL: Save to UserDefaults
                     UserDefaults.standard.set(data.employeeID, forKey: "lastEmployeeID")
                     UserDefaults.standard.set(data.email, forKey: "lastEmployeeEmail")
                 }
