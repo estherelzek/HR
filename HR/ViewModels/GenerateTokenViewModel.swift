@@ -32,6 +32,7 @@ final class GenerateTokenViewModel: ObservableObject {
 
                 switch result {
                 case .success(let response):
+                    print("response of generate token: \(response)")
                     if response.result.status.lowercased() == "success" {
                         self.tokenResponse = response.result
                         // 💾 Optionally save new token

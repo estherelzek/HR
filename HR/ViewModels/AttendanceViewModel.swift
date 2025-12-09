@@ -366,7 +366,7 @@ final class AttendanceViewModel {
                 onSuccess?(response)
                 completion(true)
             }else if response.result?.status == "error" {
-                if response.result?.errorCode == "INVALID_TOKEN" {
+                if  response.result?.errorCode == "INVALID_TOKEN" || response.result?.errorCode == "TOKEN_EXPIRED" {
                     // esther here
                     // 🔁 Generate new token and retry
                     let tokenVM = GenerateTokenViewModel()
@@ -374,7 +374,7 @@ final class AttendanceViewModel {
                         employeeToken: token,
                         companyId: companyIdKey,
                         apiKey: apiKeyKey
-                    ) {
+                    ) { 
                         if let result = tokenVM.tokenResponse {
                             print("✅ New token generated: \(result.newToken)")
                             UserDefaults.standard.set(result.newToken, forKey: "employeeToken")
