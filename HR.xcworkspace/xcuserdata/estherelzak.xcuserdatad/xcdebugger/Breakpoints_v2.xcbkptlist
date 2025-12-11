@@ -162,36 +162,6 @@
             endingLineNumber = "16"
             landmarkName = "NetworkListener"
             landmarkType = "3">
-            <Locations>
-               <Location
-                  uuid = "FBB90A7E-D205-44A0-AD01-57F13E4C28F9 - e40a634a9d385724"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HR.NetworkListener.deinit"
-                  moduleName = "HR.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/estherelzak/Projects/HR/HR/Models/NetworkListener.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "0"
-                  endingLineNumber = "0">
-               </Location>
-               <Location
-                  uuid = "FBB90A7E-D205-44A0-AD01-57F13E4C28F9 - 5aa4d7b9f519dd57"
-                  shouldBeEnabled = "No"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "HR.NetworkListener.__deallocating_deinit"
-                  moduleName = "HR.debug.dylib"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/estherelzak/Projects/HR/HR/Models/NetworkListener.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "0"
-                  endingLineNumber = "0">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -661,22 +631,6 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "5DB61AF2-16C3-4B26-A155-D61BEFD0DEE3"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HR/ViewModels/LoginViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "102"
-            endingLineNumber = "102"
-            landmarkName = "login(apiKey:companyId:email:password:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             uuid = "47C879F9-7898-44B8-94C0-EEE348698AE0"
             shouldBeEnabled = "No"
             ignoreCount = "0"
@@ -1007,6 +961,68 @@
             startingLineNumber = "40"
             endingLineNumber = "40"
             landmarkName = "generateNewToken(employeeToken:companyId:apiKey:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A1B349CD-6317-4C4C-8E98-C7DA280F652C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HR/NetworkLayer/NetworkManager.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "148"
+            endingLineNumber = "148"
+            landmarkName = "requestDecodable(_:as:completion:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A1B349CD-6317-4C4C-8E98-C7DA280F652C - 24d92dcaf940fbff"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in HR.NetworkManager.requestDecodable&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(_: HR.Endpoint, as: &#x3c4;_0_0.Type, completion: (Swift.Result&lt;&#x3c4;_0_0, HR.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "HR.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/estherelzak/Projects/HR/HR/NetworkLayer/NetworkManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "148"
+                  endingLineNumber = "148">
+               </Location>
+               <Location
+                  uuid = "A1B349CD-6317-4C4C-8E98-C7DA280F652C - 24d92dcaf940fbff"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 @Sendable (Swift.Optional&lt;Foundation.Data&gt;, Swift.Optional&lt;__C.NSURLResponse&gt;, Swift.Optional&lt;Swift.Error&gt;) -&gt; () in HR.NetworkManager.requestDecodable&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Swift.Decodable&gt;(_: HR.Endpoint, as: &#x3c4;_0_0.Type, completion: (Swift.Result&lt;&#x3c4;_0_0, HR.APIError&gt;) -&gt; ()) -&gt; ()"
+                  moduleName = "HR.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/estherelzak/Projects/HR/HR/NetworkLayer/NetworkManager.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "148"
+                  endingLineNumber = "148">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "486C3D56-D90A-4DFF-8B83-CEAEEB785D59"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "HR/Delegets/AppDelegate.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "82"
+            endingLineNumber = "82"
+            landmarkName = "application(_:didRegisterForRemoteNotificationsWithDeviceToken:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

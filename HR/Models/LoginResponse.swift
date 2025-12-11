@@ -6,10 +6,82 @@
 //
 
 import Foundation
+import Foundation
 
-// MARK: - LoginResponse
-// MARK: - LoginResponse
-// MARK: - EmployeeData
+// MARK: - Root Response
+struct LoginResponse: Decodable {
+    let jsonrpc: String?
+    let id: String?
+    let result: LoginResult?
+}
+
+// MARK: - Login Result
+struct LoginResult: Decodable {
+    let status: String
+    let message: LoginMessageUnion?
+    let companyName: String?
+    let licenseExpiryDate: String?
+    let companyURL: String?
+
+    enum CodingKeys: String, CodingKey {
+        case status, message
+        case companyName = "company_name"
+        case licenseExpiryDate = "license_expiry_date"
+        case companyURL = "company_url"
+    }
+}
+
+// MARK: - Message Union (string or object)
+enum LoginMessageUnion: Decodable {
+    case text(String)
+    case object(LoginMessage)
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        if let str = try? container.decode(String.self) {
+            self = .text(str)
+            return
+        }
+        self = .object(try container.decode(LoginMessage.self))
+    }
+
+    var textValue: String? {
+        if case .text(let s) = self { return s }
+        return nil
+    }
+
+    var objectValue: LoginMessage? {
+        if case .object(let o) = self { return o }
+        return nil
+    }
+}
+
+// MARK: - Login Message
+struct LoginMessage: Decodable {
+    let status: String
+    let message: String
+    let employeeData: EmployeeDataWrapper?
+    let company: [Company]?
+
+    enum CodingKeys: String, CodingKey {
+        case status, message
+        case employeeData = "employee_data"
+        case company
+    }
+}
+
+// MARK: - Employee Data Wrapper
+struct EmployeeDataWrapper: Decodable {
+    let success: Bool
+    let employeeData: EmployeeData
+
+    enum CodingKeys: String, CodingKey {
+        case success
+        case employeeData = "employee_data"
+    }
+}
+
+// MARK: - Employee Data
 struct EmployeeData: Codable {
     let id: Int
     let name: String
@@ -22,15 +94,12 @@ struct EmployeeData: Codable {
     let tokenExpiry: String
 
     enum CodingKeys: String, CodingKey {
-        case id
-        case name
-        case email
-        case department
+        case id, name, email, department
+        case allowedLocationIDs = "allowed_locations_ids"
         case jobTitle = "job_title"
         case isActive = "is_active"
         case employeeToken = "employee_token"
         case tokenExpiry = "token_expiry"
-        case allowedLocationIDs = "allowed_locations_ids" // ✅ IMPORTANT
     }
 }
 
@@ -38,7 +107,6 @@ struct EmployeeData: Codable {
 struct Company: Decodable {
     let name: String?
     let address: Address?
-    let id: Int?    // Company id to map branches
 }
 
 // MARK: - Address
@@ -53,83 +121,17 @@ struct Address: Decodable {
     let allowedDistance: Double?
 
     enum CodingKeys: String, CodingKey {
-        case id
-        case street, city, zip, country
-        case latitude, longitude
+        case id, street, city, zip, country, latitude, longitude
         case allowedDistance = "allowed_distance"
     }
 }
 
-// MARK: - AllowedLocation (for saving in UserDefaults)
+// MARK: - Allowed Location (for UserDefaults saving)
 struct AllowedLocation: Codable {
     let id: Int
     let latitude: Double
     let longitude: Double
     let allowedDistance: Double
-}
-
-struct LoginResponse: Decodable {
-    let jsonrpc: String?
-    let id: String?
-    let result: LoginResult?
-}
-
-// MARK: - LoginResult
-struct LoginResult: Decodable {
-    let status: String                 // "success" or "error"
-    let message: LoginMessageUnion?    // string OR object
-    let companyName: String?
-    let licenseExpiryDate: String?
-    let companyURL: String?
-
-    enum CodingKeys: String, CodingKey {
-        case status, message
-        case companyName = "company_name"
-        case licenseExpiryDate = "license_expiry_date"
-        case companyURL = "company_url"
-    }
-}
-
-// MARK: - LoginMessageUnion
-enum LoginMessageUnion: Decodable {
-    case text(String)
-    case object(LoginMessage)
-
-    init(from decoder: Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        if let s = try? container.decode(String.self) {
-            self = .text(s)
-            return
-        }
-        let obj = try container.decode(LoginMessage.self)
-        self = .object(obj)
-    }
-
-    var textValue: String? {
-        switch self {
-        case .text(let s): return s
-        case .object(let o): return o.message
-        }
-    }
-
-    var objectValue: LoginMessage? {
-        if case .object(let o) = self { return o }
-        return nil
-    }
-}
-
-// MARK: - LoginMessage
-struct LoginMessage: Decodable {
-    let status: String
-    let message: String
-    let employeeData: EmployeeData?
-    let company: [Company]?
-
-    enum CodingKeys: String, CodingKey {
-        case status, message
-        case employeeData = "employee_data"
-        case company
-    }
 }
 
 //// MARK: - EmployeeData

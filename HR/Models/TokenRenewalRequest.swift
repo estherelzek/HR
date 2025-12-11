@@ -28,7 +28,6 @@ struct TokenRenewalResponse: Codable {
 
 // MARK: - Result Model
 struct TokenRenewalResult: Codable {
-
     // common
     let status: String
     let message: String
