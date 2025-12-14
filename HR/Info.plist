@@ -37,6 +37,8 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
+		<string>processing</string>
+		<string>voip</string>
 	</array>
 	<key>UTExportedTypeDeclarations</key>
 	<array>

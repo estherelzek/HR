@@ -19,21 +19,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]?
     ) -> Bool {
-       
-        // Network listener
+      
         NetworkListener.shared.start()
         NetworkListener.shared.onConnected = {
             print("🔁 Network is back — resending offline requests...")
             NetworkManager.shared.resendOfflineRequests()
         }
 
-        // Clock checker
         _ = ClockChangeDetector.shared
-
-        // Firebase start
         FirebaseApp.configure()
-
-        // Notifications
         UNUserNotificationCenter.current().delegate = self
         requestNotificationAuthorization()
         application.registerForRemoteNotifications()
@@ -43,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
  DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
     Messaging.messaging().token { token, error in
         if let token = token {
-            print("🔧 SIMULATOR FCM TOKEN:", token)
+            print("📱 SIMULATOR FCM TOKEN:", token)
             UserDefaults.standard.mobileToken = token
         } else {
             print("❌ SIMULATOR still no FCM token, retrying...")
@@ -61,8 +55,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         return true
     }
     
+    func saveNotification(title: String, body: String) {
+        let notification = NotificationModel(
+            id: UUID().uuidString,
+            title: title,
+            message: body,
+            date: Date()
+        )
+        NotificationStore.shared.save(notification)
+        print("💾 Saved notification:", title)
+        NotificationCenter.default.post(name: Notification.Name("NewNotificationSaved"), object: nil)
+    }
+
     func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        print("📲 FCM Token:", fcmToken ?? "none")
+        print("📱 FCM Token:", fcmToken ?? "none")
         UserDefaults.standard.mobileToken = fcmToken
     }
 
@@ -81,6 +87,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let tokenString = deviceToken.map { String(format: "%02x", $0) }.joined()
         print("📱 APNs Device Token:", tokenString)
         Messaging.messaging().apnsToken = deviceToken
+        UserDefaults.standard.mobileToken = tokenString
         // Send device token to server
      //   sendDeviceTokenToServer(tokenString)
     }
@@ -98,23 +105,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        let userInfo = notification.request.content.userInfo
-        print("📩 Notification in foreground:", userInfo)
-
+        let content = notification.request.content
+        let userInfo = content.userInfo
+        
+        let title = content.title.isEmpty ? (userInfo["title"] as? String ?? "New") : content.title
+        let body = content.body.isEmpty ? (userInfo["body"] as? String ?? "Message") : content.body
+        
+        print("🟢 NOTIFICATION RECEIVED (FOREGROUND):", userInfo)
+        
+        // Save notification locally
+        saveNotification(title: title, body: body)
+        
+        // Show banner, sound, badge
         completionHandler([.banner, .sound, .badge])
     }
 
-    // MARK: - Handle Notification Tap
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        let userInfo = response.notification.request.content.userInfo
+        let content = response.notification.request.content
+        let userInfo = content.userInfo
+
+        let title = content.title.isEmpty
+            ? (userInfo["title"] as? String ?? "New")
+            : content.title
+
+        let body = content.body.isEmpty
+            ? (userInfo["body"] as? String ?? "Message")
+            : content.body
+
         print("📨 Notification tapped:", userInfo)
+
+        // ✅ SAVE HERE (this works even if app was killed)
+        saveNotification(title: title, body: body)
 
         completionHandler()
     }
+
 
     // MARK: - Background Push
     func application(
@@ -122,7 +151,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         didReceiveRemoteNotification userInfo: [AnyHashable : Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
-
+        print("🟡 NOTIFICATION RECEIVED (BACKGROUND)")
+        print(userInfo)
         let title = userInfo["title"] as? String ?? "New"
         let body = userInfo["body"] as? String ?? "Message"
         saveNotification(title: title, body: body)
@@ -145,17 +175,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         UNUserNotificationCenter.current().add(request)
     }
 
-    // MARK: - Save Notification Locally
-    func saveNotification(title: String, body: String) {
-        let notification = NotificationModel(
-            id: UUID().uuidString,
-            title: title,
-            message: body,
-            date: Date()
-        )
-        NotificationStore.shared.save(notification)
-        print("💾 Saved notification:", title)
-    }
 
     // MARK: - File Import Handler
     func application(

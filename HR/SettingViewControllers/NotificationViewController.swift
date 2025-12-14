@@ -19,22 +19,21 @@ class NotificationViewController: UIViewController {
     @IBOutlet weak var TitLeLabel: UILabel!
     @IBOutlet weak var niotificationTableView: UITableView!
     
-    var items: [NotificationItem] = [
-        NotificationItem(title: "New Update",
-                         description: "A new version of the app is available.",
-                         date: "Today",
-                         isChecked: false),
-        
-        NotificationItem(title: "Security Alert",
-                         description: "Your password was changed.",
-                         date: "Yesterday",
-                         isChecked: true)
-    ]
+    var items: [NotificationModel] = [] // Use NotificationModel now
     
     override func viewDidLoad() {
         super.viewDidLoad()
         TitLeLabel.text = "Notifications"
         setupTableView()
+        loadNotifications()
+        
+        // Optional: Observe new notifications
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(newNotificationReceived),
+            name: Notification.Name("NewNotificationSaved"),
+            object: nil
+        )
     }
 
     private func setupTableView() {
@@ -44,21 +43,22 @@ class NotificationViewController: UIViewController {
             UINib(nibName: "NotificationTableViewCell", bundle: nil),
             forCellReuseIdentifier: "NotificationTableViewCell"
         )
-        
         niotificationTableView.tableFooterView = UIView()
     }
-    
-    @objc private func toggleCheckmark(_ sender: UIButton) {
-        let index = sender.tag
-        items[index].isChecked.toggle()
-        niotificationTableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
+
+    private func loadNotifications() {
+        items = NotificationStore.shared.load().sorted { $0.date > $1.date }
+        niotificationTableView.reloadData()
+    }
+
+    @objc private func newNotificationReceived() {
+        loadNotifications()
     }
 
     @IBAction func backButtonTapped(_ sender: Any) {
         self.dismiss(animated: true)
     }
 }
-
 extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -80,11 +80,18 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         }
         
         let item = items[indexPath.row]
-        cell.configure(with: item)
-        cell.checkButton.tag = indexPath.row
-        cell.checkButton.addTarget(self,
-                                   action: #selector(toggleCheckmark(_:)),
-                                   for: .touchUpInside)
+        // Convert date to string for display
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .short
+        let dateString = dateFormatter.string(from: item.date)
+        
+        cell.configure(with: NotificationItem(
+            title: item.title,
+            description: item.message,
+            date: dateString,
+            isChecked: false
+        ))
         
         return cell
     }
