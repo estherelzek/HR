@@ -68,6 +68,7 @@ final class LoginViewModel {
                     // 2️⃣ Save company base URL
                     if let url = res.companyURL {
                         let base = url.hasSuffix("/") ? String(url.dropLast()) : url
+                       // UserDefaults.standard.defaultURL = UserDefaults.standard.baseURL
                         UserDefaults.standard.baseURL = base
                     }
 

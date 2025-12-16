@@ -15,7 +15,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var timeOffButton: UIButton!
     @IBOutlet weak var settingButton: UIButton!
     @IBOutlet weak var bottomBarView: UIStackView!
-    
+    @IBOutlet weak var notificationButton: UIButton!
     private var currentVC: UIViewController?
     
     override func viewDidLoad() {
@@ -31,6 +31,7 @@ class ViewController: UIViewController {
         homeButton.tintColor = .purplecolor
         timeOffButton.tintColor = .lightGray
         settingButton.tintColor = .lightGray
+        notificationButton.tintColor = .lightGray
         switchTo(viewController: homeVC)
     }
     
@@ -39,13 +40,25 @@ class ViewController: UIViewController {
         homeButton.tintColor = .lightGray
         timeOffButton.tintColor = .purplecolor
         settingButton.tintColor = .lightGray
+        notificationButton.tintColor = .lightGray
         switchTo(viewController: timeOffVC)
+    }
+    
+    @IBAction func notificationButtonTapped(_ sender: Any) {
+        let notificationVC = NotificationViewController(nibName: "NotificationViewController", bundle: nil)
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .lightGray
+        settingButton.tintColor = .lightGray
+        notificationButton.tintColor = .purplecolor
+        bottomBarView.isHidden = false
+        switchTo(viewController: notificationVC)
     }
     
     @IBAction func settingButtonTapped(_ sender: Any) {
         let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
         homeButton.tintColor = .lightGray
         timeOffButton.tintColor = .lightGray
+        notificationButton.tintColor = .lightGray
         settingButton.tintColor = .purplecolor
         switchTo(viewController: settingVC)
     }
@@ -119,9 +132,9 @@ class ViewController: UIViewController {
         }
     
     func setUpTextFields() {
-        homeButton.setTitle(NSLocalizedString("Home", comment: ""), for: .normal)
-        settingButton.setTitle(NSLocalizedString("Settings", comment: ""), for: .normal)
-        timeOffButton.setTitle(NSLocalizedString("timeOff", comment: ""), for: .normal)
+        homeButton.setTitle(NSLocalizedString("", comment: ""), for: .normal)
+        settingButton.setTitle(NSLocalizedString("", comment: ""), for: .normal)
+        timeOffButton.setTitle(NSLocalizedString("", comment: ""), for: .normal)
     }
 
     @objc private func languageChanged() {

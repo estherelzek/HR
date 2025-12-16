@@ -26,8 +26,6 @@ class NotificationViewController: UIViewController {
         TitLeLabel.text = "Notifications"
         setupTableView()
         loadNotifications()
-        
-        // Optional: Observe new notifications
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(newNotificationReceived),
@@ -59,6 +57,7 @@ class NotificationViewController: UIViewController {
         self.dismiss(animated: true)
     }
 }
+
 extension NotificationViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

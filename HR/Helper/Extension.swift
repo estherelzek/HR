@@ -638,6 +638,7 @@ extension UserDefaults {
         static let dontShowProtectionScreen = "dontShowProtectionScreen"
         static let employeeToken = "employeeToken"
         static let baseURL = "baseURL"
+        static let defaultURL = "defaultURL"
         static let apiKeyKey = "apiKeyKey"
         static let companyIdKey = "companyIdKey"
         static let companyLatitude = "companyLatitude"
@@ -659,7 +660,10 @@ extension UserDefaults {
         get { string(forKey: Keys.baseURL) }
         set { setValue(newValue, forKey: Keys.baseURL) }
     }
-    
+    var defaultURL: String? {
+        get { string(forKey: Keys.defaultURL) }
+        set { setValue(newValue, forKey: Keys.defaultURL) }
+    }
     var defaultApiKey: String {
         get { string(forKey: Keys.apiKeyKey) ?? "" }
         set { setValue(newValue, forKey: Keys.apiKeyKey) }

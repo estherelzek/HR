@@ -46,30 +46,30 @@ import UIKit
             if let notificationResponse = connectionOptions.notificationResponse {
                 handleNotificationTap(notificationResponse)
             }
-            do {
-                let encryptedText = "SC8AOBx7JpINf6WpTJ8SvJFkugw+7IYRHzpd5CEDYAYvwuEi3tcQO/hslgmsHT+lHyEKOWJvqnm9PT1TPkoXD317b5+Hp5YUuUto3BNMgzxVPRKna41rQaGExYaRfnao"
-                let middleware = try Middleware.initialize(encryptedText)
-
-                let defaults = UserDefaults.standard
-                defaults.set(encryptedText, forKey: "encryptedText")
-                defaults.set(middleware.companyId, forKey: "companyIdKey")
-                defaults.set(middleware.apiKey, forKey: "apiKeyKey")  // FIXED
-                defaults.set(middleware.baseUrl, forKey: "baseURL")   // FIXED
-
-                print("✅ Imported CompanyAccess.ihkey successfully")
-                print("🔑 API Key: \(middleware.apiKey)")
-                print("🏠 Base URL: \(middleware.baseUrl)")
-                print("🗯️ Company ID: \(middleware.companyId)")
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(
-                        name: Notification.Name("CompanyFileImported"),
-                        object: nil
-                    )
-                }
-
-            } catch {
-                print("❌ Failed to import or decrypt file:", error)
-            }
+//            do {
+//                let encryptedText = "SC8AOBx7JpINf6WpTJ8SvJFkugw+7IYRHzpd5CEDYAYvwuEi3tcQO/hslgmsHT+lHyEKOWJvqnm9PT1TPkoXD317b5+Hp5YUuUto3BNMgzxVPRKna41rQaGExYaRfnao"
+//                let middleware = try Middleware.initialize(encryptedText)
+//
+//                let defaults = UserDefaults.standard
+//                defaults.set(encryptedText, forKey: "encryptedText")
+//                defaults.set(middleware.companyId, forKey: "companyIdKey")
+//                defaults.set(middleware.apiKey, forKey: "apiKeyKey")  // FIXED
+//                defaults.set(middleware.baseUrl, forKey: "baseURL")   // FIXED
+//
+//                print("✅ Imported CompanyAccess.ihkey successfully")
+//                print("🔑 API Key: \(middleware.apiKey)")
+//                print("🏠 Base URL: \(middleware.baseUrl)")
+//                print("🗯️ Company ID: \(middleware.companyId)")
+//                DispatchQueue.main.async {
+//                    NotificationCenter.default.post(
+//                        name: Notification.Name("CompanyFileImported"),
+//                        object: nil
+//                    )
+//                }
+//
+//            } catch {
+//                print("❌ Failed to import or decrypt file:", error)
+//            }
         }
         
         @objc private func networkBecameReachable() {
@@ -113,31 +113,36 @@ import UIKit
                 handleImportedFile(url: url)
             }
 
-        private func handleImportedFile(url: URL) {
-            do {
-                let encryptedText = try String(contentsOf: url, encoding: .utf8)
-                let middleware = try Middleware.initialize("SC8AOBx7JpINf6WpTJ8SvJFkugw+7IYRHzpd5CEDYAYvwuEi3tcQO/hslgmsHT+lHyEKOWJvqnm9PT1TPkoXD317b5+Hp5YUuUto3BNMgzxVPRKna41rQaGExYaRfnao")
+        func handleImportedFile(url: URL) {
+                do {
+                    let encryptedText = try String(contentsOf: url, encoding: .utf8)
 
-                let defaults = UserDefaults.standard
-                defaults.set(encryptedText, forKey: "encryptedText")
-                defaults.set(middleware.companyId, forKey: "companyIdKey")
-                defaults.set(middleware.apiKey, forKey: "apiKeyKey")  // FIXED
-                defaults.set(middleware.baseUrl, forKey: "baseURL")   // FIXED
+                    let middleware = try Middleware.initialize(encryptedText)
 
-                print("✅ Imported CompanyAccess.ihkey successfully")
-print("🔑 API Key: \(middleware.apiKey)")
-                print("🏠 Base URL: \(middleware.baseUrl)")
-                print("🗯️ Company ID: \(middleware.companyId)")
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(
-                        name: Notification.Name("CompanyFileImported"),
-                        object: nil
-                    )
+                    let defaults = UserDefaults.standard
+                    defaults.set(encryptedText, forKey: "encryptedText")
+                    defaults.set(middleware.companyId, forKey: "companyIdKey")
+                    defaults.set(middleware.apiKey, forKey: "apiKeyKey")
+                    defaults.set(middleware.baseUrl, forKey: "baseURL")
+
+                    // 🔥 SET API BASE URL FROM ENCRYPTED FILE
+                    API.updateDefaultBaseURL(middleware.baseUrl)
+
+                    print("✅ Imported CompanyAccess.ihkey successfully")
+                    print("🔑 API Key: \(middleware.apiKey)")
+                    print("🏠 Base URL: \(middleware.baseUrl)")
+                    print("🗯️ Company ID: \(middleware.companyId)")
+
+                    DispatchQueue.main.async {
+                        NotificationCenter.default.post(
+                            name: Notification.Name("CompanyFileImported"),
+                            object: nil
+                        )
+                    }
+
+                } catch {
+                    print("❌ Failed to import or decrypt file:", error)
                 }
-
-            } catch {
-                print("❌ Failed to import or decrypt file:", error)
             }
-        }
 }
 

@@ -92,7 +92,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Hty-A3-HKT" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="433" width="361" height="145"/>
+                    <rect key="frame" x="16" y="433" width="361" height="85.333333333333371"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -107,7 +107,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="2AV-ra-9Dd" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="648" width="361" height="90"/>
+                    <rect key="frame" x="16" y="588.33333333333337" width="361" height="90"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -122,7 +122,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bm3-wN-Ffw">
-                    <rect key="frame" x="16" y="598" width="361" height="30"/>
+                    <rect key="frame" x="16" y="538.33333333333337" width="361" height="30"/>
                     <color key="backgroundColor" name="baseColorView"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="ssp-Pf-nYM"/>
@@ -135,7 +135,7 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="Hty-A3-HKT" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.17" id="25x-1F-r8r"/>
+                <constraint firstItem="Hty-A3-HKT" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.1" id="25x-1F-r8r"/>
                 <constraint firstItem="S0t-mE-05A" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="2zu-Ww-gtB"/>
                 <constraint firstItem="S0t-mE-05A" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" constant="16" id="5XS-rw-PDK"/>
                 <constraint firstItem="Hty-A3-HKT" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="84W-rF-n6m"/>

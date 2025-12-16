@@ -27,8 +27,8 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
     let languages = [(NSLocalizedString("english", comment: ""), "english"),(NSLocalizedString("arabic", comment: ""), "egypt")]
     let generalItemsKeys = [("change_company", "building.2"),("language", "globe"),("dark_mode", "moon.fill")]
     let securityItemsKeys = [
-        ("change_protection", "lock.fill"),
-        ("notifications", "bell.fill")
+        ("change_protection", "lock.fill")
+      //  ("notifications", "bell.fill")
     ]
 
     let accountItemsKeys = [("logout", "rectangle.portrait.and.arrow.right")]
@@ -189,8 +189,8 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
             case 0:
                 navigateToChangeProtectionViewController()
 
-            case 1:
-                openNotificationsSettings()   // ← NEW FUNCTION (below)
+//            case 1:
+//                openNotificationsSettings()   // ← NEW FUNCTION (below)
 
             default:
                 break

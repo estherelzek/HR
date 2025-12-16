@@ -114,7 +114,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         print("🟢 NOTIFICATION RECEIVED (FOREGROUND):", userInfo)
         
         // Save notification locally
-        saveNotification(title: title, body: body)
+     //   saveNotification(title: title, body: body)
         
         // Show banner, sound, badge
         completionHandler([.banner, .sound, .badge])
@@ -155,7 +155,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         print(userInfo)
         let title = userInfo["title"] as? String ?? "New"
         let body = userInfo["body"] as? String ?? "Message"
-        saveNotification(title: title, body: body)
+      //  saveNotification(title: title, body: body)
         showNotification(title: title, body: body)
         completionHandler(.newData)
     }
@@ -187,30 +187,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         return true
     }
 
-    private func handleImportedFile(url: URL) {
-        do {
-            let encryptedText = try String(contentsOf: url , encoding: .utf8)
-            
-            let middleware = try Middleware.initialize(encryptedText)
+    func handleImportedFile(url: URL) {
+            do {
+                let encryptedText = try String(contentsOf: url, encoding: .utf8)
 
-            let defaults = UserDefaults.standard
-            defaults.set(encryptedText, forKey: "encryptedText")
-            defaults.set(middleware.companyId, forKey: "companyIdKey")
-            defaults.set(middleware.apiKey, forKey: "apiKeyKey")  // FIXED
-            defaults.set(middleware.baseUrl, forKey: "baseURL")   // FIXED
-            print("✅ Imported CompanyAccess.ihkey successfully")
+                let middleware = try Middleware.initialize(encryptedText)
 
-            DispatchQueue.main.async {
-                NotificationCenter.default.post(
-                    name: Notification.Name("CompanyFileImported"),
-                    object: nil
-                )
+                let defaults = UserDefaults.standard
+                defaults.set(encryptedText, forKey: "encryptedText")
+                defaults.set(middleware.companyId, forKey: "companyIdKey")
+                defaults.set(middleware.apiKey, forKey: "apiKeyKey")
+                defaults.set(middleware.baseUrl, forKey: "baseURL")
+
+                // 🔥 SET API BASE URL FROM ENCRYPTED FILE
+                API.updateDefaultBaseURL(middleware.baseUrl)
+
+                print("✅ Imported CompanyAccess.ihkey successfully")
+                print("🔑 API Key: \(middleware.apiKey)")
+                print("🏠 Base URL: \(middleware.baseUrl)")
+                print("🗯️ Company ID: \(middleware.companyId)")
+
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("CompanyFileImported"),
+                        object: nil
+                    )
+                }
+
+            } catch {
+                print("❌ Failed to import or decrypt file:", error)
             }
-
-        } catch {
-            print("❌ Failed to import or decrypt file:", error)
         }
-    }
 
     // MARK: - Scene Config
     func application(

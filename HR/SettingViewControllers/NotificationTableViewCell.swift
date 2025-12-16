@@ -24,7 +24,7 @@ class NotificationTableViewCell: UITableViewCell {
         descreptionLable.text = item.description
         dateLabel.text = item.date
         
-        let imageName = item.isChecked ? "checkmark.circle.fill" : "circle"
-        checkButton.setImage(UIImage(systemName: imageName), for: .normal)
+//        let imageName = item.isChecked ? "checkmark.circle.fill" : "circle"
+//        checkButton.setImage(UIImage(systemName: imageName), for: .normal)
     }
 }

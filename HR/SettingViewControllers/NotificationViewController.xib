@@ -23,23 +23,27 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="iXi-fX-RDD">
-                    <rect key="frame" x="16" y="153.66666666666669" width="361" height="668.33333333333326"/>
+                    <rect key="frame" x="16" y="140" width="361" height="682"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </tableView>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="99t-vL-pqx">
-                    <rect key="frame" x="4" y="90" width="371" height="33.666666666666657"/>
+                    <rect key="frame" x="4" y="60" width="371" height="50"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8Sd-Gl-CBp">
-                            <rect key="frame" x="0.0" y="0.0" width="45.333333333333336" height="33.666666666666664"/>
+                            <rect key="frame" x="0.0" y="0.0" width="60" height="50"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="50" id="SLx-jj-sI8"/>
+                                <constraint firstAttribute="width" constant="60" id="nbf-Wh-HD7"/>
+                            </constraints>
                             <color key="tintColor" name="textFieldVorderColor"/>
                             <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                            <state key="normal" image="arrow.backward" catalog="system"/>
+                            <state key="normal" image="bell.badge.fill" catalog="system"/>
                             <connections>
                                 <action selector="backButtonTapped:" destination="-1" eventType="touchUpInside" id="qUZ-6E-F4c"/>
                             </connections>
                         </button>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Yeasterday" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="43l-s9-p5P">
-                            <rect key="frame" x="53.333333333333343" y="0.0" width="317.66666666666663" height="33.666666666666664"/>
+                            <rect key="frame" x="68" y="0.0" width="303" height="50"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <fontDescription key="fontDescription" type="system" pointSize="28"/>
                             <color key="textColor" name="textFieldVorderColor"/>
@@ -57,13 +61,13 @@
                 <constraint firstAttribute="bottom" secondItem="iXi-fX-RDD" secondAttribute="bottom" constant="30" id="a5U-0Q-Klb"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="iXi-fX-RDD" secondAttribute="trailing" constant="16" id="bi8-9z-SZB"/>
                 <constraint firstItem="iXi-fX-RDD" firstAttribute="top" secondItem="99t-vL-pqx" secondAttribute="bottom" constant="30" id="eVP-u1-zRY"/>
-                <constraint firstItem="99t-vL-pqx" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="90" id="iNs-WM-cCC"/>
+                <constraint firstItem="99t-vL-pqx" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="60" id="iNs-WM-cCC"/>
             </constraints>
             <point key="canvasLocation" x="113.74045801526717" y="150"/>
         </view>
     </objects>
     <resources>
-        <image name="arrow.backward" catalog="system" width="128" height="95"/>
+        <image name="bell.badge.fill" catalog="system" width="115" height="128"/>
         <namedColor name="textFieldVorderColor">
             <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

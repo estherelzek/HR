@@ -25,34 +25,46 @@
                                         <rect key="frame" x="0.0" y="8" width="393" height="52"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gwW-KK-pYD">
-                                                <rect key="frame" x="0.0" y="0.0" width="117.66666666666667" height="52"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="83.333333333333329" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <color key="tintColor" name="purplecolor"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="Home" image="homekit" catalog="system"/>
+                                                <state key="normal" image="homekit" catalog="system"/>
                                                 <connections>
                                                     <action selector="homeButoonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ITm-UH-L0G"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vvg-n2-7qS">
-                                                <rect key="frame" x="137.66666666666666" y="0.0" width="117.66666666666666" height="52"/>
+                                                <rect key="frame" x="103.33333333333334" y="0.0" width="83.333333333333343" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="TimeOfff" image="beach.umbrella" catalog="system"/>
+                                                <state key="normal" image="beach.umbrella" catalog="system"/>
                                                 <connections>
                                                     <action selector="timeOffButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="8Wy-BG-G83"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kfd-iA-zbc">
+                                                <rect key="frame" x="206.66666666666666" y="0.0" width="82.999999999999972" height="52"/>
+                                                <color key="backgroundColor" name="baseColorView"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <color key="tintColor" white="0.66666666669999997" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                                <state key="normal" image="bell" catalog="system"/>
+                                                <connections>
+                                                    <action selector="homeButoonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eaq-KP-iKe"/>
+                                                    <action selector="notificationButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="2h2-ZZ-Y7a"/>
+                                                </connections>
+                                            </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="so6-hV-IqR">
-                                                <rect key="frame" x="275.33333333333331" y="0.0" width="117.66666666666669" height="52"/>
+                                                <rect key="frame" x="309.66666666666669" y="0.0" width="83.333333333333314" height="52"/>
                                                 <color key="backgroundColor" name="baseColorView"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                 <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                                <state key="normal" title="Setting" image="gearshape" catalog="system"/>
+                                                <state key="normal" image="gearshape" catalog="system"/>
                                                 <connections>
                                                     <action selector="settingButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="agV-fk-Pxx"/>
                                                 </connections>
@@ -93,6 +105,7 @@
                         <outlet property="bottomBarView" destination="ohn-A5-hZs" id="Y1s-bj-3ta"/>
                         <outlet property="contentView" destination="L6o-rw-Jee" id="hcq-CX-dKb"/>
                         <outlet property="homeButton" destination="gwW-KK-pYD" id="ZBG-YN-FSo"/>
+                        <outlet property="notificationButton" destination="kfd-iA-zbc" id="dC6-Cd-nk4"/>
                         <outlet property="settingButton" destination="so6-hV-IqR" id="a5Q-WP-b53"/>
                         <outlet property="timeOffButton" destination="Vvg-n2-7qS" id="yRn-YT-9Ds"/>
                     </connections>
@@ -104,6 +117,7 @@
     </scenes>
     <resources>
         <image name="beach.umbrella" catalog="system" width="120" height="128"/>
+        <image name="bell" catalog="system" width="125" height="128"/>
         <image name="gearshape" catalog="system" width="128" height="123"/>
         <image name="homekit" catalog="system" width="128" height="104"/>
         <namedColor name="baseColorView">
@@ -113,7 +127,7 @@
             <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemGray2Color">
-            <color red="0.68235294120000001" green="0.68235294120000001" blue="0.69803921570000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.68235294117647061" green="0.68235294117647061" blue="0.69803921568627447" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

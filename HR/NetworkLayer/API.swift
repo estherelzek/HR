@@ -7,8 +7,18 @@
 
 import Foundation
 
+
 enum API: Endpoint {
-    
+    private static let fallbackURL =
+        ""
+
+    static var defaultBaseURL: String = fallbackURL
+
+    static func updateDefaultBaseURL(_ url: String) {
+        guard !url.isEmpty else { return }
+        defaultBaseURL = url.hasSuffix("/") ? String(url.dropLast()) : url
+    }
+
     var method: HTTPMethod { .POST }
 
     var headers: [String : String] {
@@ -19,16 +29,23 @@ enum API: Endpoint {
     }
 
     var baseURL: String {
-        let defaultURL = "https://ahmedelzupeir-androidapp21.odoo.com"
-        if let saved = UserDefaults.standard.baseURL, !saved.isEmpty {
-            if saved.hasSuffix("/") {
-                return String(saved.dropLast())
+        switch self {
+
+        // 🔐 ALWAYS use DEFAULT URL
+        case .validateCompany,
+             .generateToken,
+             .sendMobileToken:
+            return API.defaultBaseURL
+
+        // 🌍 All other APIs use saved baseURL if exists
+        default:
+            if let saved = UserDefaults.standard.baseURL, !saved.isEmpty {
+                return saved.hasSuffix("/") ? String(saved.dropLast()) : saved
             }
-            return saved
+            return API.defaultBaseURL
         }
-        return defaultURL
     }
-    
+
     case validateCompany(apiKey: String, companyId: String, email: String, password: String)
     case employeeAttendance(action: String, token: String, lat: String? = nil, lng: String? = nil, action_time: String? = nil)
     case requestTimeOff(token: String, action: String)
@@ -39,14 +56,13 @@ enum API: Endpoint {
     case getServerTime(token: String,action: String)
     case generateToken(employee_token: String , company_id : String , api_key : String)
     case offlineAttendance(token: String, attendanceLogs: [[String: Any]])
-    case sendMobileToken(employeeToken: String, mobileToken: String)
+    case sendMobileToken(employeeToken: String, mobileToken: String, mobile_typ: String)
 
 
     var path: String {
         switch self {
         case .validateCompany:
-            return "/api/validate_company"
-         //   return "/api/employee/authenticate"
+            return "/api/validate_company"//defaultURL
         case .employeeAttendance:
             return "/api/employee_attendance"
         case .requestTimeOff:
@@ -62,11 +78,11 @@ enum API: Endpoint {
         case .getServerTime:
             return "/api/employee_attendance"
         case .generateToken:
-            return "/api/employee/renew_token"
+            return "/api/employee/renew_token"//defaultURL
         case .offlineAttendance:
             return "/api/offline_attendance"
         case .sendMobileToken:
-            return "/api/mobile_token"
+            return "/api/mobile_token"//defaultURL
 
         }
     }
@@ -181,10 +197,11 @@ enum API: Endpoint {
             ]
             return try? JSONSerialization.data(withJSONObject: payload, options: [])
 
-        case let .sendMobileToken(employeeToken, mobileToken):
+        case let .sendMobileToken(employeeToken, mobileToken, mobile_typ):
             let payload: [String: Any] = [
                 "employee_token": employeeToken,
-                "mobile_token": mobileToken
+                "mobile_token": mobileToken,
+                "mobile_typ": mobile_typ
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
 
