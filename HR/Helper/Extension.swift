@@ -86,6 +86,7 @@ extension UIViewController {
                rootVC.timeOffButton.tintColor = .lightGray
                rootVC.settingButton.tintColor = .lightGray
                rootVC.bottomBarView.isHidden = false
+               rootVC.titlesBarView.isHidden = false
            }
            dismiss(animated: true, completion: nil)
        }
@@ -95,6 +96,7 @@ extension UIViewController {
             let checkVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
             rootVC.switchTo(viewController: checkVC)
             rootVC.bottomBarView.isHidden = false
+            rootVC.titlesBarView.isHidden = false
             rootVC.homeButton.tintColor = .purplecolor
             rootVC.timeOffButton.tintColor = .lightGray
             rootVC.settingButton.tintColor = .lightGray
@@ -118,6 +120,7 @@ extension UIViewController {
         if let rootVC = self.view.window?.rootViewController as? ViewController {
             rootVC.switchTo(viewController: checkingVC)
             rootVC.bottomBarView.isHidden = true
+            rootVC.titlesBarView.isHidden = true
         }
     }
 
@@ -129,6 +132,7 @@ extension UIViewController {
            if let rootVC = self.view.window?.rootViewController as? ViewController {
                rootVC.switchTo(viewController: checkingVC)
                rootVC.bottomBarView.isHidden = true
+               rootVC.titlesBarView.isHidden = true
            }
            dismiss(animated: true, completion: nil)
        }
@@ -141,6 +145,7 @@ extension UIViewController {
                rootVC.timeOffButton.tintColor = .purplecolor
                rootVC.settingButton.tintColor = .lightGray
                rootVC.bottomBarView.isHidden = false
+               rootVC.titlesBarView.isHidden = false
            }
            dismiss(animated: true, completion: nil)
        }

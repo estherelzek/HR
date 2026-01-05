@@ -136,6 +136,7 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
             let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController", bundle: nil)
             rootVC.switchTo(viewController: protectionMethodVC)
             rootVC.bottomBarView.isHidden = false
+            rootVC.titlesBarView.isHidden = false
             rootVC.homeButton.tintColor = .lightGray
             rootVC.timeOffButton.tintColor = .lightGray
             rootVC.settingButton.tintColor = .lightGray

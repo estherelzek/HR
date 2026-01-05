@@ -16,6 +16,7 @@ struct NotificationItem {
 
 class NotificationViewController: UIViewController {
 
+    @IBOutlet weak var emptyImage: UIImageView!
     @IBOutlet weak var TitLeLabel: UILabel!
     @IBOutlet weak var niotificationTableView: UITableView!
     
@@ -46,7 +47,17 @@ class NotificationViewController: UIViewController {
 
     private func loadNotifications() {
         items = NotificationStore.shared.load().sorted { $0.date > $1.date }
-        niotificationTableView.reloadData()
+        if items.count == 0 {
+            DispatchQueue.main.async {
+                self.emptyImage.isHidden = false
+            }
+        } else {
+            DispatchQueue.main.async {
+                self.emptyImage.isHidden = true
+                self.niotificationTableView.reloadData()
+            }
+        }
+        
     }
 
     @objc private func newNotificationReceived() {

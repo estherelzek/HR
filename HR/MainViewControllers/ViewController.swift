@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var settingButton: UIButton!
     @IBOutlet weak var bottomBarView: UIStackView!
     @IBOutlet weak var notificationButton: UIButton!
+    @IBOutlet weak var titlesBarView: UIStackView!
     private var currentVC: UIViewController?
     
     override func viewDidLoad() {
@@ -51,6 +52,7 @@ class ViewController: UIViewController {
         settingButton.tintColor = .lightGray
         notificationButton.tintColor = .purplecolor
         bottomBarView.isHidden = false
+        titlesBarView.isHidden = false
         switchTo(viewController: notificationVC)
     }
     
@@ -79,6 +81,7 @@ class ViewController: UIViewController {
             print("companyId is empty , so we go to scan view controller")
             let checkVC = ScanAndInfoViewController(nibName: "ScanAndInfoViewController", bundle: nil)
             bottomBarView.isHidden = true
+            titlesBarView.isHidden = true
             switchTo(viewController: checkVC)
            return
         }
@@ -87,24 +90,29 @@ class ViewController: UIViewController {
         if token.isEmpty  {
             let loginVC = LogInViewController(nibName: "LogInViewController", bundle: nil)
             bottomBarView.isHidden = true
+            titlesBarView.isHidden = true
             switchTo(viewController: loginVC)
         } else {
             if dontShowAgain {
                 let checkVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
                 bottomBarView.isHidden = false
+                titlesBarView.isHidden = false
                 switchTo(viewController: checkVC)
             } else {
                 if protectionMethod == "pin" {
                     let pinVC = PinCodeViewController(nibName: "PinCodeViewController", bundle: nil)
                     bottomBarView.isHidden = true
+                    titlesBarView.isHidden = true
                     switchTo(viewController: pinVC)
                 }else if protectionMethod == "fingerprint" {
                     let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
                     bottomBarView.isHidden = true
+                    titlesBarView.isHidden = true
                     switchTo(viewController: fingerprintVC)
                 } else {
                     let checkVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
                     bottomBarView.isHidden = false
+                    titlesBarView.isHidden = false
                     switchTo(viewController: checkVC)
                 }
             }
@@ -114,6 +122,7 @@ class ViewController: UIViewController {
     @objc func goToLogIn() {
         let loginVC = LogInViewController(nibName: "LogInViewController", bundle: nil)
         bottomBarView.isHidden = true
+        titlesBarView.isHidden = true
         switchTo(viewController: loginVC)
     }
     

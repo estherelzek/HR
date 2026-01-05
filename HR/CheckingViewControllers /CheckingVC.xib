@@ -88,7 +88,7 @@
                 <constraint firstItem="pdY-sb-dhw" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="wj8-uc-Irc"/>
                 <constraint firstItem="8Ay-am-dPQ" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="y3A-kj-5MZ"/>
             </constraints>
-            <point key="canvasLocation" x="-376.3358778625954" y="-2.1126760563380285"/>
+            <point key="canvasLocation" x="-45" y="8"/>
         </view>
     </objects>
     <resources>

@@ -13,6 +13,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="NotificationViewController" customModule="HR" customModuleProvider="target">
             <connections>
                 <outlet property="TitLeLabel" destination="43l-s9-p5P" id="qsH-4p-b2a"/>
+                <outlet property="emptyImage" destination="Rs8-57-W1l" id="gjp-mV-QyZ"/>
                 <outlet property="niotificationTableView" destination="iXi-fX-RDD" id="uJ9-5J-JYo"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -51,23 +52,31 @@
                         </label>
                     </subviews>
                 </stackView>
+                <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="emptyNotification" translatesAutoresizingMaskIntoConstraints="NO" id="Rs8-57-W1l">
+                    <rect key="frame" x="52" y="310.66666666666669" width="289" height="341.00000000000006"/>
+                </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="99t-vL-pqx" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="4" id="25L-6e-p0a"/>
+                <constraint firstItem="Rs8-57-W1l" firstAttribute="height" secondItem="iXi-fX-RDD" secondAttribute="height" multiplier="0.5" id="299-Gn-M2G"/>
                 <constraint firstItem="iXi-fX-RDD" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="8vO-nr-EAr"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="99t-vL-pqx" secondAttribute="trailing" constant="18" id="Ryu-5x-gNQ"/>
                 <constraint firstAttribute="bottom" secondItem="iXi-fX-RDD" secondAttribute="bottom" constant="30" id="a5U-0Q-Klb"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="iXi-fX-RDD" secondAttribute="trailing" constant="16" id="bi8-9z-SZB"/>
                 <constraint firstItem="iXi-fX-RDD" firstAttribute="top" secondItem="99t-vL-pqx" secondAttribute="bottom" constant="30" id="eVP-u1-zRY"/>
                 <constraint firstItem="99t-vL-pqx" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="60" id="iNs-WM-cCC"/>
+                <constraint firstItem="Rs8-57-W1l" firstAttribute="centerX" secondItem="iXi-fX-RDD" secondAttribute="centerX" id="qLg-zq-6de"/>
+                <constraint firstItem="Rs8-57-W1l" firstAttribute="centerY" secondItem="iXi-fX-RDD" secondAttribute="centerY" id="rWi-qo-mkj"/>
+                <constraint firstItem="Rs8-57-W1l" firstAttribute="width" secondItem="iXi-fX-RDD" secondAttribute="width" multiplier="0.8" id="sem-iQ-95o"/>
             </constraints>
             <point key="canvasLocation" x="113.74045801526717" y="150"/>
         </view>
     </objects>
     <resources>
         <image name="bell.badge.fill" catalog="system" width="115" height="128"/>
+        <image name="emptyNotification" width="255" height="194"/>
         <namedColor name="textFieldVorderColor">
             <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
