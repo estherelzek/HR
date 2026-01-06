@@ -49,6 +49,7 @@ class TimeOffRequestViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+      //  print("filteredLeaveTypes: \(filteredLeaveTypes)")
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
         tapGesture.cancelsTouchesInView = false
         ouSideView.addGestureRecognizer(tapGesture)
@@ -84,7 +85,7 @@ class TimeOffRequestViewController: UIViewController {
         if halfDayButton.isSelected {
             setUpHalfDayMode()
         } else {
-            setUpAnnualMode()
+            UnCLickHalfButton()
         }
     }
 
@@ -97,9 +98,9 @@ class TimeOffRequestViewController: UIViewController {
             setUpCustomHoursMode()
         } else {
             if halfDayButton .isHidden {
-                setUpAnnualMode(hideHalfButton: true)
+                UnCLickHalfButton(hideHalfButton: true)
             }else  {
-                setUpAnnualMode(hideHalfButton: false)
+                UnCLickHalfButton(hideHalfButton: false)
             }
         }
     }
@@ -233,24 +234,13 @@ class TimeOffRequestViewController: UIViewController {
         }
     }
 
-    func setUpAnnualMode(hideHalfButton: Bool = false) {
+    func UnCLickHalfButton(hideHalfButton: Bool = false) {
         clockStackView.isHidden = true
         startDateCalender.isHidden = false
         endDateCalender.isHidden = false
         selectLeaveTypeTextField.isHidden = false
         MorningOrNightTextField.isHidden = true
-        customHoursButton.isHidden = false
         halfDayButton.isHidden = hideHalfButton
-    }
-    
-    func launchMode() {
-        clockStackView.isHidden = true
-        startDateCalender.isHidden = false
-        endDateCalender.isHidden = false
-        selectLeaveTypeTextField.isHidden = false
-        MorningOrNightTextField.isHidden = true
-        customHoursButton.isHidden = true
-       halfDayButton.isHidden = false
     }
     
     func setUpHalfDayMode() {
@@ -265,15 +255,16 @@ class TimeOffRequestViewController: UIViewController {
         MorningOrNightTextField.isHidden = false
     }
     
-    func setUpOtherMode(hideHalfDay: Bool = false) {
+    func launchMode() {
+        clockStackView.isHidden = true
         startDateCalender.isHidden = false
         endDateCalender.isHidden = false
         selectLeaveTypeTextField.isHidden = false
         MorningOrNightTextField.isHidden = true
-        customHoursButton.isHidden = false
-        halfDayButton.isHidden = hideHalfDay
+        customHoursButton.isHidden = true
+       halfDayButton.isHidden = false
     }
-    
+  
    func setUpCustomHoursMode() {
        clockStackView.isHidden = false
        endDateCalender.isHidden = true
@@ -282,6 +273,57 @@ class TimeOffRequestViewController: UIViewController {
        customHoursButton.setImage(normalImage, for: .normal)
        customHoursButton.setImage(selectedImage, for: .selected)
        customHoursButton.backgroundColor = .clear
+    }
+    
+    func handleHalfDayMode() {
+        // Day To & from
+        //half button
+        clockStackView.isHidden = true
+        startDateCalender.isHidden = false
+        endDateCalender.isHidden = false
+        selectLeaveTypeTextField.isHidden = false
+        MorningOrNightTextField.isHidden = true
+        customHoursButton.isHidden = true
+        halfDayButton.isHidden = false
+    }
+    
+    func handleDayMode () {
+        // what i need to show when i select type its unit day
+        // show start & end Date
+        clockStackView.isHidden = true
+        startDateCalender.isHidden = false
+        endDateCalender.isHidden = false
+        selectLeaveTypeTextField.isHidden = false
+        MorningOrNightTextField.isHidden = true
+        customHoursButton.isHidden = true
+        halfDayButton.isHidden = true
+    }
+    func handleHoursMode() {
+        // what i need to show when i select type its unit hours
+        // half day
+        // show Custom hour button
+        // start date calender
+        halfDayButton.isHidden = false
+        customHoursButton.isHidden = false
+        startDateCalender.isHidden = false
+        selectLeaveTypeTextField.isHidden = false
+        
+        clockStackView.isHidden = true
+        endDateCalender.isHidden = true
+        MorningOrNightTextField.isHidden = true
+    }
+    
+    func handleHoursOnlyMode() {
+        // start date calender
+        //from & to stack of clock view
+        clockStackView.isHidden = false
+        startDateCalender.isHidden = false
+        selectLeaveTypeTextField.isHidden = false
+        
+        endDateCalender.isHidden = true
+        MorningOrNightTextField.isHidden = true
+        halfDayButton.isHidden = true
+        customHoursButton.isHidden = true
     }
 }
 
@@ -399,16 +441,26 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView == leaveTypePicker {
             selectLeaveTypeTextField.text = filteredLeaveTypes[row].name
-            if filteredLeaveTypes[row].name != "annual leave" {
-                let showHalfOption = filteredLeaveTypes[row].requestUnit
-                if showHalfOption == "half_day" {
-                    setUpOtherMode(hideHalfDay: false)
-                } else {
-                    setUpOtherMode(hideHalfDay: true)
-                }
-            }
-            else {
-                setUpAnnualMode()
+          
+//            if filteredLeaveTypes[row].name != "annual leave" {
+//                let showHalfOption = filteredLeaveTypes[row].requestUnit
+//                if showHalfOption == "half_day" {
+//                    setUpOtherMode(hideHalfDay: false)
+//                } else {
+//                    setUpOtherMode(hideHalfDay: true)
+//                }
+//            }
+//            else {
+//                setUpAnnualMode()
+//            }
+            if filteredLeaveTypes[row].requestUnit == "half_day" {
+                handleHalfDayMode()
+            }else if filteredLeaveTypes[row].requestUnit == "day" {
+                handleDayMode()
+            } else if filteredLeaveTypes[row].requestUnit == "hour" {
+                handleHoursMode()
+            } else if filteredLeaveTypes[row].requestUnit == "hour_only" {
+                handleHoursOnlyMode()
             }
         } else {
             MorningOrNightTextField.text = morningNightOptions[row]
