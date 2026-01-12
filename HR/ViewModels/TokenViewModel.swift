@@ -21,7 +21,7 @@ class SendMobileToken {
         let endpoint = API.sendMobileToken(
             employeeToken: empToken,
             mobileToken: deviceToken,
-            mobile_typ: "ios"
+            mobile_type: "ios"
         )
 
         // 3️⃣ Make request (decode into MobileTokenResponse)

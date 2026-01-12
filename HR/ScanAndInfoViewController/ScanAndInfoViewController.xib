@@ -26,7 +26,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="w09-mn-u6J">
-                    <rect key="frame" x="16" y="388.5" width="288" height="85.5"/>
+                    <rect key="frame" x="16" y="338.5" width="288" height="85.5"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Your Company Information" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eOs-tt-FSu">
                             <rect key="frame" x="0.0" y="0.0" width="288" height="43"/>
@@ -81,7 +81,7 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cGz-GI-XNF">
-                    <rect key="frame" x="80" y="274" width="160" height="82"/>
+                    <rect key="frame" x="80" y="258" width="160" height="72.5"/>
                     <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="36"/>
                     <color key="textColor" name="purplecolor"/>
                     <nil key="highlightedColor"/>
@@ -118,10 +118,10 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="472-Qc-zLu" secondAttribute="trailing" constant="80" id="U3m-ub-Ncm"/>
                 <constraint firstItem="obm-5H-PTP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="URF-I3-mYd"/>
                 <constraint firstItem="obm-5H-PTP" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="dcM-mX-Ofn"/>
-                <constraint firstItem="cGz-GI-XNF" firstAttribute="top" secondItem="obm-5H-PTP" secondAttribute="bottom" constant="24" id="ep8-NM-j0g"/>
+                <constraint firstItem="cGz-GI-XNF" firstAttribute="top" secondItem="obm-5H-PTP" secondAttribute="bottom" constant="8" id="ep8-NM-j0g"/>
                 <constraint firstItem="cGz-GI-XNF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="80" id="fN9-LB-Vi0"/>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="top" secondItem="w09-mn-u6J" secondAttribute="bottom" constant="30" id="fRk-Ch-mE4"/>
-                <constraint firstItem="w09-mn-u6J" firstAttribute="top" secondItem="cGz-GI-XNF" secondAttribute="bottom" constant="32.5" id="hem-dV-TcX"/>
+                <constraint firstItem="472-Qc-zLu" firstAttribute="top" secondItem="w09-mn-u6J" secondAttribute="bottom" constant="80" id="fRk-Ch-mE4"/>
+                <constraint firstItem="w09-mn-u6J" firstAttribute="top" secondItem="cGz-GI-XNF" secondAttribute="bottom" constant="8" id="hem-dV-TcX"/>
                 <constraint firstItem="obm-5H-PTP" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.37" id="iis-jF-hNW"/>
                 <constraint firstItem="w09-mn-u6J" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="it2-Ag-SqI"/>
                 <constraint firstItem="472-Qc-zLu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.06" id="vA7-6x-vo3"/>

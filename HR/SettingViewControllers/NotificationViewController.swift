@@ -47,6 +47,7 @@ class NotificationViewController: UIViewController {
 
     private func loadNotifications() {
         items = NotificationStore.shared.load().sorted { $0.date > $1.date }
+        print("items: \(items.count)")
         if items.count == 0 {
             DispatchQueue.main.async {
                 self.emptyImage.isHidden = false

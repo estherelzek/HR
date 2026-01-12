@@ -22,12 +22,17 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     override func viewDidLoad() {
         super.viewDidLoad()
         setUpTexts()
-        
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+          tapGesture.cancelsTouchesInView = false  // allows button taps to still work
+          view.addGestureRecognizer(tapGesture)
         companyInformationTextField.text = UserDefaults.standard.string(forKey: "encryptedText")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         NotificationCenter.default.addObserver(self,selector: #selector(companyFileImported),name: NSNotification.Name("CompanyFileImported"),object: nil)
          }
     
+    @objc func dismissKeyboard() {
+        view.endEditing(true)
+    }
          @objc private func companyFileImported() {
              if let text = UserDefaults.standard.string(forKey: "encryptedText") {
                  companyInformationTextField.text = text
@@ -92,7 +97,36 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
             alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
             self.present(alert, animated: true, completion: nil)
         } else  {
-            goToLogInViewController()
+            do {
+                let encryptedText = companyInformationTextField.text
+
+                let middleware = try Middleware.initialize(encryptedText ?? "")
+
+                let defaults = UserDefaults.standard
+                defaults.set(encryptedText, forKey: "encryptedText")
+                defaults.set(middleware.companyId, forKey: "companyIdKey")
+                defaults.set(middleware.apiKey, forKey: "apiKeyKey")
+                defaults.set(middleware.baseUrl, forKey: "baseURL")
+
+                // 🔥 SET API BASE URL FROM ENCRYPTED FILE
+                API.updateDefaultBaseURL(middleware.baseUrl)
+
+                print("✅ Imported CompanyAccess.ihkey successfully")
+                print("🔑 API Key: \(middleware.apiKey)")
+                print("🏠 Base URL: \(middleware.baseUrl)")
+                print("🗯️ Company ID: \(middleware.companyId)")
+
+                DispatchQueue.main.async {
+                    NotificationCenter.default.post(
+                        name: Notification.Name("CompanyFileImported"),
+                        object: nil
+                    )
+                }
+                goToLogInViewController()
+            } catch {
+                print("❌ Failed to import or decrypt file:", error)
+            }
+           
         }
     }
 

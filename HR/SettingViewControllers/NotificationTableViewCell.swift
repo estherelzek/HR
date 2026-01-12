@@ -22,9 +22,22 @@ class NotificationTableViewCell: UITableViewCell {
     func configure(with item: NotificationItem) {
         TitLeLabel.text = item.title
         descreptionLable.text = item.description
-        dateLabel.text = item.date
-        
-//        let imageName = item.isChecked ? "checkmark.circle.fill" : "circle"
-//        checkButton.setImage(UIImage(systemName: imageName), for: .normal)
+        dateLabel.text = formatDate(item.date)
     }
+
+    private func formatDate(_ dateString: String) -> String {
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateFormat = "yyyy-MM-dd" // only date
+
+        if let date = inputFormatter.date(from: dateString) {
+            return outputFormatter.string(from: date)
+        } else {
+            return dateString // fallback if parsing fails
+        }
+    }
+
 }

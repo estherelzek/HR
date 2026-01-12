@@ -102,6 +102,7 @@ final class LoginViewModel {
 
                     // Send FCM token if available
                     if let fcmToken = UserDefaults.standard.mobileToken {
+                        print("📱 FCM Token:\(fcmToken)")
                         SendMobileToken().sendDeviceTokenToServer(fcmToken)
                     }
 

@@ -7,6 +7,10 @@
 
 import UIKit
 
+extension Notification.Name {
+    static let openNotificationsScreen = Notification.Name("openNotificationsScreen")
+}
+
 extension UIColor {
     static func fromHex(_ hex: String) -> UIColor {
         var hexFormatted = hex.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()

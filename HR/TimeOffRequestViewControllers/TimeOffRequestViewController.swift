@@ -81,6 +81,7 @@ class TimeOffRequestViewController: UIViewController {
         halfDayButton.isSelected.toggle()
         if halfDayButton.isSelected {
             customHoursButton.isSelected = false
+           
         }
         if halfDayButton.isSelected {
             setUpHalfDayMode()
@@ -136,8 +137,8 @@ class TimeOffRequestViewController: UIViewController {
         let requestDateFromPeriod = MorningOrNightTextField.text?.lowercased() == "morning" ? "am" : "pm"
         let isHalfDay = halfDayButton.isSelected
         let isCustomHours = customHoursButton.isSelected
-        let hourFrom = isCustomHours ? formatToAPITime(clockFrom.text) : nil
-        let hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
+        let hourFrom = isCustomHours ? formatToAPITime(clockFrom.text) : ""
+        let hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : ""
         if endDateCalender.isHidden {
             requestDateTo = requestDateFrom
         }
@@ -253,6 +254,7 @@ class TimeOffRequestViewController: UIViewController {
         endDateCalender.isHidden = true
         selectLeaveTypeTextField.isHidden = false
         MorningOrNightTextField.isHidden = false
+        clockStackView.isHidden = true
     }
     
     func launchMode() {

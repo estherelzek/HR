@@ -24,6 +24,12 @@ class ViewController: UIViewController {
         startApp()
         setUpTextFields()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
+        NotificationCenter.default.addObserver(
+               self,
+               selector: #selector(openNotificationsFromPush),
+               name: .openNotificationsScreen,
+               object: nil
+           )
     }
     
     // MARK: - Bottom Bar Button Actions
@@ -149,4 +155,30 @@ class ViewController: UIViewController {
     @objc private func languageChanged() {
         setUpTextFields()
     }
+    
+    @objc private func openNotificationsFromPush(_ notification: Notification) {
+
+        // Ensure user is logged in & allowed to see notifications
+        let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
+        guard !token.isEmpty else {
+            goToLogIn()
+            return
+        }
+
+        let notificationVC = NotificationViewController(
+            nibName: "NotificationViewController",
+            bundle: nil
+        )
+
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .lightGray
+        settingButton.tintColor = .lightGray
+        notificationButton.tintColor = .purplecolor
+
+        bottomBarView.isHidden = false
+        titlesBarView.isHidden = false
+
+        switchTo(viewController: notificationVC)
+    }
+
 }

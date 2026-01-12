@@ -43,9 +43,14 @@ import UIKit
                 name: .networkReachable,
                 object: nil
             )
-            if let notificationResponse = connectionOptions.notificationResponse {
-                handleNotificationTap(notificationResponse)
+            if let response = connectionOptions.notificationResponse {
+                NotificationCenter.default.post(
+                    name: .openNotificationsScreen,
+                    object: nil,
+                    userInfo: response.notification.request.content.userInfo
+                )
             }
+
 //            do {
 //                let encryptedText = "SC8AOBx7JpINf6WpTJ8SvJFkugw+7IYRHzpd5CEDYAYvwuEi3tcQO/hslgmsHT+lHyEKOWJvqnm9PT1TPkoXD317b5+Hp5YUuUto3BNMgzxVPRKna41rQaGExYaRfnao"
 //                let middleware = try Middleware.initialize(encryptedText)

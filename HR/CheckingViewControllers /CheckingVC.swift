@@ -148,7 +148,6 @@ class CheckingVC: UIViewController {
                         self.lastCheckOut = response.result?.lastCheckOut ?? response.result?.checkOutTime
                         self.workedHours = response.result?.workedHours
                       
-                        
                     } else if response.result?.status == "error",
                               response.result?.errorCode == "INVALID_TOKEN" || response.result?.errorCode == "TOKEN_EXPIRED" {
                         let tokenVM = GenerateTokenViewModel()
