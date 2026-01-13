@@ -72,6 +72,12 @@ class ViewController: UIViewController {
     }
     
     func startApp() {
+        // 🔴 IMPORTANT: do not override notification navigation
+           if UserDefaults.standard.bool(forKey: "openedFromNotification") {
+               print("🚀 Opened from notification → skip startApp navigation")
+               return
+           }
+
         let companyId = UserDefaults.standard.string(forKey: "companyIdKey") ?? ""
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
         let dontShowAgain = UserDefaults.standard.bool(forKey: "dontShowProtectionScreen") // store as Bool, not "true"/"false" string
@@ -158,7 +164,8 @@ class ViewController: UIViewController {
     
     @objc private func openNotificationsFromPush(_ notification: Notification) {
 
-        // Ensure user is logged in & allowed to see notifications
+        UserDefaults.standard.set(false, forKey: "openedFromNotification")
+
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
         guard !token.isEmpty else {
             goToLogIn()

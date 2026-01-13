@@ -73,7 +73,7 @@
                 <outlet property="dateLabel" destination="f07-zV-Jcy" id="PQr-zm-2F4"/>
                 <outlet property="descreptionLable" destination="H4Z-T9-OyM" id="Dpe-BU-onI"/>
             </connections>
-            <point key="canvasLocation" x="-940" y="-221"/>
+            <point key="canvasLocation" x="-1418" y="-223"/>
         </tableViewCell>
     </objects>
     <resources>

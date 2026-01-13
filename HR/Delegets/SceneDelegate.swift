@@ -44,6 +44,9 @@ import UIKit
                 object: nil
             )
             if let response = connectionOptions.notificationResponse {
+                UserDefaults.standard.set(true, forKey: "openedFromNotification")
+
+             
                 NotificationCenter.default.post(
                     name: .openNotificationsScreen,
                     object: nil,

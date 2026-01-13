@@ -112,37 +112,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let body = content.body.isEmpty ? (userInfo["body"] as? String ?? "Message") : content.body
         
         print("🟢 NOTIFICATION RECEIVED (FOREGROUND):", userInfo)
-        
-        // Save notification locally
         saveNotification(title: title, body: body)
-        
-        // Show banner, sound, badge
         completionHandler([.banner, .sound, .badge])
     }
-
-//    func userNotificationCenter(
-//        _ center: UNUserNotificationCenter,
-//        didReceive response: UNNotificationResponse,
-//        withCompletionHandler completionHandler: @escaping () -> Void
-//    ) {
-//        let content = response.notification.request.content
-//        let userInfo = content.userInfo
-//
-//        let title = content.title.isEmpty
-//            ? (userInfo["title"] as? String ?? "New")
-//            : content.title
-//
-//        let body = content.body.isEmpty
-//            ? (userInfo["body"] as? String ?? "Message")
-//            : content.body
-//
-//        print("📨 Notification tapped:", userInfo)
-//
-//        // ✅ SAVE HERE (this works even if app was killed)
-//        saveNotification(title: title, body: body)
-//
-//        completionHandler()
-//    }
 
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
@@ -155,11 +127,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             title: response.notification.request.content.title,
             body: response.notification.request.content.body
         )
+        
+        UserDefaults.standard.set(true, forKey: "openedFromNotification")
 
         NotificationCenter.default.post(
             name: .openNotificationsScreen,
             object: nil,
-            userInfo: userInfo
+            userInfo: response.notification.request.content.userInfo
         )
         completionHandler()
     }
