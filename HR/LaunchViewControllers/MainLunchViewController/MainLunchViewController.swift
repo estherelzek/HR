@@ -80,7 +80,17 @@ class MainLunchViewController: UIViewController {
     }
 
     @IBAction func CategoriesButtonTapped(_ sender: Any) {
-        
+        let alertVC = CategoriesAlertViewController(
+            nibName: "CategoriesAlertViewController",
+            bundle: nil
+        )
+
+        alertVC.modalPresentationStyle = .overCurrentContext
+        alertVC.modalTransitionStyle = .crossDissolve
+
+     
+
+        present(alertVC, animated: false)
     }
     
     @IBAction func userOrder(_ sender: Any) {

@@ -21,7 +21,7 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="seS-8O-ga6">
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="seS-8O-ga6" customClass="InspectableView" customModule="HR" customModuleProvider="target">
                     <rect key="frame" x="76.666666666666686" y="335" width="240" height="232"/>
                     <subviews>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="ZP3-Kr-Sh7">
@@ -36,6 +36,11 @@
                         <constraint firstItem="ZP3-Kr-Sh7" firstAttribute="leading" secondItem="seS-8O-ga6" secondAttribute="leading" id="mt2-Xz-6K7"/>
                         <constraint firstAttribute="bottom" secondItem="ZP3-Kr-Sh7" secondAttribute="bottom" id="vqD-xG-Db3"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="5"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
@@ -46,7 +51,7 @@
                 <constraint firstItem="seS-8O-ga6" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="s9d-z3-2is"/>
                 <constraint firstItem="seS-8O-ga6" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.610687" id="sd3-rQ-iDf"/>
             </constraints>
-            <point key="canvasLocation" x="139.69465648854961" y="150"/>
+            <point key="canvasLocation" x="-558" y="177"/>
         </view>
     </objects>
     <resources>
