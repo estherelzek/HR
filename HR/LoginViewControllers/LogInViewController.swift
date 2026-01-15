@@ -19,8 +19,8 @@ class LogInViewController: UIViewController {
     @IBOutlet weak var loader: UIActivityIndicatorView!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var passwordLabel: UILabel!
-    
     @IBOutlet var uiview: UIView!
+    
     private let viewModel = LoginViewModel()   // ✅ Add ViewModel
     
     override func viewDidLoad() {

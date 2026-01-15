@@ -25,6 +25,25 @@ extension UIColor {
         return UIColor(red: r, green: g, blue: b, alpha: 1.0)
     }
 }
+extension UICollectionView {
+
+    @IBInspectable
+    var borderWidth: CGFloat {
+        get { layer.borderWidth }
+        set { layer.borderWidth = newValue }
+    }
+
+    @IBInspectable
+    var borderColor: UIColor? {
+        get {
+            guard let color = layer.borderColor else { return nil }
+            return UIColor(cgColor: color)
+        }
+        set {
+            layer.borderColor = newValue?.cgColor
+        }
+    }
+}
 
 extension String {
     func formattedHour(using leaveDay: String) -> String {
@@ -424,6 +443,21 @@ class InspectableStackView: UIStackView {
         }
     }
 }
+@IBDesignable
+class InspectableCollectionView: UICollectionView {
+    
+    @IBInspectable var cornerRadius: CGFloat = 0 {
+        didSet {
+            layer.cornerRadius = cornerRadius
+            layer.masksToBounds = true
+        }
+    }
+    
+    
+    @IBInspectable override var borderColor: UIColor? {
+        didSet { layer.borderColor = borderColor?.cgColor }
+    }
+}
 
 extension UIViewController {
     func showToast(message: String, duration: TimeInterval = 5.0) {
@@ -653,6 +687,8 @@ extension UserDefaults {
         static let companyLatitude = "companyLatitude"
         static let companyLongitude = "companyLongitude"
         static let allowedDistance = "allowedDistance"
+        static let employeeName = "employeeName"
+        static let employeeEmail = "employeeEmail"
     }
     
     var dontShowProtectionScreen: Bool {
@@ -665,10 +701,21 @@ extension UserDefaults {
         set { set(newValue, forKey: Keys.employeeToken) }
     }
     
+    var employeeName: String? {
+        get { string(forKey: Keys.employeeName) }
+        set { set(newValue, forKey: Keys.employeeName) }
+    }
+    
+    var employeeEmail: String? {
+        get { string(forKey: Keys.employeeEmail) }
+        set { set(newValue, forKey: Keys.employeeEmail) }
+    }
+    
     var baseURL: String? {
         get { string(forKey: Keys.baseURL) }
         set { setValue(newValue, forKey: Keys.baseURL) }
     }
+    
     var defaultURL: String? {
         get { string(forKey: Keys.defaultURL) }
         set { setValue(newValue, forKey: Keys.defaultURL) }

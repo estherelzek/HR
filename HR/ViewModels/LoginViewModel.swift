@@ -64,6 +64,14 @@ final class LoginViewModel {
                     if let token = detail.employeeData?.employeeData.employeeToken {
                         UserDefaults.standard.employeeToken = token
                     }
+                    // 1️⃣ Save employee token
+                    if let name = detail.employeeData?.employeeData.name {
+                        UserDefaults.standard.employeeName = name
+                    }
+                    // 1️⃣ Save employee token
+                    if let email = detail.employeeData?.employeeData.email {
+                        UserDefaults.standard.employeeEmail = email
+                    }
 
                     // 2️⃣ Save company base URL
                     if let url = res.companyURL {

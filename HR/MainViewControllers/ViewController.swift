@@ -63,7 +63,15 @@ class ViewController: UIViewController {
     }
     
     @IBAction func settingButtonTapped(_ sender: Any) {
-        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
+//        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
+//        homeButton.tintColor = .lightGray
+//        timeOffButton.tintColor = .lightGray
+//        notificationButton.tintColor = .lightGray
+//        settingButton.tintColor = .purplecolor
+//        switchTo(viewController: settingVC)
+        
+        //
+        let settingVC = MainLunchViewController(nibName: "MainLunchViewController", bundle: nil)
         homeButton.tintColor = .lightGray
         timeOffButton.tintColor = .lightGray
         notificationButton.tintColor = .lightGray
@@ -181,10 +189,8 @@ class ViewController: UIViewController {
         timeOffButton.tintColor = .lightGray
         settingButton.tintColor = .lightGray
         notificationButton.tintColor = .purplecolor
-
         bottomBarView.isHidden = false
         titlesBarView.isHidden = false
-
         switchTo(viewController: notificationVC)
     }
 
