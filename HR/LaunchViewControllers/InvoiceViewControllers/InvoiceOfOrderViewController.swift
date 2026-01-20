@@ -12,13 +12,14 @@ struct Order: Identifiable {
     var quantity: Int
     let name: String
     let price: Double
+   // let note: String?
 }
 
 class InvoiceOfOrderViewController: UIViewController {
     
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var nameLabel: Inspectablelabel!
-    @IBOutlet weak var emailLabel: Inspectablelabel!
+  //  @IBOutlet weak var emailLabel: Inspectablelabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var totalLabel: Inspectablelabel!
     @IBOutlet weak var totalPriceLabel: Inspectablelabel!
@@ -49,7 +50,7 @@ class InvoiceOfOrderViewController: UIViewController {
         var email = UserDefaults.standard.employeeEmail ?? "Email"
         
         nameLabel.text = name
-        emailLabel.text = email
+      //  emailLabel.text = email
     }
     private func setupTableView() {
         tableView.delegate = self

@@ -44,6 +44,7 @@ class MainLunchCollectionViewCell: UICollectionViewCell {
     private func updateFavIcon(isFavorite: Bool) {
         let imageName = isFavorite ? "star" : "star.fill"
         favButton.setImage(UIImage(systemName: imageName), for: .normal)
+        
     }
 
     @IBAction func favButtonTapped(_ sender: UIButton) {

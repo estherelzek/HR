@@ -14,7 +14,9 @@ class OrderAlertViewController: UIViewController {
     @IBOutlet weak var itemCounter: UILabel!
     @IBOutlet weak var noteTextField: InspectableTextField!
     @IBOutlet weak var alertView: InspectableView!
-    var foodItem: FoodItem?   // ✅ DATA ONLY
+    var foodItem: FoodItem?
+    private var quantity: Int = 1
+      private var unitPrice: Double = 0   // price of ONE item// ✅ DATA ONLY
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -52,10 +54,48 @@ class OrderAlertViewController: UIViewController {
             self.dismiss(animated: false)
         }
     }
+    
+    @IBAction func increaseButtonTapped(_ sender: Any) {
+        quantity += 1
+        updateTotal()
+    }
+
+    @IBAction func decreaseButtonTapped(_ sender: Any) {
+        guard quantity > 1 else { return }
+        quantity -= 1
+        updateTotal()
+    }
+
+    
+    @IBAction func addToOrderButton(_ sender: Any) {
+//        guard let item = foodItem else { return }
+//
+//        let order = Order(
+//            id: UUID(),
+//            quantity: quantity, name: item.name,
+//            price: unitPrice,
+//            note: noteTextField.text
+//        )
+//
+//        // send order to cart / delegate / notification
+//        animateOut {
+//            self.dismiss(animated: false)
+//        }
+    }
+
     private func populateData() {
-           guard let item = foodItem else { return }
-           itemName.text = item.name
-           ItemPrice.text = "50 EGP"
-           itemCounter.text = "1"
-       }
+        guard let item = foodItem else { return }
+
+        itemName.text = item.name
+        unitPrice = Double(item.price) ?? 0.0       // ✅ take real price
+        quantity = 1
+
+        updateTotal()
+    }
+    private func updateTotal() {
+        let total = Double(quantity) * unitPrice
+        itemCounter.text = "\(quantity)"
+       // ItemPrice.text = "\(total) EGP"
+    }
+
 }

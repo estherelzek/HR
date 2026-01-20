@@ -47,7 +47,7 @@
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yGm-hJ-BId">
                         <rect key="frame" x="326" y="7" width="52" height="21"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="tintColor" red="0.71764705882352942" green="0.96862745098039216" blue="0.24313725490196078" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="star" catalog="system"/>
                         <connections>
@@ -57,7 +57,7 @@
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
-            <color key="backgroundColor" red="0.046445312499999947" green="0.046445312499999947" blue="0.046445312499999947" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.047058823529411764" green="0.047058823529411764" blue="0.047058823529411764" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="yGm-hJ-BId" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" multiplier="0.134367" id="5LX-Rw-1Yp"/>
                 <constraint firstItem="0sz-Ib-no8" firstAttribute="leading" secondItem="3Wn-lM-032" secondAttribute="trailing" constant="14" id="79r-A5-tTb"/>
@@ -84,7 +84,7 @@
                 <outlet property="itemName" destination="ZAD-PF-deH" id="S9n-ch-5tq"/>
                 <outlet property="numberLabel" destination="5iN-Y2-sDR" id="YJQ-h1-6cp"/>
             </connections>
-            <point key="canvasLocation" x="-432.82442748091603" y="-82.74647887323944"/>
+            <point key="canvasLocation" x="-460" y="-19"/>
         </collectionViewCell>
     </objects>
     <resources>

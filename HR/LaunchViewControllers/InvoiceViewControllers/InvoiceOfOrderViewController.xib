@@ -12,7 +12,6 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="InvoiceOfOrderViewController" customModule="HR" customModuleProvider="target">
             <connections>
                 <outlet property="alertView" destination="iLT-tR-JRA" id="vGR-gN-unK"/>
-                <outlet property="emailLabel" destination="7t9-CP-DKu" id="w59-bs-M31"/>
                 <outlet property="nameLabel" destination="IDJ-Tm-IbU" id="ut4-FE-9g6"/>
                 <outlet property="tableView" destination="JSg-qy-eSq" id="OJq-1W-Yyo"/>
                 <outlet property="totalLabel" destination="Zc7-YY-dK2" id="5Xb-6M-o5H"/>
@@ -27,10 +26,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iLT-tR-JRA" customClass="InspectableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="13.666666666666657" y="152.66666666666669" width="365.66666666666674" height="596.66666666666652"/>
+                    <rect key="frame" x="13.666666666666657" y="170" width="365.66666666666674" height="562"/>
                     <subviews>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="JSg-qy-eSq" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="4" y="157.00000000000003" width="357.66666666666669" height="321.66666666666674"/>
+                            <rect key="frame" x="4" y="157" width="357.66666666666669" height="292"/>
                             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <color key="tintColor" red="0.1529411765" green="0.1529411765" blue="0.1529411765" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -41,7 +40,7 @@
                             </userDefinedRuntimeAttributes>
                         </tableView>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="8PG-BO-glN">
-                            <rect key="frame" x="8" y="498.66666666666674" width="349.66666666666669" height="30"/>
+                            <rect key="frame" x="8" y="469" width="349.66666666666669" height="30"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Total : " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zc7-YY-dK2" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="171" height="30"/>
@@ -85,11 +84,11 @@
                             </constraints>
                         </stackView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="l0q-d2-RIr" customClass="InspectableButton" customModule="HR">
-                            <rect key="frame" x="106.33333333333331" y="548.66666666666674" width="153" height="40"/>
+                            <rect key="frame" x="106.33333333333331" y="519" width="153" height="35"/>
                             <color key="backgroundColor" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="width" constant="153" id="bsM-ky-hDE"/>
-                                <constraint firstAttribute="height" constant="40" id="yyB-2B-KSz"/>
+                                <constraint firstAttribute="height" constant="35" id="yyB-2B-KSz"/>
                             </constraints>
                             <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -114,29 +113,11 @@
                             </constraints>
                         </imageView>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Zza-Wr-AH6">
-                            <rect key="frame" x="162" y="66" width="199.66666666666663" height="60"/>
+                            <rect key="frame" x="162" y="66" width="199.66666666666663" height="30"/>
                             <subviews>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IDJ-Tm-IbU" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="199.66666666666666" height="26"/>
-                                    <color key="backgroundColor" red="0.13333333333333333" green="0.13333333333333333" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <nil key="highlightedColor"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                            <real key="value" value="5"/>
-                                        </userDefinedRuntimeAttribute>
-                                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                            <color key="value" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        </userDefinedRuntimeAttribute>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                            <real key="value" value="1"/>
-                                        </userDefinedRuntimeAttribute>
-                                    </userDefinedRuntimeAttributes>
-                                </label>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Email" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7t9-CP-DKu" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="34" width="199.66666666666666" height="26"/>
-                                    <color key="backgroundColor" red="0.13333333333333333" green="0.13333333333333333" blue="0.13333333333333333" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="199.66666666666666" height="30"/>
+                                    <color key="backgroundColor" red="0.047058823529411764" green="0.047058823529411764" blue="0.047058823529411764" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <nil key="highlightedColor"/>
@@ -154,7 +135,7 @@
                                 </label>
                             </subviews>
                             <constraints>
-                                <constraint firstAttribute="height" constant="60" id="8ql-4r-PiI"/>
+                                <constraint firstAttribute="height" constant="30" id="8ql-4r-PiI"/>
                             </constraints>
                         </stackView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vCU-3t-cD6">
@@ -171,7 +152,7 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" red="0.098039215686274508" green="0.094117647058823528" blue="0.12941176470588234" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.047058823529411764" green="0.047058823529411764" blue="0.047058823529411764" alpha="0.92616637323943662" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="JSg-qy-eSq" secondAttribute="trailing" constant="4" id="3pw-FW-xZv"/>
                         <constraint firstItem="Zza-Wr-AH6" firstAttribute="top" secondItem="iLT-tR-JRA" secondAttribute="top" constant="66" id="5ET-bz-7Az"/>
@@ -205,7 +186,7 @@
             <constraints>
                 <constraint firstItem="iLT-tR-JRA" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.93" id="IcP-vQ-gxc"/>
                 <constraint firstItem="iLT-tR-JRA" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="c0F-h6-xD1"/>
-                <constraint firstItem="iLT-tR-JRA" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.7" id="cEn-VO-2fA"/>
+                <constraint firstItem="iLT-tR-JRA" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.66" id="cEn-VO-2fA"/>
                 <constraint firstItem="iLT-tR-JRA" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="noM-f5-1sq"/>
             </constraints>
             <point key="canvasLocation" x="-895.41984732824426" y="115.49295774647888"/>

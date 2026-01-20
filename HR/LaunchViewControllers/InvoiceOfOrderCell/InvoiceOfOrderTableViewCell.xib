@@ -89,7 +89,7 @@
                         </subviews>
                     </stackView>
                 </subviews>
-                <color key="backgroundColor" red="0.098039215686274508" green="0.094117647058823528" blue="0.12941176470588234" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                <color key="backgroundColor" red="0.047058823529411764" green="0.047058823529411764" blue="0.047058823529411764" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="jXD-V3-xgp" secondAttribute="bottom" constant="8" id="9LN-Nl-Eb5"/>
                     <constraint firstItem="jXD-V3-xgp" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="4" id="VfC-nw-dZ8"/>

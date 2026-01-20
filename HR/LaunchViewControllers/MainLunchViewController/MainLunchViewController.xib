@@ -112,7 +112,7 @@
                     <rect key="frame" x="4" y="106" width="385" height="64"/>
                     <subviews>
                         <searchBar contentMode="redraw" barStyle="black" placeholder="Search your meal" translatesAutoresizingMaskIntoConstraints="NO" id="dGN-Wf-FlW">
-                            <rect key="frame" x="0.0" y="0.0" width="265.33333333333331" height="64"/>
+                            <rect key="frame" x="0.0" y="0.0" width="252.33333333333334" height="64"/>
                             <color key="backgroundColor" systemColor="tableCellBlueTextColor"/>
                             <color key="tintColor" systemColor="systemPurpleColor"/>
                             <color key="barTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -122,11 +122,11 @@
                             </connections>
                         </searchBar>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pM0-E7-qYZ">
-                            <rect key="frame" x="276.33333333333331" y="0.0" width="44" height="64"/>
+                            <rect key="frame" x="263.33333333333331" y="0.0" width="57" height="64"/>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain" image="fork.knife" catalog="system"/>
+                            <buttonConfiguration key="configuration" style="plain" image="takeoutbag.and.cup.and.straw.fill" catalog="system"/>
                             <connections>
                                 <action selector="CategoriesButtonTapped:" destination="-1" eventType="touchUpInside" id="zd7-yX-1ds"/>
                             </connections>
@@ -190,7 +190,7 @@
     <resources>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
         <image name="cart" catalog="system" width="128" height="102"/>
-        <image name="fork.knife" catalog="system" width="94" height="128"/>
+        <image name="takeoutbag.and.cup.and.straw.fill" catalog="system" width="128" height="114"/>
         <systemColor name="systemPurpleColor">
             <color red="0.68627450980000004" green="0.32156862749999998" blue="0.87058823529999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>

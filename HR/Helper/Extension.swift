@@ -353,50 +353,58 @@ class InspectableButton: UIButton {
 
 @IBDesignable
 class InspectableView: UIView {
-    
+
     @IBInspectable var cornerRadius: CGFloat = 0 {
         didSet {
             layer.cornerRadius = cornerRadius
-            layer.masksToBounds = true
+            updateMasksToBounds()
         }
     }
-    
+
     @IBInspectable var borderWidth: CGFloat = 0 {
         didSet {
             layer.borderWidth = borderWidth
         }
     }
-    
+
     @IBInspectable var borderColor: UIColor? {
         didSet {
             layer.borderColor = borderColor?.cgColor
         }
     }
-    
+
     @IBInspectable var shadowColor: UIColor? {
         didSet {
             layer.shadowColor = shadowColor?.cgColor
+            updateMasksToBounds()
         }
     }
-    
+
     @IBInspectable var shadowOpacity: Float = 0 {
         didSet {
             layer.shadowOpacity = shadowOpacity
+            updateMasksToBounds()
         }
     }
-    
+
     @IBInspectable var shadowOffset: CGSize = .zero {
         didSet {
             layer.shadowOffset = shadowOffset
         }
     }
-    
+
     @IBInspectable var shadowRadius: CGFloat = 0 {
         didSet {
             layer.shadowRadius = shadowRadius
+            updateMasksToBounds()
         }
     }
+
+    private func updateMasksToBounds() {
+        layer.masksToBounds = shadowOpacity == 0
+    }
 }
+
 @IBDesignable
 class InspectableStackView: UIStackView {
     
