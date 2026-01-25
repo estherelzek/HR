@@ -12,11 +12,14 @@ class OrderAlertViewController: UIViewController {
     @IBOutlet weak var itemName: UILabel!
     @IBOutlet weak var ItemPrice: UILabel!
     @IBOutlet weak var itemCounter: UILabel!
+    @IBOutlet weak var itemImage: UIImageView!
     @IBOutlet weak var noteTextField: InspectableTextField!
     @IBOutlet weak var alertView: InspectableView!
-    var foodItem: FoodItem?
+    
+    var foodItem: LunchProduct?
     private var quantity: Int = 1
-      private var unitPrice: Double = 0   // price of ONE item// ✅ DATA ONLY
+    private var unitPrice: Double = 0   // price of ONE item// ✅ DATA ONLY
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -27,6 +30,9 @@ class OrderAlertViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         alertView.layer.cornerRadius = 16
+        itemImage.layer.cornerRadius = 20
+        itemImage.clipsToBounds = true
+        itemImage.contentMode = .scaleAspectFill
     }
     
     private func animateIn() {
@@ -87,7 +93,22 @@ class OrderAlertViewController: UIViewController {
         guard let item = foodItem else { return }
 
         itemName.text = item.name
-        unitPrice = Double(item.price) ?? 0.0       // ✅ take real price
+        ItemPrice.text = "\(item.price) EGP"
+        if let base64 = item.image_base64 {
+            print("Base64 string exists, length: \(base64.count)") // Step 3
+            if let image = UIImage.fromBase64(base64) {
+                print("Successfully decoded Base64 to UIImage") // Step 4
+                itemImage.image = image
+            } else {
+                print("Failed to decode Base64 to UIImage") // Step 5
+                itemImage.image = UIImage(named: "burger")
+            }
+        } else {
+            print("No Base64 string found, using placeholder") // Step 6
+            itemImage.image = UIImage(named: "burger")
+        }
+        unitPrice = Double(item.price) ?? 0.0
+        // ✅ take real price
         quantity = 1
 
         updateTotal()

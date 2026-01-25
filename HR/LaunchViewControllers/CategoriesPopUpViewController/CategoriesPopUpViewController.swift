@@ -16,14 +16,9 @@ class CategoriesPopUpViewController: UIViewController {
 
     @IBOutlet weak var alertView: InspectableView!
     @IBOutlet weak var tableView: UITableView!
-    private let categories: [Category] = [
-        Category(name: "Burgers"),
-        Category(name: "Pizza"),
-        Category(name: "Drinks"),
-        Category(name: "Desserts"),
-        Category(name: "Sandwiches")
-    ]
 
+    var suppliers: [LunchSupplier] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -65,7 +60,7 @@ class CategoriesPopUpViewController: UIViewController {
 extension CategoriesPopUpViewController: UITableViewDataSource, UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return categories.count
+        return suppliers.count
     }
 
     func tableView(_ tableView: UITableView,
@@ -78,7 +73,7 @@ extension CategoriesPopUpViewController: UITableViewDataSource, UITableViewDeleg
             return UITableViewCell()
         }
 
-        let category = categories[indexPath.row]
+        let category = suppliers[indexPath.row]
         cell.categoryLabel.text = category.name
         cell.selectionStyle = .none
 

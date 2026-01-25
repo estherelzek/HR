@@ -31,7 +31,7 @@ class ViewController: UIViewController {
                name: .openNotificationsScreen,
                object: nil
            )
-        setupMoreMenu()
+     //   setupMoreMenu()
     }
     
     // MARK: - Bottom Bar Button Actions
@@ -65,12 +65,12 @@ class ViewController: UIViewController {
     }
     
     @IBAction func settingButtonTapped(_ sender: Any) {
-//        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
-//        homeButton.tintColor = .lightGray
-//        timeOffButton.tintColor = .lightGray
-//        notificationButton.tintColor = .lightGray
-//        settingButton.tintColor = .purplecolor
-//        switchTo(viewController: settingVC)
+        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .lightGray
+        notificationButton.tintColor = .lightGray
+        settingButton.tintColor = .purplecolor
+        switchTo(viewController: settingVC)
         
         //
 //        let settingVC = MainLunchViewController(nibName: "MainLunchViewController", bundle: nil)
@@ -80,7 +80,7 @@ class ViewController: UIViewController {
 //        settingButton.tintColor = .purplecolor
 //        switchTo(viewController: settingVC)
         //
-        showMoreMenu()
+     //   showMoreMenu()
     }
     
     func startApp() {
@@ -249,59 +249,59 @@ class ViewController: UIViewController {
 
         switchTo(viewController: lunchVC)
     }
-    private func showMoreMenu() {
-
-        // Prevent duplicates
-        if moreMenuView != nil {
-            hideMoreMenu()
-            return
-        }
-
-        let menuWidth: CGFloat = 160
-        let menuHeight: CGFloat = 100
-
-        let menuView = UIView()
-        menuView.backgroundColor = .white
-        menuView.layer.cornerRadius = 12
-        menuView.layer.shadowColor = UIColor.black.cgColor
-        menuView.layer.shadowOpacity = 0.15
-        menuView.layer.shadowRadius = 6
-        menuView.layer.shadowOffset = CGSize(width: 0, height: 4)
-
-        // Convert button frame to main view
-        let buttonFrame = settingButton.superview?.convert(settingButton.frame, to: view) ?? .zero
-
-        menuView.frame = CGRect(
-            x: buttonFrame.midX - menuWidth / 2,
-            y: buttonFrame.minY - menuHeight - 8,
-            width: menuWidth,
-            height: menuHeight
-        )
-
-        // Buttons
-        let settingsBtn = createMenuButton(title: "Settings", y: 0)
-        settingsBtn.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
-
-        let lunchBtn = createMenuButton(title: "Lunch", y: 50)
-        lunchBtn.addTarget(self, action: #selector(openLunch), for: .touchUpInside)
-
-        menuView.addSubview(settingsBtn)
-        menuView.addSubview(lunchBtn)
-
-        view.addSubview(menuView)
-        moreMenuView = menuView
-
-        // Animate
-        menuView.alpha = 0
-        menuView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-
-        UIView.animate(withDuration: 0.2) {
-            menuView.alpha = 1
-            menuView.transform = .identity
-        }
-
-        addDismissTap()
-    }
+//    private func showMoreMenu() {
+//
+//        // Prevent duplicates
+//        if moreMenuView != nil {
+//            hideMoreMenu()
+//            return
+//        }
+//
+//        let menuWidth: CGFloat = 160
+//        let menuHeight: CGFloat = 100
+//
+//        let menuView = UIView()
+//        menuView.backgroundColor = .white
+//        menuView.layer.cornerRadius = 12
+//        menuView.layer.shadowColor = UIColor.black.cgColor
+//        menuView.layer.shadowOpacity = 0.15
+//        menuView.layer.shadowRadius = 6
+//        menuView.layer.shadowOffset = CGSize(width: 0, height: 4)
+//
+//        // Convert button frame to main view
+//        let buttonFrame = settingButton.superview?.convert(settingButton.frame, to: view) ?? .zero
+//
+//        menuView.frame = CGRect(
+//            x: buttonFrame.midX - menuWidth / 2,
+//            y: buttonFrame.minY - menuHeight - 8,
+//            width: menuWidth,
+//            height: menuHeight
+//        )
+//
+//        // Buttons
+//        let settingsBtn = createMenuButton(title: "Settings", y: 0)
+//        settingsBtn.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
+//
+//        let lunchBtn = createMenuButton(title: "Lunch", y: 50)
+//        lunchBtn.addTarget(self, action: #selector(openLunch), for: .touchUpInside)
+//
+//        menuView.addSubview(settingsBtn)
+//        menuView.addSubview(lunchBtn)
+//
+//        view.addSubview(menuView)
+//        moreMenuView = menuView
+//
+//        // Animate
+//        menuView.alpha = 0
+//        menuView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+//
+//        UIView.animate(withDuration: 0.2) {
+//            menuView.alpha = 1
+//            menuView.transform = .identity
+//        }
+//
+//        addDismissTap()
+//    }
     private func createMenuButton(title: String, y: CGFloat) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)

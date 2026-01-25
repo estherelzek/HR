@@ -17,7 +17,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="387" height="135"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3Wn-lM-032">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="burger" translatesAutoresizingMaskIntoConstraints="NO" id="3Wn-lM-032">
                         <rect key="frame" x="12" y="10" width="151" height="107.66666666666667"/>
                     </imageView>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="top" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="0sz-Ib-no8">
@@ -84,10 +84,11 @@
                 <outlet property="itemName" destination="ZAD-PF-deH" id="S9n-ch-5tq"/>
                 <outlet property="numberLabel" destination="5iN-Y2-sDR" id="YJQ-h1-6cp"/>
             </connections>
-            <point key="canvasLocation" x="-460" y="-19"/>
+            <point key="canvasLocation" x="-254" y="-13"/>
         </collectionViewCell>
     </objects>
     <resources>
-        <image name="star" catalog="system" width="128" height="116"/>
+        <image name="burger" width="617" height="597"/>
+        <image name="star" catalog="system" width="32" height="32"/>
     </resources>
 </document>

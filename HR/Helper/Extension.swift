@@ -7,6 +7,22 @@
 
 import UIKit
 
+
+extension UIImage {
+    static func fromBase64(_ base64: String) -> UIImage? {
+        guard let data = Data(base64Encoded: base64, options: .ignoreUnknownCharacters) else {
+            print("Failed to create Data from Base64 string")
+            return nil
+        }
+        guard let image = UIImage(data: data) else {
+            print("Data created but failed to make UIImage")
+            return nil
+        }
+        return image
+    }
+}
+
+
 extension Notification.Name {
     static let openNotificationsScreen = Notification.Name("openNotificationsScreen")
 }

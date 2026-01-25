@@ -12,11 +12,13 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ScanAndInfoViewController" customModule="HR" customModuleProvider="target">
             <connections>
-                <outlet property="companyInformationTextField" destination="4Wy-JW-rrS" id="xbO-1f-N8B"/>
-                <outlet property="doneButton" destination="472-Qc-zLu" id="IYB-qn-ehG"/>
-                <outlet property="enterCompanyInfoLabel" destination="eOs-tt-FSu" id="dFD-yC-hOe"/>
-                <outlet property="orButton" destination="cGz-GI-XNF" id="0SG-JR-0s0"/>
-                <outlet property="scanQRbutton" destination="obm-5H-PTP" id="xgQ-nc-aQh"/>
+                <outlet property="companyInformationTextField" destination="uXM-93-eLZ" id="KDQ-zW-lyR"/>
+                <outlet property="contentView" destination="zwD-G9-uY9" id="gpC-iv-rgz"/>
+                <outlet property="doneButton" destination="Sbp-5z-rhk" id="JNg-dT-NXw"/>
+                <outlet property="enterCompanyInfoLabel" destination="EfW-PI-pDo" id="jx3-W6-JZA"/>
+                <outlet property="orButton" destination="aM6-zx-zZv" id="26u-qc-cJd"/>
+                <outlet property="scanQRbutton" destination="t4v-GR-2UI" id="x6j-zX-dQY"/>
+                <outlet property="scrollView" destination="aMO-Qv-lco" id="2qA-0D-OFN"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -25,108 +27,105 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="w09-mn-u6J">
-                    <rect key="frame" x="16" y="338.5" width="288" height="85.5"/>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aMO-Qv-lco">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Your Company Information" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eOs-tt-FSu">
-                            <rect key="frame" x="0.0" y="0.0" width="288" height="43"/>
-                            <color key="backgroundColor" name="baseColorView"/>
-                            <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="14"/>
-                            <color key="textColor" name="lightGrayinDarkModeText "/>
-                            <nil key="highlightedColor"/>
-                        </label>
-                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="4Wy-JW-rrS" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="43" width="288" height="42.5"/>
-                            <color key="backgroundColor" name="baseColorView"/>
-                            <color key="textColor" name="textinsettingvc"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                            <textInputTraits key="textInputTraits"/>
-                            <userDefinedRuntimeAttributes>
-                                <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                    <integer key="value" value="8"/>
-                                </userDefinedRuntimeAttribute>
-                                <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                                    <color key="value" name="borderColor"/>
-                                </userDefinedRuntimeAttribute>
-                                <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                                    <real key="value" value="1"/>
-                                </userDefinedRuntimeAttribute>
-                            </userDefinedRuntimeAttributes>
-                        </textField>
+                        <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zwD-G9-uY9">
+                            <rect key="frame" x="8" y="8" width="304" height="568"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="uXM-93-eLZ" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
+                                    <rect key="frame" x="41" y="381" width="222" height="34"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" name="baseColorView"/>
+                                    <color key="textColor" name="textinsettingvc"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <integer key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                            <color key="value" name="borderColor"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                            <real key="value" value="1"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </textField>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter Your Company Information" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="EfW-PI-pDo">
+                                    <rect key="frame" x="41" y="339" width="221.5" height="34"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" name="baseColorView"/>
+                                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="14"/>
+                                    <color key="textColor" name="lightGrayinDarkModeText "/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sbp-5z-rhk">
+                                    <rect key="frame" x="75" y="450.5" width="170" height="37"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" name="purplecolor"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Done">
+                                        <color key="titleColor" name="buttonTextColor"/>
+                                    </state>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                            <integer key="value" value="10"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
+                                            <integer key="value" value="6"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
+                                            <color key="value" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="doneButtonTapped:" destination="-1" eventType="touchUpInside" id="PcC-OE-an9"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="t4v-GR-2UI" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                                    <rect key="frame" x="30" y="20" width="244" height="210"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" image="scan"/>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="10"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
+                                            <color key="value" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        </userDefinedRuntimeAttribute>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
+                                            <real key="value" value="1"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="scanButtonTapped:" destination="-1" eventType="touchUpInside" id="CIU-Fn-xId"/>
+                                    </connections>
+                                </button>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="OR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aM6-zx-zZv">
+                                    <rect key="frame" x="80" y="248" width="144" height="72.5"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="36"/>
+                                    <color key="textColor" name="purplecolor"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
                     </subviews>
-                </stackView>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="472-Qc-zLu">
-                    <rect key="frame" x="80" y="504" width="160" height="34"/>
-                    <color key="backgroundColor" name="purplecolor"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
-                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" title="Done">
-                        <color key="titleColor" name="buttonTextColor"/>
-                    </state>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                            <integer key="value" value="10"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="layer.borderWidth">
-                            <integer key="value" value="6"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="layer.borderColor">
-                            <color key="value" red="0.56470588239999997" green="0.2784313725" blue="0.43529411759999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="boolean" keyPath="layer.masksToBounds" value="YES"/>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <action selector="doneButtonTapped:" destination="-1" eventType="touchUpInside" id="mPr-mn-W2Z"/>
-                    </connections>
-                </button>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="OR" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cGz-GI-XNF">
-                    <rect key="frame" x="80" y="258" width="160" height="72.5"/>
-                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="36"/>
-                    <color key="textColor" name="purplecolor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="obm-5H-PTP" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="40" y="40" width="240" height="210"/>
-                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="scan"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                            <real key="value" value="10"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="color" keyPath="borderColor">
-                            <color key="value" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                        </userDefinedRuntimeAttribute>
-                        <userDefinedRuntimeAttribute type="number" keyPath="borderWidth">
-                            <real key="value" value="1"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                    <connections>
-                        <action selector="scanButtonTapped:" destination="-1" eventType="touchUpInside" id="h01-uZ-t9r"/>
-                    </connections>
-                </button>
+                    <viewLayoutGuide key="contentLayoutGuide" id="jj3-Nr-zqi"/>
+                    <viewLayoutGuide key="frameLayoutGuide" id="AF4-Bj-T17"/>
+                </scrollView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-            <constraints>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="cGz-GI-XNF" secondAttribute="trailing" constant="80" id="3s7-Ay-61v"/>
-                <constraint firstItem="w09-mn-u6J" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.15" id="4ZB-G8-A9D"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="w09-mn-u6J" secondAttribute="trailing" constant="16" id="7b2-Ar-g7V"/>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="80" id="CaJ-oL-5tu"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="obm-5H-PTP" secondAttribute="trailing" constant="40" id="T36-6Y-ZGH"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="472-Qc-zLu" secondAttribute="bottom" constant="30" id="TJ8-p8-0lt"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="472-Qc-zLu" secondAttribute="trailing" constant="80" id="U3m-ub-Ncm"/>
-                <constraint firstItem="obm-5H-PTP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="URF-I3-mYd"/>
-                <constraint firstItem="obm-5H-PTP" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="20" id="dcM-mX-Ofn"/>
-                <constraint firstItem="cGz-GI-XNF" firstAttribute="top" secondItem="obm-5H-PTP" secondAttribute="bottom" constant="8" id="ep8-NM-j0g"/>
-                <constraint firstItem="cGz-GI-XNF" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="80" id="fN9-LB-Vi0"/>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="top" secondItem="w09-mn-u6J" secondAttribute="bottom" constant="80" id="fRk-Ch-mE4"/>
-                <constraint firstItem="w09-mn-u6J" firstAttribute="top" secondItem="cGz-GI-XNF" secondAttribute="bottom" constant="8" id="hem-dV-TcX"/>
-                <constraint firstItem="obm-5H-PTP" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.37" id="iis-jF-hNW"/>
-                <constraint firstItem="w09-mn-u6J" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="it2-Ag-SqI"/>
-                <constraint firstItem="472-Qc-zLu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.06" id="vA7-6x-vo3"/>
-            </constraints>
-            <point key="canvasLocation" x="-542" y="-110"/>
+            <point key="canvasLocation" x="-746.25" y="-136.26760563380282"/>
         </view>
     </objects>
     <resources>

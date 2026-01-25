@@ -14,6 +14,7 @@
                 <outlet property="ItemPrice" destination="nGI-Qp-WWa" id="nLX-VH-GAz"/>
                 <outlet property="alertView" destination="LeR-UP-15W" id="3Cd-gz-rhM"/>
                 <outlet property="itemCounter" destination="OnV-wK-HeY" id="Szm-ct-wc4"/>
+                <outlet property="itemImage" destination="lG2-K5-GqL" id="gOU-Th-CBq"/>
                 <outlet property="itemName" destination="oNy-g1-xrh" id="6jM-ME-cIV"/>
                 <outlet property="noteTextField" destination="qTl-PU-xYB" id="Og4-j4-bji"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>

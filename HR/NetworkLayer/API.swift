@@ -57,6 +57,26 @@ enum API: Endpoint {
     case generateToken(employee_token: String , company_id : String , api_key : String)
     case offlineAttendance(token: String, attendanceLogs: [[String: Any]])
     case sendMobileToken(employeeToken: String, mobileToken: String, mobile_type: String)
+    // MARK: - Lunch APIs
+    case lunchProducts(
+        token: String,
+        locationId: Int?,
+        categoryId: Int?,
+        supplierId: Int?,
+        search: String?
+    )
+
+    case lunchProductDetails(
+        token: String,
+        productId: Int
+    )
+
+    case lunchCategories(token: String)
+
+    case lunchSuppliers(
+        token: String,
+        locationId: Int?
+    )
 
 
     var path: String {
@@ -83,6 +103,17 @@ enum API: Endpoint {
             return "/api/offline_attendance"
         case .sendMobileToken:
             return "/api/mobile_token"//defaultURL
+        case .lunchProducts:
+            return "/api/lunch/products"
+
+        case .lunchProductDetails(_, let productId):
+            return "/api/lunch/product/\(productId)"
+
+        case .lunchCategories:
+            return "/api/lunch/categories"
+
+        case .lunchSuppliers:
+            return "/api/lunch/suppliers"
 
         }
     }
@@ -203,6 +234,50 @@ enum API: Endpoint {
                 "mobile_token": mobileToken,
                 "mobile_type": mobile_type
             ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+            
+            
+        case let .lunchProducts(token, locationId, categoryId, supplierId, search):
+            var payload: [String: Any] = [
+                "token": token
+            ]
+
+            if let locationId = locationId {
+                payload["location_id"] = locationId
+            }
+            if let categoryId = categoryId {
+                payload["category_id"] = categoryId
+            }
+            if let supplierId = supplierId {
+                payload["supplier_id"] = supplierId
+            }
+            if let search = search, !search.isEmpty {
+                payload["search"] = search
+            }
+
+            return try? JSONSerialization.data(withJSONObject: payload)
+
+        case let .lunchProductDetails(token, _):
+            let payload: [String: Any] = [
+                "token": token
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+            
+        case let .lunchCategories(token):
+            let payload: [String: Any] = [
+                "token": token
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+
+        case let .lunchSuppliers(token, locationId):
+            var payload: [String: Any] = [
+                "token": token
+            ]
+
+            if let locationId = locationId {
+                payload["location_id"] = locationId
+            }
+
             return try? JSONSerialization.data(withJSONObject: payload)
 
         }
