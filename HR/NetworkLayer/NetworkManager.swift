@@ -122,7 +122,7 @@ final class NetworkManager {
 
                 print("offlineRequest: \(offlineRequest)")
                 OfflineURLStorage.shared.save(offlineRequest)
-                completion(.failure(.requestFailed(error.localizedDescription)))
+                completion(.failure(.requestFailed("Weak Network Connection. Please try again.")))
                 return
             }
 

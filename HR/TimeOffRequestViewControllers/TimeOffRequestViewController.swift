@@ -171,7 +171,7 @@ class TimeOffRequestViewController: UIViewController {
                     }
                 case .failure(let error):
                     print("❌ Request Failed: \(error)")
-                    self.showAlert(title: "Error", message: error.localizedDescription)
+                    self.showAlert(title: "Error", message: "Weak Network Connection. Please try again.")
                 }
             }
         }

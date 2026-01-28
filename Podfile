@@ -1,10 +1,9 @@
-platform :ios, '11.0'
+platform :ios, '13.0'
 
+use_frameworks! :linkage => :static
 
 target 'HR' do
-  
-  
-  
+
 end
 
 install! 'cocoapods', :deterministic_uuids => false

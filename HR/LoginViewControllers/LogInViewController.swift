@@ -10,6 +10,7 @@ import UIKit
 
 class LogInViewController: UIViewController {
     
+    @IBOutlet weak var back: UIButton!
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var signInTitleLabel: UILabel!
     @IBOutlet weak var emailTextField: UITextField!
@@ -41,6 +42,9 @@ class LogInViewController: UIViewController {
           view.addGestureRecognizer(tapGesture)
     }
     
+    @IBAction func backButtonTapped(_ sender: Any) {
+        goToScanVC()
+    }
     // ✅ Setup password toggle button method
     private func setupPasswordToggleButton() {
         // Create eye button
@@ -237,7 +241,7 @@ extension LogInViewController {
             self.present(protectionMethodVC, animated: true)
         }
         viewModel.onLoginFailure = { [weak self] message in
-            self?.showAlert(title: NSLocalizedString("login_failed", comment: ""), message: NSLocalizedString(message, comment: ""))
+            self?.showAlert(title: NSLocalizedString("login_failed", comment: ""), message: message)
             self?.loader.stopAnimating()
             self?.loader.isHidden = true
         }
@@ -258,10 +262,13 @@ extension UIView {
 }
 
 extension LogInViewController {
+
     private func setupConstraints() {
+
         // Disable autoresizing masks
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         contentView.translatesAutoresizingMaskIntoConstraints = false
+        back.translatesAutoresizingMaskIntoConstraints = false
         userImage.translatesAutoresizingMaskIntoConstraints = false
         signInTitleLabel.translatesAutoresizingMaskIntoConstraints = false
         emailLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -270,7 +277,7 @@ extension LogInViewController {
         passwardTextField.translatesAutoresizingMaskIntoConstraints = false
         signInButton.translatesAutoresizingMaskIntoConstraints = false
         loader.translatesAutoresizingMaskIntoConstraints = false
-        
+
         // 1. ScrollView constraints (fills entire view)
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
@@ -278,7 +285,7 @@ extension LogInViewController {
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-        
+
         // 2. ContentView constraints inside ScrollView
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
@@ -287,67 +294,80 @@ extension LogInViewController {
             contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
         ])
-        
-        // 3. User Image constraints
+
+        // 3. Back Button (top-left, inside contentView)
         NSLayoutConstraint.activate([
-            userImage.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 40),
+            back.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
+            back.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            back.heightAnchor.constraint(equalToConstant: 30)
+        ])
+
+        // 4. User Image (below back button)
+        NSLayoutConstraint.activate([
+            userImage.topAnchor.constraint(equalTo: back.bottomAnchor, constant: 20),
             userImage.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             userImage.widthAnchor.constraint(equalToConstant: 120),
             userImage.heightAnchor.constraint(equalToConstant: 120)
         ])
-        
-        // 4. Sign In Title constraints
+
+        // 5. Sign In Title
         NSLayoutConstraint.activate([
-            signInTitleLabel.topAnchor.constraint(equalTo: userImage.bottomAnchor, constant: 30),
-            signInTitleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor)
+            signInTitleLabel.topAnchor.constraint(equalTo: userImage.bottomAnchor, constant: 10),
+            signInTitleLabel.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            signInTitleLabel.heightAnchor.constraint(equalToConstant: 50),
+         
+            
         ])
-        
-        // 5. Email Label constraints
+
+        // 6. Email Label
         NSLayoutConstraint.activate([
             emailLabel.topAnchor.constraint(equalTo: signInTitleLabel.bottomAnchor, constant: 40),
             emailLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             emailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         ])
-        
-        // 6. Email TextField constraints
+
+        // 7. Email TextField
         NSLayoutConstraint.activate([
             emailTextField.topAnchor.constraint(equalTo: emailLabel.bottomAnchor, constant: 8),
             emailTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             emailTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            emailTextField.heightAnchor.constraint(equalToConstant: 60)
+            emailTextField.heightAnchor.constraint(equalToConstant: 40)
         ])
-        
-        // 7. Password Label constraints
+
+        // 8. Password Label
         NSLayoutConstraint.activate([
             passwordLabel.topAnchor.constraint(equalTo: emailTextField.bottomAnchor, constant: 20),
             passwordLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             passwordLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20)
         ])
-        
-        // 8. Password TextField constraints
+
+        // 9. Password TextField
         NSLayoutConstraint.activate([
             passwardTextField.topAnchor.constraint(equalTo: passwordLabel.bottomAnchor, constant: 8),
             passwardTextField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             passwardTextField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            passwardTextField.heightAnchor.constraint(equalToConstant: 60)
+            passwardTextField.heightAnchor.constraint(equalToConstant: 40)
         ])
-        
-        // 9. Sign In Button constraints
+
+        // 10. Sign In Button
         NSLayoutConstraint.activate([
             signInButton.topAnchor.constraint(equalTo: passwardTextField.bottomAnchor, constant: 40),
             signInButton.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
             signInButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            signInButton.heightAnchor.constraint(equalToConstant: 50)
+            signInButton.heightAnchor.constraint(equalToConstant: 30)
         ])
-        
-        // 10. Loader constraints
+
+        // 11. Loader (centered inside button)
         NSLayoutConstraint.activate([
-            loader.centerXAnchor.constraint(equalTo: signInButton.centerXAnchor),
-            loader.centerYAnchor.constraint(equalTo: signInButton.centerYAnchor)
+            loader.centerXAnchor.constraint(equalTo: signInButton.centerXAnchor ),
+            loader.centerYAnchor.constraint(equalTo: signInButton.centerYAnchor, constant: 50)
         ])
-        
-        // 11. Bottom constraint for contentView (ensures scrolling)
-        let bottomConstraint = contentView.bottomAnchor.constraint(equalTo: signInButton.bottomAnchor, constant: 40)
+
+        // 12. Bottom constraint (important for scrolling)
+        let bottomConstraint = contentView.bottomAnchor.constraint(
+            equalTo: signInButton.bottomAnchor,
+            constant: 40
+        )
         bottomConstraint.priority = .defaultHigh
         bottomConstraint.isActive = true
     }

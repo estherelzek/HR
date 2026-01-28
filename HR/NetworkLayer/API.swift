@@ -9,42 +9,57 @@ import Foundation
 
 
 enum API: Endpoint {
-    private static let fallbackURL =
-        ""
 
-    static var defaultBaseURL: String = fallbackURL
+    // 🔹 Fallback URL if nothing is set yet
+    private static let fallbackURL = "https://default-url.com"
 
-    static func updateDefaultBaseURL(_ url: String) {
-        guard !url.isEmpty else { return }
-        defaultBaseURL = url.hasSuffix("/") ? String(url.dropLast()) : url
+    // 🔹 Always read/write through UserDefaults
+    static var defaultBaseURL: String {
+        get {
+            // Use saved value if exists, otherwise fallback
+            if let saved = UserDefaults.standard.string(forKey: "baseURL"), !saved.isEmpty {
+                return saved.hasSuffix("/") ? String(saved.dropLast()) : saved
+            }
+            return fallbackURL
+        }
+        set {
+            // Only update if not empty
+            guard !newValue.isEmpty else { return }
+            let sanitized = newValue.hasSuffix("/") ? String(newValue.dropLast()) : newValue
+            UserDefaults.standard.set(sanitized, forKey: "baseURL")
+        }
     }
 
+    // 🔹 Update baseURL from encrypted file
+    static func updateDefaultBaseURL(_ url: String) {
+        defaultBaseURL = url
+        print("🌍 API baseURL updated:", defaultBaseURL)
+    }
+
+    // 🔹 HTTP method
     var method: HTTPMethod { .POST }
 
-    var headers: [String : String] {
+    // 🔹 Headers
+    var headers: [String: String] {
         [
             "Content-Type": "application/json",
             "Accept": "application/json"
         ]
     }
 
+    // 🔹 Base URL for each endpoint
     var baseURL: String {
         switch self {
-
-        // 🔐 ALWAYS use DEFAULT URL
-        case .validateCompany,
-             .generateToken,
-             .sendMobileToken:
+        // 🔐 Always use defaultBaseURL for these endpoints
+        case .validateCompany, .generateToken, .sendMobileToken:
             return API.defaultBaseURL
 
-        // 🌍 All other APIs use saved baseURL if exists
+        // 🌍 Other APIs
         default:
-            if let saved = UserDefaults.standard.baseURL, !saved.isEmpty {
-                return saved.hasSuffix("/") ? String(saved.dropLast()) : saved
-            }
             return API.defaultBaseURL
         }
     }
+
 
     case validateCompany(apiKey: String, companyId: String, email: String, password: String)
     case employeeAttendance(action: String, token: String, lat: String? = nil, lng: String? = nil, action_time: String? = nil)

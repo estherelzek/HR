@@ -202,10 +202,10 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
                 preferredStyle: .alert
             )
             let okAction = UIAlertAction(title: NSLocalizedString("logout_ok", comment: ""), style: .default) { _ in
-                UserDefaults.standard.removeObject(forKey: "baseURL")
+                UserDefaults.standard.removeObject(forKey: "employeeToken")
                 UserDefaults.standard.removeObject(forKey: "dontShowProtectionScreen")
                 UserDefaults.standard.removeObject(forKey: "selectedProtectionMethod")
-                print("url: \(UserDefaults.standard.removeObject(forKey: "employeeToken"))")
+                print("url: \(UserDefaults.standard.string(forKey: "baseURL"))")
                 self.goToLogInViewController()
             }
             okAction.setValue(UIColor.purplecolor, forKey: "titleTextColor")

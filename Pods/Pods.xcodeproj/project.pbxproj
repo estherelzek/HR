@@ -7,17 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		46EB2E000001A0 /* Pods-HR-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 46EB2E00000190 /* Pods-HR-dummy.m */; };
+		46EB2E00000170 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 46EB2E00000160 /* Foundation.framework */; };
+		46EB2E000001E0 /* Pods-HR-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 46EB2E000001D0 /* Pods-HR-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		46EB2E00000220 /* Pods-HR-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 46EB2E00000210 /* Pods-HR-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		46EB2E000000B0 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		46EB2E00000150 /* Pods-HR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-HR.release.xcconfig"; sourceTree = "<group>"; };
-		46EB2E00000160 /* Pods-HR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-HR.debug.xcconfig"; sourceTree = "<group>"; };
-		46EB2E00000170 /* Pods-HR-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-HR-acknowledgements.plist"; sourceTree = "<group>"; };
-		46EB2E00000180 /* Pods-HR-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-HR-acknowledgements.markdown"; sourceTree = "<group>"; };
-		46EB2E00000190 /* Pods-HR-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-HR-dummy.m"; sourceTree = "<group>"; };
-		88ACBF9E648B7AFA8FA11AE095D87812 /* Pods-HR */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; name = "Pods-HR"; path = "libPods-HR.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		46EB2E00000160 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		46EB2E00000190 /* Pods-HR.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-HR.release.xcconfig"; sourceTree = "<group>"; };
+		46EB2E000001A0 /* Pods-HR.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-HR.debug.xcconfig"; sourceTree = "<group>"; };
+		46EB2E000001B0 /* Pods-HR-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-HR-Info.plist"; sourceTree = "<group>"; };
+		46EB2E000001C0 /* Pods-HR.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-HR.modulemap"; sourceTree = "<group>"; };
+		46EB2E000001D0 /* Pods-HR-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-HR-umbrella.h"; sourceTree = "<group>"; };
+		46EB2E000001F0 /* Pods-HR-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-HR-acknowledgements.plist"; sourceTree = "<group>"; };
+		46EB2E00000200 /* Pods-HR-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-HR-acknowledgements.markdown"; sourceTree = "<group>"; };
+		46EB2E00000210 /* Pods-HR-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-HR-dummy.m"; sourceTree = "<group>"; };
+		88ACBF9E648B7AFA8FA11AE095D87812 /* Pods-HR */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-HR"; path = Pods_HR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -25,6 +31,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46EB2E00000170 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +59,7 @@
 		46EB2E00000060 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				46EB2E00000150 /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -59,19 +67,30 @@
 		46EB2E00000070 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				46EB2E00000140 /* Pods-HR */,
+				46EB2E00000180 /* Pods-HR */,
 			);
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		46EB2E00000140 /* Pods-HR */ = {
+		46EB2E00000150 /* iOS */ = {
 			isa = PBXGroup;
 			children = (
-				46EB2E00000180 /* Pods-HR-acknowledgements.markdown */,
-				46EB2E00000170 /* Pods-HR-acknowledgements.plist */,
-				46EB2E00000190 /* Pods-HR-dummy.m */,
-				46EB2E00000160 /* Pods-HR.debug.xcconfig */,
-				46EB2E00000150 /* Pods-HR.release.xcconfig */,
+				46EB2E00000160 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		46EB2E00000180 /* Pods-HR */ = {
+			isa = PBXGroup;
+			children = (
+				46EB2E000001C0 /* Pods-HR.modulemap */,
+				46EB2E00000200 /* Pods-HR-acknowledgements.markdown */,
+				46EB2E000001F0 /* Pods-HR-acknowledgements.plist */,
+				46EB2E00000210 /* Pods-HR-dummy.m */,
+				46EB2E000001B0 /* Pods-HR-Info.plist */,
+				46EB2E000001D0 /* Pods-HR-umbrella.h */,
+				46EB2E000001A0 /* Pods-HR.debug.xcconfig */,
+				46EB2E00000190 /* Pods-HR.release.xcconfig */,
 			);
 			name = "Pods-HR";
 			path = "Target Support Files/Pods-HR";
@@ -84,6 +103,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				46EB2E000001E0 /* Pods-HR-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,15 +117,16 @@
 				46EB2E00000110 /* Headers */,
 				46EB2E00000120 /* Sources */,
 				46EB2E00000130 /* Frameworks */,
+				46EB2E00000140 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "Pods-HR";
-			productName = "Pods-HR";
+			productName = Pods_HR;
 			productReference = 88ACBF9E648B7AFA8FA11AE095D87812 /* Pods-HR */;
-			productType = "com.apple.product-type.library.static";
+			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
 
@@ -136,12 +157,22 @@
 		};
 /* End PBXProject section */
 
+/* Begin PBXResourcesBuildPhase section */
+		46EB2E00000140 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		46EB2E00000120 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				46EB2E000001A0 /* Pods-HR-dummy.m in Sources */,
+				46EB2E00000220 /* Pods-HR-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -201,7 +232,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -264,7 +295,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -278,50 +309,82 @@
 		};
 		46EB2E000000E0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 46EB2E00000150 /* Pods-HR.release.xcconfig */;
+			baseConfigurationReference = 46EB2E00000190 /* Pods-HR.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				INFOPLIST_FILE = "Target Support Files/Pods-HR/Pods-HR-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-HR/Pods-HR.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
 		46EB2E000000F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 46EB2E00000160 /* Pods-HR.debug.xcconfig */;
+			baseConfigurationReference = 46EB2E000001A0 /* Pods-HR.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				ENABLE_MODULE_VERIFIER = NO;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				INFOPLIST_FILE = "Target Support Files/Pods-HR/Pods-HR-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-HR/Pods-HR.modulemap";
 				OTHER_LDFLAGS = "";
 				OTHER_LIBTOOLFLAGS = "";
 				PODS_ROOT = "$(SRCROOT)";
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};

@@ -115,7 +115,7 @@ final class LoginViewModel {
                     }
 
                 case .failure(let error):
-                    self.onLoginFailure?(error.localizedDescription)
+                    self.onLoginFailure?("Weak Network Connection. Please try againnnn.")
                 }
             }
         }

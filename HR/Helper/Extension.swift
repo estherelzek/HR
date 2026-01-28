@@ -144,9 +144,10 @@ extension UIViewController {
     }
 
     func goToScanVC() {
-        if let appDomain = Bundle.main.bundleIdentifier {
-            UserDefaults.standard.removePersistentDomain(forName: appDomain)
-        }
+//        if let appDomain = Bundle.main.bundleIdentifier {
+//            UserDefaults.standard.removePersistentDomain(forName: appDomain)
+//        }
+        UserDefaults.standard.removeObject(forKey: "encryptedText")
         if let window = UIApplication.shared.windows.first {
             window.overrideUserInterfaceStyle = .dark
         }
@@ -167,7 +168,7 @@ extension UIViewController {
            let checkingVC = LogInViewController(nibName: "LogInViewController", bundle: nil)
         UserDefaults.standard.removeObject(forKey: "selectedProtectionMethod")
         UserDefaults.standard.removeObject(forKey: "savedPIN")
-
+        print("url: in go to login function: \(UserDefaults.standard.baseURL)")
            if let rootVC = self.view.window?.rootViewController as? ViewController {
                rootVC.switchTo(viewController: checkingVC)
                rootVC.bottomBarView.isHidden = true

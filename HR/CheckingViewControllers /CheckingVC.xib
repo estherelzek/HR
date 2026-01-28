@@ -34,9 +34,9 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Status Loading..." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0U8-P0-0wT">
-                    <rect key="frame" x="30" y="427.66666666666669" width="333" height="60"/>
+                    <rect key="frame" x="30" y="427.66666666666669" width="333" height="80"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="60" id="brT-ED-19S"/>
+                        <constraint firstAttribute="height" constant="80" id="brT-ED-19S"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
@@ -46,7 +46,7 @@
                     <rect key="frame" x="166.66666666666666" y="368.66666666666669" width="60" height="51"/>
                 </activityIndicatorView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GUg-va-6Zh" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="123" y="507.66666666666669" width="147" height="170.33333333333331"/>
+                    <rect key="frame" x="123" y="527.66666666666663" width="147" height="170.33333333333337"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                     <state key="normal" title="Button" image="login"/>
                     <userDefinedRuntimeAttributes>
