@@ -24,6 +24,12 @@ struct LeaveDurationData: Decodable {
     let requestDateTo: String?
     let dateFrom: String?
     let dateTo: String?
+
+    let checkCasualLeave: Bool?
+    let casualDaysCount: Double?
+    let remainingCasualDays: Double?
+    let casualLeaveWarning: Bool?
+
     let days: Double?
     let hours: Double?
 
@@ -33,6 +39,13 @@ struct LeaveDurationData: Decodable {
         case requestDateTo = "request_date_to"
         case dateFrom = "date_from"
         case dateTo = "date_to"
-        case days, hours
+
+        case checkCasualLeave = "check_casual_leave"
+        case casualDaysCount = "casual_days_count"
+        case remainingCasualDays = "remaining_casual_days"
+        case casualLeaveWarning = "casual_leave_warning"
+
+        case days
+        case hours
     }
 }

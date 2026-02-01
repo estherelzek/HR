@@ -37,7 +37,7 @@ class TimeOffRequestViewController: UIViewController {
     @IBOutlet weak var clockStackView: UIStackView!
     @IBOutlet weak var saveButton: InspectableButton!
     @IBOutlet weak var dynamicStackView: UIStackView!
-
+    @IBOutlet weak var WarningLabel: Inspectablelabel!
     // MARK: - Data Sources
     var leaveTypes: [LeaveType] = []  // API fills this
     var filteredLeaveTypes: [LeaveType] = []
@@ -288,6 +288,17 @@ class TimeOffRequestViewController: UIViewController {
                     self?.durationTitleLabel.text = "Duration"
                     self?.durationCountLabel.text = "\(data.days ?? 0) days (\(data.hours ?? 0) hrs)"
                     print("✅ Duration: \(data.days ?? 0) days, \(data.hours ?? 0) hours")
+                    if data.checkCasualLeave ?? false {
+                        self?.WarningLabel.isHidden = false
+                        self?.WarningLabel.backgroundColor = .systemGreen
+                        self?.WarningLabel.text = "This is a Casual Leave This leave qualifies as a casual/emergency leave according to Egyptian Labor Law. You have \(data.remainingCasualDays, default: " 0 ") days remaining for this year."
+                    } else if data.casualLeaveWarning ?? false {
+                        self?.WarningLabel.isHidden = false
+                        self?.WarningLabel.backgroundColor = .systemYellow
+                        self?.WarningLabel.text = "This leave will exceed your annual casual leave limit . You have \(data.remainingCasualDays, default: "0") days remaining for this year. out of 7 dayes allawed per yeart , This request will use 1.0 casual dayes "
+                    } else {
+                        self?.WarningLabel.isHidden = true
+                    }
                 case .failure(let error):
                     self?.durationCountLabel.text = "Error"
                     print("❌ Error fetching leave duration: \(error)")
@@ -510,12 +521,16 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
             switch type.requestUnit {
             case "day":
                 applyLeaveUnit(.day)
+                getDuration()
             case "half_day":
                 applyLeaveUnit(.halfDay)
+                getDuration()
             case "hour":
                 applyLeaveUnit(.hour)
+                getDuration()
             case "hour_only":
                 applyLeaveUnit(.hourOnly)
+                getDuration()
             default:
                 break
             }

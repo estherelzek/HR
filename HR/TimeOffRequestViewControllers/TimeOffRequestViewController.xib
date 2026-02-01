@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="ClockTo" destination="DlM-77-g63" id="6Tx-9D-OW8"/>
                 <outlet property="MorningOrNightTextField" destination="88t-US-TWk" id="cpq-jI-izV"/>
+                <outlet property="WarningLabel" destination="sJ8-QI-QN8" id="JyV-3A-o9b"/>
                 <outlet property="addDescriptionTextField" destination="xwH-wZ-eVv" id="ykm-ph-aCH"/>
                 <outlet property="clockFrom" destination="DTA-gh-g73" id="Jtb-5D-n5M"/>
                 <outlet property="clockLabel" destination="M2m-vb-iSF" id="gAc-Xu-5FR"/>
@@ -254,11 +255,26 @@
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="60" id="2SI-2K-3GK"/>
-                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="40t-Sc-mSY"/>
+                                                <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="40" id="40t-Sc-mSY"/>
                                                 <constraint firstItem="xwH-wZ-eVv" firstAttribute="leading" secondItem="kCC-zr-sVP" secondAttribute="leading" id="6qA-df-dhT"/>
                                                 <constraint firstAttribute="trailing" secondItem="xwH-wZ-eVv" secondAttribute="trailing" id="pmK-TK-5x3"/>
                                             </constraints>
                                         </stackView>
+                                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sJ8-QI-QN8" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
+                                            <rect key="frame" x="0.0" y="348" width="326" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="50" id="8l1-6Y-iV2"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <nil key="textColor"/>
+                                            <nil key="highlightedColor"/>
+                                            <userDefinedRuntimeAttributes>
+                                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                                    <real key="value" value="5"/>
+                                                </userDefinedRuntimeAttribute>
+                                            </userDefinedRuntimeAttributes>
+                                        </label>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7Cr-ux-TtS" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="360" width="326" height="38.333333333333314"/>
                                             <color key="backgroundColor" name="purplecolor"/>
@@ -307,7 +323,7 @@
                 <constraint firstItem="r5B-qQ-PNC" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="qQc-gI-NRh"/>
                 <constraint firstItem="r5B-qQ-PNC" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="yYR-yk-gyy"/>
             </constraints>
-            <point key="canvasLocation" x="-3025" y="19"/>
+            <point key="canvasLocation" x="-3767" y="-5"/>
         </view>
     </objects>
     <resources>
