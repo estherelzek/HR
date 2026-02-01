@@ -48,10 +48,9 @@
                 </stackView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lwD-nk-HJB">
                     <rect key="frame" x="16" y="213" width="369" height="426"/>
-                    <color key="backgroundColor" name="baseColorView"/>
                     <color key="tintColor" name="borderColor"/>
                     <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                    <state key="normal" image="face">
+                    <state key="normal">
                         <color key="titleColor" name="borderColor"/>
                     </state>
                 </button>
@@ -72,10 +71,6 @@
     </objects>
     <resources>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
-        <image name="face" width="1920" height="1920"/>
-        <namedColor name="baseColorView">
-            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <namedColor name="borderColor">
             <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

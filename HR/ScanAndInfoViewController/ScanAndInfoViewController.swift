@@ -200,44 +200,42 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
    
     @IBAction func doneButtonTapped(_ sender: Any) {
 
-        if companyInformationTextField.text == nil {
-           
-            let alert = UIAlertController(title: "Error", message: "Please enter your company information", preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-            self.present(alert, animated: true, completion: nil)
-        } else  {
-            do {
-                let encryptedText = companyInformationTextField.text
+        if let text = companyInformationTextField.text, !text.isEmpty {
+            handleSuccessfulScan(text)
+        } else {
+            showInvalidQRAlert()
+        }
 
-                let middleware = try Middleware.initialize(encryptedText ?? "")
+    }
+    private func handleSuccessfulScan(_ encryptedText: String) {
+        do {
+            let middleware = try Middleware.initialize(encryptedText)
 
-                let defaults = UserDefaults.standard
-                defaults.set(encryptedText, forKey: "encryptedText")
-                defaults.set(middleware.companyId, forKey: "companyIdKey")
-                defaults.set(middleware.apiKey, forKey: "apiKeyKey")
-                defaults.set(middleware.baseUrl, forKey: "baseURL")
+            let defaults = UserDefaults.standard
+            defaults.set(encryptedText, forKey: "encryptedText")
+            defaults.set(middleware.companyId, forKey: "companyIdKey")
+            defaults.set(middleware.apiKey, forKey: "apiKeyKey")
+            defaults.set(middleware.baseUrl, forKey: "baseURL")
 
-                // 🔥 SET API BASE URL FROM ENCRYPTED FILE
-                API.updateDefaultBaseURL(middleware.baseUrl)
+            // 🔥 Update API base URL
+            API.updateDefaultBaseURL(middleware.baseUrl)
 
-                print("✅ Imported CompanyAccess.ihkey successfully")
-                print("🔑 API Key: \(middleware.apiKey)")
-                print("🏠 Base URL: \(middleware.baseUrl)")
-                print("🗯️ Company ID: \(middleware.companyId)")
+            print("✅ QR VALID — Going to Login")
 
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(
-                        name: Notification.Name("CompanyFileImported"),
-                        object: nil
-                    )
-                }
-                goToLogInViewController()
-            } catch {
-                print("❌ Failed to import or decrypt file:", error)
+            DispatchQueue.main.async {
+                self.goToLogInViewController()
             }
-           
+
+        } catch {
+            print("❌ Invalid QR Code")
+
+            DispatchQueue.main.async {
+                self.showInvalidQRAlert()
+                self.cancelScanning()
+            }
         }
     }
+
 
     @objc private func languageChanged() {
         setUpTexts()
@@ -264,37 +262,44 @@ extension ScanAndInfoViewController {
     func metadataOutput(_ output: AVCaptureMetadataOutput,
                         didOutput metadataObjects: [AVMetadataObject],
                         from connection: AVCaptureConnection) {
+
         captureSession.stopRunning()
-        
-        if let metadataObject = metadataObjects.first,
-           let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
-           let stringValue = readableObject.stringValue {
-            
-            AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
-            UserDefaults.standard.set(stringValue, forKey: "scannedQRCode")
-            print("📦 Scanned QR Data: \(stringValue)")
-            
-            previewLayer?.removeFromSuperlayer()
-            
-            // Remove cancel button
-            view.subviews.forEach { subview in
-                if let button = subview as? UIButton, button.title(for: .normal) == "Cancel" {
-                    button.removeFromSuperview()
-                }
-            }
-            
-            // ✅ Show original UI
-            showOriginalUI()
-            
-            companyInformationTextField.text = stringValue
-            UserDefaults.standard.set(stringValue, forKey: "encryptedText")
-            
-            let alert = UIAlertController(title: "QR Scanned",
-                                          message: "Company info fetched successfully!",
-                                          preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "OK", style: .default))
-            present(alert, animated: true)
+
+        guard
+            let metadataObject = metadataObjects.first,
+            let readableObject = metadataObject as? AVMetadataMachineReadableCodeObject,
+            let stringValue = readableObject.stringValue
+        else {
+            cancelScanning()
+            return
         }
+
+        AudioServicesPlaySystemSound(SystemSoundID(kSystemSoundID_Vibrate))
+        print("📦 Scanned QR: \(stringValue)")
+
+        // Clean scanner UI
+        previewLayer?.removeFromSuperlayer()
+        removeCancelButton()
+
+        // 🚀 HANDLE SUCCESS → LOGIN
+        handleSuccessfulScan(stringValue)
+    }
+    private func removeCancelButton() {
+        view.subviews.forEach {
+            if let button = $0 as? UIButton, button.title(for: .normal) == "Cancel" {
+                button.removeFromSuperview()
+            }
+        }
+    }
+
+    private func showInvalidQRAlert() {
+        let alert = UIAlertController(
+            title: "Invalid QR Code",
+            message: "This QR code is not a valid company access key.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

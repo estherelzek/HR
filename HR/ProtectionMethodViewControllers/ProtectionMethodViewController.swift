@@ -34,7 +34,7 @@ class ProtectionMethodViewController: UIViewController {
         super.viewDidLoad()
         setUpTexts()
         setUpTextFields()
-        detectAvailableBiometric()
+       // detectAvailableBiometric()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
     }
    
@@ -122,7 +122,7 @@ class ProtectionMethodViewController: UIViewController {
     }
     
     func applyBorderColors() {
-        let fields = [pinCodetextField, fingurePrintTextField, donotShowAgain]
+        let fields = [pinCodetextField, fingurePrintTextField, donotShowAgain, faceAuthentication]
         fields.forEach {
             $0?.layer.cornerRadius = 8
             $0?.layer.borderWidth = 1
@@ -142,7 +142,7 @@ extension ProtectionMethodViewController: UITextFieldDelegate {
             return false
         case faceAuthentication:
             UserDefaults.standard.set(ProtectionMethod.faceID.rawValue, forKey: "selectedProtectionMethod")
-            let vc = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
+            let vc = FaceAuthenticationViewController(nibName: "FaceAuthenticationViewController", bundle: nil)
             vc.modalPresentationStyle = .fullScreen
             present(vc, animated: true)
             return false

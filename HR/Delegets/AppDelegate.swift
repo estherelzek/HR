@@ -13,6 +13,8 @@ import FirebaseMessaging
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
+    
+    var orientationLock = UIInterfaceOrientationMask.all
 
     // MARK: - App Launch
     func application(
@@ -54,7 +56,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 #endif // targetEnvironment(simulator)
         return true
     }
-    
+    func application(
+        _ application: UIApplication,
+        supportedInterfaceOrientationsFor window: UIWindow?
+    ) -> UIInterfaceOrientationMask {
+        return orientationLock
+    }
+
     func saveNotification(title: String, body: String) {
         let notification = NotificationModel(
             id: UUID().uuidString,

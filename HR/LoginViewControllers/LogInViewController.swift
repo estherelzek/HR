@@ -8,7 +8,7 @@
 import UIKit
 
 
-class LogInViewController: UIViewController {
+class LogInViewController: UIViewController ,UITextFieldDelegate {
     
     @IBOutlet weak var back: UIButton!
     @IBOutlet weak var userImage: UIImageView!
@@ -31,6 +31,7 @@ class LogInViewController: UIViewController {
         super.viewDidLoad()
         setupConstraints()
         setUpTexts()
+        setupTextFields()
         setUpLeasenerToViewModel()
        // setupEmailIcon()
         // ✅ Setup password toggle button
@@ -246,6 +247,16 @@ extension LogInViewController {
             self?.loader.isHidden = true
         }
     }
+    private func setupTextFields() {
+        emailTextField.delegate = self
+        passwardTextField.delegate = self
+
+        emailTextField.keyboardType = .emailAddress
+        emailTextField.returnKeyType = .next
+
+        passwardTextField.returnKeyType = .done
+    }
+
 }
 
 // MARK: - Helper to find current first responder
@@ -371,4 +382,21 @@ extension LogInViewController {
         bottomConstraint.priority = .defaultHigh
         bottomConstraint.isActive = true
     }
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+
+        if textField == emailTextField {
+            // 👉 Move to password
+            passwardTextField.becomeFirstResponder()
+        }
+        else if textField == passwardTextField {
+            // 👉 Hide keyboard
+            textField.resignFirstResponder()
+
+            // 👉 Trigger Sign In
+            SignInButton(signInButton)
+        }
+
+        return true
+    }
+
 }

@@ -6,6 +6,12 @@
 //
 
 import UIKit
+enum LeaveUnit {
+    case day
+    case halfDay
+    case hour
+    case hourOnly
+}
 
 class TimeOffRequestViewController: UIViewController {
     
@@ -30,7 +36,8 @@ class TimeOffRequestViewController: UIViewController {
     @IBOutlet weak var clockLabel: UILabel!
     @IBOutlet weak var clockStackView: UIStackView!
     @IBOutlet weak var saveButton: InspectableButton!
-    
+    @IBOutlet weak var dynamicStackView: UIStackView!
+
     // MARK: - Data Sources
     var leaveTypes: [LeaveType] = []  // API fills this
     var filteredLeaveTypes: [LeaveType] = []
@@ -56,7 +63,8 @@ class TimeOffRequestViewController: UIViewController {
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
         setUpTexts()
         setupPickers()
-        launchMode()
+        initialState()
+        //launchMode()
         halfDayButton.backgroundColor = .clear
         customHoursButton.backgroundColor = .clear
     }
@@ -72,7 +80,60 @@ class TimeOffRequestViewController: UIViewController {
             endDateCalender.text = formatDate(date)
         }
     }
-   
+    
+    
+    func initialState() {
+        dynamicStackView.isHidden = false
+
+          dynamicStackView.arrangedSubviews.forEach {
+              $0.isHidden = true
+          }
+
+        // Reset buttons
+        halfDayButton.isSelected = false
+        customHoursButton.isSelected = false
+
+        // Reset fields
+        MorningOrNightTextField.text = nil
+        clockFrom.text = nil
+        ClockTo.text = nil
+    }
+    func showDynamicContent() {
+        dynamicStackView.arrangedSubviews.forEach {
+            $0.isHidden = false
+        }
+    }
+
+    func applyLeaveUnit(_ unit: LeaveUnit) {
+        showDynamicContent()
+
+        // reset visibility
+        startDateCalender.isHidden = true
+        endDateCalender.isHidden = true
+        MorningOrNightTextField.isHidden = true
+        halfDayButton.isHidden = true
+        customHoursButton.isHidden = true
+        clockStackView.isHidden = true
+
+        switch unit {
+        case .day:
+            startDateCalender.isHidden = false
+            endDateCalender.isHidden = false
+        case .halfDay:
+            startDateCalender.isHidden = false
+            MorningOrNightTextField.isHidden = false
+            halfDayButton.isHidden = false
+        case .hour:
+            startDateCalender.isHidden = false
+            halfDayButton.isHidden = false
+            customHoursButton.isHidden = false
+        case .hourOnly:
+            startDateCalender.isHidden = false
+            clockStackView.isHidden = false
+        }
+    }
+
+
     @IBAction func closeButtonTapped(_ sender: Any) {
         dismiss(animated: true, completion: nil)
     }
@@ -441,34 +502,30 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+
         if pickerView == leaveTypePicker {
-            selectLeaveTypeTextField.text = filteredLeaveTypes[row].name
-          
-//            if filteredLeaveTypes[row].name != "annual leave" {
-//                let showHalfOption = filteredLeaveTypes[row].requestUnit
-//                if showHalfOption == "half_day" {
-//                    setUpOtherMode(hideHalfDay: false)
-//                } else {
-//                    setUpOtherMode(hideHalfDay: true)
-//                }
-//            }
-//            else {
-//                setUpAnnualMode()
-//            }
-            if filteredLeaveTypes[row].requestUnit == "half_day" {
-                handleHalfDayMode()
-            }else if filteredLeaveTypes[row].requestUnit == "day" {
-                handleDayMode()
-            } else if filteredLeaveTypes[row].requestUnit == "hour" {
-                handleHoursMode()
-            } else if filteredLeaveTypes[row].requestUnit == "hour_only" {
-                handleHoursOnlyMode()
+            let type = filteredLeaveTypes[row]
+            selectLeaveTypeTextField.text = type.name
+
+            switch type.requestUnit {
+            case "day":
+                applyLeaveUnit(.day)
+            case "half_day":
+                applyLeaveUnit(.halfDay)
+            case "hour":
+                applyLeaveUnit(.hour)
+            case "hour_only":
+                applyLeaveUnit(.hourOnly)
+            default:
+                break
             }
         } else {
             MorningOrNightTextField.text = morningNightOptions[row]
         }
+
         doneTapped()
     }
+
 }
 
 extension TimeOffRequestViewController{
@@ -487,4 +544,5 @@ extension TimeOffRequestViewController{
         clockLabel.text = NSLocalizedString("Clock", comment: "")
         saveButton.setTitle(NSLocalizedString("Save", comment: ""), for: .normal)
     }
+    
 }
