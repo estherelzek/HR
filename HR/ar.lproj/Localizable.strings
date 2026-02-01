@@ -138,7 +138,7 @@
 "Clock" = "الساعه";
 "Save" = "حفظ";
 "Cancel" = "إلغاء";
-
+"TimeOffRequest_Description" = "ملحوظه";
 
 /* Titles */
 "pin_set_title" = "قم بتعيين رقم سري مكون من 4 أرقام";

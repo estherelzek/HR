@@ -22,6 +22,7 @@
                 <outlet property="customHoursButton" destination="HuN-sf-2Q2" id="lob-iR-LY5"/>
                 <outlet property="dateStack" destination="lY6-uh-qnn" id="Ozm-Yt-CrY"/>
                 <outlet property="datesLabel" destination="nZq-p8-uTQ" id="jDr-LA-JLz"/>
+                <outlet property="descriptionLabel" destination="7oV-Kq-GMN" id="vWK-GT-wXR"/>
                 <outlet property="durationCountLabel" destination="9Tl-YR-WpZ" id="D6b-5v-qrO"/>
                 <outlet property="durationTitleLabel" destination="JIG-Zg-FFY" id="hCb-pY-C9r"/>
                 <outlet property="dynamicStackView" destination="IUO-Zm-f9E" id="csD-Ec-YNN"/>
@@ -214,7 +215,7 @@
                                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="UpX-Fn-XHe">
                                             <rect key="frame" x="0.0" y="222" width="326" height="30"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JIG-Zg-FFY">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JIG-Zg-FFY">
                                                     <rect key="frame" x="0.0" y="0.0" width="153" height="30"/>
                                                     <color key="backgroundColor" name="alartColor "/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>

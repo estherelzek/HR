@@ -28,6 +28,8 @@ class TimeOffRequestViewController: UIViewController {
     @IBOutlet weak var durationTitleLabel: UILabel!
     @IBOutlet weak var durationCountLabel: UILabel!
     @IBOutlet weak var addDescriptionTextField: UITextField!
+    
+    @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var contentView: InspectableView!
     @IBOutlet var ouSideView: UIView!
     @IBOutlet weak var saveButtonTapped: InspectableButton!
@@ -285,7 +287,7 @@ class TimeOffRequestViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
-                    self?.durationTitleLabel.text = "Duration"
+                //    self?.durationTitleLabel.text = "Duration"
                     self?.durationCountLabel.text = "\(data.days ?? 0) days (\(data.hours ?? 0) hrs)"
                     print("✅ Duration: \(data.days ?? 0) days, \(data.hours ?? 0) hours")
                     if data.checkCasualLeave ?? false {
@@ -558,6 +560,7 @@ extension TimeOffRequestViewController{
         addDescriptionTextField.placeholder = NSLocalizedString("TimeOffRequest_AddDescription", comment: "")
         clockLabel.text = NSLocalizedString("Clock", comment: "")
         saveButton.setTitle(NSLocalizedString("Save", comment: ""), for: .normal)
+        descriptionLabel.text = NSLocalizedString("TimeOffRequest_Description", comment: "")
     }
     
 }

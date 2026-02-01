@@ -128,12 +128,12 @@
 "TimeOffRequest_MorningOrNight" = "Morning or Night";
 "TimeOffRequest_HalfDay" = "Half Day";
 "TimeOffRequest_CustomHours" = "Custom Hours";
-"TimeOffRequest_Duration" = "Duration";
+"TimeOffRequest_Duration" = "Durationnn";
 "TimeOffRequest_AddDescription" = "Add Description";
 "Clock" = "Clock";
 "Save" = "Save";
 "Cancel" = "Cancel";
-
+"TimeOffRequest_Description" = "Description";
 
 //
 /* Titles */
