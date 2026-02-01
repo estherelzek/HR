@@ -82,10 +82,11 @@
                                             <color key="textColor" name="textinsettingvc"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" verticalCompressionResistancePriority="749" contentHorizontalAlignment="left" contentVerticalAlignment="center" usesAttributedText="YES" borderStyle="roundedRect" placeholder="Select Leave Type" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Noz-LG-Zov">
+                                        <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Select Leave Type" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Noz-LG-Zov">
                                             <rect key="frame" x="0.0" y="24.333333333333311" width="318" height="35.666666666666657"/>
                                             <color key="backgroundColor" name="alartColor "/>
-                                            <attributedString key="attributedText"/>
+                                            <nil key="textColor"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                             <textInputTraits key="textInputTraits"/>
                                         </textField>
                                     </subviews>
