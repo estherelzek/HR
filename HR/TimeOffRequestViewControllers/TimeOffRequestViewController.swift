@@ -12,7 +12,11 @@ enum LeaveUnit {
     case hour
     case hourOnly
 }
-
+private enum WarningState {
+    case hidden
+    case casual
+    case exceed
+}
 class TimeOffRequestViewController: UIViewController {
     
     @IBOutlet weak var dateStack: UIStackView!
@@ -28,7 +32,6 @@ class TimeOffRequestViewController: UIViewController {
     @IBOutlet weak var durationTitleLabel: UILabel!
     @IBOutlet weak var durationCountLabel: UILabel!
     @IBOutlet weak var addDescriptionTextField: UITextField!
-    
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var contentView: InspectableView!
     @IBOutlet var ouSideView: UIView!
@@ -40,6 +43,8 @@ class TimeOffRequestViewController: UIViewController {
     @IBOutlet weak var saveButton: InspectableButton!
     @IBOutlet weak var dynamicStackView: UIStackView!
     @IBOutlet weak var WarningLabel: Inspectablelabel!
+    @IBOutlet weak var warningContainer: UIView!
+
     // MARK: - Data Sources
     var leaveTypes: [LeaveType] = []  // API fills this
     var filteredLeaveTypes: [LeaveType] = []
@@ -55,22 +60,34 @@ class TimeOffRequestViewController: UIViewController {
     let parentobject = TimeOffViewController()
     var preselectedDate: Date?
     weak var parentViewControllerRef: TimeOffViewController?
+    let animationDuration = 0.08 // super fast
 
+    private var currentWarningState: WarningState = .hidden
+    private var warningWorkItem: DispatchWorkItem?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-      //  print("filteredLeaveTypes: \(filteredLeaveTypes)")
+
+        warningContainer.isHidden = true
+          warningContainer.alpha = 0  // ✅ correct place
+        dynamicStackView.layoutIfNeeded()
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
         tapGesture.cancelsTouchesInView = false
         ouSideView.addGestureRecognizer(tapGesture)
-        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
+
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(languageChanged),
+            name: NSNotification.Name("LanguageChanged"),
+            object: nil
+        )
+
         setUpTexts()
         setupPickers()
         initialState()
-        //launchMode()
-        halfDayButton.backgroundColor = .clear
-        customHoursButton.backgroundColor = .clear
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         let lang = LanguageManager.shared.currentLanguage()
@@ -246,6 +263,7 @@ class TimeOffRequestViewController: UIViewController {
     }
     
     func getDuration() {
+
         guard
             let token = UserDefaults.standard.string(forKey: "employeeToken"),
             let leaveTypeName = selectLeaveTypeTextField.text,
@@ -256,23 +274,31 @@ class TimeOffRequestViewController: UIViewController {
             print("❌ Missing required fields")
             return
         }
+
         guard
             let startDateObj = Date.parseDate(startDate),
             let endDateObj = Date.parseDate(endDate)
         else {
-            print("❌ Invalid date format: \(startDate) / \(endDate)")
+            print("❌ Invalid date format")
             return
         }
-        let requestDateFrom = startDateObj.toAPIDateString() // "09-07-2025"
-        var requestDateTo   = endDateObj.toAPIDateString()   // "09-07-2025"
-        let requestDateFromPeriod = MorningOrNightTextField.text?.lowercased() == "morning" ? "am" : "pm"
-        let isHalfDay = halfDayButton.isSelected
-        let isCustomHours = customHoursButton.isSelected
-        let hourFrom = isCustomHours ? formatToAPITime(clockFrom.text) : nil
-        let hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
+
+        let requestDateFrom = startDateObj.toAPIDateString()
+        var requestDateTo   = endDateObj.toAPIDateString()
+
         if endDateCalender.isHidden {
             requestDateTo = requestDateFrom
         }
+
+        let requestDateFromPeriod =
+            MorningOrNightTextField.text?.lowercased() == "morning" ? "am" : "pm"
+
+        let isHalfDay = halfDayButton.isSelected
+        let isCustomHours = customHoursButton.isSelected
+
+        let hourFrom = isCustomHours ? formatToAPITime(clockFrom.text) : nil
+        let hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
+
         leaveDurationVM.fetchLeaveDuration(
             token: token,
             leaveTypeId: leaveTypeId,
@@ -287,27 +313,50 @@ class TimeOffRequestViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let data):
-                //    self?.durationTitleLabel.text = "Duration"
-                    self?.durationCountLabel.text = "\(data.days ?? 0) days (\(data.hours ?? 0) hrs)"
-                    print("✅ Duration: \(data.days ?? 0) days, \(data.hours ?? 0) hours")
-                    if data.checkCasualLeave ?? false {
-                        self?.WarningLabel.isHidden = false
-                        self?.WarningLabel.backgroundColor = .systemGreen
-                        self?.WarningLabel.text = "This is a Casual Leave This leave qualifies as a casual/emergency leave according to Egyptian Labor Law. You have \(data.remainingCasualDays, default: " 0 ") days remaining for this year."
-                    } else if data.casualLeaveWarning ?? false {
-                        self?.WarningLabel.isHidden = false
-                        self?.WarningLabel.backgroundColor = .systemYellow
-                        self?.WarningLabel.text = "This leave will exceed your annual casual leave limit . You have \(data.remainingCasualDays, default: "0") days remaining for this year. out of 7 dayes allawed per yeart , This request will use 1.0 casual dayes "
-                    } else {
-                        self?.WarningLabel.isHidden = true
+                    self?.durationCountLabel.text =
+                        "\(data.days ?? 0) days (\(data.hours ?? 0) hrs)"
+
+                    // 🔁 الغاء أي تحديث سابق
+                    self?.warningWorkItem?.cancel()
+
+                    let workItem = DispatchWorkItem { [weak self] in
+                        guard let self = self else { return }
+
+                        if data.checkCasualLeave == true {
+                            self.updateWarning(
+                                state: .casual,
+                                text: """
+                                This is a Casual Leave.
+                                You have \(data.remainingCasualDays ?? 0) days remaining.
+                                """,
+                                color: .systemGreen
+                            )
+                        } else if data.casualLeaveWarning == true {
+                            self.updateWarning(
+                                state: .casual,
+                                text: """
+                                This leave will exceed your annual casual leave limit.
+                                You have \(data.remainingCasualDays ?? 0) days remaining.
+                                """,
+                                color: .systemYellow
+                            )
+                        } else {
+                            self.updateWarning(state: .hidden, text: nil, color: nil)
+                        }
                     }
-                case .failure(let error):
-                    self?.durationCountLabel.text = "Error"
-                    print("❌ Error fetching leave duration: \(error)")
+
+                    self?.warningWorkItem = workItem
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
+
+                case .failure:
+                    self?.updateWarning(state: .hidden, text: nil, color: nil)
                 }
             }
+
+            
         }
     }
+
 
     func UnCLickHalfButton(hideHalfButton: Bool = false) {
         clockStackView.isHidden = true
@@ -523,15 +572,27 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
             switch type.requestUnit {
             case "day":
                 applyLeaveUnit(.day)
+                // قبل أي عملية getDuration()
+                updateWarning(state: .hidden, text: nil, color: nil)
+
                 getDuration()
             case "half_day":
                 applyLeaveUnit(.halfDay)
+                // قبل أي عملية getDuration()
+                updateWarning(state: .hidden, text: nil, color: nil)
+
                 getDuration()
             case "hour":
                 applyLeaveUnit(.hour)
+                // قبل أي عملية getDuration()
+                updateWarning(state: .hidden, text: nil, color: nil)
+
                 getDuration()
             case "hour_only":
                 applyLeaveUnit(.hourOnly)
+                // قبل أي عملية getDuration()
+                updateWarning(state: .hidden, text: nil, color: nil)
+
                 getDuration()
             default:
                 break
@@ -563,4 +624,34 @@ extension TimeOffRequestViewController{
         descriptionLabel.text = NSLocalizedString("TimeOffRequest_Description", comment: "")
     }
     
+    private func updateWarning(state: WarningState, text: String?, color: UIColor?) {
+        print("🔔 updateWarning called → newState: \(state), currentState: \(currentWarningState)")
+//        guard state != currentWarningState else {
+//            print("⚠️ Same state, skipping animation")
+//            return
+//        }
+        currentWarningState = state
+
+        WarningLabel.text = text
+        WarningLabel.backgroundColor = color
+
+        if state == .hidden {
+            print("❌ Hiding warning")
+            warningContainer.isHidden = true
+            warningContainer.alpha = 0
+            UIView.animate(withDuration: 0.15) {
+                self.warningContainer.alpha = 0
+                self.dynamicStackView.layoutIfNeeded()
+            }
+        } else {
+            print("✅ Showing warning: \(text ?? "")")
+            warningContainer.isHidden = false
+            warningContainer.alpha = 0
+            UIView.animate(withDuration: 0.15) {
+                self.warningContainer.alpha = 1
+                self.dynamicStackView.layoutIfNeeded()
+            }
+        }
+    }
+
 }

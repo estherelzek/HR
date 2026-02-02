@@ -133,6 +133,11 @@ class ViewController: UIViewController {
                     bottomBarView.isHidden = true
                     titlesBarView.isHidden = true
                     switchTo(viewController: fingerprintVC)
+                }  else if protectionMethod == "faceID" {
+                        let fingerprintVC = FaceAuthenticationViewController(nibName: "FaceAuthenticationViewController", bundle: nil)
+                        bottomBarView.isHidden = true
+                        titlesBarView.isHidden = true
+                        switchTo(viewController: fingerprintVC)
                 } else {
                     let checkVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
                     bottomBarView.isHidden = false

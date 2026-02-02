@@ -87,7 +87,7 @@ class FaceAuthenticationViewController: UIViewController {
     // MARK: - Success
     private func handleSuccess() {
         print("➡️ Proceeding to next screen")
-        goToChecking()
+        goToCheckingVC()
         // OR: dismiss(animated: true)
     }
 

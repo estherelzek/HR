@@ -84,7 +84,7 @@ class FingerprintViewController: UIViewController {
     // MARK: - Success
     private func handleSuccess() {
         print("➡️ Proceeding after Touch ID success")
-        goToChecking()
+        goToCheckingVC()
         // OR dismiss(animated: true)
     }
 
