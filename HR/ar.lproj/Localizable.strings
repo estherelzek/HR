@@ -139,6 +139,9 @@
 "Save" = "حفظ";
 "Cancel" = "إلغاء";
 "TimeOffRequest_Description" = "ملحوظه";
+"attendance_processing" = "جاري معالجة تسجيل الحضور...";
+"checking_in_title" = "تسجيل الحضور";
+"checking_out_title" = "تسجيل الانصراف";
 
 /* Titles */
 "pin_set_title" = "قم بتعيين رقم سري مكون من 4 أرقام";

@@ -140,7 +140,7 @@ class TimeOffRequestViewController: UIViewController {
             endDateCalender.isHidden = false
         case .halfDay:
             startDateCalender.isHidden = false
-            MorningOrNightTextField.isHidden = false
+            endDateCalender.isHidden = false
             halfDayButton.isHidden = false
         case .hour:
             startDateCalender.isHidden = false

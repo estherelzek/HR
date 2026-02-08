@@ -18,6 +18,7 @@ final class EmployeeTimeOffViewModel {
         let endpoint = API.getEmployeeTimeOffs(token: token, action: "time_off_status")
         
         NetworkManager.shared.requestDecodable(endpoint, as: EmployeeTimeOffResponse.self) { result in
+            print("result Of time off : \(result)")
             switch result {
             case .success(let response):
                 completion(.success(response.result))

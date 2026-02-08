@@ -134,6 +134,9 @@
 "Save" = "Save";
 "Cancel" = "Cancel";
 "TimeOffRequest_Description" = "Description";
+"attendance_processing" = "Processing your attendance...";
+"checking_in_title" = "Checking In";
+"checking_out_title" = "Checking Out";
 
 //
 /* Titles */

@@ -128,8 +128,8 @@ class ResultOfRequestAlartViewController: UIViewController {
             leaveId = daily.leaveID
             print("Daily leave for \(daily.durationDays) days")
         } else if let hourly = record as? HourlyRecord {
-            let from = hourly.requestHourFrom.formattedHour(using: hourly.leaveDay)
-            let to = hourly.requestHourTo.formattedHour(using: hourly.leaveDay)
+            let from = hourly.requestHourFrom?.formattedHour(using: hourly.leaveDay)
+            let to = hourly.requestHourTo?.formattedHour(using: hourly.leaveDay)
 
             dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"
             dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"

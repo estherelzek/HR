@@ -71,32 +71,38 @@ class CheckingVC: UIViewController {
 
     // MARK: - Button Action
     @IBAction func checkingButtonTapped(_ sender: Any) {
-        // Disable UI and show processing message
         isLoadingAttendance = true
-        showAttendanceProcessingMessage(for: isCheckedIn ? "check_out" : "check_in")
         checkingButton.isEnabled = false
         
-        // Confirm check-out if already checked in
-        if isCheckedIn {
-            let hoursText = workedHours != nil ? String(format: "%.2f hours", workedHours!) : "Unknown"
-            let alert = UIAlertController(
-                title: "Confirm Check-Out",
-                message: "You’ve worked \(hoursText) today. Are you sure you want to check out?",
-                preferredStyle: .alert
-            )
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { [weak self] _ in
-                self?.isLoadingAttendance = false
-                self?.checkingButton.isEnabled = true
-            })
-            alert.addAction(UIAlertAction(title: "Check Out", style: .destructive) { [weak self] _ in
-                self?.performCheckInOut(isCheckedIn: true)
-            })
-            present(alert, animated: true)
-        } else {
-            // Direct check-in
-            performCheckInOut(isCheckedIn: false)
+        // Fetch latest attendance status first
+        fetchAttendanceStatus { [weak self] in
+            guard let self = self else { return }
+            self.isLoadingAttendance = false
+            
+            // Confirm check-out if already checked in
+            if self.isCheckedIn {
+                let hoursText = self.workedHours != nil ? String(format: "%.2f hours", self.workedHours!) : "Unknown"
+                let alert = UIAlertController(
+                    title: "Confirm Check-Out",
+                    message: "You’ve worked \(hoursText) today. Are you sure you want to check out?",
+                    preferredStyle: .alert
+                )
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                    self.finishLoadingUI()
+                })
+                alert.addAction(UIAlertAction(title: "Check Out", style: .destructive) { _ in
+                    self.performCheckInOut(isCheckedIn: true)
+                })
+                self.present(alert, animated: true)
+            } else {
+                // Direct check-in
+                self.performCheckInOut(isCheckedIn: false)
+            }
         }
+        
+        showAttendanceProcessingMessage(for: isCheckedIn ? "check_out" : "check_in")
     }
+
     
     private func performCheckInOut(isCheckedIn: Bool) {
         self.isCheckedIn = !isCheckedIn
@@ -108,8 +114,7 @@ class CheckingVC: UIViewController {
                 if NetworkListener.shared.isConnected {
                     print("✅ Online → fetching status")
                     self.fetchAttendanceStatus {
-                        self.isLoadingAttendance = false
-                        self.reloadTexts()
+                        self.finishLoadingUI()
                     }
                 } else {
                     print("⚠️ Offline → request saved locally")
@@ -123,11 +128,16 @@ class CheckingVC: UIViewController {
                             : "You're currently offline. Your check-out request has been saved locally and will be sent automatically once you reconnect to the network."
                         )
                     }
-                    self.isLoadingAttendance = false
-                    self.reloadTexts()
+                    self.finishLoadingUI()
                 }
             }
         }
+    }
+
+    private func finishLoadingUI() {
+        isLoadingAttendance = false
+        checkingButton.isEnabled = true
+        reloadTexts()
     }
 
     // MARK: - Fetch Attendance Status

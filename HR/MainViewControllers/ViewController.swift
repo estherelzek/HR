@@ -85,10 +85,10 @@ class ViewController: UIViewController {
     
     func startApp() {
         // 🔴 IMPORTANT: do not override notification navigation
-           if UserDefaults.standard.bool(forKey: "openedFromNotification") {
-               print("🚀 Opened from notification → skip startApp navigation")
-               return
-           }
+//           if UserDefaults.standard.bool(forKey: "openedFromNotification") {
+//               print("🚀 Opened from notification → skip startApp navigation")
+//               return
+//           }
 
         let companyId = UserDefaults.standard.string(forKey: "companyIdKey") ?? ""
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
@@ -181,7 +181,7 @@ class ViewController: UIViewController {
     
     @objc private func openNotificationsFromPush(_ notification: Notification) {
 
-        UserDefaults.standard.set(false, forKey: "openedFromNotification")
+        UserDefaults.standard.removeObject(forKey: "openedFromNotification")
 
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
         guard !token.isEmpty else {
@@ -189,11 +189,7 @@ class ViewController: UIViewController {
             return
         }
 
-        let notificationVC = NotificationViewController(
-            nibName: "NotificationViewController",
-            bundle: nil
-        )
-
+        let notificationVC = NotificationViewController(nibName: "NotificationViewController", bundle: nil)
         homeButton.tintColor = .lightGray
         timeOffButton.tintColor = .lightGray
         settingButton.tintColor = .lightGray
