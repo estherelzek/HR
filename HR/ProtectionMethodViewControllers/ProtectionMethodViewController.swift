@@ -34,7 +34,7 @@ class ProtectionMethodViewController: UIViewController {
         super.viewDidLoad()
         setUpTexts()
         setUpTextFields()
-       // detectAvailableBiometric()
+        detectAvailableBiometric()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
     }
    

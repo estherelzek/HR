@@ -17,25 +17,26 @@ final class AttendanceViewModel {
     var onError: ((String) -> Void)?
     var onLocationError: ((String) -> Void)?
     var onLocationPermissionDenied: (() -> Void)?
-//    var onErrorMessage: ((String) -> Void)?   // 🔥 for alerts
-        init() {
-            locationService.onPermissionDenied = { [weak self] in
-                self?.onLocationPermissionDenied?()
-            }
+    var tokenVM = GenerateTokenViewModel()
+    //    var onErrorMessage: ((String) -> Void)?   // 🔥 for alerts
+    init() {
+        locationService.onPermissionDenied = { [weak self] in
+            self?.onLocationPermissionDenied?()
         }
+    }
     // MARK: - Attendance Requests
     func checkIn(token: String, lat: String, lng: String, action_time: String ,completion: @escaping (Result<AttendanceResponse, APIError>) -> Void) {
         print("📤 Sending CHECK-IN request with token=\(token), lat=\(lat), lng=\(lng) , action_time=\(action_time)")
         let endpoint = API.employeeAttendance(action: "check_in", token: token, lat: lat, lng: lng, action_time: action_time)
         NetworkManager.shared.requestDecodable(endpoint, as: AttendanceResponse.self, completion: completion)
     }
-
+    
     func checkOut(token: String, lat: String, lng: String, action_time: String , completion: @escaping (Result<AttendanceResponse, APIError>) -> Void) {
         print("📤 Sending CHECK-OUT request with token=\(token), lat=\(lat), lng=\(lng) , action_time=\(action_time)")
         let endpoint = API.employeeAttendance(action: "check_out", token: token, lat: lat, lng: lng, action_time: action_time)
         NetworkManager.shared.requestDecodable(endpoint, as: AttendanceResponse.self, completion: completion)
     }
-
+    
     func status(token: String, completion: @escaping (Result<AttendanceResponse, APIError>) -> Void) {
         print("📤 Sending STATUS request with token=\(token)")
         let endpoint = API.employeeAttendance(action: "status", token: token, lat: nil, lng: nil)
@@ -53,9 +54,9 @@ final class AttendanceViewModel {
         print("def: \(def)")
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
         let action = isCheckedIn ? "check_in" : "check_out"
-
+        
         print("🔘 performCheckInOut called → isCheckedIn=\(isCheckedIn), action=\(action), workedHours=\(String(describing: workedHours))")
-
+        
         proceedAttendanceAction(action, token: token) { success in
             print(success ? "✅ \(action) completed successfully." : "❌ \(action) failed.")
             DispatchQueue.main.async {
@@ -63,29 +64,29 @@ final class AttendanceViewModel {
             }
         }
     }
-
+    
     private func proceedAttendanceAction(
         _ action: String,
         token: String,
         completion: @escaping (Bool) -> Void
     ) {
         print("📍 Requesting location for action = \(action)")
-
+        
         locationService.requestLocation { [weak self] coordinate in
             guard let self = self else {
                 completion(false)
                 return
             }
-
+            
             guard let userCoordinate = coordinate else {
                 print("❌ Failed to fetch location - Cancelling attendance action")
                 self.onLocationError?("Unable to fetch location. Please ensure location services are enabled.")
                 completion(false)
                 return
             }
-
+            
             print("📍 User Location → lat: \(userCoordinate.latitude), lng: \(userCoordinate.longitude)")
-
+            
             self.continueWithAttendanceFlow(
                 action: action,
                 token: token,
@@ -94,7 +95,7 @@ final class AttendanceViewModel {
             )
         }
     }
-
+    
     private func continueWithAttendanceFlow(
         action: String,
         token: String,
@@ -103,35 +104,35 @@ final class AttendanceViewModel {
     ) {
         let allBranches = UserDefaults.standard.companyBranches
         let allowedBranchIDs = UserDefaults.standard.allowedBranchIDs
-
+        
         print("🏢 Total Company Branches: \(allBranches.count)")
         print("🟦 Employee allowed branches: \(allowedBranchIDs)")
-
+        
         var matchedBranchID: Int?
-
+        
         for branch in allBranches {
             let branchLocation = CLLocation(latitude: branch.latitude, longitude: branch.longitude)
             let userLocation = CLLocation(latitude: userCoordinate.latitude, longitude: userCoordinate.longitude)
             let distance = userLocation.distance(from: branchLocation)
-
+            
             print("🔍 Branch \(branch.id) → dist: \(distance), allowed: \(branch.allowedDistance)")
-
+            
             if distance <= branch.allowedDistance {
                 matchedBranchID = branch.id
                 print("✅ User inside branch ID \(branch.id)")
                 break
             }
         }
-
+        
         guard let branchID = matchedBranchID else {
             print("❌ User not inside any company branch")
             self.onShowAlert?("You are not inside any company location.", {})
             completion(false)
             return
         }
-
+        
         let isAllowed = allowedBranchIDs.contains(branchID)
-
+        
         if !isAllowed {
             print("⚠️ Branch \(branchID) is NOT allowed for employee")
             self.onShowAlert?(
@@ -139,9 +140,9 @@ final class AttendanceViewModel {
                 {}
             )
         }
-
+        
         print("🟢 Proceeding with attendance → Branch \(branchID)")
-
+        
         self.getServerTime(token: token) { result in
             switch result {
             case .success(let response):
@@ -165,7 +166,7 @@ final class AttendanceViewModel {
             }
         }
     }
-
+    
     private func performAttendanceAction(
         action: String,
         token: String,
@@ -186,14 +187,14 @@ final class AttendanceViewModel {
             }
         }
     }
-
+    
     func calculateClockDifferenceAndWait(completion: @escaping () -> Void) {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
             print("❌ No token found.")
             completion()
             return
         }
-
+        
         getServerTime(token: token) { result in
             switch result {
             case .success(let response):
@@ -202,90 +203,148 @@ final class AttendanceViewModel {
                     completion()
                     return
                 }
-
+                
                 let formatter = DateFormatter()
                 formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                 formatter.timeZone = TimeZone(identifier: response.result?.timezone ?? "UTC")
-
+                
                 guard let serverDate = formatter.date(from: serverTimeString) else {
                     print("❌ Failed to parse server time: \(serverTimeString)")
                     completion()
                     return
                 }
-
+                
                 let localDate = Date()
                 let differenceInMinutes = localDate.timeIntervalSince(serverDate) / 60.0
                 UserDefaults.standard.set(differenceInMinutes, forKey: "clockDiffMinutes")
                 UserDefaults.standard.synchronize()
-
+                
                 print("✅ Clock diff recalculated: \(differenceInMinutes) minutes")
                 completion() // ← Notify caller that we finished
-
+                
             case .failure(let error):
                 print("❌ Failed to recalculate server time: \(error)")
                 completion()
             }
         }
     }
-
-    // MARK: - Result Handling
-    private func handleResult(_ result: Result<AttendanceResponse, APIError>, completion: @escaping (Bool) -> Void) {
-        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
-//showAlert(title: "Error", message: "No token found. Please log in again.")
-            return
-        }
-        guard let companyIdKey = UserDefaults.standard.string(forKey: "companyIdKey") else {
-         //   showAlert(title: "Error", message: "No companyIdKey found. Please log in again.")
-            return
-        }
-        guard let apiKeyKey = UserDefaults.standard.string(forKey: "apiKeyKey") else {
-    //        showAlert(title: "Error", message: "No apiKeyKey found. Please log in again.")
-            return
-        }
-
+    
+    private func handleResult(
+        _ result: Result<AttendanceResponse, APIError>,
+        completion: @escaping (Bool) -> Void
+    ) {
+        
         switch result {
+            
+            // MARK: - SUCCESS RESPONSE
         case .success(let response):
             print("✅ Attendance API success: \(response)")
-            if response.result?.status == "success" {
+            
+            guard let status = response.result?.status else {
+                onError?("Invalid server response.")
+                completion(false)
+                return
+            }
+            
+            if status == "success" {
                 onSuccess?(response)
                 completion(true)
-            }else if response.result?.status == "error" {
-                if  response.result?.errorCode == "INVALID_TOKEN" || response.result?.errorCode == "TOKEN_EXPIRED" {
-                    // esther here
-                    // 🔁 Generate new token and retry
-                    let tokenVM = GenerateTokenViewModel()
-                    tokenVM.generateNewToken(
-                        employeeToken: token,
-                        companyId: companyIdKey,
-                        apiKey: apiKeyKey
-                    ) { 
-                        if let result = tokenVM.tokenResponse {
-                            print("✅ New token generated: \(result.newToken)")
-                            UserDefaults.standard.set(result.newToken, forKey: "employeeToken")
-                            
-                         //   // 🔁 Retry the call after getting new token
-                        //    self.fetchAttendanceStatus()
-                        } else if let error = tokenVM.errorMessage {
-                            print("❌ Failed to regenerate token: \(error)")
-                         //   self.showAlert(title: "Error", message: error)
-                        }
-                    }
-                }
-
-                
-            }else {
-                // here
-                // here 
-                onError?(response.result?.message ?? "Unknown error")
-                completion(false)
+                return
             }
-         
+            
+            // MARK: - ERROR RESPONSE
+            if status == "error" {
+                
+                let errorMessage = response.result?.message ?? "Unknown error"
+                let errorCode = response.result?.errorCode ?? ""
+                
+                // ✅ 1️⃣ Handle 5-minute restriction
+                if errorMessage.localizedCaseInsensitiveContains("5 minute") {
+                    DispatchQueue.main.async {
+                        self.onError?("Please wait 5 minutes before performing this action again.")
+                    }
+                    completion(false)
+                    return
+                }
+                
+                // ✅ 2️⃣ Handle token expiration
+                if errorCode == "INVALID_TOKEN" || errorCode == "TOKEN_EXPIRED" {
+                    regenerateTokenAndRetry(completion: completion)
+                    return
+                }
+                
+                // ✅ 3️⃣ Any other backend error
+                DispatchQueue.main.async {
+                    self.onError?(errorMessage)
+                }
+                completion(false)
+                return
+            }
+            
+            // MARK: - FAILURE RESPONSE
         case .failure(let error):
             print("❌ Attendance API failed: \(error.localizedDescription)")
-        //    onError?(error.localizedDescription)
+            DispatchQueue.main.async {
+                self.onError?(error.localizedDescription)
+            }
             completion(false)
         }
     }
+    
+    private func regenerateTokenAndRetry(completion: @escaping (Bool) -> Void) {
+
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken"),
+              let companyId = UserDefaults.standard.string(forKey: "companyIdKey"),
+              let apiKey = UserDefaults.standard.string(forKey: "apiKeyKey") else {
+
+            DispatchQueue.main.async {
+                self.onError?("Session expired. Please log in again.")
+            }
+            completion(false)
+            return
+        }
+
+        print("🔁 Token expired. Regenerating new token...")
+
+        let tokenVM = GenerateTokenViewModel()
+
+        tokenVM.generateNewToken(
+            employeeToken: token,
+            companyId: companyId,
+            apiKey: apiKey
+        ) { [weak self] in
+
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            if let result = tokenVM.tokenResponse {
+
+                print("✅ New token generated: \(result.newToken)")
+
+                // Save new token
+                UserDefaults.standard.set(result.newToken, forKey: "employeeToken")
+
+                DispatchQueue.main.async {
+                    self.onError?("Session refreshed. Please try again.")
+                }
+
+                completion(false)
+
+            } else if let error = tokenVM.errorMessage {
+
+                print("❌ Failed to regenerate token: \(error)")
+
+                DispatchQueue.main.async {
+                    self.onError?(error)
+                }
+
+                completion(false)
+            }
+        }
+    }
+
 }
 
 // MARK: - Simplified Online Check (no offline saving)

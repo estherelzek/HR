@@ -30,6 +30,7 @@ class NotificationStore {
     func load() -> [NotificationModel] {
         guard let data = UserDefaults.standard.data(forKey: key) else { return [] }
         let items = try? JSONDecoder().decode([NotificationModel].self, from: data)
+        
         return items ?? []
     }
 }

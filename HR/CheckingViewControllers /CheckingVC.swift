@@ -170,7 +170,7 @@ class CheckingVC: UIViewController {
                     }
                 case .failure(let error):
                     print("❌ Request failed: \(error.localizedDescription)")
-                    self.showAlert(title: "Error", message: "Weak Network Connection. Please try again.")
+                    self.showAlert(title: "Error", message: "Weak Network Connection. Please try again.\(error)")
                 }
                 completion?()
             }
@@ -253,9 +253,13 @@ class CheckingVC: UIViewController {
         viewModel.onSuccess = { [weak self] response in
             DispatchQueue.main.async { self?.handleAttendanceSuccess(response) }
         }
-        viewModel.onError = { [weak self] _ in
-            DispatchQueue.main.async { self?.showAlert(title: "Error", message: "Weak Network Connection. Please try again.") }
-        }
+        
+        viewModel.onError = { [weak self] message in
+              DispatchQueue.main.async {
+                  self?.showAlert(title: "Warning", message: message)
+              }
+          }
+
         viewModel.onLocationError = { [weak self] _ in
             DispatchQueue.main.async { self?.showAlert(title: "Location Error", message: "Now We Got Location Permission. Please try again.") }
         }

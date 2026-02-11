@@ -34,28 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         requestNotificationAuthorization()
         application.registerForRemoteNotifications()
         Messaging.messaging().delegate = self
-        
-     #if targetEnvironment(simulator)
- DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-    Messaging.messaging().token { token, error in
-        if let token = token {
-            print("📱 SIMULATOR FCM TOKEN:", token)
-            UserDefaults.standard.mobileToken = token
-        } else {
-            print("❌ SIMULATOR still no FCM token, retrying...")
-            
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                Messaging.messaging().token { token, error in
-                    print("🔧 Second attempt FCM token:", token ?? "none")
-                }
-            }
-        }
-    }
-}
-        
-#endif // targetEnvironment(simulator)
         return true
     }
+    
     func application(_ application: UIApplication,
                      supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         return orientationLock
@@ -118,8 +99,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let title = content.title.isEmpty ? (userInfo["title"] as? String ?? "New") : content.title
         let body = content.body.isEmpty ? (userInfo["body"] as? String ?? "Message") : content.body
         
-        print("🟢 NOTIFICATION RECEIVED (FOREGROUND):", userInfo)
-        saveNotification(title: title, body: body)
+        print("🟢 ========= PUSH RECEIVED (FOREGROUND) =========")
+
+        if let data = try? JSONSerialization.data(withJSONObject: userInfo, options: .prettyPrinted),
+           let jsonString = String(data: data, encoding: .utf8) {
+            print(jsonString)
+        }
+
+        if userInfo["aps"] == nil {
+            print("❌ PROBLEM: 'aps' key is MISSING → This is DATA-ONLY push.")
+        } else {
+            print("✅ 'aps' key exists.")
+        }
+
+        print("🟢 ==============================================")
+
+   //     saveNotification(title: title, body: body)
         completionHandler([.banner, .sound, .badge])
     }
 
@@ -128,13 +123,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        let userInfo = response.notification.request.content.userInfo
 
-        saveNotification(
-            title: response.notification.request.content.title,
-            body: response.notification.request.content.body
-        )
-        
         UserDefaults.standard.set(true, forKey: "openedFromNotification")
 
         NotificationCenter.default.post(
@@ -142,8 +131,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             object: nil,
             userInfo: response.notification.request.content.userInfo
         )
+
         completionHandler()
     }
+
 
     // MARK: - Background Push
     func application(
@@ -151,12 +142,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         didReceiveRemoteNotification userInfo: [AnyHashable : Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
-        print("🟡 NOTIFICATION RECEIVED (BACKGROUND)")
-        print(userInfo)
+        print("🟡 ========= PUSH RECEIVED (BACKGROUND) =========")
+
+        if let data = try? JSONSerialization.data(withJSONObject: userInfo, options: .prettyPrinted),
+           let jsonString = String(data: data, encoding: .utf8) {
+            print(jsonString)
+        }
+
+        if userInfo["aps"] == nil {
+            print("❌ PROBLEM: 'aps' key is MISSING → iOS will NOT display notification when app is terminated.")
+        } else {
+            print("✅ 'aps' key exists.")
+        }
+
+        print("🟡 ==============================================")
+
         let title = userInfo["title"] as? String ?? "New"
         let body = userInfo["body"] as? String ?? "Message"
         saveNotification(title: title, body: body)
-        showNotification(title: title, body: body)
+       // showNotification(title: title, body: body)
         completionHandler(.newData)
     }
 
