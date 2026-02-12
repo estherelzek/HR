@@ -243,7 +243,7 @@ class TimeOffViewController: UIViewController {
 
                         self?.calender.reloadData()
                     case .failure(let error):
-                        print("❌ Error: \(error)")
+                        self?.showAlert(title: NSLocalizedString("error", comment: ""), message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
                     }
                     self?.loaderIndicator.stopAnimating()
                     self?.loaderIndicator.hidesWhenStopped = true

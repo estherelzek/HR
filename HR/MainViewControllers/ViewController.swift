@@ -17,6 +17,13 @@ class ViewController: UIViewController {
     @IBOutlet weak var bottomBarView: UIStackView!
     @IBOutlet weak var notificationButton: UIButton!
     @IBOutlet weak var titlesBarView: UIStackView!
+    
+    @IBOutlet weak var homeTitleLabel: UILabel!
+    @IBOutlet weak var timeOffTitleLabel: UILabel!
+    @IBOutlet weak var notificationTitleLabel: UILabel!
+    @IBOutlet weak var moreTitleLabel: UILabel!
+    
+    
     private var currentVC: UIViewController?
     private var moreMenuView: UIView?
 
@@ -31,7 +38,7 @@ class ViewController: UIViewController {
                name: .openNotificationsScreen,
                object: nil
            )
-     //   setupMoreMenu()
+       setupMoreMenu()
     }
     
     // MARK: - Bottom Bar Button Actions
@@ -65,30 +72,25 @@ class ViewController: UIViewController {
     }
     
     @IBAction func settingButtonTapped(_ sender: Any) {
-        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
-        homeButton.tintColor = .lightGray
-        timeOffButton.tintColor = .lightGray
-        notificationButton.tintColor = .lightGray
-        settingButton.tintColor = .purplecolor
-        switchTo(viewController: settingVC)
-        
-        //
-//        let settingVC = MainLunchViewController(nibName: "MainLunchViewController", bundle: nil)
+     //   let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
 //        homeButton.tintColor = .lightGray
 //        timeOffButton.tintColor = .lightGray
 //        notificationButton.tintColor = .lightGray
 //        settingButton.tintColor = .purplecolor
 //        switchTo(viewController: settingVC)
+        
         //
-     //   showMoreMenu()
+        let settingVC = MainLunchViewController(nibName: "MainLunchViewController", bundle: nil)
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .lightGray
+        notificationButton.tintColor = .lightGray
+        settingButton.tintColor = .purplecolor
+        switchTo(viewController: settingVC)
+        //
+        showMoreMenu()
     }
     
     func startApp() {
-        // 🔴 IMPORTANT: do not override notification navigation
-//           if UserDefaults.standard.bool(forKey: "openedFromNotification") {
-//               print("🚀 Opened from notification → skip startApp navigation")
-//               return
-//           }
 
         let companyId = UserDefaults.standard.string(forKey: "companyIdKey") ?? ""
         let token = UserDefaults.standard.string(forKey: "employeeToken") ?? ""
@@ -169,15 +171,29 @@ class ViewController: UIViewController {
             currentVC = newVC
         }
     
-    func setUpTextFields() {
-        homeButton.setTitle(NSLocalizedString("", comment: ""), for: .normal)
-        settingButton.setTitle(NSLocalizedString("", comment: ""), for: .normal)
-        timeOffButton.setTitle(NSLocalizedString("", comment: ""), for: .normal)
-    }
-
     @objc private func languageChanged() {
         setUpTextFields()
+        
+        // Refresh UIMenu titles
+        updateMoreMenuTitles()
+        
+        // Refresh custom menu view if visible
+        if let menuView = moreMenuView {
+            for (index, subview) in menuView.subviews.enumerated() {
+                if let btn = subview as? UIButton {
+                    btn.setTitle(index == 0
+                                 ? NSLocalizedString("settings_title", comment: "")
+                                 : NSLocalizedString("lunch_title", comment: ""),
+                                 for: .normal)
+                    
+                    // Adjust alignment for Arabic
+                    let isArabic = LanguageManager.shared.currentLanguage() == "ar"
+                    btn.contentHorizontalAlignment = isArabic ? .right : .left
+                }
+            }
+        }
     }
+
     
     @objc private func openNotificationsFromPush(_ notification: Notification) {
 
@@ -198,17 +214,23 @@ class ViewController: UIViewController {
         titlesBarView.isHidden = false
         switchTo(viewController: notificationVC)
     }
+    
     private func setupMoreMenu() {
+        updateMoreMenuTitles()
+    }
 
+    // Refresh the menu titles when language changes
+    private func updateMoreMenuTitles() {
+        // UIMenu version
         let settingsAction = UIAction(
-            title: "Settings",
+            title: NSLocalizedString("settings_title", comment: ""),
             image: UIImage(systemName: "gearshape")
         ) { [weak self] _ in
             self?.openSettings()
         }
 
         let lunchAction = UIAction(
-            title: "Lunch",
+            title: NSLocalizedString("lunch_title", comment: ""),
             image: UIImage(systemName: "fork.knife")
         ) { [weak self] _ in
             self?.openLunch()
@@ -221,8 +243,9 @@ class ViewController: UIViewController {
         )
 
         settingButton.menu = menu
-        settingButton.showsMenuAsPrimaryAction = true // 🔥 tap opens menu
+        settingButton.showsMenuAsPrimaryAction = true
     }
+
     @objc private func openSettings() {
         let settingVC = SettingScreenViewController(
             nibName: "SettingScreenViewController",
@@ -250,68 +273,82 @@ class ViewController: UIViewController {
 
         switchTo(viewController: lunchVC)
     }
-//    private func showMoreMenu() {
-//
-//        // Prevent duplicates
-//        if moreMenuView != nil {
-//            hideMoreMenu()
-//            return
-//        }
-//
-//        let menuWidth: CGFloat = 160
-//        let menuHeight: CGFloat = 100
-//
-//        let menuView = UIView()
-//        menuView.backgroundColor = .white
-//        menuView.layer.cornerRadius = 12
-//        menuView.layer.shadowColor = UIColor.black.cgColor
-//        menuView.layer.shadowOpacity = 0.15
-//        menuView.layer.shadowRadius = 6
-//        menuView.layer.shadowOffset = CGSize(width: 0, height: 4)
-//
-//        // Convert button frame to main view
-//        let buttonFrame = settingButton.superview?.convert(settingButton.frame, to: view) ?? .zero
-//
-//        menuView.frame = CGRect(
-//            x: buttonFrame.midX - menuWidth / 2,
-//            y: buttonFrame.minY - menuHeight - 8,
-//            width: menuWidth,
-//            height: menuHeight
-//        )
-//
-//        // Buttons
-//        let settingsBtn = createMenuButton(title: "Settings", y: 0)
-//        settingsBtn.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
-//
-//        let lunchBtn = createMenuButton(title: "Lunch", y: 50)
-//        lunchBtn.addTarget(self, action: #selector(openLunch), for: .touchUpInside)
-//
-//        menuView.addSubview(settingsBtn)
-//        menuView.addSubview(lunchBtn)
-//
-//        view.addSubview(menuView)
-//        moreMenuView = menuView
-//
-//        // Animate
-//        menuView.alpha = 0
-//        menuView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
-//
-//        UIView.animate(withDuration: 0.2) {
-//            menuView.alpha = 1
-//            menuView.transform = .identity
-//        }
-//
-//        addDismissTap()
-//    }
+    private func showMoreMenu() {
+
+        // Prevent duplicates
+        if moreMenuView != nil {
+            hideMoreMenu()
+            return
+        }
+
+        let menuWidth: CGFloat = 160
+        let menuHeight: CGFloat = 100
+
+        let menuView = UIView()
+        menuView.backgroundColor = .white
+        menuView.layer.cornerRadius = 12
+        menuView.layer.shadowColor = UIColor.black.cgColor
+        menuView.layer.shadowOpacity = 0.15
+        menuView.layer.shadowRadius = 6
+        menuView.layer.shadowOffset = CGSize(width: 0, height: 4)
+
+        // Convert button frame to main view
+        let buttonFrame = settingButton.superview?.convert(settingButton.frame, to: view) ?? .zero
+
+        menuView.frame = CGRect(
+            x: buttonFrame.midX - menuWidth / 2,
+            y: buttonFrame.minY - menuHeight - 8,
+            width: menuWidth,
+            height: menuHeight
+        )
+
+        // Buttons
+        let settingsBtn = createMenuButton(
+            title: NSLocalizedString("settings_title", comment: ""),
+            y: 0
+        )
+
+        settingsBtn.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
+
+        let lunchBtn = createMenuButton(
+            title: NSLocalizedString("lunch_title", comment: ""),
+            y: 50
+        )
+
+        lunchBtn.addTarget(self, action: #selector(openLunch), for: .touchUpInside)
+
+        menuView.addSubview(settingsBtn)
+        menuView.addSubview(lunchBtn)
+
+        view.addSubview(menuView)
+        moreMenuView = menuView
+
+        // Animate
+        menuView.alpha = 0
+        menuView.transform = CGAffineTransform(scaleX: 0.95, y: 0.95)
+
+        UIView.animate(withDuration: 0.2) {
+            menuView.alpha = 1
+            menuView.transform = .identity
+        }
+
+        addDismissTap()
+    }
+    
     private func createMenuButton(title: String, y: CGFloat) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
         button.setTitleColor(.black, for: .normal)
-        button.contentHorizontalAlignment = .left
+        
+        let isArabic = LanguageManager.shared.currentLanguage() == "ar"
+        button.contentHorizontalAlignment = isArabic ? .right : .left
+        
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
         button.frame = CGRect(x: 12, y: y, width: 136, height: 50)
+        
         return button
     }
+
     private func hideMoreMenu() {
         UIView.animate(withDuration: 0.15, animations: {
             self.moreMenuView?.alpha = 0
@@ -328,6 +365,38 @@ class ViewController: UIViewController {
 
     @objc private func backgroundTapped() {
         hideMoreMenu()
+    }
+    func setUpTextFields() {
+        
+        // MARK: - Localized Titles
+        homeTitleLabel.text = NSLocalizedString("home_title", comment: "")
+        timeOffTitleLabel.text = NSLocalizedString("time_off_title", comment: "")
+        notificationTitleLabel.text = NSLocalizedString("notification_title", comment: "")
+        moreTitleLabel.text = NSLocalizedString("more_title", comment: "")
+        
+        let isArabic = LanguageManager.shared.currentLanguage() == "ar"
+        
+        // MARK: - RTL / LTR Handling
+        if isArabic {
+            view.semanticContentAttribute = .forceRightToLeft
+            bottomBarView.semanticContentAttribute = .forceRightToLeft
+            titlesBarView.semanticContentAttribute = .forceRightToLeft
+            
+//            homeTitleLabel.textAlignment = .right
+//            timeOffTitleLabel.textAlignment = .right
+//            notificationTitleLabel.textAlignment = .right
+//            moreTitleLabel.textAlignment = .right
+            
+        } else {
+            view.semanticContentAttribute = .forceLeftToRight
+            bottomBarView.semanticContentAttribute = .forceLeftToRight
+            titlesBarView.semanticContentAttribute = .forceLeftToRight
+            
+//            homeTitleLabel.textAlignment = .left
+//            timeOffTitleLabel.textAlignment = .left
+//            notificationTitleLabel.textAlignment = .left
+//            moreTitleLabel.textAlignment = .left
+        }
     }
 
 }

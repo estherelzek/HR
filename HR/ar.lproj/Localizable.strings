@@ -142,7 +142,12 @@
 "attendance_processing" = "جاري معالجة تسجيل الحضور...";
 "checking_in_title" = "تسجيل الحضور";
 "checking_out_title" = "تسجيل الانصراف";
-
+///////////////////
+/* Home Tabs */
+"home_title" = "الرئيسية";
+"time_off_title" = "إجازات";
+"notification_title" = "الإشعارات";
+"more_title" = "المزيد";
 /* Titles */
 "pin_set_title" = "قم بتعيين رقم سري مكون من 4 أرقام";
 "pin_confirm_title" = "أكد الرقم السري";
@@ -173,3 +178,79 @@
 "logout_cancel" = "إلغاء";
 "use_face_id" = "استخدام التعرف على الوجه";
 
+
+//
+/* Attendance Titles */
+"checked_in_title" = "أنت مسجل حضور";
+"checked_out_title" = "أنت مسجل انصراف";
+"checking_in_title" = "جارٍ تسجيل الحضور...";
+"checking_out_title" = "جارٍ تسجيل الانصراف...";
+
+/* Buttons */
+"checked_in_button" = "تسجيل انصراف";
+"checked_out_button" = "تسجيل حضور";
+
+/* Descriptions */
+"checked_in_description" = "أنت مسجل حضور حالياً.";
+"checked_in_description_with_time" = "تم تسجيل الحضور في %@";
+"checked_out_description" = "أنت مسجل انصراف حالياً.";
+"checked_out_description_with_time" = "آخر تسجيل انصراف في %@ • عدد الساعات %.2f";
+"attendance_processing" = "جارٍ معالجة طلبك... الرجاء الانتظار.";
+
+/* Alerts - General */
+"alert_warning_title" = "تنبيه";
+"alert_error_title" = "خطأ";
+"alert_success_title" = "نجاح";
+"alert_attention_title" = "ملاحظة";
+
+/* 5 Minute Restriction */
+"error_wait_5_minutes" = "يرجى الانتظار 5 دقائق قبل تنفيذ هذا الإجراء مرة أخرى.";
+
+/* Location Errors */
+"location_error_title" = "خطأ في الموقع";
+"location_permission_required_title" = "مطلوب إذن الموقع";
+"location_permission_required_message" = "يتطلب تسجيل الحضور أو الانصراف تفعيل إذن الموقع. يرجى تفعيله من الإعدادات.";
+"location_outside_area" = "أنت خارج نطاق الفرع المسموح.";
+"location_branch_not_allowed" = "غير مسموح لك بتسجيل الحضور أو الانصراف من هذا الفرع.";
+"location_unavailable" = "تعذر تحديد موقعك الحالي. يرجى المحاولة مرة أخرى.";
+
+/* Token */
+"session_expired" = "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.";
+
+/* Offline */
+"offline_title" = "وضع عدم الاتصال";
+"offline_checkin_message" = "أنت حالياً غير متصل بالإنترنت. تم حفظ طلب تسجيل الحضور وسيتم إرساله تلقائياً عند عودة الاتصال.";
+"offline_checkout_message" = "أنت حالياً غير متصل بالإنترنت. تم حفظ طلب تسجيل الانصراف وسيتم إرساله تلقائياً عند عودة الاتصال.";
+
+/* Confirmation */
+"confirm_checkout_title" = "تأكيد تسجيل الانصراف";
+"confirm_checkout_message" = "لقد عملت %@ اليوم. هل أنت متأكد من تسجيل الانصراف؟";
+"cancel_button" = "إلغاء";
+"confirm_button" = "تأكيد";
+"open_settings_button" = "فتح الإعدادات";
+"ok_button" = "موافق";
+
+/* Settings & Lunch */
+"settings_title" = "الإعدادات";
+"lunch_title" = "الغداء";
+
+
+
+//
+"alert_not_in_company_location" = "أنت لست داخل أي موقع للشركة.";
+"alert_branch_not_allowed" = "هذا ليس موقعك المسموح به. سيتم تسجيل الحضور مع تحذير.";
+"alert_wait_5_minutes" = "يرجى الانتظار 5 دقائق قبل إجراء هذا الإجراء مرة أخرى.";
+"alert_invalid_location" = "موقع غير صالح. لا يمكن تسجيل الحضور.";
+"alert_session_expired" = "انتهت صلاحية الجلسة. يرجى تسجيل الدخول مرة أخرى.";
+"alert_session_refreshed" = "تم تحديث الجلسة. يرجى المحاولة مرة أخرى.";
+"alert_invalid_server_response" = "استجابة الخادم غير صالحة.";
+"alert_clock_tampering" = "لقد قمت بتغيير ساعة جهازك. يرجى الاتصال بالإنترنت قبل المتابعة.";
+"alert_clock_changed_title" = "تم تغيير الساعة";
+
+"alert_clock_tampering" = "لقد قمت بتغيير ساعة جهازك. يرجى الاتصال بالإنترنت قبل المتابعة.";
+"alert_clock_changed_title" = "تم تغيير الساعة";
+"unknown" = "غير معروف";
+"pin_saved_success" = "✅ تم حفظ الرقم السري بنجاح! أدخله الآن للمتابعة.";
+"pin_mismatch_error" = "❌ الأرقام السرية غير متطابقة. حاول مرة أخرى.";
+"weak_network_message" = "اتصال الشبكة ضعيف. الرجاء المحاولة مرة أخرى.";
+"hourly_leave_error" = "نجاح الطلب: يجب إدخال وقت البداية ووقت النهاية للإجازة بالساعة.";

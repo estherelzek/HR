@@ -71,10 +71,10 @@ class PinCodeViewController: UIViewController, UITextFieldDelegate {
                 mode = .enter
                 clearTextFields()
                 configureUIForMode()
-                hintLabel.text = "✅ PIN saved successfully! Now enter to continue."
+                hintLabel.text = NSLocalizedString("pin_saved_success", comment: "")
                 hintLabel.textColor = .green
             } else {
-                hintLabel.text = "❌ PINs do not match. Try again."
+                hintLabel.text = NSLocalizedString("pin_mismatch_error", comment: "")
                 hintLabel.textColor = .red
                 mode = .set
                 clearTextFields()

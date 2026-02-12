@@ -122,7 +122,7 @@ final class NetworkManager {
 
                 print("offlineRequest: \(offlineRequest)")
                 OfflineURLStorage.shared.save(offlineRequest)
-                completion(.failure(.requestFailed("Weak Network Connection. Please try again.")))
+                completion(.failure(.requestFailed(NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))))
                 return
             }
 

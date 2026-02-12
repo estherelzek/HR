@@ -81,18 +81,22 @@ class CheckingVC: UIViewController {
             
             // Confirm check-out if already checked in
             if self.isCheckedIn {
-                let hoursText = self.workedHours != nil ? String(format: "%.2f hours", self.workedHours!) : "Unknown"
-                let alert = UIAlertController(
-                    title: "Confirm Check-Out",
-                    message: "You’ve worked \(hoursText) today. Are you sure you want to check out?",
-                    preferredStyle: .alert
-                )
-                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+                let hoursText = self.workedHours != nil ? String(format: "%.2f hours", self.workedHours!) : NSLocalizedString("unknown", comment: "")
+                
+                let title = NSLocalizedString("confirm_checkout_title", comment: "")
+                let messageFormat = NSLocalizedString("confirm_checkout_message", comment: "")
+                let message = String(format: messageFormat, hoursText)
+                
+                let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("cancel_button", comment: ""), style: .cancel) { _ in
                     self.finishLoadingUI()
                 })
-                alert.addAction(UIAlertAction(title: "Check Out", style: .destructive) { _ in
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("confirm_button", comment: ""), style: .destructive) { _ in
                     self.performCheckInOut(isCheckedIn: true)
                 })
+                
                 self.present(alert, animated: true)
             } else {
                 // Direct check-in
@@ -102,6 +106,7 @@ class CheckingVC: UIViewController {
         
         showAttendanceProcessingMessage(for: isCheckedIn ? "check_out" : "check_in")
     }
+
 
     
     private func performCheckInOut(isCheckedIn: Bool) {
@@ -170,7 +175,7 @@ class CheckingVC: UIViewController {
                     }
                 case .failure(let error):
                     print("❌ Request failed: \(error.localizedDescription)")
-                    self.showAlert(title: "Error", message: "Weak Network Connection. Please try again.\(error)")
+                    self.showAlert(title: NSLocalizedString("error", comment: ""), message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
                 }
                 completion?()
             }
@@ -188,7 +193,7 @@ class CheckingVC: UIViewController {
                 self.fetchAttendanceStatus()
             } else if let error = tokenVM.errorMessage {
                 print("❌ Failed to regenerate token: \(error)")
-                self.showAlert(title: "Error", message: "Weak Network Connection. Please try again.")
+                self.showAlert(title: NSLocalizedString("error", comment: ""), message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
             }
         }
     }
@@ -248,29 +253,108 @@ class CheckingVC: UIViewController {
         }
         view.isUserInteractionEnabled = !shouldShow
     }
-
     private func setUpLisgnerstoViewModel() {
+        
+        // ✅ SUCCESS
         viewModel.onSuccess = { [weak self] response in
-            DispatchQueue.main.async { self?.handleAttendanceSuccess(response) }
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                
+                self.handleAttendanceSuccess(response)
+                self.finishLoadingUI()
+            }
         }
         
+        
+        // ✅ GENERAL ERRORS
         viewModel.onError = { [weak self] message in
-              DispatchQueue.main.async {
-                  self?.showAlert(title: "Warning", message: message)
-              }
-          }
-
-        viewModel.onLocationError = { [weak self] _ in
-            DispatchQueue.main.async { self?.showAlert(title: "Location Error", message: "Now We Got Location Permission. Please try again.") }
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                
+                self.finishLoadingUI()
+                
+                let lowercasedMessage = message.lowercased()
+                
+                // 🔹 1️⃣ Handle 5-minute restriction (backend sends wrong code sometimes)
+                if lowercasedMessage.contains("5 minute") {
+                    self.showAlert(
+                        title: NSLocalizedString("alert_warning_title", comment: ""),
+                        message: NSLocalizedString("error_wait_5_minutes", comment: "")
+                    )
+                    return
+                }
+                
+                // 🔹 2️⃣ Handle token expiration
+                if lowercasedMessage.contains("token") ||
+                   lowercasedMessage.contains("expired") {
+                    
+                    if let token = UserDefaults.standard.string(forKey: "employeeToken") {
+                        self.handleTokenExpiry(token: token)
+                    } else {
+                        self.showAlert(
+                            title: "Session Expired",
+                            message:NSLocalizedString("session_expired", comment: "")
+                               
+                        )
+                    }
+                    return
+                }
+                
+                // 🔹 3️⃣ Default warning
+                self.showAlert(title: NSLocalizedString("alert_warning_title", comment: ""), message: message)
+            }
         }
+        
+        
+        // ✅ LOCATION ERRORS (Protected Against Backend Mistake)
+        viewModel.onLocationError = { [weak self] message in
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                
+                self.finishLoadingUI()
+                
+                let lowercasedMessage = message.lowercased()
+                
+                // 🚫 Backend bug protection:
+                // If message is about 5 minutes, DO NOT treat as location error
+                if lowercasedMessage.contains("5 minute") {
+                    self.showAlert(
+                        title: NSLocalizedString("alert_warning_title", comment: ""),
+                        message: "Please wait 5 minutes before performing this action again."
+                    )
+                    return
+                }
+                
+                // ✅ Real location problem
+                self.showAlert(
+                    title: "Location Error",
+                    message: message.isEmpty
+                    ? "Unable to verify your location. Please try again."
+                    : message
+                )
+            }
+        }
+        
+        
+        // ✅ GENERIC ALERT (Used for special cases like GPS restriction)
         viewModel.onShowAlert = { [weak self] message, _ in
             DispatchQueue.main.async {
-                let alert = UIAlertController(title: "Location Alert", message: message, preferredStyle: .alert)
-                alert.addAction(UIAlertAction(title: "OK", style: .default))
-                self?.present(alert, animated: true)
+                guard let self = self else { return }
+                
+                self.finishLoadingUI()
+                
+                let alert = UIAlertController(
+                    title: "Alert",
+                    message: message,
+                    preferredStyle: .alert
+                )
+                
+                alert.addAction(UIAlertAction(title: NSLocalizedString("ok_button", comment: ""), style: .default))
+                self.present(alert, animated: true)
             }
         }
     }
+
     
     private func handleAttendanceSuccess(_ response: AttendanceResponse) {
         if response.result?.attendanceStatus == "checked_in" {

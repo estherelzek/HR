@@ -17,8 +17,11 @@ class NotificationTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         selectionStyle = .none
+        let isArabic = LanguageManager.shared.currentLanguage() == "ar"
+        
+        contentView.semanticContentAttribute = isArabic ? .forceRightToLeft : .forceLeftToRight
     }
-    
+
     func configure(with item: NotificationItem) {
         TitLeLabel.text = item.title
         descreptionLable.text = item.description

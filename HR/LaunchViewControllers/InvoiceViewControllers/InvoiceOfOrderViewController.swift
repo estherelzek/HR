@@ -7,34 +7,20 @@
 
 import UIKit
 
-struct Order: Identifiable {
-    let id: UUID
-    var quantity: Int
-    let name: String
-    let price: Double
-   // let note: String?
-}
-
 class InvoiceOfOrderViewController: UIViewController {
     
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var nameLabel: Inspectablelabel!
-  //  @IBOutlet weak var emailLabel: Inspectablelabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var totalLabel: Inspectablelabel!
     @IBOutlet weak var totalPriceLabel: Inspectablelabel!
     @IBOutlet weak var alertView: InspectableView!
+    @IBOutlet weak var orderButton: InspectableButton!
     
-    private var orders: [Order] = [
-          Order(id: UUID(), quantity: 1, name: "Burger", price: 50),
-          Order(id: UUID(), quantity: 2, name: "Pizza", price: 120),
-          Order(id: UUID(), quantity: 1, name: "Fries", price: 30),
-          Order(id: UUID(), quantity: 3, name: "Cola", price: 15),
-          Order(id: UUID(), quantity: 1, name: "Burger", price: 50),
-          Order(id: UUID(), quantity: 2, name: "Pizza", price: 120),
-          Order(id: UUID(), quantity: 1, name: "Fries", price: 30),
-          Order(id: UUID(), quantity: 3, name: "Cola", price: 15)
-      ]
+    private var orders: [Order] {
+        return InvoiceManager.shared.orders
+    }
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +30,14 @@ class InvoiceOfOrderViewController: UIViewController {
         updateTotal()
         animateIn()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tableView.reloadData()
+        updateTotal()
+        updateOrderButtonState()
+    }
+
     
     func setData(){
         var name = UserDefaults.standard.employeeName ?? "Name"
@@ -80,6 +74,7 @@ class InvoiceOfOrderViewController: UIViewController {
         UIView.animate(withDuration: 0.3) {
             self.alertView.transform = .identity
             self.alertView.alpha = 1
+
         }
     }
     
@@ -92,12 +87,28 @@ class InvoiceOfOrderViewController: UIViewController {
             completion?()
         }
     }
+    
+    
     private func updateTotal() {
-        let total = orders.reduce(0) {
-            $0 + (Double($1.quantity) * $1.price)
-        }
+        let total = InvoiceManager.shared.totalPrice()
         totalPriceLabel.text = "\(total) EGP"
     }
+    
+    private func updateOrderButtonState() {
+        guard let orderButton = orderButton else {
+            print("orderButton is nil ❌")
+            return
+        }
+
+        let isEmpty = orders.isEmpty
+        let title = isEmpty ? "Order" : "Update"
+
+        orderButton.setTitle(title, for: .normal)
+        orderButton.isEnabled = !isEmpty
+        orderButton.alpha = isEmpty ? 0.5 : 1.0
+    }
+
+
 
 }
 extension InvoiceOfOrderViewController: UITableViewDataSource, UITableViewDelegate {
@@ -105,6 +116,21 @@ extension InvoiceOfOrderViewController: UITableViewDataSource, UITableViewDelega
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return orders.count
     }
+    
+    // Swipe to delete
+    func tableView(_ tableView: UITableView,
+                   commit editingStyle: UITableViewCell.EditingStyle,
+                   forRowAt indexPath: IndexPath) {
+
+        if editingStyle == .delete {
+            InvoiceManager.shared.removeItem(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            updateTotal()
+            updateOrderButtonState()
+        }
+
+    }
+
 
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -116,20 +142,30 @@ extension InvoiceOfOrderViewController: UITableViewDataSource, UITableViewDelega
 
         let order = orders[indexPath.row]
         cell.configure(with: order)
-
+        
         cell.onIncrease = { [weak self] in
-            self?.orders[indexPath.row].quantity += 1
+            InvoiceManager.shared.increaseQuantity(at: indexPath.row)
             self?.updateTotal()
+            self?.updateOrderButtonState()
             tableView.reloadRows(at: [indexPath], with: .none)
         }
+
 
         cell.onDecrease = { [weak self] in
-            guard order.quantity > 1 else { return }
-            self?.orders[indexPath.row].quantity -= 1
-            self?.updateTotal()
-            tableView.reloadRows(at: [indexPath], with: .none)
-        }
+            guard let self = self else { return }
 
+            let currentQuantity = self.orders[indexPath.row].quantity
+            InvoiceManager.shared.decreaseQuantity(at: indexPath.row)
+
+            if currentQuantity - 1 <= 0 {
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+            } else {
+                tableView.reloadRows(at: [indexPath], with: .none)
+            }
+
+            self.updateTotal()
+            self.updateOrderButtonState()
+        }
         return cell
     }
 }

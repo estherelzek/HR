@@ -247,11 +247,12 @@ class TimeOffRequestViewController: UIViewController {
                         })
                     }
                 else {
-                        self.showAlert(title: "Alert", message:  response.result?.message ?? "")
+                    let message = NSLocalizedString("hourly_leave_error", comment: "")
+                    self.showAlert(title: NSLocalizedString("alert_warning_title", comment: ""), message: message)
                     }
                 case .failure(let error):
                     print("❌ Request Failed: \(error)")
-                    self.showAlert(title: "Error", message: "Weak Network Connection. Please try again.")
+                    self.showAlert(title: NSLocalizedString("error", comment: "") , message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
                 }
             }
         }

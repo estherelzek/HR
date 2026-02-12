@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="alertView" destination="iLT-tR-JRA" id="vGR-gN-unK"/>
                 <outlet property="nameLabel" destination="IDJ-Tm-IbU" id="ut4-FE-9g6"/>
+                <outlet property="orderButton" destination="l0q-d2-RIr" id="ArM-ox-ZwQ"/>
                 <outlet property="tableView" destination="JSg-qy-eSq" id="OJq-1W-Yyo"/>
                 <outlet property="totalLabel" destination="Zc7-YY-dK2" id="5Xb-6M-o5H"/>
                 <outlet property="totalPriceLabel" destination="SdE-Ld-nNT" id="PiJ-tM-59z"/>

@@ -19,29 +19,41 @@ class LanguageManager {
     func setLanguage(_ lang: String) {
         UserDefaults.standard.set([lang], forKey: appleLanguagesKey)
         UserDefaults.standard.synchronize()
+
         Bundle.setLanguage(lang)
-        if lang == "ar" {
-            UIView.appearance().semanticContentAttribute = .forceRightToLeft
-        } else {
-            UIView.appearance().semanticContentAttribute = .forceLeftToRight
-        }
+
+        UIView.appearance().semanticContentAttribute =
+            lang == "ar" ? .forceRightToLeft : .forceLeftToRight
+
         NotificationCenter.default.post(name: NSNotification.Name("LanguageChanged"), object: nil)
+
         reloadAllViewControllers()
     }
-    
+
     private func reloadAllViewControllers() {
         guard let window = UIApplication.shared.windows.first,
               let root = window.rootViewController else { return }
+
         reloadRecursive(from: root)
+        window.rootViewController?.view.setNeedsLayout()
+        window.rootViewController?.view.layoutIfNeeded()
     }
 
     private func reloadRecursive(from vc: UIViewController) {
         if let localizable = vc as? Localizable {
             localizable.reloadTexts()
         }
+
+        vc.view.semanticContentAttribute =
+            currentLanguage() == "ar" ? .forceRightToLeft : .forceLeftToRight
+
+        vc.view.setNeedsLayout()
+        vc.view.layoutIfNeeded()
+
         if let nav = vc as? UINavigationController {
             nav.viewControllers.forEach { reloadRecursive(from: $0) }
         }
+
         if let tab = vc as? UITabBarController {
             tab.viewControllers?.forEach { reloadRecursive(from: $0) }
         }
@@ -49,11 +61,13 @@ class LanguageManager {
         if let presented = vc.presentedViewController {
             reloadRecursive(from: presented)
         }
+
         for child in vc.children {
             reloadRecursive(from: child)
         }
     }
 }
+
 
 private var bundleKey: UInt8 = 0
 extension Bundle {

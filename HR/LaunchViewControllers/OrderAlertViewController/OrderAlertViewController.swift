@@ -74,19 +74,13 @@ class OrderAlertViewController: UIViewController {
 
     
     @IBAction func addToOrderButton(_ sender: Any) {
-//        guard let item = foodItem else { return }
-//
-//        let order = Order(
-//            id: UUID(),
-//            quantity: quantity, name: item.name,
-//            price: unitPrice,
-//            note: noteTextField.text
-//        )
-//
-//        // send order to cart / delegate / notification
-//        animateOut {
-//            self.dismiss(animated: false)
-//        }
+        guard let item = foodItem else { return }
+
+        InvoiceManager.shared.addProduct(item, quantity: quantity)
+
+        animateOut {
+            self.dismiss(animated: false)
+        }
     }
 
     private func populateData() {

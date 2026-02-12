@@ -105,7 +105,7 @@ class FaceAuthenticationViewController: UIViewController {
         )
 
         alert.addAction(UIAlertAction(
-            title: NSLocalizedString("ok", comment: ""),
+            title: NSLocalizedString("ok_button", comment: ""),
             style: .default,
             handler: { _ in
                 print("➡️ Navigating to PIN screen")
@@ -124,7 +124,7 @@ class FaceAuthenticationViewController: UIViewController {
         )
 
         alert.addAction(UIAlertAction(
-            title: NSLocalizedString("ok", comment: ""),
+            title: NSLocalizedString("ok_button", comment: ""),
             style: .default,
             handler: { _ in
                 print("⬅️ Closing Face ID screen")

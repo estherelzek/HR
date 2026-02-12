@@ -149,7 +149,7 @@ class FingerprintViewController: UIViewController {
         )
 
         alert.addAction(UIAlertAction(
-            title: NSLocalizedString("ok", comment: ""),
+            title: NSLocalizedString("ok_button", comment: ""),
             style: .default,
             handler: { _ in
                 print("➡️ Navigating to PIN flow")
@@ -168,7 +168,7 @@ class FingerprintViewController: UIViewController {
         )
 
         alert.addAction(UIAlertAction(
-            title: NSLocalizedString("ok", comment: ""),
+            title: NSLocalizedString("ok_button", comment: ""),
             style: .default,
             handler: { _ in
                 print("⬅️ Closing Touch ID screen")

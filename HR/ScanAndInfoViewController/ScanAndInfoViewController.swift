@@ -298,7 +298,7 @@ extension ScanAndInfoViewController {
             message: "This QR code is not a valid company access key.",
             preferredStyle: .alert
         )
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("ok_button", comment: ""), style: .default))
         present(alert, animated: true)
     }
 

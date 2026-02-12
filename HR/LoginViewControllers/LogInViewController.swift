@@ -143,7 +143,7 @@ class LogInViewController: UIViewController ,UITextFieldDelegate {
         loader.startAnimating()
         guard let email = emailTextField.text, !email.isEmpty,
               let password = passwardTextField.text, !password.isEmpty else {
-            self.showAlert(title: NSLocalizedString("alert", comment: ""), message: NSLocalizedString("please_enter_email_and_password", comment: ""))
+            self.showAlert(title: NSLocalizedString("alert_warning_title", comment: ""), message: NSLocalizedString("please_enter_email_and_password", comment: ""))
             return
         }
         viewModel.login(apiKey: nil, companyId: nil, email: email, password: password)

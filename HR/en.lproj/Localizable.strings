@@ -134,11 +134,21 @@
 "Save" = "Save";
 "Cancel" = "Cancel";
 "TimeOffRequest_Description" = "Description";
-"attendance_processing" = "Processing your attendance...";
+"attendance_processing" = "Processinggggg your attendance...";
 "checking_in_title" = "Checking In";
 "checking_out_title" = "Checking Out";
+"notification_title" = "Notifications";
+///////////////////////////////////////////////
 
-//
+
+/* Settings & Lunch */
+"settings_title" = "Settings";
+"lunch_title" = "Lunch";
+
+"home_title" = "Home";
+"time_off_title" = "Time Off";
+"notification_title" = "Notify";
+"more_title" = "More";
 /* Titles */
 "pin_set_title" = "Set your new 4-digit PIN";
 "pin_confirm_title" = "Confirm your PIN";
@@ -168,3 +178,75 @@
 "logout_ok" = "OK";
 "logout_cancel" = "Cancel";
 "use_face_id" = "Use Face ID";
+
+/* Attendance Titles */
+"checked_in_title" = "You are Checked In";
+"checked_out_title" = "You are Checked Out";
+"checking_in_title" = "Checking In...";
+"checking_out_title" = "Checking Out...";
+
+/* Buttons */
+"checked_in_button" = "Check Out";
+"checked_out_button" = "Check In";
+
+/* Descriptions */
+"checked_in_description" = "You are currently checked in.";
+"checked_in_description_with_time" = "Checked in at %@";
+"checked_out_description" = "You are currently checked out.";
+"checked_out_description_with_time" = "Last check-out at %@ • Worked %.2f hours";
+"attendance_processing" = "Processing your attendance... Please wait.";
+
+/* Alerts - General */
+"alert_warning_title" = "Warning";
+"alert_error_title" = "Error";
+"alert_success_title" = "Success";
+"alert_attention_title" = "Attention";
+
+/* 5 Minute Restriction */
+"error_wait_5_minutes" = "Please wait 5 minutes before performing this action again.";
+
+/* Location Errors */
+"location_error_title" = "Location Error";
+"location_permission_required_title" = "Location Permission Required";
+"location_permission_required_message" = "Location access is required to check in or check out. Please enable it from Settings.";
+"location_outside_area" = "You are outside the allowed branch area.";
+"location_branch_not_allowed" = "You are not allowed to check in or check out from this branch.";
+"location_unavailable" = "Unable to get your current location. Please try again.";
+
+/* Token */
+"session_expired" = "Session expired. Please log in again.";
+
+/* Offline */
+"offline_title" = "Offline Mode";
+"offline_checkin_message" = "You're currently offline. Your check-in request has been saved locally and will be sent automatically once you reconnect.";
+"offline_checkout_message" = "You're currently offline. Your check-out request has been saved locally and will be sent automatically once you reconnect.";
+
+/* Confirmation */
+"confirm_checkout_title" = "Confirm Check-Out";
+"confirm_checkout_message" = "You've worked %@ today. Are you sure you want to check out?";
+"cancel_button" = "Cancel";
+"confirm_button" = "Confirm";
+"open_settings_button" = "Open Settings";
+"ok_button" = "OK";
+
+
+///
+"alert_not_in_company_location" = "You are not inside any company location.";
+"alert_branch_not_allowed" = "This is not your allowed company location. Attendance will be recorded with a warning.";
+"alert_wait_5_minutes" = "Please wait 5 minutes before performing this action again.";
+"alert_invalid_location" = "Invalid location. Cannot record attendance.";
+"alert_session_expired" = "Session expired. Please log in again.";
+"alert_session_refreshed" = "Session refreshed. Please try again.";
+"alert_invalid_server_response" = "Invalid server response.";
+"alert_clock_tampering" = "You’ve changed your device clock. Please reconnect to the internet before proceeding.";
+"alert_clock_changed_title" = "Clock Changed";
+
+
+"alert_clock_tampering" = "You’ve changed your device clock. Please reconnect to the internet before proceeding.";
+"alert_clock_changed_title" = "Clock Changed";
+"unknown" = "Unknown";      // English
+  // Arabic
+"pin_saved_success" = "✅ PIN saved successfully! Now enter to continue.";
+"pin_mismatch_error" = "❌ PINs do not match. Try again.";
+"weak_network_message" = "Weak Network Connection. Please try again.";
+"hourly_leave_error" = "Request Success: Both 'request_hour_from' and 'request_hour_to' are required for hourly leave.";

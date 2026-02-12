@@ -115,7 +115,7 @@ final class LoginViewModel {
                     }
 
                 case .failure(let error):
-                    self.onLoginFailure?("Weak Network Connection. Please try againnnn.")
+                    self.onLoginFailure?(NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
                 }
             }
         }

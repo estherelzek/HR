@@ -24,7 +24,7 @@ class NotificationViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        TitLeLabel.text = "Notifications"
+        setUpTexts()
         setupTableView()
         loadNotifications()
         NotificationCenter.default.addObserver(
@@ -33,6 +33,8 @@ class NotificationViewController: UIViewController {
             name: Notification.Name("NewNotificationSaved"),
             object: nil
         )
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
     }
 
     private func setupTableView() {
@@ -44,7 +46,32 @@ class NotificationViewController: UIViewController {
         )
         niotificationTableView.tableFooterView = UIView()
     }
+    
+    @objc private func languageChanged() {
+        setUpTexts()
+    }
+    private func setUpTexts() {
+        
+        // Title localization
+        TitLeLabel.text = NSLocalizedString("notification_title", comment: "")
+        
+        // Language handling
+        let isArabic = LanguageManager.shared.currentLanguage() == "ar"
+        
+        if isArabic {
+            view.semanticContentAttribute = .forceRightToLeft
+            niotificationTableView.semanticContentAttribute = .forceRightToLeft
+            TitLeLabel.textAlignment = .right
+        } else {
+            view.semanticContentAttribute = .forceLeftToRight
+            niotificationTableView.semanticContentAttribute = .forceLeftToRight
+            TitLeLabel.textAlignment = .left
+        }
+        
+        niotificationTableView.reloadData()
+    }
 
+    
     private func loadNotifications() {
         items = NotificationStore.shared.load().sorted { $0.date > $1.date }
         print("items: \(items.count)")
@@ -95,6 +122,13 @@ extension NotificationViewController: UITableViewDelegate, UITableViewDataSource
         let dateFormatter = DateFormatter()
         dateFormatter.dateStyle = .short
         dateFormatter.timeStyle = .short
+
+        if LanguageManager.shared.currentLanguage() == "ar" {
+            dateFormatter.locale = Locale(identifier: "ar")
+        } else {
+            dateFormatter.locale = Locale(identifier: "en")
+        }
+
         let dateString = dateFormatter.string(from: item.date)
         
         cell.configure(with: NotificationItem(

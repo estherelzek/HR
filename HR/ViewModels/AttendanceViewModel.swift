@@ -79,11 +79,15 @@ final class AttendanceViewModel {
             }
             
             guard let userCoordinate = coordinate else {
-                print("❌ Failed to fetch location - Cancelling attendance action")
-                self.onLocationError?("Unable to fetch location. Please ensure location services are enabled.")
-                completion(false)
+                print("⚠️ Location temporarily unavailable. Retrying...")
+                
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                    self.proceedAttendanceAction(action, token: token, completion: completion)
+                }
+                
                 return
             }
+
             
             print("📍 User Location → lat: \(userCoordinate.latitude), lng: \(userCoordinate.longitude)")
             
@@ -126,7 +130,7 @@ final class AttendanceViewModel {
         
         guard let branchID = matchedBranchID else {
             print("❌ User not inside any company branch")
-            self.onShowAlert?("You are not inside any company location.", {})
+            self.onShowAlert?(NSLocalizedString("alert_not_in_company_location", comment: ""), {})
             completion(false)
             return
         }
@@ -136,7 +140,7 @@ final class AttendanceViewModel {
         if !isAllowed {
             print("⚠️ Branch \(branchID) is NOT allowed for employee")
             self.onShowAlert?(
-                "This is not your allowed company location. Attendance will be recorded with a warning.",
+                NSLocalizedString("alert_branch_not_allowed", comment: ""),
                 {}
             )
         }
@@ -241,7 +245,7 @@ final class AttendanceViewModel {
             print("✅ Attendance API success: \(response)")
             
             guard let status = response.result?.status else {
-                onError?("Invalid server response.")
+                self.onError?(NSLocalizedString("alert_invalid_server_response", comment: ""))
                 completion(false)
                 return
             }
@@ -258,29 +262,42 @@ final class AttendanceViewModel {
                 let errorMessage = response.result?.message ?? "Unknown error"
                 let errorCode = response.result?.errorCode ?? ""
                 
-                // ✅ 1️⃣ Handle 5-minute restriction
+                print("⚠️ Backend error → code: \(errorCode), message: \(errorMessage)")
+                
+                // ✅ 1️⃣ Force handle 5-minute restriction FIRST
                 if errorMessage.localizedCaseInsensitiveContains("5 minute") {
                     DispatchQueue.main.async {
-                        self.onError?("Please wait 5 minutes before performing this action again.")
+                        self.onError?(NSLocalizedString("alert_wait_5_minutes", comment: ""))
                     }
                     completion(false)
                     return
                 }
                 
-                // ✅ 2️⃣ Handle token expiration
+                // ✅ 2️⃣ Handle REAL location error only if message matches location
+                if errorCode == "INVALID_LOCATION" &&
+                   errorMessage.localizedCaseInsensitiveContains("location") {
+                    
+                    DispatchQueue.main.async {
+                        self.onLocationError?(NSLocalizedString("alert_invalid_location", comment: ""))
+                    }
+                    completion(false)
+                    return
+                }
+                
+                // ✅ 3️⃣ Handle token expiration
                 if errorCode == "INVALID_TOKEN" || errorCode == "TOKEN_EXPIRED" {
                     regenerateTokenAndRetry(completion: completion)
                     return
                 }
                 
-                // ✅ 3️⃣ Any other backend error
+                // ✅ 4️⃣ Other errors
                 DispatchQueue.main.async {
                     self.onError?(errorMessage)
                 }
                 completion(false)
                 return
             }
-            
+
             // MARK: - FAILURE RESPONSE
         case .failure(let error):
             print("❌ Attendance API failed: \(error.localizedDescription)")
@@ -298,7 +315,7 @@ final class AttendanceViewModel {
               let apiKey = UserDefaults.standard.string(forKey: "apiKeyKey") else {
 
             DispatchQueue.main.async {
-                self.onError?("Session expired. Please log in again.")
+                self.onError?(NSLocalizedString("alert_session_expired", comment: ""))
             }
             completion(false)
             return
@@ -327,7 +344,7 @@ final class AttendanceViewModel {
                 UserDefaults.standard.set(result.newToken, forKey: "employeeToken")
 
                 DispatchQueue.main.async {
-                    self.onError?("Session refreshed. Please try again.")
+                    self.onError?(NSLocalizedString("alert_session_refreshed", comment: ""))
                 }
 
                 completion(false)
@@ -366,11 +383,12 @@ extension AttendanceViewModel {
 //    }
     
     private func handleClockTamperingAlertAndRecalculate(action: String) {
-        let message = "You’ve changed your device clock. Please reconnect to the internet before proceeding."
-        print("🚫 Clock tampering detected — blocking offline check-in/out.")
-        
-        let alert = UIAlertController(title: "Clock Changed", message: message, preferredStyle: .alert)
-        
+        let message = NSLocalizedString("alert_clock_tampering", comment: "")
+            let alert = UIAlertController(
+                title: NSLocalizedString("alert_clock_changed_title", comment: ""),
+                message: message,
+                preferredStyle: .alert
+            )
         // Placeholder variable so we can reference it inside the closure
         var okAction: UIAlertAction!
         
@@ -423,7 +441,7 @@ extension AttendanceViewModel {
             }
         }
         
-        okAction = UIAlertAction(title: "OK", style: .default, handler: okHandler)
+        okAction = UIAlertAction(title: NSLocalizedString("ok_button", comment: ""), style: .default, handler: okHandler)
         alert.addAction(okAction)
         
         // Present alert on main thread

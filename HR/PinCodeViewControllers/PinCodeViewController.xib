@@ -69,11 +69,11 @@
                     </connections>
                 </button>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Use 4 digits to secure your account" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GMp-7q-wIW">
-                    <rect key="frame" x="32" y="331" width="329" height="50"/>
+                    <rect key="frame" x="0.0" y="331" width="373" height="50"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="HWY-VO-SlQ"/>
                     </constraints>
-                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="16"/>
+                    <fontDescription key="fontDescription" type="system" weight="light" pointSize="14"/>
                     <color key="textColor" systemColor="systemGrayColor"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -82,7 +82,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="35" id="VFa-nG-H6K"/>
                     </constraints>
-                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="30"/>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W3" family="Hiragino Mincho ProN" pointSize="26"/>
                     <color key="textColor" name="purplecolor"/>
                     <nil key="highlightedColor"/>
                 </label>
@@ -220,7 +220,7 @@
             <color key="backgroundColor" name="baseColorView"/>
             <constraints>
                 <constraint firstItem="ezC-5O-P8i" firstAttribute="top" secondItem="GMp-7q-wIW" secondAttribute="bottom" constant="70" id="2eq-3v-cYa"/>
-                <constraint firstItem="GMp-7q-wIW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="32" id="2vm-5P-sR7"/>
+                <constraint firstItem="GMp-7q-wIW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="2vm-5P-sR7"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="j23-28-Ot9" secondAttribute="trailing" constant="125" id="BuN-28-jAw"/>
                 <constraint firstItem="uc4-Yy-9Ns" firstAttribute="leading" secondItem="EO9-Pi-NbY" secondAttribute="leading" id="CfC-Qh-9e7"/>
                 <constraint firstItem="GMp-7q-wIW" firstAttribute="top" secondItem="EO9-Pi-NbY" secondAttribute="bottom" constant="4" id="G5b-mr-oae"/>
@@ -233,7 +233,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="EO9-Pi-NbY" secondAttribute="trailing" constant="16" id="Xs4-pc-VwQ"/>
                 <constraint firstItem="n6q-FI-3uu" firstAttribute="top" secondItem="0ca-st-DyA" secondAttribute="bottom" constant="14" id="agy-un-JWE"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="ezC-5O-P8i" secondAttribute="trailing" constant="16" id="hH5-oU-GVB"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="GMp-7q-wIW" secondAttribute="trailing" constant="32" id="lB5-PK-K9H"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="GMp-7q-wIW" secondAttribute="trailing" constant="20" id="lB5-PK-K9H"/>
                 <constraint firstItem="EO9-Pi-NbY" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="8" id="oKI-hy-P6h"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="n6q-FI-3uu" secondAttribute="trailing" constant="50" id="qLf-Ut-8QM"/>
                 <constraint firstItem="j23-28-Ot9" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="125" id="rGz-ea-d1E"/>
