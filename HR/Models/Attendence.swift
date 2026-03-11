@@ -9,16 +9,16 @@ struct AttendanceResponse: Decodable {
 }
 
 struct AttendanceResult: Decodable {
-    let status: String?              // success | error
-    let message: String?             // message from API
-    let errorCode: String?           // error_code
-    let attendanceStatus: String?    // checked_in | checked_out
+    let status: String?
+    let message: String?
+    let errorCode: String?
+    let attendanceStatus: String?
     let workedHours: Double?
     let checkInTime: String?
     let checkOutTime: String?
     let lastCheckIn: String?
     let lastCheckOut: String?
-   
+    let todayScheduledHours: Double?   // ✅ Added
 
     enum CodingKeys: String, CodingKey {
         case status
@@ -30,6 +30,6 @@ struct AttendanceResult: Decodable {
         case checkOutTime = "check_out_time"
         case lastCheckIn = "last_check_in"
         case lastCheckOut = "last_check_out"
-       
+        case todayScheduledHours = "today_scheduled_hours"  // ✅ Added
     }
 }

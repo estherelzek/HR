@@ -39,7 +39,7 @@ struct LunchProduct: Codable {
     let categoryImageUrl: String?
 
     let isNew: Bool
-    var isFavorite: Bool
+   // var isFavorite: Bool
 
     // Custom decoding to handle image_url being Bool or String
     private enum CodingKeys: String, CodingKey {
@@ -65,7 +65,7 @@ struct LunchProduct: Codable {
         supplierName = try container.decode(String.self, forKey: .supplierName)
         categoryImageUrl = try container.decodeIfPresent(String.self, forKey: .categoryImageUrl)
         isNew = try container.decode(Bool.self, forKey: .isNew)
-        isFavorite = try container.decode(Bool.self, forKey: .isFavorite)
+  //      isFavorite = try container.decode(Bool.self, forKey: .isFavorite)
 
         // Handle imageUrl which can be String or Bool (false)
         if let urlString = try? container.decode(String.self, forKey: .image_base64) {
@@ -73,6 +73,23 @@ struct LunchProduct: Codable {
         } else {
             image_base64 = nil
         }
+    }
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(id, forKey: .id)
+        try container.encode(name, forKey: .name)
+        try container.encodeIfPresent(description, forKey: .description)
+        try container.encode(price, forKey: .price)
+        try container.encodeIfPresent(currency, forKey: .currency)
+        try container.encodeIfPresent(currencySymbol, forKey: .currencySymbol)
+        try container.encode(categoryId, forKey: .categoryId)
+        try container.encode(categoryName, forKey: .categoryName)
+        try container.encode(supplierId, forKey: .supplierId)
+        try container.encode(supplierName, forKey: .supplierName)
+        try container.encodeIfPresent(image_base64, forKey: .image_base64)
+        try container.encodeIfPresent(categoryImageUrl, forKey: .categoryImageUrl)
+        try container.encode(isNew, forKey: .isNew)
     }
 }
 
@@ -139,3 +156,19 @@ struct LunchSupplier: Decodable, Identifiable {
 
 
 
+struct LunchOrderRequest: Codable {
+    let token: String
+    let orders: [LunchOrderItem]
+}
+
+struct LunchOrderItem: Codable {
+    let product_id: Int
+    let quantity: Int
+    let total_price: Double
+}
+
+struct LunchOrderResponse: Codable {
+    let success: Bool
+    let message: String
+    let error_code: String?
+}

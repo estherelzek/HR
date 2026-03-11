@@ -48,6 +48,9 @@ class ProtectionMethodViewController: UIViewController {
         goToChecking()
     }
 
+    @IBAction func backButtonTappped(_ sender: Any) {
+        self.dismiss(animated: true)
+    }
     func navigateToFingerprintVC() {
         UserDefaults.standard.set(ProtectionMethod.fingerprint.rawValue, forKey: "selectedProtectionMethod")
         let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)

@@ -160,6 +160,7 @@ extension ResultOfRequestAlartViewController: UITableViewDelegate, UITableViewDa
         } else if let hourly = record as? HourlyRecord {
             cell.numberOfAnnualLeaveLabel.text = "\(hourly.leaveType): \(hourly.durationHours) hour(s)"
             cell.statusLabel.text = "Status: \(hourly.state)"
+            print("hhhhh \(hourly.startDate)\(hourly.startDate)")
             cell.periodLabel.text = "From: \(hourly.startDate) -> To: \(hourly.endDate)"
             cell.coloredButton.drawLeaveState(hourly.state, colorHex: hourly.color ?? "#B7F73E")
             leaveId = hourly.leaveID
@@ -182,16 +183,17 @@ extension ResultOfRequestAlartViewController: UITableViewDelegate, UITableViewDa
                 guard let self = self else { return }
 
                 if isSuccess {
+                    self.parentObject?.refreshAfterCancellation()
                     self.showAlert(
-                        title: "Success",
-                        message: self.viewModel.apiMessage ?? "Leave cancelled successfully"
+                        title: NSLocalizedString("alert_success_title", comment: ""),
+                        message: NSLocalizedString("leave_cancel_success", comment: "")
                     ) {
-                        self.filterRecordsForSelectedDate() // 🔁 reload filtered list
+                        self.dismiss(animated: true)
                     }
                 } else {
                     self.showAlert(
-                        title: "Error",
-                        message: self.viewModel.apiMessage ?? "Unable to cancel request"
+                        title: NSLocalizedString("alert_error_title", comment: ""),
+                        message: NSLocalizedString("leave_cancel_failed", comment: "")
                     )
                 }
             }

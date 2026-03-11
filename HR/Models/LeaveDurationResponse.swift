@@ -16,8 +16,20 @@ struct LeaveDurationResponse: Decodable {
 struct LeaveDurationResult: Decodable {
     let success: Bool?
     let data: LeaveDurationData?
-}
+    
+    // ✅ Add these three — they come from backend on error cases
+    let status: String?
+    let message: String?
+    let errorCode: String?
 
+    enum CodingKeys: String, CodingKey {
+        case success
+        case data
+        case status
+        case message
+        case errorCode = "error_code"   // ✅ maps "error_code" from JSON
+    }
+}
 struct LeaveDurationData: Decodable {
     let leaveTypeUnit: String?
     let requestDateFrom: String?

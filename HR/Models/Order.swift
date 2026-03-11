@@ -8,9 +8,34 @@
 
 import Foundation
 
-struct Order: Identifiable {
-    let id: UUID
+struct Order: Codable {
+    var productId: Int
+    var name: String
     var quantity: Int
-    let name: String
-    let price: Double
+    var price: Double
+    // Track if submitted / edited
+        var isSubmitted: Bool = false
+        var isEdited: Bool = false
+}
+
+struct HistoryOrder: Codable {
+    let id: UUID
+    let items: [Order]
+    let total: Double
+    let date: Date
+    
+    static let formatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd MMM yyyy"
+        return formatter
+    }()
+
+    var dateString: String {
+        return Self.formatter.string(from: date)
+    }
+}
+
+struct HistorySection {
+    let date: String
+    let orders: [HistoryOrder]
 }

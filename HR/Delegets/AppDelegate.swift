@@ -194,7 +194,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func handleImportedFile(url: URL) {
             do {
                 let encryptedText = try String(contentsOf: url, encoding: .utf8)
-
+                Middleware.reset()
                 let middleware = try Middleware.initialize(encryptedText)
 
                 let defaults = UserDefaults.standard

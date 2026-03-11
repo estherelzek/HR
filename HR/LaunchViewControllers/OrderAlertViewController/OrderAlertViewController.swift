@@ -16,6 +16,7 @@ class OrderAlertViewController: UIViewController {
     @IBOutlet weak var noteTextField: InspectableTextField!
     @IBOutlet weak var alertView: InspectableView!
     
+    @IBOutlet weak var addButton: InspectableButton!
     var foodItem: LunchProduct?
     private var quantity: Int = 1
     private var unitPrice: Double = 0   // price of ONE item// ✅ DATA ONLY
@@ -25,6 +26,7 @@ class OrderAlertViewController: UIViewController {
         setupUI()
         populateData()
         animateIn()
+        setupLocalization()
     }
 
     private func setupUI() {
@@ -77,7 +79,7 @@ class OrderAlertViewController: UIViewController {
         guard let item = foodItem else { return }
 
         InvoiceManager.shared.addProduct(item, quantity: quantity)
-
+        InvoiceManager.shared.markEdited()  // 🔹 user edited
         animateOut {
             self.dismiss(animated: false)
         }
@@ -112,5 +114,23 @@ class OrderAlertViewController: UIViewController {
         itemCounter.text = "\(quantity)"
        // ItemPrice.text = "\(total) EGP"
     }
+    private func setupLocalization() {
 
+        // MARK: - Texts
+        noteTextField.placeholder = NSLocalizedString("add_note_placeholder", comment: "")
+        addButton.setTitle(NSLocalizedString("add_to_order_button", comment: ""), for: .normal)
+
+        // Optional: Localize close button if you have one
+        // closeButton.setTitle(NSLocalizedString("close_button", comment: ""), for: .normal)
+
+        // MARK: - RTL / LTR handling
+        let isArabic = LanguageManager.shared.currentLanguage() == "ar"
+
+        view.semanticContentAttribute = isArabic ? .forceRightToLeft : .forceLeftToRight
+        alertView.semanticContentAttribute = view.semanticContentAttribute
+
+        // Text alignment
+        noteTextField.textAlignment = isArabic ? .right : .left
+        itemName.textAlignment = isArabic ? .right : .left
+    }
 }

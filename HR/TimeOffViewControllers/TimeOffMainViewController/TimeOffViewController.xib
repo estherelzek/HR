@@ -94,7 +94,7 @@
                     </connections>
                 </collectionView>
                 <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="HXh-gY-wEX">
-                    <rect key="frame" x="169" y="190" width="80" height="120"/>
+                    <rect key="frame" x="169" y="258" width="80" height="120"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="120" id="Dms-Fo-C3C"/>
                         <constraint firstAttribute="width" constant="80" id="xJn-UR-Ht5"/>
@@ -150,7 +150,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Cfq-eG-WfE" secondAttribute="trailing" constant="8" id="fMh-UQ-oue"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="UJ1-VY-VS1" secondAttribute="trailing" id="fQy-tQ-5nC"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="7ie-2l-PPb" secondAttribute="trailing" constant="16" id="fUN-XK-Abc"/>
-                <constraint firstItem="HXh-gY-wEX" firstAttribute="top" secondItem="UJ1-VY-VS1" secondAttribute="bottom" constant="32" id="itY-xl-Y68"/>
+                <constraint firstItem="HXh-gY-wEX" firstAttribute="top" secondItem="UJ1-VY-VS1" secondAttribute="bottom" constant="100" id="itY-xl-Y68"/>
                 <constraint firstItem="HXh-gY-wEX" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="169" id="sBk-g2-6rw"/>
                 <constraint firstItem="gnk-dV-JbU" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="zgf-S1-hjP"/>
             </constraints>

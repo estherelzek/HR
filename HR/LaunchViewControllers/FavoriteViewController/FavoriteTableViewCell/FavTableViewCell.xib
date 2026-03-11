@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="68" id="KGk-i7-Jjw" customClass="FavTableViewCell" customModule="HR" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="326" height="68"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" ambiguous="YES" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="326" height="68"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="face" translatesAutoresizingMaskIntoConstraints="NO" id="Hmi-6a-Le0">
+                        <rect key="frame" x="2" y="6" width="50" height="60"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="50" id="NCF-yQ-pxl"/>
+                            <constraint firstAttribute="height" constant="60" id="XcP-aG-1Ox"/>
+                        </constraints>
+                    </imageView>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="QiC-5a-84H">
+                        <rect key="frame" x="60" y="12" width="134" height="44"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3bF-ee-Il8">
+                                <rect key="frame" x="0.0" y="0.0" width="134" height="21.666666666666668"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Price" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vXf-nH-WcT">
+                                <rect key="frame" x="0.0" y="23.666666666666664" width="134" height="20.333333333333336"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="44" id="koh-iN-TyZ"/>
+                        </constraints>
+                    </stackView>
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" translatesAutoresizingMaskIntoConstraints="NO" id="seR-Ae-WZF">
+                        <rect key="frame" x="196" y="8" width="130" height="25"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aag-4W-qC9" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="68.666666666666671" height="25"/>
+                                <color key="backgroundColor" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
+                                <color key="tintColor" red="0.047058823530000002" green="0.047058823530000002" blue="0.047058823530000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" title="Add to cart"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <real key="value" value="5"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                                <connections>
+                                    <action selector="addToCartButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Q1x-iM-veg"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Y9Y-Fv-A2E">
+                                <rect key="frame" x="68.666666666666686" y="0.0" width="61.333333333333343" height="25"/>
+                                <color key="tintColor" red="0.71764705882352942" green="0.96862745098039216" blue="0.24313725490196078" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" image="star.fill" catalog="system"/>
+                                <connections>
+                                    <action selector="favStarButtonTapped:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="Wwi-fl-Nsw"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="25" id="3rC-qf-i50"/>
+                            <constraint firstAttribute="width" constant="130" id="uls-ES-n2D"/>
+                        </constraints>
+                    </stackView>
+                </subviews>
+                <color key="backgroundColor" red="0.12941176469999999" green="0.12941176469999999" blue="0.12941176469999999" alpha="0.93496919010000001" colorSpace="custom" customColorSpace="sRGB"/>
+                <constraints>
+                    <constraint firstItem="Hmi-6a-Le0" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="6" id="9mN-7S-eJu"/>
+                    <constraint firstItem="seR-Ae-WZF" firstAttribute="leading" secondItem="QiC-5a-84H" secondAttribute="trailing" constant="2" id="Aie-FM-lOW"/>
+                    <constraint firstItem="seR-Ae-WZF" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="CI0-ui-BXm"/>
+                    <constraint firstAttribute="trailing" secondItem="seR-Ae-WZF" secondAttribute="trailing" id="Fwa-c1-fIX"/>
+                    <constraint firstItem="QiC-5a-84H" firstAttribute="leading" secondItem="Hmi-6a-Le0" secondAttribute="trailing" constant="8" id="Kl4-FC-yvw"/>
+                    <constraint firstItem="QiC-5a-84H" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="12" id="btH-47-M1R"/>
+                    <constraint firstItem="Hmi-6a-Le0" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="2" id="pEw-Co-cJa"/>
+                    <constraint firstAttribute="bottom" secondItem="Hmi-6a-Le0" secondAttribute="bottom" constant="6" id="t00-C1-4qN"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="addToCartButton" destination="aag-4W-qC9" id="XM5-ip-5al"/>
+                <outlet property="itemImage" destination="Hmi-6a-Le0" id="C9d-7m-Yhh"/>
+                <outlet property="itemName" destination="3bF-ee-Il8" id="2Lb-36-6wq"/>
+                <outlet property="itemPrice" destination="vXf-nH-WcT" id="6cZ-z0-1q8"/>
+            </connections>
+            <point key="canvasLocation" x="-1315" y="-32"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <image name="face" width="1920" height="1920"/>
+        <image name="star.fill" catalog="system" width="128" height="116"/>
+    </resources>
+</document>

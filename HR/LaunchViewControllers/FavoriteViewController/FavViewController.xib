@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="FavViewController" customModule="HR" customModuleProvider="target">
+            <connections>
+                <outlet property="clearButton" destination="ogC-gd-Wb6" id="E9y-Lt-gk5"/>
+                <outlet property="myfavoriteLabel" destination="RsO-39-gtV" id="KOy-Fe-FnH"/>
+                <outlet property="tableView" destination="Max-8O-9KQ" id="Mod-SZ-k2M"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rDc-Jt-ZPg" customClass="InspectableView" customModule="HR" customModuleProvider="target">
+                    <rect key="frame" x="11.666666666666657" y="146" width="365.33333333333337" height="629"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" spacing="106" translatesAutoresizingMaskIntoConstraints="NO" id="JH5-2H-MFy">
+                            <rect key="frame" x="8" y="80" width="349.33333333333331" height="30"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="My Favorite" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RsO-39-gtV">
+                                    <rect key="frame" x="0.0" y="0.0" width="120.66666666666667" height="30"/>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="23"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ogC-gd-Wb6">
+                                    <rect key="frame" x="226.66666666666666" y="0.0" width="122.66666666666666" height="30"/>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="14"/>
+                                    <color key="tintColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title="Clear favorites"/>
+                                    <connections>
+                                        <action selector="clearButtonTapped:" destination="-1" eventType="touchUpInside" id="Rdf-e7-pMZ"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="82x-LN-oYK"/>
+                            </constraints>
+                        </stackView>
+                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Max-8O-9KQ">
+                            <rect key="frame" x="8" y="132" width="349.33333333333331" height="489"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </tableView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5kE-yk-sgD">
+                            <rect key="frame" x="310.33333333333331" y="8" width="47" height="35"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="47" id="3ss-9y-M82"/>
+                                <constraint firstAttribute="height" constant="35" id="ncf-70-Kk6"/>
+                            </constraints>
+                            <color key="tintColor" name="borderColor"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" image="xmark" catalog="system"/>
+                            <connections>
+                                <action selector="closeButtonTapped:" destination="-1" eventType="touchUpInside" id="TKG-QY-Qwh"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" red="0.12941176470588234" green="0.12941176470588234" blue="0.12941176470588234" alpha="0.93496919014084512" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="JH5-2H-MFy" secondAttribute="trailing" constant="8" id="1pe-BP-xlT"/>
+                        <constraint firstItem="5kE-yk-sgD" firstAttribute="top" secondItem="rDc-Jt-ZPg" secondAttribute="top" constant="8" id="5md-WT-aJ5"/>
+                        <constraint firstAttribute="trailing" secondItem="5kE-yk-sgD" secondAttribute="trailing" constant="8" id="6ux-Ga-7aM"/>
+                        <constraint firstItem="Max-8O-9KQ" firstAttribute="leading" secondItem="rDc-Jt-ZPg" secondAttribute="leading" constant="8" id="K7r-SO-IW2"/>
+                        <constraint firstItem="Max-8O-9KQ" firstAttribute="top" secondItem="JH5-2H-MFy" secondAttribute="bottom" constant="22" id="LQ4-cf-3vI"/>
+                        <constraint firstAttribute="trailing" secondItem="Max-8O-9KQ" secondAttribute="trailing" constant="8" id="VQj-X4-oHg"/>
+                        <constraint firstItem="JH5-2H-MFy" firstAttribute="leading" secondItem="rDc-Jt-ZPg" secondAttribute="leading" constant="8" id="b6t-43-oKa"/>
+                        <constraint firstAttribute="bottom" secondItem="Max-8O-9KQ" secondAttribute="bottom" constant="8" id="lcK-FS-heb"/>
+                        <constraint firstItem="JH5-2H-MFy" firstAttribute="top" secondItem="5kE-yk-sgD" secondAttribute="bottom" constant="37" id="nUU-5E-EJh"/>
+                    </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="15"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="rDc-Jt-ZPg" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.93" id="SB4-lT-rSr"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="rDc-Jt-ZPg" secondAttribute="bottom" constant="9" id="VRL-3c-BbN"/>
+                <constraint firstItem="rDc-Jt-ZPg" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailingMargin" id="ZcG-so-bw0"/>
+                <constraint firstItem="rDc-Jt-ZPg" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="28" id="kFa-zN-cKp"/>
+            </constraints>
+            <point key="canvasLocation" x="-274" y="77"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="xmark" catalog="system" width="128" height="113"/>
+        <namedColor name="borderColor">
+            <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

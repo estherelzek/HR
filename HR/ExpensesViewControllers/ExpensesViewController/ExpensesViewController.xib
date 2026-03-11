@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="24128" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="24063"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ExpensesViewController" customModule="HR" customModuleProvider="target">
+            <connections>
+                <outlet property="NewButton" destination="TRf-JT-Jmg" id="i0R-ia-gl2"/>
+                <outlet property="ReportsButton" destination="xMc-Oh-bIt" id="NIM-bR-AUf"/>
+                <outlet property="backButton" destination="vZQ-GJ-fQn" id="DyO-Q6-1nd"/>
+                <outlet property="expensesLabelTitle" destination="aKA-Ty-EFJ" id="PSh-zd-bye"/>
+                <outlet property="tableView" destination="tIc-o0-kRu" id="NBm-wo-DVh"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" restorationIdentifier="ExpensesViewController" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Expenses" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aKA-Ty-EFJ" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="63" width="393" height="40"/>
+                    <color key="backgroundColor" name="borderColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="0Je-BZ-Se2"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="29"/>
+                    <color key="textColor" name="basecolorText"/>
+                    <nil key="highlightedColor"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="10"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vZQ-GJ-fQn">
+                    <rect key="frame" x="0.0" y="67" width="45" height="32"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="32" id="iH5-1c-zUO"/>
+                        <constraint firstAttribute="width" constant="45" id="y7w-3q-yPb"/>
+                    </constraints>
+                    <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="arrow.backward" catalog="system"/>
+                </button>
+                <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fft-ce-UtY">
+                    <rect key="frame" x="40" y="768" width="313" height="40"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRf-JT-Jmg" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="146.66666666666666" height="40"/>
+                            <color key="backgroundColor" name="borderColor"/>
+                            <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="5"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="newButtonTapped:" destination="-1" eventType="touchUpInside" id="fXg-jM-ygg"/>
+                            </connections>
+                        </button>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xMc-Oh-bIt" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                            <rect key="frame" x="166.66666666666663" y="0.0" width="146.33333333333337" height="40"/>
+                            <color key="backgroundColor" systemColor="underPageBackgroundColor"/>
+                            <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <userDefinedRuntimeAttributes>
+                                <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                    <real key="value" value="5"/>
+                                </userDefinedRuntimeAttribute>
+                            </userDefinedRuntimeAttributes>
+                            <connections>
+                                <action selector="reportsButtonTapped:" destination="-1" eventType="touchUpInside" id="6V0-Iz-EXN"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="AUI-GG-zWx"/>
+                    </constraints>
+                </stackView>
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tIc-o0-kRu" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="111" width="393" height="641"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="16"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </tableView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="tIc-o0-kRu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="1sG-Xn-tBE"/>
+                <constraint firstItem="tIc-o0-kRu" firstAttribute="top" secondItem="aKA-Ty-EFJ" secondAttribute="bottom" constant="8" id="42h-oZ-oCu"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="fft-ce-UtY" secondAttribute="trailing" constant="40" id="7pW-eo-7Vv"/>
+                <constraint firstItem="tIc-o0-kRu" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="DSS-7P-8T0"/>
+                <constraint firstItem="fft-ce-UtY" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="Jws-9E-8hL"/>
+                <constraint firstItem="tIc-o0-kRu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.752347" id="K3h-Wm-JZS"/>
+                <constraint firstItem="vZQ-GJ-fQn" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="SJF-9q-BnQ"/>
+                <constraint firstItem="aKA-Ty-EFJ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="63" id="V0p-iW-guG"/>
+                <constraint firstAttribute="trailing" secondItem="aKA-Ty-EFJ" secondAttribute="trailing" id="cxu-1w-8Ue"/>
+                <constraint firstItem="aKA-Ty-EFJ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="mWl-NI-13u"/>
+                <constraint firstItem="fft-ce-UtY" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="16" id="n7a-QK-WY9"/>
+                <constraint firstItem="vZQ-GJ-fQn" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="67" id="pXd-kH-car"/>
+            </constraints>
+            <point key="canvasLocation" x="242" y="103"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="arrow.backward" catalog="system" width="128" height="95"/>
+        <namedColor name="basecolorText">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="borderColor">
+            <color red="0.29399999976158142" green="0.3919999897480011" blue="0.28999999165534973" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="underPageBackgroundColor">
+            <color red="0.70980392160000005" green="0.71764705880000002" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

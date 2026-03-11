@@ -13,6 +13,9 @@ protocol Endpoint {
     var method: HTTPMethod { get }
     var headers: [String: String] { get }
     var body: Data? { get }
+
+    // NEW
+    var actionType: String? { get }
 }
 
 extension Endpoint {
@@ -28,4 +31,7 @@ extension Endpoint {
         req.httpBody = body
         return req
     }
+
+    // Provide a default actionType fallback (optional)
+    var actionType: String? { return nil }
 }

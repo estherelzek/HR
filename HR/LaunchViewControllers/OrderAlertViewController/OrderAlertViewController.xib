@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrderAlertViewController" customModule="HR" customModuleProvider="target">
             <connections>
                 <outlet property="ItemPrice" destination="nGI-Qp-WWa" id="nLX-VH-GAz"/>
+                <outlet property="addButton" destination="zGX-cO-Pf6" id="mvh-OF-pLw"/>
                 <outlet property="alertView" destination="LeR-UP-15W" id="3Cd-gz-rhM"/>
                 <outlet property="itemCounter" destination="OnV-wK-HeY" id="Szm-ct-wc4"/>
                 <outlet property="itemImage" destination="lG2-K5-GqL" id="gOU-Th-CBq"/>

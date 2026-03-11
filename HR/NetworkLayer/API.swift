@@ -29,6 +29,14 @@ enum API: Endpoint {
             UserDefaults.standard.set(sanitized, forKey: "baseURL")
         }
     }
+    var actionType: String? {
+        switch self {
+        case let .employeeAttendance(action, _, _, _, _):
+            return action  // Only keep check_in, check_out, status
+        default:
+            return nil     // Discard all other APIs
+        }
+    }
 
     // 🔹 Update baseURL from encrypted file
     static func updateDefaultBaseURL(_ url: String) {
@@ -93,7 +101,24 @@ enum API: Endpoint {
         locationId: Int?
     )
 
-
+    case lunchOrders(token: String, orders: [[String: Any]])
+    case getAnalyticAccounts(token: String)
+       case getTaxes(token: String)
+       case getExpenseCategories(token: String)
+       case createExpense(
+           token: String,
+           name: String,
+           product_id: Int,
+           total_amount: Double,
+           date: String,
+           description: String,
+           analytic_distribution: [String: Int],
+           tax_ids: [Int],
+           payment_mode: String
+       )
+    case getCurrencies(token: String)
+    case getEmployeeExpenses(token: String)
+    
     var path: String {
         switch self {
         case .validateCompany:
@@ -129,7 +154,22 @@ enum API: Endpoint {
 
         case .lunchSuppliers:
             return "/api/lunch/suppliers"
-
+        case .lunchOrders:
+            return "/api/lunch/orders"
+        case .getAnalyticAccounts:
+                   return "/api/expenses/analytic_accounts"
+        case .getTaxes:
+                   return "/api/expenses/taxes"
+        case .getExpenseCategories:
+                   return "/api/expenses/categories"
+        case .createExpense:
+                   return "/api/expenses/create"
+        case .getCurrencies:
+            return "/api/expenses/currencies"
+        case .getEmployeeExpenses:
+            return "/api/expenses/get"
+               default:
+                   return ""
         }
     }
 
@@ -294,9 +334,80 @@ enum API: Endpoint {
             }
 
             return try? JSONSerialization.data(withJSONObject: payload)
+            
+            
+        case let .lunchOrders(token, orders):
 
-        }
-        
-    
-    }
-}
+            let payload: [String: Any] = [
+                "token": token,
+                "orders": orders
+            ]
+
+            return try? JSONSerialization.data(withJSONObject: payload)
+        case let .getAnalyticAccounts(token):
+                   let payload: [String: Any] = [
+                       "jsonrpc": "2.0",
+                       "params": [
+                           "token": token
+                       ]
+                   ]
+                   return try? JSONSerialization.data(withJSONObject: payload)
+
+               case let .getTaxes(token):
+                   let payload: [String: Any] = [
+                       "jsonrpc": "2.0",
+                       "params": [
+                           "token": token
+                       ]
+                   ]
+                   return try? JSONSerialization.data(withJSONObject: payload)
+
+               case let .getExpenseCategories(token):
+                   let payload: [String: Any] = [
+                       "jsonrpc": "2.0",
+                       "params": [
+                           "token": token
+                       ]
+                   ]
+                   return try? JSONSerialization.data(withJSONObject: payload)
+
+               case let .createExpense(token, name, product_id, total_amount, date, description, analytic_distribution, tax_ids,payment_mode):
+                   let payload: [String: Any] = [
+                       "jsonrpc": "2.0",
+                       "params": [
+                           "token": token,
+                           "name": name,
+                           "product_id": product_id,
+                           "total_amount": total_amount,
+                           "date": date,
+                           "description": description,
+                           "analytic_distribution": analytic_distribution,
+                           "tax_ids": tax_ids,
+                           "payment_mode": payment_mode
+                       ]
+                   ]
+                   return try? JSONSerialization.data(withJSONObject: payload)
+            
+        case let .getCurrencies(token):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "params": [
+                    "token": token
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+
+        case let .getEmployeeExpenses(token):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "params": [
+                    "token": token
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+
+               default:
+                   return nil
+               }
+           }
+       }

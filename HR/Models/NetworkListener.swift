@@ -123,20 +123,39 @@ final class NetworkListener {
 //    }
 //}
 extension NetworkManager {
-    
-    func resendOfflineRequests(token: String? = nil , completion: (() -> Void)? = nil) {
-        let viewModel = OfflineAttendanceViewModel()
-        var token =  UserDefaults.standard.string(forKey: "employeeToken") ?? ""
-        viewModel.sendOfflineLogs(token: token) {
-            if let message = viewModel.syncMessage {
-                print("📡 Offline sync result: \(message)")
-            }
-            
-            if viewModel.lastSyncedCount > 0 {
-                print("🗑️ Removed \(viewModel.lastSyncedCount) offline requests after successful sync.")
-            }
-            
-            completion?()
+    func resendOfflineRequests(completion: @escaping () -> Void = {}) {
+        let requests = OfflineURLStorage.shared.fetch()
+        guard !requests.isEmpty else {
+            completion()
+            return
+        }
+
+        let group = DispatchGroup()
+
+        for req in requests {
+            group.enter()
+            guard let url = URL(string: req.url) else { group.leave(); continue }
+
+            var request = URLRequest(url: url)
+            request.httpMethod = req.method
+            request.allHTTPHeaderFields = req.headers
+            request.httpBody = req.body?.data(using: .utf8)
+
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if let error = error {
+                    print("❌ Offline request failed: \(error.localizedDescription)")
+                } else {
+                    print("✅ Offline request sent: \(req.actionType ?? "unknown")")
+                    // Remove successfully sent request
+                    OfflineURLStorage.shared.remove([req])
+                }
+                group.leave()
+            }.resume()
+        }
+
+        group.notify(queue: .main) {
+            print("📭 All offline requests processed")
+            completion()
         }
     }
 }

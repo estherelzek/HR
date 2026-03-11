@@ -216,6 +216,7 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
             defaults.set(middleware.companyId, forKey: "companyIdKey")
             defaults.set(middleware.apiKey, forKey: "apiKeyKey")
             defaults.set(middleware.baseUrl, forKey: "baseURL")
+            print("✅ QR VALID — middleware.baseUrl : \(middleware.baseUrl)")
 
             // 🔥 Update API base URL
             API.updateDefaultBaseURL(middleware.baseUrl)

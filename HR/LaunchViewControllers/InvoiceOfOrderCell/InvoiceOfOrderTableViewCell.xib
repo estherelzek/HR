@@ -89,7 +89,7 @@
                         </subviews>
                     </stackView>
                 </subviews>
-                <color key="backgroundColor" red="0.047058823529411764" green="0.047058823529411764" blue="0.047058823529411764" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                <color key="backgroundColor" red="0.12941176470588234" green="0.12941176470588234" blue="0.12941176470588234" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                 <constraints>
                     <constraint firstAttribute="bottom" secondItem="jXD-V3-xgp" secondAttribute="bottom" constant="8" id="9LN-Nl-Eb5"/>
                     <constraint firstItem="jXD-V3-xgp" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="4" id="VfC-nw-dZ8"/>
@@ -102,6 +102,8 @@
                 <constraint firstItem="QnO-KS-DtR" firstAttribute="width" secondItem="KGk-i7-Jjw" secondAttribute="width" multiplier="0.4" id="PfM-It-FAI"/>
             </constraints>
             <connections>
+                <outlet property="decreaseButton" destination="Yrs-4l-0Yh" id="ObG-bF-zoU"/>
+                <outlet property="increaseButton" destination="efH-gh-xLQ" id="Qsi-s9-7XV"/>
                 <outlet property="itemName" destination="aqe-V1-xOI" id="nb4-cL-7VH"/>
                 <outlet property="itemPrice" destination="Ftu-R9-aTk" id="eKb-UI-zai"/>
                 <outlet property="quantityLabel" destination="6K6-0D-K9D" id="Xct-Bd-15G"/>

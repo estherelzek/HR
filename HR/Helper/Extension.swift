@@ -526,7 +526,9 @@ extension UIViewController {
         }
     }
 }
-
+extension Notification.Name {
+    static let invoiceUpdated = Notification.Name("invoiceUpdated")
+}
 extension TimeOffViewController {
     func color(for state: String) -> UIColor {
         switch state {
@@ -555,23 +557,30 @@ extension TimeOffViewController {
     }
 }
 extension String {
-    func toLocalDateString(from inputFormat: String = "yyyy-MM-dd HH:mm:ss",
-                           to outputFormat: String = "yyyy-MM-dd HH:mm:ss",
-                           timeZoneIdentifier: String = "Africa/Cairo") -> String? {
+    func toLocalDateString() -> String? {
+        // ✅ Parse incoming UTC string from backend
         let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = inputFormat
-        inputFormatter.timeZone = TimeZone(abbreviation: "UTC")
+        inputFormatter.locale = Locale(identifier: "en_US_POSIX")
+        inputFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        inputFormatter.timeZone = TimeZone(identifier: "UTC") // ✅ Backend sends UTC
 
         guard let date = inputFormatter.date(from: self) else { return nil }
 
+        // ✅ Format for display in device local timezone
         let outputFormatter = DateFormatter()
-        outputFormatter.dateFormat = outputFormat
-        outputFormatter.timeZone = TimeZone(identifier: timeZoneIdentifier)
+        outputFormatter.timeZone = TimeZone.current // ✅ Converts to Cairo (UTC+3) or any local zone
+
+        if LanguageManager.shared.currentLanguage() == "ar" {
+            outputFormatter.locale = Locale(identifier: "ar_EG")
+            outputFormatter.dateFormat = "dd MMM yyyy - hh:mm a" // ٠٣ مارس ٢٠٢٦ - ١٢:٣٣ م
+        } else {
+            outputFormatter.locale = Locale(identifier: "en_US")
+            outputFormatter.dateFormat = "dd MMM yyyy - hh:mm a" // 03 Mar 2026 - 12:33 PM
+        }
 
         return outputFormatter.string(from: date)
     }
 }
-
 @IBDesignable
 class InspectableTableView: UITableView {
     
@@ -667,39 +676,58 @@ class InspectableCollectionViewCell: UICollectionViewCell {
 }
 
 extension Date {
+
+    // ✅ ONLY THIS ONE
     func toAPIDateString() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd-yyyy"   // ✅ API requires this
+        formatter.dateFormat = "yyyy-MM-dd"   // 🔥 REQUIRED BY BACKEND
         formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
         return formatter.string(from: self)
     }
-    
+
     static func parseDate(_ text: String) -> Date? {
         let formats = [
-            "MMM d, yyyy",   // Sep 7, 2025
-            "d MMM yyyy",    // 7 Sep 2025
-            "dd/MM/yyyy",    // 07/09/2025
-            "MM-dd-yyyy"     // 09-07-2025
+            "MMM d, yyyy",
+            "d MMM yyyy",
+            "dd/MM/yyyy",
+            "MM-dd-yyyy",
+            "dd-MM-yyyy"
         ]
-        
+
         for format in formats {
-            let f = DateFormatter()
-            f.dateFormat = format
-            f.locale = Locale(identifier: "en_US_POSIX")
-            if let date = f.date(from: text) {
+            let formatter = DateFormatter()
+            formatter.dateFormat = format
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            if let date = formatter.date(from: text) {
                 return date
             }
         }
         return nil
     }
-    
-    func toApiDateString() -> String {
-           let formatter = DateFormatter()
-           formatter.dateFormat = "yyyy-MM-dd"   // ✅ correct format
-           formatter.locale = Locale(identifier: "en_US_POSIX")
-           return formatter.string(from: self)
-    }
 }
+extension Date {
+
+    func toDurationAPIDateString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy"   // required by /leave/duration
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.string(from: self)
+    }
+
+}
+extension Date {
+
+    func toRequestAPIDateString() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"   // required by /request_time_off
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter.string(from: self)
+    }
+
+}
+
 
 extension UserDefaults {
     private enum Keys {
@@ -801,3 +829,6 @@ extension UserDefaults {
         }
     }
 }
+
+
+

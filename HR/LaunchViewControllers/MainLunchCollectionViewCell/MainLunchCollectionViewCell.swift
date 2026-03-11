@@ -28,28 +28,18 @@ class MainLunchCollectionViewCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
     }
 
-    func configure(with item: LunchProduct) {
-        print("Configure called for item: \(item.name)") // Step 1: entry check
+    func configure(with item: LunchProduct, isFavorite: Bool) {
 
         itemName.text = item.name
         descreptionLabel.text = item.description
         numberLabel.text = "\(item.price) EGP"
 
-        updateFavIcon(isFavorite: item.isFavorite)
-        print("Updated favorite icon: \(item.isFavorite)") // Step 2
+        updateFavIcon(isFavorite: isFavorite)
 
-        // Load Base64 image
-        if let base64 = item.image_base64 {
-            print("Base64 string exists, length: \(base64.count)") // Step 3
-            if let image = UIImage.fromBase64(base64) {
-                print("Successfully decoded Base64 to UIImage") // Step 4
-                imageView.image = image
-            } else {
-                print("Failed to decode Base64 to UIImage") // Step 5
-                imageView.image = UIImage(named: "burger")
-            }
+        if let base64 = item.image_base64,
+           let image = UIImage.fromBase64(base64) {
+            imageView.image = image
         } else {
-            print("No Base64 string found, using placeholder") // Step 6
             imageView.image = UIImage(named: "burger")
         }
     }

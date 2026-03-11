@@ -18,7 +18,7 @@ final class AttendanceViewModel {
     var onLocationError: ((String) -> Void)?
     var onLocationPermissionDenied: (() -> Void)?
     var tokenVM = GenerateTokenViewModel()
-    //    var onErrorMessage: ((String) -> Void)?   // 🔥 for alerts
+  
     init() {
         locationService.onPermissionDenied = { [weak self] in
             self?.onLocationPermissionDenied?()
@@ -165,12 +165,39 @@ final class AttendanceViewModel {
                     completion: completion
                 )
             case .failure(let error):
-                print("❌ Failed to get server time: \(error.localizedDescription)")
-                completion(false)
+                print("⚠️ Server time unavailable. Using local time instead. Error: \(error.localizedDescription)")
+                
+                let fallbackTime = self.getFallbackActionTime()
+                
+                self.performAttendanceAction(
+                    action: action,
+                    token: token,
+                    lat: "\(userCoordinate.latitude)",
+                    lng: "\(userCoordinate.longitude)",
+                    time: fallbackTime,
+                    completion: completion
+                )
+
             }
         }
     }
     
+    private func getFallbackActionTime() -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone(identifier: "UTC")
+        
+        let now = Date()
+        
+        // If you previously calculated clock diff, apply it
+        let diffMinutes = UserDefaults.standard.double(forKey: "clockDiffMinutes")
+        let adjustedDate = now.addingTimeInterval(-diffMinutes * 60)
+        
+        print("🕒 Using fallback local time: \(formatter.string(from: adjustedDate))")
+        
+        return formatter.string(from: adjustedDate)
+    }
+
     private func performAttendanceAction(
         action: String,
         token: String,
@@ -302,7 +329,8 @@ final class AttendanceViewModel {
         case .failure(let error):
             print("❌ Attendance API failed: \(error.localizedDescription)")
             DispatchQueue.main.async {
-                self.onError?(error.localizedDescription)
+          //      self.onError?(error.localizedDescription)
+                self.onShowAlert?(NSLocalizedString("the_request_saved_locally", comment: ""), {})
             }
             completion(false)
         }
@@ -378,10 +406,7 @@ extension AttendanceViewModel {
         formatter.timeZone = TimeZone(abbreviation: "UTC")
         return formatter.string(from: Date())
     }
-//    private func getCurrentActionTime() -> Date {
-//        return Date() // Just return the current Date in UTC
-//    }
-    
+
     private func handleClockTamperingAlertAndRecalculate(action: String) {
         let message = NSLocalizedString("alert_clock_tampering", comment: "")
             let alert = UIAlertController(

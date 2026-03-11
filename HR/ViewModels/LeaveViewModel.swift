@@ -19,7 +19,7 @@ final class LeaveDurationViewModel {
         requestHourFrom: String? = nil,
         requestHourTo: String? = nil,
         requestUnitHours: Bool,
-        completion: @escaping (Result<LeaveDurationData, APIError>) -> Void
+        completion: @escaping (Result<LeaveDurationResult, APIError>) -> Void  // ✅ changed from LeaveDurationData
     ) {
         let endpoint = API.leaveDuration(
             token: token,
@@ -36,8 +36,8 @@ final class LeaveDurationViewModel {
         NetworkManager.shared.requestDecodable(endpoint, as: LeaveDurationResponse.self) { result in
             switch result {
             case .success(let response):
-                if let data = response.result?.data {
-                    completion(.success(data))
+                if let result = response.result {
+                    completion(.success(result))  // ✅ return full result, not just .data
                 } else {
                     completion(.failure(.noData))
                 }

@@ -110,19 +110,20 @@ final class NetworkManager {
                     if request.url?.absoluteString.contains("check_out") == true { return "check_out" }
                     return nil
                 }()
-
+print("endpoint.actionType: \(endpoint.actionType))")
+                print("request.url: \(String(describing: request.url))")
                 let offlineRequest = OfflineRequest(
                     url: request.url?.absoluteString ?? "",
-                    method: request.httpMethod ?? "GET",
+                    method: request.httpMethod ?? "POST",
                     headers: request.allHTTPHeaderFields ?? [:],
                     body: request.httpBody.flatMap { String(data: $0, encoding: .utf8) },
                     timestamp: Date(),
-                    actionType: actionType
+                    actionType: endpoint.actionType // ← now it’s correct
                 )
 
                 print("offlineRequest: \(offlineRequest)")
                 OfflineURLStorage.shared.save(offlineRequest)
-                completion(.failure(.requestFailed(NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))))
+                completion(.failure(.requestFailed(NSLocalizedString("the_request_saved_locally", comment: "Alert shown when network is weak"))))
                 return
             }
 

@@ -53,7 +53,7 @@
 "forget_password" = "هل نسيت كلمة المرور؟";
 "next_button" = "التالي";
 "digit_placeholder" = "•";
-
+"no_leave_available_message" = "مرحباً بك 🎉\nلا توجد إجازات متاحة حالياً.";
 // timeoff screen
 "time_off_title" = "الإجازات";
 
@@ -254,3 +254,132 @@
 "pin_mismatch_error" = "❌ الأرقام السرية غير متطابقة. حاول مرة أخرى.";
 "weak_network_message" = "اتصال الشبكة ضعيف. الرجاء المحاولة مرة أخرى.";
 "hourly_leave_error" = "نجاح الطلب: يجب إدخال وقت البداية ووقت النهاية للإجازة بالساعة.";
+
+//
+"alert_success_title" = "تم بنجاح";
+"alert_error_title" = "خطأ";
+"leave_cancel_success" = "تم إلغاء طلب الإجازة بنجاح.";
+"leave_cancel_failed" = "تعذر إلغاء الطلب. ربما تمت معالجته بالفعل.";
+"this_leave_time_is_not_eligible" = "هذا الوقت غير مؤهل للإجازة.";
+/* Alert shown when network is weak and request is saved offline */
+"the_request_saved_locally" = "تم حفظ الطلب محليًا لأنك غير متصل بالإنترنت.";
+"order_submitted" = "تم إرسال الطلب بنجاح";
+"order_updated"   = "تم تحديث الطلب بنجاح";
+/* Button Titles */
+"order_button_order" = "اطلب";
+"order_button_update" = "تحديث";
+"order_button_submitted" = "تم إرسال الطلب";
+"lunch_title" = "قائمة الغداء";
+"lunch_search_placeholder" = "ابحث عن وجبة...";
+"add_note_placeholder" = "أضف ملاحظة...";
+"add_to_order_button" = "أضف ";
+"my_favorites_title" = "مفضلتي";
+"clear_button" = "مسح";
+"added_to_cart_message" = "تمت إضافة %@ إلى السلة 🛒";
+"checkout_reminder_title" = "حان وقت تسجيل الخروج ⏰";
+"checkout_reminder_body" = "لقد أتممت ساعات عملك. لا تنسَ تسجيل الخروج!";
+"add_to_cart_button" = "أضف إلى السلة";
+"invoice_total_label"        = "الإجمالي";
+"invoice_total_price_format" = "%@ جنيه";
+"history_total_price_format" = "الإجمالي: %@ جنيه";
+"reorder_button"             = "إعادة الطلب";
+/* ar */
+"categories.title" = "اختر الفئة";
+"categories.filterBySuppliers" = "تصفية حسب الموردين";
+"categories.selectAll" = "تحديد الكل";
+"categories.apply" = "تطبيق";
+"categories.discard" = "إلغاء";
+"categories.name" = "الاسم";
+"categories.number" = "الرقم";
+"categories.address" = "العنوان";
+"categories.select" = "اختر";
+/* Expenses Screen - Arabic */
+"expenses.addTitle" = "إضافة المصروفات";
+"expenses.description" = "الوصف";
+"expenses.category" = "الفئة";
+"expenses.date" = "التاريخ";
+"expenses.total" = "المبلغ الإجمالي";
+"expenses.analyticDistribution" = "التوزيع التحليلي";
+"expenses.includedTaxes" = "الضرائب المضمنة";
+"expenses.paidBy" = "الدفع عن طريق";
+"expenses.notes" = "ملاحظات";
+
+"expenses.descriptionPlaceholder" = "أدخل وصف المصروف";
+"expenses.categoryPlaceholder" = "اختر الفئة";
+"expenses.datePlaceholder" = "اختر التاريخ";
+"expenses.totalPlaceholder" = "المبلغ الإجمالي";
+"expenses.analyticDistributionPlaceholder" = "اختر ";
+"expenses.includedTaxesPlaceholder" = "أدخل مبلغ الضريبة";
+"expenses.paidByPlaceholder" = "اختر طريقة الدفع";
+"expenses.notesPlaceholder" = "أدخل ملاحظات إضافية";
+
+"expenses.categoryFood" = "الطعام";
+"expenses.categoryTransport" = "النقل";
+"expenses.categorySupplies" = "الإمدادات";
+"expenses.categoryUtilities" = "المرافق";
+"expenses.categoryOther" = "أخرى";
+
+"expenses.distributionCost" = "التكلفة";
+"expenses.distributionExpense" = "المصروف";
+"expenses.distributionInvestment" = "الاستثمار";
+
+"expenses.paidByCash" = "نقداً";
+"expenses.paidByCard" = "بطاقة";
+"expenses.paidByBank" = "تحويل بنكي";
+"expenses.paidByCheck" = "شيك";
+
+"expenses.validationTitle" = "خطأ في التحقق";
+"expenses.descriptionRequired" = "يرجى إدخال وصف";
+"expenses.categoryRequired" = "يرجى تحديد فئة";
+"expenses.dateRequired" = "يرجى تحديد تاريخ";
+"expenses.totalRequired" = "يرجى إدخال مبلغ صحيح";
+
+"common.save" = "حفظ";
+"common.discard" = "إلغاء";
+"common.done" = "تم";
+"common.cancel" = "إلغاء";
+"common.ok" = "موافق";
+/* Arabic */
+"expenses_title" = "المصروفات";
+/* Arabic */
+"expenses.employee" = "الموظف";
+"expenses.company" = "الشركة";
+/* Arabic - Expenses Success/Error Messages */
+"expenses.success" = "نجاح";
+"expenses.createdSuccessfully" = "تم إنشاء المصروف بنجاح";
+"expenses.error" = "خطأ";
+"expenses.errorCreatingExpense" = "فشل في إنشاء المصروف";
+"expenses.tryAgain" = "يرجى المحاولة مرة أخرى";
+"expenses.checkInputs" = "يرجى التحقق من المدخلات والمحاولة مرة أخرى";
+/* Arabic - Analytic Distribution */
+"expenses.addLine" = "إضافة سطر";
+"expenses.selectAnalytic" = "اختر حساب تحليلي";
+"expenses.enterPercentage" = "أدخل النسبة المئوية";
+"expenses.percentageMessage" = "أدخل النسبة المئوية لهذا الحساب";
+"expenses.percentagePlaceholder" = "0-100";
+"expenses.percentageInvalid" = "يرجى إدخال نسبة مئوية صحيحة (1-100)";
+"expenses.percentageMustBe100" = "يجب أن تكون النسبة المئوية الإجمالية 100%";
+"expenses.total" = "الإجمالي";
+"expenses.validationTitle" = "التحقق";
+
+/* Arabic - Common */
+"common.done" = "تم";
+"common.save" = "حفظ";
+"common.cancel" = "إلغاء";
+"common.ok" = "موافق";
+"common.close" = "إغلاق";
+"expenses.percentage" = "النسبة";
+"expenses.currency" = "العملة";
+"expenses.calculatedTotalByCurrency" = "الإجمالي المحسوب";
+"expenses.ratioCurrencies" = "نسبة العملات";
+"settings_title" = "الإعدادات";
+"lunch_title" = "الغداء";
+"expenses_title" = "المصروفات";
+
+"new_expenses" = "مصروف جديد";
+"upload" = "رفع";
+
+"create_report" = "إنشاء تقرير";
+"view_reports" = "عرض التقارير";
+
+"reports" = "التقارير";

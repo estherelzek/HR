@@ -83,7 +83,7 @@
 /* Checked In */
 "checked_in_title" = "You are checked in";
 "checked_in_button" = "Check out";
-"checked_in_description_with_time" = "You have successfully checked in at %@. Have a blessed day.";
+"checked_in_description_with_time" = "You have successfully checked in on %@. Have a blessed day.";
 "checked_in_description" = "You are currently checked in.";
 
 /* Checked Out */
@@ -220,7 +220,7 @@
 "offline_title" = "Offline Mode";
 "offline_checkin_message" = "You're currently offline. Your check-in request has been saved locally and will be sent automatically once you reconnect.";
 "offline_checkout_message" = "You're currently offline. Your check-out request has been saved locally and will be sent automatically once you reconnect.";
-
+"no_leave_available_message" = "Welcome onboard 🎉\nNo leave records available yet.";
 /* Confirmation */
 "confirm_checkout_title" = "Confirm Check-Out";
 "confirm_checkout_message" = "You've worked %@ today. Are you sure you want to check out?";
@@ -249,4 +249,134 @@
 "pin_saved_success" = "✅ PIN saved successfully! Now enter to continue.";
 "pin_mismatch_error" = "❌ PINs do not match. Try again.";
 "weak_network_message" = "Weak Network Connection. Please try again.";
-"hourly_leave_error" = "Request Success: Both 'request_hour_from' and 'request_hour_to' are required for hourly leave.";
+"hourly_leave_error" = "Request Success: request Valid hour from and hour to are required for hourly leave.";
+
+//
+"alert_success_title" = "Success";
+"alert_error_title" = "Error";
+"leave_cancel_success" = "Your leave request has been cancelled successfully.";
+"leave_cancel_failed" = "We couldn’t cancel this request. It may have already been processed.";
+
+"this_leave_time_is_not_eligible" = "This leave time is not eligible.";
+/* Alert shown when network is weak and request is saved offline */
+"the_request_saved_locally" = "The request was saved locally because you are offline.";
+"order_submitted" = "Order submitted successfully";
+"order_updated"   = "Order updated successfully";
+/* Button Titles */
+"order_button_order" = "Order";
+"order_button_update" = "Update";
+"order_button_submitted" = "Already submitted";
+"lunch_title" = "Lunch Menu";
+"lunch_search_placeholder" = "Search for meals...";
+"add_note_placeholder" = "Add a note...";
+"add_to_order_button" = "Add";
+"my_favorites_title" = "My Favorites";
+"clear_button" = "Clear";
+"added_to_cart_message" = "%@ added to cart 🛒";
+"checkout_reminder_title" = "Time to Check Out ⏰";
+"checkout_reminder_body" = "You've completed your working hours. Don't forget to check out!";
+"add_to_cart_button" = "Add to Cart";
+"invoice_total_label"        = "Total";
+"invoice_total_price_format" = "%@ EGP";
+"history_total_price_format" = "Total: %@ EGP";
+"reorder_button"             = "Re-order";
+/* en */
+"categories.title" = "Select Category";
+"categories.filterBySuppliers" = "Filter by Suppliers";
+"categories.selectAll" = "Select All";
+"categories.apply" = "Apply";
+"categories.discard" = "Discard";
+"categories.name" = "Name";
+"categories.number" = "Number";
+"categories.address" = "Address";
+"categories.select" = "Select";
+/* Expenses Screen - English */
+"expenses.addTitle" = "Add Expenses";
+"expenses.description" = " Description";
+"expenses.category" = " Category";
+"expenses.date" = " Date";
+"expenses.total" = " Total Amount";
+"expenses.analyticDistribution" = " Analytic Distribution";
+"expenses.includedTaxes" = " Included Taxes";
+"expenses.paidBy" = " Paid By";
+"expenses.notes" = " Notes";
+
+"expenses.descriptionPlaceholder" = "Enter expense description";
+"expenses.categoryPlaceholder" = "Select category";
+"expenses.datePlaceholder" = "Select date";
+"expenses.totalPlaceholder" = "total amount";
+"expenses.analyticDistributionPlaceholder" = "Select";
+"expenses.includedTaxesPlaceholder" = "Enter tax amount";
+"expenses.paidByPlaceholder" = "Select payment method";
+"expenses.notesPlaceholder" = "Enter additional notes";
+
+"expenses.categoryFood" = "Food";
+"expenses.categoryTransport" = "Transport";
+"expenses.categorySupplies" = "Supplies";
+"expenses.categoryUtilities" = "Utilities";
+"expenses.categoryOther" = "Other";
+
+"expenses.distributionCost" = "Cost";
+"expenses.distributionExpense" = "Expense";
+"expenses.distributionInvestment" = "Investment";
+
+"expenses.paidByCash" = "Cash";
+"expenses.paidByCard" = "Card";
+"expenses.paidByBank" = "Bank Transfer";
+"expenses.paidByCheck" = "Check";
+
+"expenses.validationTitle" = "Validation Error";
+"expenses.descriptionRequired" = "Please enter a description";
+"expenses.categoryRequired" = "Please select a category";
+"expenses.dateRequired" = "Please select a date";
+"expenses.totalRequired" = "Please enter a valid total amount";
+
+"common.save" = "Save";
+"common.discard" = "Discard";
+"common.done" = "Done";
+"common.cancel" = "Cancel";
+"common.ok" = "OK";
+/* English */
+"expenses_title" = "Expenses";
+/* English */
+"expenses.employee" = "Employee";
+"expenses.company" = "Company";
+/* English - Expenses Success/Error Messages */
+"expenses.success" = "Success";
+"expenses.createdSuccessfully" = "Expense created successfully";
+"expenses.error" = "Error";
+"expenses.errorCreatingExpense" = "Failed to create expense";
+"expenses.tryAgain" = "Please try again";
+"expenses.checkInputs" = "Please check your inputs and try again";
+/* English - Analytic Distribution */
+"expenses.addLine" = "Add a Line";
+"expenses.selectAnalytic" = "Select Analytic Account";
+"expenses.enterPercentage" = "Enter Percentage";
+"expenses.percentageMessage" = "Enter percentage for this account";
+"expenses.percentagePlaceholder" = "0-100";
+"expenses.percentageInvalid" = "Please enter a valid percentage (1-100)";
+"expenses.percentageMustBe100" = "Total percentage must be 100%";
+"expenses.total" = "Total";
+"expenses.validationTitle" = "Validation";
+
+/* English - Common */
+"common.done" = "Done";
+"common.save" = "Save";
+"common.cancel" = "Cancel";
+"common.ok" = "OK";
+"common.close" = "Close";
+"expenses.percentage" = "Percentage";
+"expenses.currency" = "Currency";
+"expenses.calculatedTotalByCurrency" = "Calculated Total";
+"expenses.ratioCurrencies" = "Currency Ratio";
+"settings_title" = "Settings";
+"lunch_title" = "Lunch";
+"expenses_title" = "Expenses";
+
+"new_expenses" = "New Expenses";
+"upload" = "Upload";
+
+"create_report" = "Create Report";
+"view_reports" = "View Reports";
+
+"reports" = "Reports";

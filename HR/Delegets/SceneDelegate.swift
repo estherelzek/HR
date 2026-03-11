@@ -31,11 +31,11 @@ import UIKit
             NetworkListener.shared.start()
 
                   NetworkListener.shared.onConnected = {
-                      print("🔁 Network is back — resending offline requests...")
-                      NetworkManager.shared.resendOfflineRequests()
+                     print("🔁 Network is back — resending offline requests...")
+                    NetworkManager.shared.resendOfflineRequests()
                   }
             print("🔁 bbbb Network is back — resending offline requests...")
-            NetworkManager.shared.resendOfflineRequests()
+         //   NetworkManager.shared.resendOfflineRequests()
             _ = ClockChangeDetector.shared
             NotificationCenter.default.addObserver(
                 self,
@@ -87,12 +87,12 @@ import UIKit
 
         func applicationDidBecomeActive(_ application: UIApplication) {
             print("📱 App became active — trying to resend offline requests...")
-            NetworkManager.shared.resendOfflineRequests()
+         //   NetworkManager.shared.resendOfflineRequests()
         }
 
         func sceneDidBecomeActive(_ scene: UIScene) {
             print("📱 App became active — trying to resend offline requests...")
-            NetworkManager.shared.resendOfflineRequests()
+       //    NetworkManager.shared.resendOfflineRequests()
         }
 
         func sceneDidDisconnect(_ scene: UIScene) {

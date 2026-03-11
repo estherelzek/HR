@@ -29,6 +29,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupMoreMenu()
         startApp()
         setUpTextFields()
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
@@ -38,7 +39,7 @@ class ViewController: UIViewController {
                name: .openNotificationsScreen,
                object: nil
            )
-       setupMoreMenu()
+      
     }
     
     // MARK: - Bottom Bar Button Actions
@@ -72,20 +73,20 @@ class ViewController: UIViewController {
     }
     
     @IBAction func settingButtonTapped(_ sender: Any) {
-     //   let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
+//        let settingVC = SettingScreenViewController(nibName: "SettingScreenViewController", bundle: nil)
 //        homeButton.tintColor = .lightGray
 //        timeOffButton.tintColor = .lightGray
 //        notificationButton.tintColor = .lightGray
 //        settingButton.tintColor = .purplecolor
 //        switchTo(viewController: settingVC)
         
-        //
-        let settingVC = MainLunchViewController(nibName: "MainLunchViewController", bundle: nil)
-        homeButton.tintColor = .lightGray
-        timeOffButton.tintColor = .lightGray
-        notificationButton.tintColor = .lightGray
-        settingButton.tintColor = .purplecolor
-        switchTo(viewController: settingVC)
+        
+//        let settingVC = MainLunchViewController(nibName: "MainLunchViewController", bundle: nil)
+//        homeButton.tintColor = .lightGray
+//        timeOffButton.tintColor = .lightGray
+//        notificationButton.tintColor = .lightGray
+//        settingButton.tintColor = .purplecolor
+//        switchTo(viewController: settingVC)
         //
         showMoreMenu()
     }
@@ -173,18 +174,17 @@ class ViewController: UIViewController {
     
     @objc private func languageChanged() {
         setUpTextFields()
-        
-        // Refresh UIMenu titles
         updateMoreMenuTitles()
-        
         // Refresh custom menu view if visible
         if let menuView = moreMenuView {
             for (index, subview) in menuView.subviews.enumerated() {
                 if let btn = subview as? UIButton {
-                    btn.setTitle(index == 0
-                                 ? NSLocalizedString("settings_title", comment: "")
-                                 : NSLocalizedString("lunch_title", comment: ""),
-                                 for: .normal)
+                    let titles = [
+                        NSLocalizedString("settings_title", comment: ""),
+                        NSLocalizedString("lunch_title", comment: ""),
+                        NSLocalizedString("expenses_title", comment: "")
+                    ]
+                    btn.setTitle(titles[index], for: .normal)
                     
                     // Adjust alignment for Arabic
                     let isArabic = LanguageManager.shared.currentLanguage() == "ar"
@@ -193,7 +193,6 @@ class ViewController: UIViewController {
             }
         }
     }
-
     
     @objc private func openNotificationsFromPush(_ notification: Notification) {
 
@@ -235,11 +234,17 @@ class ViewController: UIViewController {
         ) { [weak self] _ in
             self?.openLunch()
         }
-
+        
+        let expensesAction = UIAction(
+            title: NSLocalizedString("expenses_title", comment: ""),
+            image: UIImage(systemName: "dollarsign.circle.fill")
+        ) { [weak self] _ in
+            self?.openExpenses()
+        }
         let menu = UIMenu(
             title: "",
             options: .displayInline,
-            children: [settingsAction, lunchAction]
+            children: [settingsAction, lunchAction , expensesAction]
         )
 
         settingButton.menu = menu
@@ -282,7 +287,7 @@ class ViewController: UIViewController {
         }
 
         let menuWidth: CGFloat = 160
-        let menuHeight: CGFloat = 100
+        let menuHeight: CGFloat = 160  // Increased for 3 items with proper spacing
 
         let menuView = UIView()
         menuView.backgroundColor = .white
@@ -302,23 +307,30 @@ class ViewController: UIViewController {
             height: menuHeight
         )
 
-        // Buttons
+        // Settings Button
         let settingsBtn = createMenuButton(
             title: NSLocalizedString("settings_title", comment: ""),
-            y: 0
+            y: 8
         )
-
         settingsBtn.addTarget(self, action: #selector(openSettings), for: .touchUpInside)
 
+        // Lunch Button
         let lunchBtn = createMenuButton(
             title: NSLocalizedString("lunch_title", comment: ""),
-            y: 50
+            y: 54
         )
-
         lunchBtn.addTarget(self, action: #selector(openLunch), for: .touchUpInside)
+
+        // Expenses Button
+        let expensesBtn = createMenuButton(
+            title: NSLocalizedString("expenses_title", comment: ""),
+            y: 100
+        )
+        expensesBtn.addTarget(self, action: #selector(openExpenses), for: .touchUpInside)
 
         menuView.addSubview(settingsBtn)
         menuView.addSubview(lunchBtn)
+        menuView.addSubview(expensesBtn)
 
         view.addSubview(menuView)
         moreMenuView = menuView
@@ -335,6 +347,22 @@ class ViewController: UIViewController {
         addDismissTap()
     }
     
+    @objc private func openExpenses() {
+        hideMoreMenu()
+        
+        let expensesVC = ExpensesViewController(
+            nibName: "ExpensesViewController",
+            bundle: nil
+        )
+
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .lightGray
+        notificationButton.tintColor = .lightGray
+        settingButton.tintColor = .purplecolor
+
+        switchTo(viewController: expensesVC)
+    }
+    
     private func createMenuButton(title: String, y: CGFloat) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)
@@ -344,11 +372,11 @@ class ViewController: UIViewController {
         button.contentHorizontalAlignment = isArabic ? .right : .left
         
         button.titleLabel?.font = .systemFont(ofSize: 16, weight: .medium)
-        button.frame = CGRect(x: 12, y: y, width: 136, height: 50)
+        button.frame = CGRect(x: 12, y: y, width: 136, height: 46)  // Slightly smaller height
         
         return button
     }
-
+    
     private func hideMoreMenu() {
         UIView.animate(withDuration: 0.15, animations: {
             self.moreMenuView?.alpha = 0

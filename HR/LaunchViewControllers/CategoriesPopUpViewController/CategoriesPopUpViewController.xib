@@ -12,6 +12,10 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CategoriesPopUpViewController" customModule="HR" customModuleProvider="target">
             <connections>
                 <outlet property="alertView" destination="la5-LU-p7R" id="iuP-O2-bbg"/>
+                <outlet property="applyButton" destination="nuv-rA-9SR" id="he8-oY-HUX"/>
+                <outlet property="discardButton" destination="A9e-1d-VhL" id="GRT-3y-mjl"/>
+                <outlet property="filterBySuppliersLabel" destination="IEf-yA-wEI" id="hKA-2A-5l5"/>
+                <outlet property="selectAllButton" destination="sVG-my-ZnM" id="0xu-bx-0HT"/>
                 <outlet property="tableView" destination="GON-fU-X2P" id="VRe-Uq-MSY"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -22,17 +26,101 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="la5-LU-p7R" customClass="InspectableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="60.666666666666657" y="343" width="272" height="216"/>
+                    <rect key="frame" x="33" y="217" width="344" height="567"/>
                     <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="JZz-W8-TKP">
+                            <rect key="frame" x="8" y="524" width="328" height="40"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nuv-rA-9SR" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="160" height="40"/>
+                                    <color key="backgroundColor" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Apply"/>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="applyButtonTapped:" destination="-1" eventType="touchUpInside" id="BOe-va-08i"/>
+                                    </connections>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A9e-1d-VhL" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                                    <rect key="frame" x="168" y="0.0" width="160" height="40"/>
+                                    <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <state key="normal" title="Button"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Discard"/>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="8"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                    <connections>
+                                        <action selector="discardButtonTapped:" destination="-1" eventType="touchUpInside" id="z28-1K-cl4"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="CpN-Ro-Drx"/>
+                            </constraints>
+                        </stackView>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="GON-fU-X2P">
-                            <rect key="frame" x="0.0" y="0.0" width="272" height="216"/>
-                            <color key="backgroundColor" red="0.047058823529411764" green="0.047058823529411764" blue="0.047058823529411764" alpha="0.92864216549295775" colorSpace="custom" customColorSpace="sRGB"/>
+                            <rect key="frame" x="8" y="106" width="328" height="406"/>
+                            <color key="backgroundColor" red="0.12941176470588234" green="0.12941176470588234" blue="0.12941176470588234" alpha="0.92864216549295775" colorSpace="custom" customColorSpace="sRGB"/>
                         </tableView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u42-Gb-PUD">
+                            <rect key="frame" x="268" y="8" width="68" height="58"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="68" id="kkr-Vc-fvV"/>
+                                <constraint firstAttribute="height" constant="58" id="qSZ-dH-5Pp"/>
+                            </constraints>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" image="close-with-transparency.png"/>
+                            <connections>
+                                <action selector="closeButtonTapped:" destination="-1" eventType="touchUpInside" id="zn8-Nk-Vbi"/>
+                            </connections>
+                        </button>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="mXf-S5-cRu">
+                            <rect key="frame" x="8" y="74" width="328" height="25"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Filter By Suppliers" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IEf-yA-wEI">
+                                    <rect key="frame" x="0.0" y="0.0" width="171" height="25"/>
+                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sVG-my-ZnM">
+                                    <rect key="frame" x="211" y="0.0" width="117" height="25"/>
+                                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                    <state key="normal" title=" Select All" image="square" catalog="system"/>
+                                    <connections>
+                                        <action selector="selectAllButtonTapped:" destination="-1" eventType="touchUpInside" id="KX1-bW-AT4"/>
+                                    </connections>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="25" id="eEf-c0-38v"/>
+                            </constraints>
+                        </stackView>
                     </subviews>
-                    <color key="backgroundColor" red="0.047058823529411764" green="0.047058823529411764" blue="0.047058823529411764" alpha="0.92558868838028174" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.12941176470588234" green="0.12941176470588234" blue="0.12941176470588234" alpha="0.87194652288732399" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
-                        <constraint firstItem="GON-fU-X2P" firstAttribute="width" secondItem="la5-LU-p7R" secondAttribute="width" id="GaN-oh-PNz"/>
-                        <constraint firstItem="GON-fU-X2P" firstAttribute="height" secondItem="la5-LU-p7R" secondAttribute="height" id="XWu-zs-iXf"/>
+                        <constraint firstAttribute="trailing" secondItem="u42-Gb-PUD" secondAttribute="trailing" constant="8" id="3lp-sa-1Oh"/>
+                        <constraint firstAttribute="trailing" secondItem="JZz-W8-TKP" secondAttribute="trailing" constant="8" id="CBp-NA-rcQ"/>
+                        <constraint firstItem="u42-Gb-PUD" firstAttribute="top" secondItem="la5-LU-p7R" secondAttribute="top" constant="8" id="EjS-H6-KQ4"/>
+                        <constraint firstItem="GON-fU-X2P" firstAttribute="leading" secondItem="la5-LU-p7R" secondAttribute="leading" constant="8" id="H6T-A1-duc"/>
+                        <constraint firstItem="GON-fU-X2P" firstAttribute="top" secondItem="mXf-S5-cRu" secondAttribute="bottom" constant="7" id="LAJ-Qf-mpG"/>
+                        <constraint firstAttribute="trailing" secondItem="GON-fU-X2P" secondAttribute="trailing" constant="8" id="Lgw-Ug-WYF"/>
+                        <constraint firstAttribute="bottom" secondItem="JZz-W8-TKP" secondAttribute="bottom" constant="3" id="Q6a-bt-yQw"/>
+                        <constraint firstItem="JZz-W8-TKP" firstAttribute="leading" secondItem="la5-LU-p7R" secondAttribute="leading" constant="8" id="Ua3-i9-OIn"/>
+                        <constraint firstAttribute="trailing" secondItem="mXf-S5-cRu" secondAttribute="trailing" constant="8" id="irs-b9-SZR"/>
+                        <constraint firstItem="mXf-S5-cRu" firstAttribute="leading" secondItem="la5-LU-p7R" secondAttribute="leading" constant="8" id="kk7-T5-Fy0"/>
+                        <constraint firstItem="mXf-S5-cRu" firstAttribute="top" secondItem="u42-Gb-PUD" secondAttribute="bottom" constant="8" id="nCH-aU-9J3"/>
+                        <constraint firstItem="JZz-W8-TKP" firstAttribute="top" secondItem="GON-fU-X2P" secondAttribute="bottom" constant="12" id="xP8-cp-lOb"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -44,17 +132,17 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="GON-fU-X2P" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="Ihs-ZA-SBg"/>
-                <constraint firstItem="la5-LU-p7R" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="Q5e-bR-elY"/>
-                <constraint firstItem="la5-LU-p7R" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.692112" id="b3l-sR-WJJ"/>
-                <constraint firstItem="la5-LU-p7R" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.253521" id="dvQ-lT-CKY"/>
-                <constraint firstItem="GON-fU-X2P" firstAttribute="centerY" secondItem="fnl-2z-Ty3" secondAttribute="centerY" id="fdP-CD-RCf"/>
-                <constraint firstItem="la5-LU-p7R" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="vL8-FY-clG"/>
+                <constraint firstItem="la5-LU-p7R" firstAttribute="bottom" secondItem="fnl-2z-Ty3" secondAttribute="bottom" id="5kS-v6-Dfz"/>
+                <constraint firstItem="la5-LU-p7R" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" multiplier="0.875318" id="7xI-xa-Agv"/>
+                <constraint firstItem="la5-LU-p7R" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.665493" id="ET2-hA-DyZ"/>
+                <constraint firstItem="la5-LU-p7R" firstAttribute="trailing" secondItem="i5M-Pr-FkT" secondAttribute="trailingMargin" id="mWI-EC-7pX"/>
             </constraints>
-            <point key="canvasLocation" x="58.778625954198468" y="103.52112676056339"/>
+            <point key="canvasLocation" x="-182" y="-70"/>
         </view>
     </objects>
     <resources>
+        <image name="close-with-transparency.png" width="44" height="44"/>
+        <image name="square" catalog="system" width="128" height="114"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

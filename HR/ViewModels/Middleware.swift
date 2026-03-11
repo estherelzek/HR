@@ -40,9 +40,7 @@ class Middleware {
     private static var instance: Middleware? = nil
 
     static func initialize(_ encryptedInput: String) throws -> Middleware {
-        if let existing = instance {
-            return existing
-        }
+       
         let newInstance = try Middleware(encryptedInput: encryptedInput)
         instance = newInstance
         return newInstance
@@ -62,7 +60,9 @@ extension Middleware {
         defaults.set(apiKey, forKey: "apiKeyKey")
         defaults.set(baseUrl, forKey: "baseURL")
     }
-
+    static func reset() {
+        instance = nil
+    }
 
     static func loadFromUserDefaults() -> Middleware? {
         let defaults = UserDefaults.standard

@@ -8,6 +8,7 @@
 import UIKit
 
 class CheckingVC: UIViewController {
+    
     @IBOutlet weak var titleOfCheckingInOrOut: UILabel!
     @IBOutlet weak var discreptionOfCurrecntAttendence: UILabel!
     @IBOutlet weak var checkingButton: InspectableButton!
@@ -22,6 +23,7 @@ class CheckingVC: UIViewController {
     private var isLoadingAttendance: Bool = false {
         didSet { updateLoaderState() }
     }
+    
     private var isFetchingStatus: Bool = false {
         didSet { updateLoaderState() }
     }
@@ -53,8 +55,10 @@ class CheckingVC: UIViewController {
             object: nil
         )
 
-        NetworkManager.shared.resendOfflineRequests { [weak self] in
-            self?.fetchAttendanceStatus()
+        NetworkManager.shared.resendOfflineRequests { 
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                self.fetchAttendanceStatus()
+            }
         }
 
         calculateClockDifference()
@@ -73,12 +77,10 @@ class CheckingVC: UIViewController {
     @IBAction func checkingButtonTapped(_ sender: Any) {
         isLoadingAttendance = true
         checkingButton.isEnabled = false
-        
         // Fetch latest attendance status first
         fetchAttendanceStatus { [weak self] in
             guard let self = self else { return }
             self.isLoadingAttendance = false
-            
             // Confirm check-out if already checked in
             if self.isCheckedIn {
                 let hoursText = self.workedHours != nil ? String(format: "%.2f hours", self.workedHours!) : NSLocalizedString("unknown", comment: "")
@@ -103,7 +105,6 @@ class CheckingVC: UIViewController {
                 self.performCheckInOut(isCheckedIn: false)
             }
         }
-        
         showAttendanceProcessingMessage(for: isCheckedIn ? "check_out" : "check_in")
     }
 
@@ -123,16 +124,35 @@ class CheckingVC: UIViewController {
                     }
                 } else {
                     print("⚠️ Offline → request saved locally")
-                    let def = UserDefaults.standard.string(forKey: "clockDiffMinutes") ?? "0"
-                    print("def: \(def)")
-                    if def != "-1000" {
-                        self.showAlert(
-                            title: "Offline Mode",
-                            message: self.isCheckedIn
-                            ? "You're currently offline. Your check-in request has been saved locally and will be sent automatically once you reconnect to the network."
-                            : "You're currently offline. Your check-out request has been saved locally and will be sent automatically once you reconnect to the network."
-                        )
+                    
+                    let now = Date()
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // match backend format if needed
+                    
+                    let currentTimeString = formatter.string(from: now)
+                    
+                    if self.isCheckedIn {
+                        self.lastCheckIn = currentTimeString
+                        self.workedHours = nil
+                    } else {
+                        self.lastCheckOut = currentTimeString
+                        
+                        if let checkInString = self.lastCheckIn,
+                           let checkInDate = formatter.date(from: checkInString) {
+                            let hours = now.timeIntervalSince(checkInDate) / 3600
+                            self.workedHours = round(hours * 100) / 100
+                        }
                     }
+                    
+                    self.reloadTexts()
+                    
+                    self.showAlert(
+                        title: "Offline Mode",
+                        message: self.isCheckedIn
+                        ? "You're offline. Check-in saved locally and will sync when online."
+                        : "You're offline. Check-out saved locally and will sync when online."
+                    )
+                    
                     self.finishLoadingUI()
                 }
             }
@@ -175,7 +195,7 @@ class CheckingVC: UIViewController {
                     }
                 case .failure(let error):
                     print("❌ Request failed: \(error.localizedDescription)")
-                    self.showAlert(title: NSLocalizedString("error", comment: ""), message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
+//                    self.showAlert(title: NSLocalizedString("error", comment: ""), message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
                 }
                 completion?()
             }
@@ -255,16 +275,20 @@ class CheckingVC: UIViewController {
     }
     private func setUpLisgnerstoViewModel() {
         
-        // ✅ SUCCESS
         viewModel.onSuccess = { [weak self] response in
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 
                 self.handleAttendanceSuccess(response)
+                
+                // Cancel reminder if checked out
+                if response.result?.attendanceStatus == "checked_out" {
+                    NotificationManager.shared.cancelCheckoutReminder()
+                }
+                
                 self.finishLoadingUI()
             }
         }
-        
         
         // ✅ GENERAL ERRORS
         viewModel.onError = { [weak self] message in
@@ -301,7 +325,7 @@ class CheckingVC: UIViewController {
                 }
                 
                 // 🔹 3️⃣ Default warning
-                self.showAlert(title: NSLocalizedString("alert_warning_title", comment: ""), message: message)
+                self.showAlert(title: NSLocalizedString("alert_warning_title", comment: ""), message: "message")
             }
         }
         
@@ -355,15 +379,27 @@ class CheckingVC: UIViewController {
         }
     }
 
-    
+
     private func handleAttendanceSuccess(_ response: AttendanceResponse) {
         if response.result?.attendanceStatus == "checked_in" {
             isCheckedIn = true
             lastCheckIn = response.result?.checkInTime
+            
+            // ✅ Use todayScheduledHours from backend, fallback to 8.0
+            let requiredHours = response.result?.todayScheduledHours ?? 8.0
+            
+            if let checkInTime = response.result?.checkInTime {
+                NotificationManager.shared.scheduleCheckoutReminder(
+                    checkInTime: checkInTime,
+                    requiredHours: requiredHours
+                )
+            }
+            
         } else {
             isCheckedIn = false
             lastCheckOut = response.result?.checkOutTime
             workedHours = response.result?.workedHours
+            NotificationManager.shared.cancelCheckoutReminder()
         }
         reloadTexts()
     }

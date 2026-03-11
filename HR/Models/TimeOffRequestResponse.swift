@@ -14,12 +14,13 @@ struct TimeOffRequestResponse: Decodable {
 }
 
 struct TimeOffRequestResult: Decodable {
-    let status: String?          // "success" or "failed"
+    let status: String?
     let leaveId: Int?
     let message: String?
     let leaveType: String?
     let duration: Duration?
     let allocation: Allocation?
+    let errorCode: String?      // ✅ add this
 
     enum CodingKeys: String, CodingKey {
         case status
@@ -28,9 +29,9 @@ struct TimeOffRequestResult: Decodable {
         case leaveType = "leave_type"
         case duration
         case allocation
+        case errorCode = "error_code"   // ✅ add this
     }
 }
-
 struct Duration: Decodable {
     let value: Double?
     let unit: String?
