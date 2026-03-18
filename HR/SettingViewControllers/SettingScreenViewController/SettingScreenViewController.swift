@@ -27,8 +27,7 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
     let languages = [(NSLocalizedString("english", comment: ""), "english"),(NSLocalizedString("arabic", comment: ""), "egypt")]
     let generalItemsKeys = [("change_company", "building.2"),("language", "globe"),("dark_mode", "moon.fill")]
     let securityItemsKeys = [
-        ("change_protection", "lock.fill")
-      //  ("notifications", "bell.fill")
+        ("change_protection", "lock.fill")      //  ("notifications", "bell.fill")
     ]
 
     let accountItemsKeys = [("logout", "rectangle.portrait.and.arrow.right")]
@@ -62,28 +61,21 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
     @objc private func handleLanguageChange() {
 
         let isArabic = LanguageManager.shared.currentLanguage() == "ar"
-
         // 1️⃣ Force semantic direction on entire screen
         view.semanticContentAttribute = isArabic ? .forceRightToLeft : .forceLeftToRight
-
         generalStettingTableView.semanticContentAttribute = view.semanticContentAttribute
         securityTabelView.semanticContentAttribute = view.semanticContentAttribute
         accountTabelView.semanticContentAttribute = view.semanticContentAttribute
-
         navigationController?.navigationBar.semanticContentAttribute = view.semanticContentAttribute
         tabBarController?.tabBar.semanticContentAttribute = view.semanticContentAttribute
-
         // 2️⃣ Reset transform (very important for immediate flip)
         view.transform = .identity
-
         // 3️⃣ Remove and re-add the view (forces full layout refresh)
         let superview = view.superview
         view.removeFromSuperview()
         superview?.addSubview(view)
-
         // 4️⃣ Update texts
         reloadTexts()
-
         // 5️⃣ Force layout update
         view.setNeedsLayout()
         view.layoutIfNeeded()

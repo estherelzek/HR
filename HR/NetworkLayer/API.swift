@@ -118,6 +118,13 @@ enum API: Endpoint {
        )
     case getCurrencies(token: String)
     case getEmployeeExpenses(token: String)
+    case submitExpense(token: String, expense_id: Int)
+    case getExpenseReports(token: String)
+    case deleteExpense(token: String, expense_ids: [Int])
+    case deleteReport(token: String, sheet_ids: [Int])
+    
+    
+    
     
     var path: String {
         switch self {
@@ -168,6 +175,14 @@ enum API: Endpoint {
             return "/api/expenses/currencies"
         case .getEmployeeExpenses:
             return "/api/expenses/get"
+        case .submitExpense:
+            return "/api/expenses/submit"
+        case .getExpenseReports:
+            return "/api/expenses/report"
+        case .deleteExpense:
+            return "/api/expenses/delete"
+        case .deleteReport:
+            return "/api/expenses/delete_report"
                default:
                    return ""
         }
@@ -406,6 +421,48 @@ enum API: Endpoint {
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
 
+        case let .submitExpense(token, expense_id):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "params": [
+                    "token": token,
+                    "expense_id": expense_id
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+            
+        case let .getExpenseReports(token):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "params": [
+                    "token": token
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+            
+        case let .deleteExpense(token, expense_ids):
+            let expenseValue: Any = expense_ids.count == 1 ? expense_ids[0] : expense_ids
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": [
+                    "expense_id": expenseValue,
+                    "token": token
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+
+        case let .deleteReport(token, sheet_ids):
+            let sheetValue: Any = sheet_ids.count == 1 ? sheet_ids[0] : sheet_ids
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": [
+                    "sheet_id": sheetValue,
+                    "token": token
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
                default:
                    return nil
                }

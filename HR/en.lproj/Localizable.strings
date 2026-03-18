@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   iosApp
 
@@ -193,7 +193,7 @@
 "checked_in_description" = "You are currently checked in.";
 "checked_in_description_with_time" = "Checked in at %@";
 "checked_out_description" = "You are currently checked out.";
-"checked_out_description_with_time" = "Last check-out at %@ • Worked %.2f hours";
+"checked_out_description_with_time" = "Last check-out at %@ • ";
 "attendance_processing" = "Processing your attendance... Please wait.";
 
 /* Alerts - General */
@@ -380,3 +380,52 @@
 "view_reports" = "View Reports";
 
 "reports" = "Reports";
+"report.createTitle" = "Create Report";
+"report.employee" = "Employee";
+"report.manager" = "Manager";
+"report.company" = "Company";
+"report.paidBy" = "Paid By";
+"report.summaryPlaceholder" = "Expense report summary";
+"report.addExpense" = "Add Expense";
+"report.createTitle" = "Create Report";
+"report.employee" = "Employee";
+"report.manager" = "Manager";
+"report.company" = "Company";
+"report.paidBy" = "Paid By";
+
+"report.summaryPlaceholder" = "Expense report summary";
+
+"report.employeePlaceholder" = "Select employee";
+"report.managerPlaceholder" = "Select manager";
+"report.companyPlaceholder" = "Select company";
+"report.paidByPlaceholder" = "Select paid by";
+
+"report.addExpense" = "Add Expense";
+"report.noDraftExpenses" = "No draft expenses available";
+"report.save" = "Save Report";
+"report.selectAtLeastOneExpense" = "Please select at least one expense to create a report.";
+
+// Expenses Cell
+"expense.cell.withTaxes" = "%@ %@ with taxes 0";
+"expense.cell.addedOn" = "You added this expense on %@";
+"common.delete" = "Delete";
+
+// en.lproj
+"report.submittedSuccess" = "%d expense(s) submitted successfully.";
+"report.submittedPartial" = "%d submitted, %d failed. Please retry.";
+"common.validation" = "Validation";
+"report.selectAtLeastOneExpense" = "Please select at least one expense to create a report.";
+"expenses.error" = "Error";
+"expenses.tokenMissing" = "Token is missing. Please login again.";
+"expenses.success" = "Success";
+"report.submittedSuccess" = "%d expense(s) submitted successfully.";
+"report.submittedPartial" = "%d submitted, %d failed. Please try again.";
+"common.search" = "Search";
+"expenses.deleteFailed" = "Failed to delete expense.";
+"report.deleteFailed" = "Failed to delete report.";
+// en.lproj
+"expenses.deleteTitle" = "Delete Expense";
+"expenses.deleteMessage" = "Are you sure you want to delete \"%@\"?";
+"report.deleteTitle" = "Delete Report";
+"report.deleteMessage" = "Are you sure you want to delete \"%@\"?";
+"common.cancel" = "Cancel";

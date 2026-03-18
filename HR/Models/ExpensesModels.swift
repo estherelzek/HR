@@ -66,13 +66,60 @@ struct EmployeeExpense: Codable, Identifiable {
     let sheet_id: Int?
     let sheet_name: String?
     let description: String
-}
+    let tax_amount: Double
+    let draft_total_amount: String
 
+    enum CodingKeys: String, CodingKey {
+        case id, name, employee, employee_id, company, company_id, product, product_id
+        case total_amount, currency, date, state, sheet_id, sheet_name, description
+        case tax_amount, draft_total_amount
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        id = try container.decode(Int.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        employee = try container.decode(String.self, forKey: .employee)
+        employee_id = try container.decode(Int.self, forKey: .employee_id)
+        company = try container.decode(String.self, forKey: .company)
+        company_id = try container.decode(Int.self, forKey: .company_id)
+        product = try container.decode(String.self, forKey: .product)
+        product_id = try container.decode(Int.self, forKey: .product_id)
+        total_amount = try container.decode(Double.self, forKey: .total_amount)
+        currency = try container.decode(String.self, forKey: .currency)
+        date = try container.decode(String.self, forKey: .date)
+        state = try container.decode(String.self, forKey: .state)
+        sheet_id = try container.decodeIfPresent(Int.self, forKey: .sheet_id)
+        sheet_name = try container.decodeIfPresent(String.self, forKey: .sheet_name)
+        description = try container.decode(String.self, forKey: .description)
+
+        // Accept both number and string from backend
+        if let value = try? container.decode(Double.self, forKey: .tax_amount) {
+            tax_amount = value
+        } else if let value = try? container.decode(String.self, forKey: .tax_amount),
+                  let doubleValue = Double(value) {
+            tax_amount = doubleValue
+        } else {
+            tax_amount = 0
+        }
+
+        draft_total_amount = (try? container.decode(String.self, forKey: .draft_total_amount)) ?? ""
+    }
+}
 struct EmployeeExpensesResult: Codable {
     let status: String
     let message: String
     let count: Int
     let data: [EmployeeExpense]
+}
+
+// MARK: - Submit Expense Response
+struct SubmitExpenseResponse: Codable {
+    let status: String
+    let message: String
+    let sheet_id: Int?
+    let state: String?
 }
 
 // MARK: - Expense Categories
@@ -197,4 +244,47 @@ struct CurrenciesResult: Codable {
     let message: String
     let count: Int
     let data: [Currency]
+}
+
+// MARK: - Expense Reports
+struct ExpenseReportsResult: Codable {
+    let status: String
+    let data: [ExpenseReportSheet]
+}
+
+struct ExpenseReportSheet: Codable {
+    let sheet_id: Int
+    let name: String
+    let employee: String
+    let state: String
+    let total_amount: Double
+    let expenses: [ExpenseReportExpense]
+}
+
+struct ExpenseReportExpense: Codable {
+    let id: Int
+    let name: String
+    let amount: Double
+    let date: String
+}
+
+struct ReportListItem {
+    let sheet_id: Int
+    let sheet_name: String
+    let employee: String
+    let state: String
+    let total_amount: Double
+    let expense: ExpenseReportExpense
+}
+
+
+
+struct DeleteExpenseResponse: Codable {
+    let status: String
+    let message: String?
+}
+
+struct DeleteReportResponse: Codable {
+    let status: String
+    let message: String?
 }

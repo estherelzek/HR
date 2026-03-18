@@ -216,6 +216,38 @@ class ExpensesViewModel {
         }
     }
 
+    // MARK: - Submit Expense
+    func submitExpense(token: String, expenseId: Int, completion: @escaping (Result<SubmitExpenseResponse, APIError>) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.submitExpense(token: token, expense_id: expenseId)
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<SubmitExpenseResponse>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+
+                switch result {
+                case .success(let response):
+                    if response.result.status == "error" {
+                        let msg = response.result.message
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                        print("❌ Submit Expense Error: \(msg)")
+                    } else {
+                        completion(.success(response.result))
+                        print("✅ Expense \(expenseId) submitted. Sheet ID: \(response.result.sheet_id ?? -1)")
+                    }
+
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                    print("❌ Failed to submit expense \(expenseId): \(error)")
+                }
+            }
+        }
+    }
+
     // MARK: - Fetch Currencies
     func fetchCurrencies(token: String, completion: @escaping (Result<[Currency], APIError>) -> Void) {
         
@@ -242,6 +274,83 @@ class ExpensesViewModel {
                     completion(.failure(error))
                     
                     print("❌ Failed to fetch currencies: \(error)")
+                }
+            }
+        }
+    }
+    
+    func fetchExpenseReports(token: String, completion: @escaping (Result<[ExpenseReportSheet], APIError>) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.getExpenseReports(token: token)
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<ExpenseReportsResult>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+
+                switch result {
+                case .success(let response):
+                    completion(.success(response.result.data))
+                    print("✅ Expense reports fetched: \(response.result.data.count)")
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                    print("❌ Failed to fetch expense reports: \(error)")
+                }
+            }
+        }
+    }
+    
+    func deleteExpense(token: String, expenseIds: [Int], completion: @escaping (Result<DeleteExpenseResponse, APIError>) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.deleteExpense(token: token, expense_ids: expenseIds)
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<DeleteExpenseResponse>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+
+                switch result {
+                case .success(let response):
+                    if response.result.status.lowercased() == "error" {
+                        let msg = response.result.message ?? NSLocalizedString("expenses.deleteFailed", comment: "")
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                    } else {
+                        completion(.success(response.result))
+                    }
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    func deleteReport(token: String, sheetIds: [Int], completion: @escaping (Result<DeleteReportResponse, APIError>) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.deleteReport(token: token, sheet_ids: sheetIds)
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<DeleteReportResponse>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+
+                switch result {
+                case .success(let response):
+                    if response.result.status.lowercased() == "error" {
+                        let msg = response.result.message ?? NSLocalizedString("report.deleteFailed", comment: "")
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                    } else {
+                        completion(.success(response.result))
+                    }
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
                 }
             }
         }

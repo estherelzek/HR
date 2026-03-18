@@ -79,6 +79,11 @@ final class LoginViewModel {
                        // UserDefaults.standard.defaultURL = UserDefaults.standard.baseURL
                         UserDefaults.standard.baseURL = base
                     }
+                    if let companyName = res.companyName, !companyName.isEmpty {
+                        UserDefaults.standard.companyName = companyName
+                    } else if let firstCompanyName = detail.company?.first?.name, !firstCompanyName.isEmpty {
+                        UserDefaults.standard.companyName = firstCompanyName
+                    }
 
                     // 3️⃣ Save company branches
                     if let companies = detail.company {

@@ -1,4 +1,4 @@
-/* 
+/*
   Localizable.strings
   iosApp
 
@@ -194,7 +194,7 @@
 "checked_in_description" = "أنت مسجل حضور حالياً.";
 "checked_in_description_with_time" = "تم تسجيل الحضور في %@";
 "checked_out_description" = "أنت مسجل انصراف حالياً.";
-"checked_out_description_with_time" = "آخر تسجيل انصراف في %@ • عدد الساعات %.2f";
+"checked_out_description_with_time" = "آخر تسجيل انصراف في %@ • ";
 "attendance_processing" = "جارٍ معالجة طلبك... الرجاء الانتظار.";
 
 /* Alerts - General */
@@ -383,3 +383,49 @@
 "view_reports" = "عرض التقارير";
 
 "reports" = "التقارير";
+"report.createTitle" = "إنشاء تقرير";
+"report.employee" = "الموظف";
+"report.manager" = "المدير";
+"report.company" = "الشركة";
+"report.paidBy" = "مدفوع بواسطة";
+"report.summaryPlaceholder" = "ملخص تقرير المصروفات";
+"report.addExpense" = "إضافة مصروف";
+"report.createTitle" = "إنشاء تقرير";
+"report.employee" = "الموظف";
+"report.manager" = "المدير";
+"report.company" = "الشركة";
+"report.paidBy" = "مدفوع بواسطة";
+
+"report.summaryPlaceholder" = "ملخص تقرير المصروفات";
+
+"report.employeePlaceholder" = "اختر الموظف";
+"report.managerPlaceholder" = "اختر المدير";
+"report.companyPlaceholder" = "اختر الشركة";
+"report.paidByPlaceholder" = "اختر طريقة الدفع";
+
+"report.addExpense" = "إضافة مصروف";
+"report.noDraftExpenses" = "لا توجد مصروفات بحالة مسودة";
+"report.save" = "حفظ التقرير";
+"report.selectAtLeastOneExpense" = "يرجى اختيار مصروف واحد على الأقل لإنشاء التقرير.";
+
+// Expenses Cell
+"expense.cell.withTaxes" = "%@ %@ مع ضرائب 0";
+"expense.cell.addedOn" = "لقد أضفت هذا المصروف بتاريخ %@";
+"common.delete" = "حذف";
+"report.submittedSuccess" = "تم تقديم %d مصروف(ات) بنجاح.";
+"report.submittedPartial" = "تم تقديم %d، وفشل %d. يرجى" ;
+"common.validation" = "تحقق";
+"report.selectAtLeastOneExpense" = "يرجى اختيار مصروف واحد على الأقل لإنشاء التقرير.";
+"expenses.error" = "خطأ";
+"expenses.tokenMissing" = "الجلسة منتهية. يرجى تسجيل الدخول مجدداً.";
+"expenses.success" = "نجاح";
+"report.submittedSuccess" = "تم تقديم %d مصروف(ات) بنجاح.";
+"report.submittedPartial" = "تم تقديم %d، وفشل %d. يرجى المحاولة مجدداً.";
+"common.search" = "بحث";
+"expenses.deleteFailed" = "فشل حذف المصروف.";
+"report.deleteFailed" = "فشل حذف التقرير.";
+"expenses.deleteTitle" = "حذف المصروف";
+"expenses.deleteMessage" = "هل أنت متأكد من حذف \"%@\"؟";
+"report.deleteTitle" = "حذف التقرير";
+"report.deleteMessage" = "هل أنت متأكد من حذف \"%@\"؟";
+"common.cancel" = "إلغاء";

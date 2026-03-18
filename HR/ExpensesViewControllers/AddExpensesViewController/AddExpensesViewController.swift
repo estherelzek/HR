@@ -10,6 +10,9 @@ import UIKit
 
 class AddExpensesViewController: UIViewController {
     
+    // Called after expense is successfully created
+    var onExpenseCreated: (() -> Void)?
+    
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var addExpensesTitleLabel: Inspectablelabel!
@@ -334,11 +337,22 @@ class AddExpensesViewController: UIViewController {
         }
 
         let rate = currency.conversion_rate
-        let ratio = 1 / rate
+        guard rate > 0 else {
+            setConversionStack(hidden: true)
+            return
+        }
 
-        ratioCurrenciesLabel.text = "1 EGP = \(String(format: "%.2f", ratio)) \(currency.currency_code)"
-        let converted = amount * ratio
-        calculatedTotalByCurrency.text = "\(String(format: "%.2f", converted)) \(currency.currency_code)"
+        // Backend rate: 1 EGP = rate targetCurrency
+        // Needed for payout: 1 targetCurrency = 1/rate EGP
+        let reverseRate = 1.0 / rate
+        let convertedToEGP = amount * reverseRate
+
+        ratioCurrenciesLabel.text = "1 \(currency.currency_code) = \(String(format: "%.2f", reverseRate)) EGP"
+        calculatedTotalByCurrency.text = "\(String(format: "%.2f", convertedToEGP)) EGP"
+
+        print("esther : rate: \(rate) (1 EGP = \(rate) \(currency.currency_code))")
+        print("esther : reverse: 1 \(currency.currency_code) = \(reverseRate) EGP")
+        print("esther : converted: \(amount) \(currency.currency_code) = \(convertedToEGP) EGP")
 
         setConversionStack(hidden: false)
     }
@@ -513,6 +527,7 @@ class AddExpensesViewController: UIViewController {
                         message: NSLocalizedString("expenses.createdSuccessfully", comment: "Expense created successfully")
                     )
                     self?.clearForm()
+                    self?.onExpenseCreated?()
                     print("✅ Expense created: \(response.expense_id)")
                     
                 case .failure(let error):

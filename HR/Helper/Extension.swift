@@ -674,7 +674,51 @@ class InspectableCollectionViewCell: UICollectionViewCell {
         }
     }
 }
-
+class InspectableTableViewCell: UITableViewCell {
+    
+    @IBInspectable var cornerRadius: CGFloat = 0 {
+        didSet {
+            layer.cornerRadius = cornerRadius
+            layer.masksToBounds = true
+        }
+    }
+    
+    @IBInspectable var borderWidth: CGFloat = 0 {
+        didSet {
+            layer.borderWidth = borderWidth
+        }
+    }
+    
+    @IBInspectable var borderColor: UIColor? {
+        didSet {
+            layer.borderColor = borderColor?.cgColor
+        }
+    }
+    
+    @IBInspectable var shadowColor: UIColor? {
+        didSet {
+            layer.shadowColor = shadowColor?.cgColor
+        }
+    }
+    
+    @IBInspectable var shadowOpacity: Float = 0 {
+        didSet {
+            layer.shadowOpacity = shadowOpacity
+        }
+    }
+    
+    @IBInspectable var shadowOffset: CGSize = .zero {
+        didSet {
+            layer.shadowOffset = shadowOffset
+        }
+    }
+    
+    @IBInspectable var shadowRadius: CGFloat = 0 {
+        didSet {
+            layer.shadowRadius = shadowRadius
+        }
+    }
+}
 extension Date {
 
     // ✅ ONLY THIS ONE
@@ -743,7 +787,12 @@ extension UserDefaults {
         static let employeeName = "employeeName"
         static let employeeEmail = "employeeEmail"
     }
-    
+   
+
+    var companyName: String? {
+        get { string(forKey: "companyName") }
+        set { set(newValue, forKey: "companyName") }
+    }
     var dontShowProtectionScreen: Bool {
         get { bool(forKey: Keys.dontShowProtectionScreen) }
         set { set(newValue, forKey: Keys.dontShowProtectionScreen) }

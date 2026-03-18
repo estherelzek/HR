@@ -7,20 +7,19 @@
 
 import UIKit
 
-class ExpensesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource{
-   
-    
+class ExpensesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+
     @IBOutlet weak var expensesLabelTitle: Inspectablelabel!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var tableView: InspectableTableView!
     @IBOutlet weak var NewButton: InspectableButton!
     @IBOutlet weak var ReportsButton: InspectableButton!
-    
+
     private var actionMenuView: UIView?
     private var overlayView: UIView?
     private let expensesViewModel = ExpensesViewModel()
     private var expensesList: [EmployeeExpense] = []
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLocalization()
@@ -32,7 +31,10 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
-        tableView.separatorColor = UIColor.border
+        tableView.separatorStyle = .none
+        tableView.backgroundColor = .clear
+        tableView.rowHeight = 125
+        tableView.estimatedRowHeight = 125
         tableView.register(
             UINib(nibName: "ExpensesTableViewCell", bundle: nil),
             forCellReuseIdentifier: "ExpensesTableViewCell"
@@ -54,8 +56,8 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
 
+    // MARK: - Actions
     @IBAction func newButtonTapped(_ sender: UIButton) {
-        
         showActionMenu(
             button: sender,
             titles: [
@@ -68,9 +70,8 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
             ]
         )
     }
-    
-    @IBAction func reportsButtonTapped(_ sender: UIButton) {
 
+    @IBAction func reportsButtonTapped(_ sender: UIButton) {
         showActionMenu(
             button: sender,
             titles: [
@@ -83,7 +84,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
             ]
         )
     }
-    
+
     @objc func uploadTapped() {
         hideActionMenu()
         print("Upload tapped")
@@ -91,57 +92,76 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
 
     @objc func newExpenseTapped() {
         hideActionMenu()
-        let historyVC = AddExpensesViewController(
-            nibName: "AddExpensesViewController",
-            bundle: nil
-        )
+        let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
 
-        if let sheet = historyVC.sheetPresentationController {
+        // ✅ Reload table when sheet is dismissed
+        vc.presentationController?.delegate = self
+        vc.onExpenseCreated = { [weak self] in
+            self?.loadExpenses()
+        }
+
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+            sheet.delegate = self
+        }
+
+        present(vc, animated: true)
+    }
+
+    @objc func createReportTapped() {
+        hideActionMenu()
+        let vc = CreateReportsViewController(nibName: "CreateReportsViewController", bundle: nil)
+
+        let draftExpenses = expensesList.filter { $0.state.lowercased() == "draft" }
+        vc.expenses = draftExpenses
+
+        if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
         }
 
-        present(historyVC, animated: true)
-    }
-
-    @objc func createReportTapped() {
-        hideActionMenu()
-        print("Create Report tapped")
+        present(vc, animated: true)
     }
 
     @objc func viewReportsTapped() {
         hideActionMenu()
-        print("View Reports tapped")
+        let vc = ReportsViewController(nibName: "ReportsViewController", bundle: nil)
+
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+        }
+
+        present(vc, animated: true)
     }
-    
+
+    // MARK: - Localization
     private func setupLocalization() {
-        
         expensesLabelTitle.text = NSLocalizedString("expenses_title", comment: "")
-        
         NewButton.setTitle(NSLocalizedString("new_expenses", comment: ""), for: .normal)
-        
         ReportsButton.setTitle(NSLocalizedString("reports", comment: ""), for: .normal)
-        
+
         let isArabic = LanguageManager.shared.currentLanguage() == "ar"
-        
         NewButton.contentHorizontalAlignment = isArabic ? .right : .left
         ReportsButton.contentHorizontalAlignment = isArabic ? .right : .left
     }
-    
+
+    // MARK: - Action Menu
     private func showActionMenu(button: UIView, titles: [String], actions: [Selector]) {
-        
         if actionMenuView != nil {
             hideActionMenu()
             return
         }
 
-        // Overlay (detect outside taps)
         let overlay = UIView(frame: view.bounds)
         overlay.backgroundColor = .clear
         view.addSubview(overlay)
         overlayView = overlay
-        
+
         let tap = UITapGestureRecognizer(target: self, action: #selector(outsideTapped))
         overlay.addGestureRecognizer(tap)
 
@@ -157,9 +177,8 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         menu.layer.shadowOffset = CGSize(width: 0, height: 4)
 
         let frame = button.superview?.convert(button.frame, to: view) ?? .zero
-
         menu.frame = CGRect(
-            x: frame.midX - width/2,
+            x: frame.midX - width / 2,
             y: frame.minY - height - 8,
             width: width,
             height: height
@@ -168,51 +187,123 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         let isArabic = LanguageManager.shared.currentLanguage() == "ar"
 
         for i in 0..<titles.count {
-
             let btn = UIButton(type: .system)
             btn.frame = CGRect(x: 0, y: CGFloat(i) * 46, width: width, height: 46)
-
             btn.setTitle(titles[i], for: .normal)
             btn.tintColor = .white
             btn.contentHorizontalAlignment = isArabic ? .right : .left
             btn.titleEdgeInsets = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
-
             btn.addTarget(self, action: actions[i], for: .touchUpInside)
-
             menu.addSubview(btn)
         }
 
         overlay.addSubview(menu)
         actionMenuView = menu
     }
+
     @objc private func outsideTapped() {
         hideActionMenu()
     }
-    
+
     private func hideActionMenu() {
         actionMenuView?.removeFromSuperview()
         actionMenuView = nil
-        
         overlayView?.removeFromSuperview()
         overlayView = nil
     }
 }
 
+// MARK: - Reload when AddExpenses sheet is dismissed
+extension ExpensesViewController: UISheetPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        loadExpenses()
+    }
+}
+
+// MARK: - TableView
 extension ExpensesViewController {
-    
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return expensesList.count
-        }
-        
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: "ExpensesTableViewCell",
-                for: indexPath
-            ) as? ExpensesTableViewCell else {
-                return UITableViewCell()
-            }
-            cell.configure(with: expensesList[indexPath.row])
-            return cell
-        }
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
     }
 
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return expensesList.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(
+            withIdentifier: "ExpensesTableViewCell",
+            for: indexPath
+        ) as? ExpensesTableViewCell else {
+            return UITableViewCell()
+        }
+
+        cell.configure(with: expensesList[indexPath.row])
+        cell.contentView.layoutMargins = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 125
+    }
+
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteTitle = NSLocalizedString("common.delete", comment: "Delete")
+        let deleteAction = UIContextualAction(style: .destructive, title: deleteTitle) { [weak self] _, _, completion in
+            guard let self = self else {
+                completion(false)
+                return
+            }
+
+            let expense = self.expensesList[indexPath.row]
+
+            // ✅ Confirmation alert
+            let alert = UIAlertController(
+                title: NSLocalizedString("expenses.deleteTitle", comment: ""),
+                message: String(
+                    format: NSLocalizedString("expenses.deleteMessage", comment: ""),
+                    expense.name
+                ),
+                preferredStyle: .alert
+            )
+
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("common.cancel", comment: "Cancel"),
+                style: .cancel
+            ) { _ in
+                completion(false)
+            })
+
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("common.delete", comment: "Delete"),
+                style: .destructive
+            ) { _ in
+                guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+                    completion(false)
+                    return
+                }
+
+                self.expensesViewModel.deleteExpense(token: token, expenseIds: [expense.id]) { result in
+                    switch result {
+                    case .success:
+                        self.expensesList.remove(at: indexPath.row)
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                        completion(true)
+                    case .failure(let error):
+                        print("❌ Failed to delete expense: \(error.localizedDescription)")
+                        completion(false)
+                    }
+                }
+            })
+
+            self.present(alert, animated: true)
+        }
+
+        deleteAction.backgroundColor = .systemRed
+        let config = UISwipeActionsConfiguration(actions: [deleteAction])
+        config.performsFirstActionWithFullSwipe = false
+        return config
+    }
+}
