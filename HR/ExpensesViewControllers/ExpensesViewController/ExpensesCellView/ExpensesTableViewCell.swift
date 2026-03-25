@@ -43,7 +43,7 @@ class ExpensesTableViewCell: UITableViewCell {
     func configure(with report: ReportListItem) {
         // Bold title
         let titleAttr = NSAttributedString(
-            string: report.expense.name,
+            string: report.sheet_name,
             attributes: [
                 .font: UIFont.boldSystemFont(ofSize: 16),
                 .foregroundColor: UIColor.white

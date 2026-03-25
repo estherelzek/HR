@@ -6,6 +6,68 @@
 //
 
 import UIKit
+import ObjectiveC
+
+private var hrLoaderOverlayKey: UInt8 = 0
+
+extension UIViewController {
+    private var hrLoaderOverlay: UIView? {
+        get { objc_getAssociatedObject(self, &hrLoaderOverlayKey) as? UIView }
+        set { objc_setAssociatedObject(self, &hrLoaderOverlayKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+
+    func showLoader(message: String = NSLocalizedString("common.loading", comment: "Loading")) {
+        DispatchQueue.main.async {
+            guard self.hrLoaderOverlay == nil else { return }
+
+            let overlay = UIView(frame: self.view.bounds)
+            overlay.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            overlay.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+
+            let container = UIStackView()
+            container.axis = .vertical
+            container.spacing = 12
+            container.alignment = .center
+            container.translatesAutoresizingMaskIntoConstraints = false
+            container.backgroundColor = UIColor.black.withAlphaComponent(0.75)
+            container.layer.cornerRadius = 12
+            container.isLayoutMarginsRelativeArrangement = true
+            container.layoutMargins = UIEdgeInsets(top: 16, left: 20, bottom: 16, right: 20)
+
+            let indicator = UIActivityIndicatorView(style: .large)
+            indicator.color = .white
+            indicator.startAnimating()
+
+            let label = UILabel()
+            label.text = message
+            label.textColor = .white
+            label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+            label.textAlignment = .center
+            label.numberOfLines = 0
+
+            container.addArrangedSubview(indicator)
+            container.addArrangedSubview(label)
+            overlay.addSubview(container)
+            self.view.addSubview(overlay)
+
+            NSLayoutConstraint.activate([
+                container.centerXAnchor.constraint(equalTo: overlay.centerXAnchor),
+                container.centerYAnchor.constraint(equalTo: overlay.centerYAnchor),
+                container.leadingAnchor.constraint(greaterThanOrEqualTo: overlay.leadingAnchor, constant: 24),
+                container.trailingAnchor.constraint(lessThanOrEqualTo: overlay.trailingAnchor, constant: -24)
+            ])
+
+            self.hrLoaderOverlay = overlay
+        }
+    }
+
+    func hideLoader() {
+        DispatchQueue.main.async {
+            self.hrLoaderOverlay?.removeFromSuperview()
+            self.hrLoaderOverlay = nil
+        }
+    }
+}
 
 
 extension UIImage {
@@ -878,6 +940,7 @@ extension UserDefaults {
         }
     }
 }
+
 
 
 

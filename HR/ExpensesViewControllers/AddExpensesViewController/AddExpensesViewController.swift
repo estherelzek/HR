@@ -93,9 +93,13 @@ class AddExpensesViewController: UIViewController {
                      message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing"))
             return
         }
-        
-        // Load categories
+
+        showLoader(message: NSLocalizedString("expenses.pleaseWait", comment: "Please wait"))
+        let group = DispatchGroup()
+
+        group.enter()
         expensesViewModel.fetchExpenseCategories(token: token) { [weak self] result in
+            defer { group.leave() }
             switch result {
             case .success(let categories):
                 self?.expenseCategoriesList = categories
@@ -105,9 +109,10 @@ class AddExpensesViewController: UIViewController {
                                message: error.localizedDescription)
             }
         }
-        
-        // Load analytic accounts
+
+        group.enter()
         expensesViewModel.fetchAnalyticAccounts(token: token) { [weak self] result in
+            defer { group.leave() }
             switch result {
             case .success(let accounts):
                 self?.analyticAccountsList = accounts
@@ -117,9 +122,10 @@ class AddExpensesViewController: UIViewController {
                                message: error.localizedDescription)
             }
         }
-        
-        // Load taxes
+
+        group.enter()
         expensesViewModel.fetchTaxes(token: token) { [weak self] result in
+            defer { group.leave() }
             switch result {
             case .success(let taxes):
                 self?.taxesList = taxes
@@ -129,16 +135,20 @@ class AddExpensesViewController: UIViewController {
                                message: error.localizedDescription)
             }
         }
-        
-        // load currencies
+
+        group.enter()
         expensesViewModel.fetchCurrencies(token: token) { [weak self] result in
+            defer { group.leave() }
             switch result {
             case .success(let currencies):
                 print("Currencies loaded:", currencies)
-                
             case .failure(let error):
                 print("Currency error:", error)
             }
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.hideLoader()
         }
     }
 
@@ -502,9 +512,8 @@ class AddExpensesViewController: UIViewController {
         }
         
         // Show loading overlay
-        showLoadingOverlay()
-        
-        // Create the expense
+        showLoader(message: NSLocalizedString("expenses.pleaseWait", comment: "Please wait"))
+
         expensesViewModel.createExpense(
             token: token,
             name: descriptionTextField.text ?? "",
@@ -517,9 +526,8 @@ class AddExpensesViewController: UIViewController {
             payment_mode: selectedPaidBy
         ) { [weak self] result in
             DispatchQueue.main.async {
-                // ✅ Hide loading overlay
-                self?.hideLoadingOverlay()
-                
+                self?.hideLoader()
+
                 switch result {
                 case .success(let response):
                     self?.showAlert(
@@ -529,9 +537,8 @@ class AddExpensesViewController: UIViewController {
                     self?.clearForm()
                     self?.onExpenseCreated?()
                     print("✅ Expense created: \(response.expense_id)")
-                    
+
                 case .failure(let error):
-                    // ✅ Show backend error message directly
                     if case .requestFailed(let backendMessage) = error {
                         self?.showAlert(
                             title: NSLocalizedString("expenses.error", comment: "Error"),
@@ -550,48 +557,6 @@ class AddExpensesViewController: UIViewController {
         }
     }
 
-    // MARK: - Loading Overlay
-    private var loadingOverlay: UIView?
-
-    private func showLoadingOverlay() {
-        // Remove existing overlay if any
-        loadingOverlay?.removeFromSuperview()
-        
-        let overlay = UIView()
-        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.3)
-        overlay.frame = view.bounds
-        
-        let activityIndicator = UIActivityIndicatorView(style: .large)
-        activityIndicator.color = .systemBlue
-        activityIndicator.center = overlay.center
-        activityIndicator.startAnimating()
-        
-        let label = UILabel()
-        label.text = NSLocalizedString("expenses.pleaseWait", comment: "Please wait")
-        label.textColor = .black
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.textAlignment = .center
-        
-        let stackView = UIStackView(arrangedSubviews: [activityIndicator, label])
-        stackView.axis = .vertical
-        stackView.spacing = 16
-        stackView.alignment = .center
-        stackView.center = overlay.center
-        
-        overlay.addSubview(stackView)
-        view.addSubview(overlay)
-        loadingOverlay = overlay
-    }
-
-    private func hideLoadingOverlay() {
-        UIView.animate(withDuration: 0.2, animations: {
-            self.loadingOverlay?.alpha = 0
-        }) { _ in
-            self.loadingOverlay?.removeFromSuperview()
-            self.loadingOverlay = nil
-        }
-    }
-    
     @IBAction func discardButtonTapped(_ sender: Any) {
         clearForm()
     }

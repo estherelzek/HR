@@ -20,8 +20,6 @@
                 <outlet property="employeeTextField" destination="riK-QX-IiS" id="4Jk-oO-p6J"/>
                 <outlet property="employeetitleLabel" destination="bto-yR-sfL" id="ddi-Nh-7tZ"/>
                 <outlet property="expenseReportSumaryTextField" destination="GEc-Hh-vSi" id="Akd-6u-RdW"/>
-                <outlet property="managerTextField" destination="RVg-y8-blR" id="bVE-bn-zI4"/>
-                <outlet property="managerTitleLabel" destination="Kqb-Bu-eB9" id="roJ-C3-dcI"/>
                 <outlet property="paidByTitleLabel" destination="mk0-GA-Z3R" id="PRr-C7-B3e"/>
                 <outlet property="reportInfoView" destination="BJQ-Ec-v9U" id="VF9-Hi-blh"/>
                 <outlet property="saveReportButton" destination="5kl-g8-bLj" id="gaT-sF-o4U"/>
@@ -35,7 +33,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Rcw-nY-h6g" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="4" y="374" width="385" height="393"/>
+                    <rect key="frame" x="8" y="329" width="385" height="393"/>
                     <color key="backgroundColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -44,7 +42,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BJQ-Ec-v9U" customClass="InspectableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="4" y="94" width="385" height="268"/>
+                    <rect key="frame" x="4" y="108" width="385" height="213"/>
                     <subviews>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GEc-Hh-vSi" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="8" y="8" width="369" height="40"/>
@@ -81,56 +79,6 @@
                                 <constraint firstAttribute="height" constant="40" id="yyv-Xf-7E2"/>
                             </constraints>
                         </stackView>
-                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="jZZ-Qu-bQw">
-                            <rect key="frame" x="8" y="158" width="369" height="40"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kqb-Bu-eB9" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="181.66666666666666" height="40"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RVg-y8-blR" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="187.66666666666663" y="0.0" width="181.33333333333337" height="40"/>
-                                    <color key="backgroundColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                    <textInputTraits key="textInputTraits"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                            <real key="value" value="5"/>
-                                        </userDefinedRuntimeAttribute>
-                                    </userDefinedRuntimeAttributes>
-                                </textField>
-                            </subviews>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="40" id="S7q-AH-pbh"/>
-                            </constraints>
-                        </stackView>
-                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="aoZ-nv-lmb">
-                            <rect key="frame" x="8" y="208" width="369" height="40"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNh-Ot-x6C" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="0.0" width="181.66666666666666" height="40"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xoc-uV-CTT" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                                    <rect key="frame" x="187.66666666666663" y="0.0" width="181.33333333333337" height="40"/>
-                                    <color key="backgroundColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                    <textInputTraits key="textInputTraits"/>
-                                    <userDefinedRuntimeAttributes>
-                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                                            <real key="value" value="5"/>
-                                        </userDefinedRuntimeAttribute>
-                                    </userDefinedRuntimeAttributes>
-                                </textField>
-                            </subviews>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="40" id="6zh-EH-Ljs"/>
-                            </constraints>
-                        </stackView>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="PNC-6i-Kwl">
                             <rect key="frame" x="8" y="58" width="369" height="40"/>
                             <subviews>
@@ -156,22 +104,44 @@
                                 <constraint firstAttribute="height" constant="40" id="dTf-zd-cfq"/>
                             </constraints>
                         </stackView>
+                        <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="aoZ-nv-lmb">
+                            <rect key="frame" x="8" y="158" width="369" height="34"/>
+                            <subviews>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nNh-Ot-x6C" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="182.66666666666666" height="34"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                                <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="xoc-uV-CTT" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
+                                    <rect key="frame" x="186.66666666666663" y="0.0" width="182.33333333333337" height="34"/>
+                                    <color key="backgroundColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <userDefinedRuntimeAttributes>
+                                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                            <real key="value" value="5"/>
+                                        </userDefinedRuntimeAttribute>
+                                    </userDefinedRuntimeAttributes>
+                                </textField>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="34" id="7O5-AW-t56"/>
+                            </constraints>
+                        </stackView>
                     </subviews>
                     <color key="backgroundColor" red="0.12984204290000001" green="0.12984612579999999" blue="0.12984395030000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
-                        <constraint firstItem="jZZ-Qu-bQw" firstAttribute="leading" secondItem="BJQ-Ec-v9U" secondAttribute="leading" constant="8" id="1aT-6i-ekq"/>
                         <constraint firstItem="PNC-6i-Kwl" firstAttribute="leading" secondItem="BJQ-Ec-v9U" secondAttribute="leading" constant="8" id="21Z-17-nX8"/>
                         <constraint firstItem="GEc-Hh-vSi" firstAttribute="leading" secondItem="BJQ-Ec-v9U" secondAttribute="leading" constant="8" id="3xB-A8-udJ"/>
-                        <constraint firstItem="aoZ-nv-lmb" firstAttribute="leading" secondItem="BJQ-Ec-v9U" secondAttribute="leading" constant="8" id="4Kf-zq-Etk"/>
-                        <constraint firstAttribute="trailing" secondItem="aoZ-nv-lmb" secondAttribute="trailing" constant="8" id="BtR-eD-cLu"/>
+                        <constraint firstItem="aoZ-nv-lmb" firstAttribute="leading" secondItem="BJQ-Ec-v9U" secondAttribute="leading" constant="8" id="6Pa-9q-lCw"/>
                         <constraint firstAttribute="trailing" secondItem="GEc-Hh-vSi" secondAttribute="trailing" constant="8" id="CBd-1P-e5e"/>
                         <constraint firstAttribute="trailing" secondItem="YSG-TA-gjj" secondAttribute="trailing" constant="8" id="Gsb-T7-nen"/>
-                        <constraint firstAttribute="trailing" secondItem="jZZ-Qu-bQw" secondAttribute="trailing" constant="8" id="R0J-ck-Qjr"/>
+                        <constraint firstItem="aoZ-nv-lmb" firstAttribute="top" secondItem="YSG-TA-gjj" secondAttribute="bottom" constant="10" id="YgH-Ap-lLm"/>
                         <constraint firstItem="PNC-6i-Kwl" firstAttribute="top" secondItem="GEc-Hh-vSi" secondAttribute="bottom" constant="10" id="dSi-J1-8GV"/>
-                        <constraint firstItem="aoZ-nv-lmb" firstAttribute="top" secondItem="jZZ-Qu-bQw" secondAttribute="bottom" constant="10" id="eAs-yb-fuE"/>
                         <constraint firstAttribute="trailing" secondItem="PNC-6i-Kwl" secondAttribute="trailing" constant="8" id="ifV-6X-SyY"/>
-                        <constraint firstItem="jZZ-Qu-bQw" firstAttribute="top" secondItem="YSG-TA-gjj" secondAttribute="bottom" constant="10" id="jXd-ev-dyz"/>
                         <constraint firstItem="GEc-Hh-vSi" firstAttribute="top" secondItem="BJQ-Ec-v9U" secondAttribute="top" constant="8" id="juE-YM-5l8"/>
+                        <constraint firstAttribute="trailing" secondItem="aoZ-nv-lmb" secondAttribute="trailing" constant="8" id="lPv-m9-8yl"/>
                         <constraint firstItem="YSG-TA-gjj" firstAttribute="top" secondItem="PNC-6i-Kwl" secondAttribute="bottom" constant="10" id="lRN-RG-fOt"/>
                         <constraint firstItem="YSG-TA-gjj" firstAttribute="leading" secondItem="BJQ-Ec-v9U" secondAttribute="leading" constant="8" id="mwu-mz-2kG"/>
                     </constraints>
@@ -181,8 +151,23 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="createReport" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ykU-Ic-eas" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="60" width="393" height="40"/>
+                    <color key="backgroundColor" name="borderColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="zxX-IW-yKB"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="29"/>
+                    <color key="textColor" name="basecolorText"/>
+                    <nil key="highlightedColor"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                            <real key="value" value="10"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
+                </label>
                 <stackView opaque="NO" contentMode="scaleToFill" spacing="60" translatesAutoresizingMaskIntoConstraints="NO" id="igX-p3-UGr">
-                    <rect key="frame" x="16" y="777" width="361" height="40"/>
+                    <rect key="frame" x="20" y="744" width="361" height="40"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gZ2-pT-HdJ" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="150.66666666666666" height="40"/>
@@ -219,41 +204,26 @@
                         <constraint firstAttribute="height" constant="40" id="QbV-Sn-ob2"/>
                     </constraints>
                 </stackView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="createReport" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ykU-Ic-eas" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="46" width="393" height="40"/>
-                    <color key="backgroundColor" name="borderColor"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="40" id="zxX-IW-yKB"/>
-                    </constraints>
-                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="29"/>
-                    <color key="textColor" name="basecolorText"/>
-                    <nil key="highlightedColor"/>
-                    <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
-                            <real key="value" value="10"/>
-                        </userDefinedRuntimeAttribute>
-                    </userDefinedRuntimeAttributes>
-                </label>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="igX-p3-UGr" secondAttribute="bottom" constant="35" id="3R5-Li-I8c"/>
-                <constraint firstItem="BJQ-Ec-v9U" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.314554" id="8IJ-JP-SYE"/>
+                <constraint firstItem="BJQ-Ec-v9U" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.25" id="8IJ-JP-SYE"/>
                 <constraint firstItem="ykU-Ic-eas" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="98S-D8-ymY"/>
-                <constraint firstItem="igX-p3-UGr" firstAttribute="top" secondItem="Rcw-nY-h6g" secondAttribute="bottom" constant="10" id="Q8N-VU-qJB"/>
+                <constraint firstItem="igX-p3-UGr" firstAttribute="top" secondItem="Rcw-nY-h6g" secondAttribute="bottom" constant="22" id="Q8N-VU-qJB"/>
                 <constraint firstItem="Rcw-nY-h6g" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.461268" id="R6J-pp-z7D"/>
-                <constraint firstItem="BJQ-Ec-v9U" firstAttribute="top" secondItem="ykU-Ic-eas" secondAttribute="bottom" constant="8" id="RlV-R5-Tlg"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Rcw-nY-h6g" secondAttribute="trailing" constant="4" id="Yhc-Wf-L4K"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Rcw-nY-h6g" secondAttribute="trailing" id="Yhc-Wf-L4K"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="BJQ-Ec-v9U" secondAttribute="trailing" constant="4" id="aKk-3x-yel"/>
-                <constraint firstItem="Rcw-nY-h6g" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="4" id="ces-2X-2iv"/>
-                <constraint firstItem="Rcw-nY-h6g" firstAttribute="top" secondItem="BJQ-Ec-v9U" secondAttribute="bottom" constant="12" id="dmz-DJ-KxJ"/>
-                <constraint firstAttribute="trailing" secondItem="igX-p3-UGr" secondAttribute="trailing" constant="16" id="doR-A0-s26"/>
+                <constraint firstItem="Rcw-nY-h6g" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="8" id="ces-2X-2iv"/>
+                <constraint firstItem="Rcw-nY-h6g" firstAttribute="top" secondItem="BJQ-Ec-v9U" secondAttribute="bottom" constant="8" id="dmz-DJ-KxJ"/>
+                <constraint firstAttribute="trailing" secondItem="igX-p3-UGr" secondAttribute="trailing" constant="12" id="doR-A0-s26"/>
+                <constraint firstItem="ykU-Ic-eas" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="60" id="lIN-jC-jaQ"/>
                 <constraint firstAttribute="trailing" secondItem="ykU-Ic-eas" secondAttribute="trailing" id="mvP-5f-eDV"/>
-                <constraint firstItem="igX-p3-UGr" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="16" id="tX1-dc-0hG"/>
+                <constraint firstItem="BJQ-Ec-v9U" firstAttribute="top" secondItem="ykU-Ic-eas" secondAttribute="bottom" constant="8" symbolic="YES" id="s1p-gk-eZO"/>
+                <constraint firstItem="igX-p3-UGr" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="tX1-dc-0hG"/>
                 <constraint firstItem="BJQ-Ec-v9U" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="4" id="yTH-lr-kcV"/>
             </constraints>
-            <point key="canvasLocation" x="25" y="-246"/>
+            <point key="canvasLocation" x="23.664122137404579" y="-246.47887323943664"/>
         </view>
     </objects>
     <resources>

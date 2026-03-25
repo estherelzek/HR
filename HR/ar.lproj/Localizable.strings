@@ -429,3 +429,6 @@
 "report.deleteTitle" = "حذف التقرير";
 "report.deleteMessage" = "هل أنت متأكد من حذف \"%@\"؟";
 "common.cancel" = "إلغاء";
+"common.loading" = "جاري التحميل...";
+"common.noResults" = "لا توجد نتائج";
+

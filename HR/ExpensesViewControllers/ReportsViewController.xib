@@ -73,7 +73,7 @@
                 <constraint firstItem="35s-TK-lzc" firstAttribute="leading" secondItem="Agy-dj-UA6" secondAttribute="leading" id="yPk-YP-2EX"/>
                 <constraint firstItem="Agy-dj-UA6" firstAttribute="leading" secondItem="XFE-nA-OF4" secondAttribute="leading" id="zw4-2z-lch"/>
             </constraints>
-            <point key="canvasLocation" x="148.85496183206106" y="-1.4084507042253522"/>
+            <point key="canvasLocation" x="-45" y="-57"/>
         </view>
     </objects>
     <resources>

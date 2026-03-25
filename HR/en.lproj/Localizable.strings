@@ -429,3 +429,5 @@
 "report.deleteTitle" = "Delete Report";
 "report.deleteMessage" = "Are you sure you want to delete \"%@\"?";
 "common.cancel" = "Cancel";
+"common.loading" = "Loading...";
+"common.noResults" = "No results";

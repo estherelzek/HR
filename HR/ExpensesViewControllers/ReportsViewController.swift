@@ -7,6 +7,15 @@
 
 import UIKit
 
+//
+//  ReportsViewController.swift
+//  HR
+//
+//  Created by Esther Elzek on 18/03/2026.
+//
+
+import UIKit
+
 class ReportsViewController: UIViewController {
 
     @IBOutlet weak var reportsTitleLabel: Inspectablelabel!
@@ -25,24 +34,26 @@ class ReportsViewController: UIViewController {
 
     private func setupUI() {
         reportsTitleLabel.text = NSLocalizedString("reports", comment: "")
-
         searchBar.delegate = self
         searchBar.placeholder = NSLocalizedString("common.search", comment: "Search")
-
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.rowHeight = 125
         tableView.estimatedRowHeight = 125
-        tableView.register(UINib(nibName: "ExpensesTableViewCell", bundle: nil),
-                           forCellReuseIdentifier: "ExpensesTableViewCell")
+        tableView.register(
+            UINib(nibName: "ExpensesTableViewCell", bundle: nil),
+            forCellReuseIdentifier: "ExpensesTableViewCell"
+        )
     }
 
     private func loadReports() {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
 
+        showLoader()
         expensesViewModel.fetchExpenseReports(token: token) { [weak self] result in
             guard let self = self else { return }
+            self.hideLoader()
 
             switch result {
             case .success(let sheets):
@@ -58,10 +69,10 @@ class ReportsViewController: UIViewController {
                         )
                     }
                 }
-
                 self.allItems = flattened
                 self.filteredItems = flattened
                 self.tableView.reloadData()
+                self.updateSearchEmptyState()
 
             case .failure(let error):
                 print("❌ Reports load error: \(error.localizedDescription)")
@@ -74,6 +85,7 @@ class ReportsViewController: UIViewController {
         guard !q.isEmpty else {
             filteredItems = allItems
             tableView.reloadData()
+            updateSearchEmptyState()
             return
         }
 
@@ -83,7 +95,21 @@ class ReportsViewController: UIViewController {
             $0.expense.name.lowercased().contains(q) ||
             $0.state.lowercased().contains(q)
         }
+
         tableView.reloadData()
+        updateSearchEmptyState()
+    }
+
+    private func updateSearchEmptyState() {
+        if filteredItems.isEmpty {
+            let label = UILabel()
+            label.text = NSLocalizedString("common.noResults", comment: "No results")
+            label.textAlignment = .center
+            label.textColor = .gray
+            tableView.backgroundView = label
+        } else {
+            tableView.backgroundView = nil
+        }
     }
 }
 
@@ -100,7 +126,6 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
             return UITableViewCell()
         }
 
-        // ✅ Fixed: use filteredItems directly
         cell.configure(with: filteredItems[indexPath.row])
         cell.selectButton?.isHidden = true
         return cell
@@ -117,13 +142,9 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
 
             let item = self.filteredItems[indexPath.row]
 
-            // ✅ Confirmation alert
             let alert = UIAlertController(
                 title: NSLocalizedString("report.deleteTitle", comment: ""),
-                message: String(
-                    format: NSLocalizedString("report.deleteMessage", comment: ""),
-                    item.sheet_name
-                ),
+                message: String(format: NSLocalizedString("report.deleteMessage", comment: ""), item.sheet_name),
                 preferredStyle: .alert
             )
 
@@ -135,7 +156,7 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
             })
 
             alert.addAction(UIAlertAction(
-                title: NSLocalizedString("common.delete", comment: "Delete"),
+                title: deleteTitle,
                 style: .destructive
             ) { _ in
                 guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
@@ -143,15 +164,38 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
                     return
                 }
 
+                self.showLoader()
                 self.expensesViewModel.deleteReport(token: token, sheetIds: [item.sheet_id]) { result in
+                    self.hideLoader()
+
                     switch result {
-                    case .success:
-                        self.allItems.removeAll { $0.sheet_id == item.sheet_id }
-                        self.filteredItems.removeAll { $0.sheet_id == item.sheet_id }
-                        tableView.reloadData()
-                        completion(true)
+                    case .success(let response):
+                        let deletedIds = Set(response.deleted?.idList ?? [])
+                        let sheetId = item.sheet_id
+
+                        if deletedIds.contains(sheetId) {
+                            self.allItems.removeAll { $0.sheet_id == sheetId }
+                            self.filteredItems.removeAll { $0.sheet_id == sheetId }
+                            tableView.reloadData()
+                            self.updateSearchEmptyState()
+                            completion(true)
+                        } else {
+                            let reason = response.failed?.first(where: { $0.id == sheetId })?.reason
+                                ?? response.message
+                                ?? NSLocalizedString("report.deleteFailed", comment: "")
+                            self.showAlert(
+                                title: NSLocalizedString("expenses.error", comment: "Error"),
+                                message: reason
+                            )
+                            completion(false)
+                        }
+
                     case .failure(let error):
                         print("❌ Failed to delete report: \(error.localizedDescription)")
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.error", comment: "Error"),
+                            message: NSLocalizedString("report.deleteFailed", comment: "")
+                        )
                         completion(false)
                     }
                 }
@@ -160,7 +204,7 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
             self.present(alert, animated: true)
         }
 
-        deleteAction.backgroundColor = .systemRed
+        deleteAction.backgroundColor = UIColor.systemRed
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         config.performsFirstActionWithFullSwipe = false
         return config
@@ -168,11 +212,23 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
 }
 
 extension ReportsViewController: UISearchBarDelegate {
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.setShowsCancelButton(true, animated: true)
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.setShowsCancelButton(false, animated: true)
+        searchBar.resignFirstResponder()
+        applySearch("")
+    }
+
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         applySearch(searchText)
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        applySearch(searchBar.text ?? "")
         searchBar.resignFirstResponder()
     }
 }

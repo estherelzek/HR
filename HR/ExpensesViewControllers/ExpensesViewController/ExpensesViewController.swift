@@ -45,11 +45,14 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     private func loadExpenses() {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
 
+        showLoader()
         expensesViewModel.fetchEmployeeExpenses(token: token) { [weak self] result in
+            guard let self = self else { return }
+            self.hideLoader()
             switch result {
             case .success(let expenses):
-                self?.expensesList = expenses
-                self?.tableView.reloadData()
+                self.expensesList = expenses
+                self.tableView.reloadData()
             case .failure(let error):
                 print("❌ Failed to load expenses: \(error.localizedDescription)")
             }
@@ -258,41 +261,50 @@ extension ExpensesViewController {
             }
 
             let expense = self.expensesList[indexPath.row]
-
-            // ✅ Confirmation alert
             let alert = UIAlertController(
                 title: NSLocalizedString("expenses.deleteTitle", comment: ""),
-                message: String(
-                    format: NSLocalizedString("expenses.deleteMessage", comment: ""),
-                    expense.name
-                ),
+                message: String(format: NSLocalizedString("expenses.deleteMessage", comment: ""), expense.name),
                 preferredStyle: .alert
             )
 
-            alert.addAction(UIAlertAction(
-                title: NSLocalizedString("common.cancel", comment: "Cancel"),
-                style: .cancel
-            ) { _ in
+            alert.addAction(UIAlertAction(title: NSLocalizedString("common.cancel", comment: "Cancel"), style: .cancel) { _ in
                 completion(false)
             })
 
-            alert.addAction(UIAlertAction(
-                title: NSLocalizedString("common.delete", comment: "Delete"),
-                style: .destructive
-            ) { _ in
+            alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
                 guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
                     completion(false)
                     return
                 }
 
+                self.showLoader()
                 self.expensesViewModel.deleteExpense(token: token, expenseIds: [expense.id]) { result in
+                    self.hideLoader()
                     switch result {
-                    case .success:
-                        self.expensesList.remove(at: indexPath.row)
-                        tableView.deleteRows(at: [indexPath], with: .automatic)
-                        completion(true)
+                    case .success(let response):
+                        let deletedIds = Set(response.deleted?.idList ?? [])
+                        let expenseId = expense.id
+
+                        if deletedIds.contains(expenseId) {
+                            self.expensesList.remove(at: indexPath.row)
+                            tableView.deleteRows(at: [indexPath], with: .automatic)
+                            completion(true)
+                        } else {
+                            let reason = response.failed?.first(where: { $0.id == expenseId })?.reason
+                                ?? response.message
+                                ?? NSLocalizedString("expenses.deleteFailed", comment: "")
+                            self.showAlert(
+                                title: NSLocalizedString("expenses.error", comment: ""),
+                                message: reason
+                            )
+                            completion(false)
+                        }
                     case .failure(let error):
                         print("❌ Failed to delete expense: \(error.localizedDescription)")
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.error", comment: "Error"),
+                            message: NSLocalizedString("expenses.deleteFailed", comment: "Error")
+                        )
                         completion(false)
                     }
                 }

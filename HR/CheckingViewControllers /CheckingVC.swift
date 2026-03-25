@@ -55,7 +55,7 @@ class CheckingVC: UIViewController {
             object: nil
         )
 
-        NetworkManager.shared.resendOfflineRequests { 
+        NetworkManager.shared.resendOfflineRequests {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.fetchAttendanceStatus()
             }
@@ -385,8 +385,11 @@ class CheckingVC: UIViewController {
             isCheckedIn = true
             lastCheckIn = response.result?.checkInTime
             
-            // ✅ Use todayScheduledHours from backend, fallback to 8.0
+            // Use backend scheduled hours in normal behavior.
+            // NotificationManager can temporarily override this for local testing.
             let requiredHours = response.result?.todayScheduledHours ?? 8.0
+            print("📅 Checkout reminder will be scheduled for \(requiredHours) hours after check-in")
+            print("🕐 Check-in time: \(response.result?.checkInTime ?? "nil")")
             
             if let checkInTime = response.result?.checkInTime {
                 NotificationManager.shared.scheduleCheckoutReminder(

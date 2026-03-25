@@ -10,22 +10,51 @@ import UserNotifications
 
 class NotificationManager {
     static let shared = NotificationManager()
+
+    // Set to a value like 2 for testing reminder delivery in minutes.
+    // Keep nil in normal app behavior to use backend scheduled hours.
+    private let checkoutReminderTestMinutes: Double? = nil
     
     func scheduleCheckoutReminder(checkInTime: String, requiredHours: Double) {
         // Cancel any previous checkout reminder
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["checkout_reminder"])
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        formatter.timeZone = TimeZone(identifier: "UTC")
-        
-        guard let checkInDate = formatter.date(from: checkInTime) else {
-            print("❌ Failed to parse checkInTime: \(checkInTime)")
-            return
+
+        // Try parsing server time as UTC first, then fall back to local time.
+        let utcFormatter = DateFormatter()
+        utcFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        utcFormatter.timeZone = TimeZone(identifier: "UTC")
+
+        let localFormatter = DateFormatter()
+        localFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        localFormatter.timeZone = .current
+
+        let parsedCheckInDate = utcFormatter.date(from: checkInTime) ?? localFormatter.date(from: checkInTime)
+
+        let baseDate: Date
+        if let parsedCheckInDate {
+            baseDate = parsedCheckInDate
+            print("🕒 Parsed check-in time successfully: \(parsedCheckInDate)")
+        } else {
+            print("❌ Failed to parse checkInTime: \(checkInTime). Falling back to current time for scheduling.")
+            baseDate = Date()
         }
         
         // Calculate when the employee should check out
-        let checkoutTime = checkInDate.addingTimeInterval(requiredHours * 3600)
+        let interval: TimeInterval
+        if let testMinutes = checkoutReminderTestMinutes {
+            interval = testMinutes * 60
+            print("🧪 Using test checkout reminder override: \(testMinutes) minute(s)")
+        } else {
+            interval = requiredHours * 3600
+        }
+
+        var checkoutTime = baseDate.addingTimeInterval(interval)
+
+        // In test mode, if backend time is behind device time, schedule from now instead.
+        if let testMinutes = checkoutReminderTestMinutes, checkoutTime <= Date() {
+            checkoutTime = Date().addingTimeInterval(testMinutes * 60)
+            print("🧪 Adjusted test reminder to current time + \(testMinutes) minute(s): \(checkoutTime)")
+        }
         
         // Make sure it's in the future
         guard checkoutTime > Date() else {

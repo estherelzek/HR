@@ -278,13 +278,72 @@ struct ReportListItem {
 }
 
 
+struct DeleteFailureItem: Codable {
+    let id: Int
+    let reason: String
+}
+
+struct DeletedItem: Codable {
+    let id: Int
+    let name: String?
+}
+
+enum DeletedIDs: Codable {
+    case ids([Int])
+    case objects([DeletedItem])
+    case none
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+
+        if let ids = try? container.decode([Int].self) {
+            self = .ids(ids)
+            return
+        }
+
+        if let objs = try? container.decode([DeletedItem].self) {
+            self = .objects(objs)
+            return
+        }
+
+        self = .none
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        switch self {
+        case .ids(let ids):
+            try container.encode(ids)
+        case .objects(let objs):
+            try container.encode(objs)
+        case .none:
+            try container.encode([Int]())
+        }
+    }
+
+    var idList: [Int] {
+        switch self {
+        case .ids(let ids):
+            return ids
+        case .objects(let objs):
+            return objs.map { $0.id }
+        case .none:
+            return []
+        }
+    }
+}
 
 struct DeleteExpenseResponse: Codable {
     let status: String
     let message: String?
+    let deleted: DeletedIDs?
+    let failed: [DeleteFailureItem]?
 }
 
 struct DeleteReportResponse: Codable {
     let status: String
     let message: String?
+    let deleted: DeletedIDs?
+    let failed: [DeleteFailureItem]?
 }
+

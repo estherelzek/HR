@@ -13,13 +13,13 @@ class CreateReportsViewController: UIViewController {
     @IBOutlet weak var reportInfoView: InspectableView!
     @IBOutlet weak var expenseReportSumaryTextField: InspectableTextField!
     @IBOutlet weak var employeetitleLabel: Inspectablelabel!
-    @IBOutlet weak var managerTitleLabel: UILabel!
+  //  @IBOutlet weak var managerTitleLabel: UILabel!
     @IBOutlet weak var companyTitleLabel: Inspectablelabel!
     @IBOutlet weak var paidByTitleLabel: Inspectablelabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addExpenseToReportButton: InspectableButton!
     @IBOutlet weak var employeeTextField: InspectableTextField!
-    @IBOutlet weak var managerTextField: InspectableTextField!
+   // @IBOutlet weak var managerTextField: InspectableTextField!
     @IBOutlet weak var companyTextField: InspectableTextField!
  
     @IBOutlet weak var saveReportButton: InspectableButton!
@@ -41,6 +41,7 @@ class CreateReportsViewController: UIViewController {
         setupTableView()
         updateEmptyState()
         setupSegmentedControl()
+        setupKeyboardDismissal()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -64,12 +65,12 @@ class CreateReportsViewController: UIViewController {
     private func setupLocalization() {
         createReportTitleLabel.text = NSLocalizedString("report.createTitle", comment: "Create Report")
         employeetitleLabel.text = NSLocalizedString("report.employee", comment: "Employee")
-        managerTitleLabel.text = NSLocalizedString("report.manager", comment: "Manager")
+      //  managerTitleLabel.text = NSLocalizedString("report.manager", comment: "Manager")
         companyTitleLabel.text = NSLocalizedString("report.company", comment: "Company")
         paidByTitleLabel.text = NSLocalizedString("report.paidBy", comment: "Paid By")
         expenseReportSumaryTextField.placeholder = NSLocalizedString("report.summaryPlaceholder", comment: "")
         employeeTextField.placeholder = NSLocalizedString("report.employeePlaceholder", comment: "")
-        managerTextField.placeholder = NSLocalizedString("report.managerPlaceholder", comment: "")
+       // managerTextField.placeholder = NSLocalizedString("report.managerPlaceholder", comment: "")
         companyTextField.placeholder = NSLocalizedString("report.companyPlaceholder", comment: "")
 //        paidByTextField.placeholder = NSLocalizedString("report.paidByPlaceholder", comment: "")
         addExpenseToReportButton.setTitle(NSLocalizedString("report.addExpense", comment: ""), for: .normal)
@@ -131,7 +132,7 @@ class CreateReportsViewController: UIViewController {
 
     @IBAction func saveReportButtonTapped(_ sender: Any) {
         guard !selectedExpenses.isEmpty else {
-            showAlert(
+            showReportAlert(
                 title: NSLocalizedString("common.validation", comment: "Validation"),
                 message: NSLocalizedString("report.selectAtLeastOneExpense", comment: "Select at least one expense")
             )
@@ -139,7 +140,7 @@ class CreateReportsViewController: UIViewController {
         }
 
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
-            showAlert(
+            showReportAlert(
                 title: NSLocalizedString("expenses.error", comment: "Error"),
                 message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing")
             )
@@ -153,6 +154,7 @@ class CreateReportsViewController: UIViewController {
         var failedIds: [Int] = []
         let group = DispatchGroup()
 
+        showLoader()
         for expenseId in expenseIds {
             group.enter()
             expensesViewModel.submitExpense(token: token, expenseId: expenseId) { result in
@@ -170,16 +172,17 @@ class CreateReportsViewController: UIViewController {
 
         group.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
+            self.hideLoader()
             if failedIds.isEmpty {
-                self.showAlert(
+                self.showReportAlert(
                     title: NSLocalizedString("expenses.success", comment: "Success"),
-                    message: String(
-                        format: NSLocalizedString("report.submittedSuccess", comment: ""),
-                        successCount
-                    )
+                    message: String(format: NSLocalizedString("report.submittedSuccess", comment: ""), successCount),
+                    onOK: { [weak self] in
+                        self?.dismiss(animated: true)
+                    }
                 )
             } else {
-                self.showAlert(
+                self.showReportAlert(
                     title: NSLocalizedString("expenses.error", comment: "Error"),
                     message: String(
                         format: NSLocalizedString("report.submittedPartial", comment: ""),
@@ -191,9 +194,11 @@ class CreateReportsViewController: UIViewController {
         }
     }
 
-    private func showAlert(title: String, message: String) {
+    private func showReportAlert(title: String, message: String, onOK: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: "OK"), style: .default))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: "OK"), style: .default) { _ in
+            onOK?()
+        })
         present(alert, animated: true)
     }
     
@@ -245,5 +250,14 @@ extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSourc
         }
 
         tableView.reloadRows(at: [indexPath], with: .automatic)
+    }
+    private func setupKeyboardDismissal() {
+     let    tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc private func dismissKeyboard() {
+        view.endEditing(true)
     }
 }
