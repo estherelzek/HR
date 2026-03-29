@@ -251,69 +251,95 @@ extension ExpensesViewController {
         return 125
     }
 
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let expense = expensesList[indexPath.row]
+        let state = expense.state.lowercased()
+        let isEditable = state == "draft" || state == "submitted"
+
+        guard isEditable else {
+            showAlert(
+                title: NSLocalizedString("expenses.error", comment: "Error"),
+                message: NSLocalizedString("expenses.cannotEditMessage", comment: "")
+            )
+            return
+        }
+
+        let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
+        print("editing expense: \(expense)")
+        vc.expenseToEdit = expense
+        vc.onExpenseUpdated = { [weak self] in
+            self?.loadExpenses()
+        }
+
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+        }
+
+        present(vc, animated: true)
+    }
+
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let expense = expensesList[indexPath.row]
+        let state = expense.state.lowercased()
+        let isEditable = state == "draft" || state == "submitted"
+
         let deleteTitle = NSLocalizedString("common.delete", comment: "Delete")
         let deleteAction = UIContextualAction(style: .destructive, title: deleteTitle) { [weak self] _, _, completion in
-            guard let self = self else {
+            guard let self = self else { completion(false); return }
+
+            guard isEditable else {
+                self.showAlert(
+                    title: NSLocalizedString("expenses.error", comment: "Error"),
+                    message: NSLocalizedString("expense.cannotDeleteMessage", comment: "")
+                )
                 completion(false)
                 return
             }
 
-            let expense = self.expensesList[indexPath.row]
             let alert = UIAlertController(
                 title: NSLocalizedString("expenses.deleteTitle", comment: ""),
                 message: String(format: NSLocalizedString("expenses.deleteMessage", comment: ""), expense.name),
                 preferredStyle: .alert
             )
-
             alert.addAction(UIAlertAction(title: NSLocalizedString("common.cancel", comment: "Cancel"), style: .cancel) { _ in
                 completion(false)
             })
-
             alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
-                guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
-                    completion(false)
-                    return
-                }
-
+                guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { completion(false); return }
                 self.showLoader()
                 self.expensesViewModel.deleteExpense(token: token, expenseIds: [expense.id]) { result in
                     self.hideLoader()
                     switch result {
                     case .success(let response):
                         let deletedIds = Set(response.deleted?.idList ?? [])
-                        let expenseId = expense.id
-
-                        if deletedIds.contains(expenseId) {
+                        if deletedIds.contains(expense.id) {
                             self.expensesList.remove(at: indexPath.row)
                             tableView.deleteRows(at: [indexPath], with: .automatic)
                             completion(true)
                         } else {
-                            let reason = response.failed?.first(where: { $0.id == expenseId })?.reason
+                            let reason = response.failed?.first(where: { $0.id == expense.id })?.reason
                                 ?? response.message
                                 ?? NSLocalizedString("expenses.deleteFailed", comment: "")
-                            self.showAlert(
-                                title: NSLocalizedString("expenses.error", comment: ""),
-                                message: reason
-                            )
+                            self.showAlert(title: NSLocalizedString("expenses.error", comment: ""), message: reason)
                             completion(false)
                         }
                     case .failure(let error):
+                        self.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
+                                       message: NSLocalizedString("expenses.deleteFailed", comment: ""))
                         print("❌ Failed to delete expense: \(error.localizedDescription)")
-                        self.showAlert(
-                            title: NSLocalizedString("expenses.error", comment: "Error"),
-                            message: NSLocalizedString("expenses.deleteFailed", comment: "Error")
-                        )
                         completion(false)
                     }
                 }
             })
-
             self.present(alert, animated: true)
         }
+        deleteAction.backgroundColor = UIColor.systemRed
 
-        deleteAction.backgroundColor = .systemRed
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         config.performsFirstActionWithFullSwipe = false
         return config

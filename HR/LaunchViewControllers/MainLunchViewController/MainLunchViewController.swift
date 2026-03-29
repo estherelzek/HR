@@ -409,17 +409,7 @@ extension MainLunchViewController: UISearchBarDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
     }
 
-    private func hideKeyboardWhenTappedAround() {
-        let tap = UITapGestureRecognizer(target: self,
-                                         action: #selector(dismissKeyboard))
-        tap.cancelsTouchesInView = false   // VERY IMPORTANT
-        view.addGestureRecognizer(tap)
-        
-    }
 
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
     private func setUpTexts() {
         
         // Title

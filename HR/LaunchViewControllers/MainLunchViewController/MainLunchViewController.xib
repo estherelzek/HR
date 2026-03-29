@@ -183,7 +183,7 @@
                 <constraint firstItem="th7-lu-2tl" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="rwl-3a-7O6"/>
                 <constraint firstAttribute="bottom" secondItem="th7-lu-2tl" secondAttribute="bottom" constant="33.333333333333485" id="wgo-MS-L8G"/>
             </constraints>
-            <point key="canvasLocation" x="-2358" y="-547"/>
+            <point key="canvasLocation" x="-2218" y="-484"/>
         </view>
     </objects>
     <resources>

@@ -133,4 +133,8 @@ class OrderAlertViewController: UIViewController {
         noteTextField.textAlignment = isArabic ? .right : .left
         itemName.textAlignment = isArabic ? .right : .left
     }
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }

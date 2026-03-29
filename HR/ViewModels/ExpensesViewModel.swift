@@ -355,4 +355,93 @@ class ExpensesViewModel {
             }
         }
     }
+    
+    // MARK: - Update Expense
+    func updateExpense(
+        token: String,
+        expenseId: Int,
+        name: String,
+        product_id: Int,
+        total_amount: Double,
+        date: String,
+        description: String,
+        currency_id: Int,
+        analytic_distribution: [String: Int],
+        tax_ids: [Int],
+        payment_mode: String,
+        completion: @escaping (Result<UpdateExpenseResponse, APIError>) -> Void
+    ) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.updateExpense(
+            token: token,
+            expense_id: expenseId,
+            name: name,
+            product_id: product_id,
+            total_amount: total_amount,
+            date: date,
+            description: description,
+            currency_id: currency_id,
+            analytic_distribution: analytic_distribution,
+            tax_ids: tax_ids,
+            payment_mode: payment_mode
+        )
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<UpdateExpenseResponse>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let response):
+                    if response.result.status.lowercased() == "error" {
+                        let msg = response.result.message ?? NSLocalizedString("expenses.updateFailed", comment: "")
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                    } else {
+                        completion(.success(response.result))
+                        print("✅ Expense \(expenseId) updated.")
+                    }
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                    print("❌ Failed to update expense \(expenseId): \(error)")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Update Report
+    func updateReport(
+        token: String,
+        sheetId: Int,
+        name: String,
+        expenseIds: [Int],
+        completion: @escaping (Result<UpdateReportResponse, APIError>) -> Void
+    ) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.updateReport(token: token, sheet_id: sheetId, name: name, expense_ids: expenseIds)
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<UpdateReportResponse>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let response):
+                    if response.result.status.lowercased() == "error" {
+                        let msg = response.result.message ?? NSLocalizedString("report.updateFailed", comment: "")
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                    } else {
+                        completion(.success(response.result))
+                        print("✅ Report \(sheetId) updated.")
+                    }
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                    print("❌ Failed to update report \(sheetId): \(error)")
+                }
+            }
+        }
+    }
 }

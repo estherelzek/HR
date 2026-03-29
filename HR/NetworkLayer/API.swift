@@ -122,8 +122,25 @@ enum API: Endpoint {
     case getExpenseReports(token: String)
     case deleteExpense(token: String, expense_ids: [Int])
     case deleteReport(token: String, sheet_ids: [Int])
-    
-    
+    case updateExpense(
+        token: String,
+        expense_id: Int,
+        name: String,
+        product_id: Int,
+        total_amount: Double,
+        date: String,
+        description: String,
+        currency_id: Int,
+        analytic_distribution: [String: Int],
+        tax_ids: [Int],
+        payment_mode: String
+    )
+    case updateReport(
+        token: String,
+        sheet_id: Int,
+        name: String,
+        expense_ids: [Int]
+    )
     
     
     var path: String {
@@ -183,6 +200,11 @@ enum API: Endpoint {
             return "/api/expenses/delete"
         case .deleteReport:
             return "/api/expenses/delete_report"
+        case .updateExpense:
+            return "/api/expenses/edit"
+        case .updateReport:
+            return "/api/expenses/edit_report"
+            
                default:
                    return ""
         }
@@ -463,6 +485,41 @@ enum API: Endpoint {
                 ]
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
+
+        case let .updateExpense(token, expense_id, name, product_id, total_amount, date, description, currency_id, analytic_distribution, tax_ids, payment_mode):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": [
+                    "token": token,
+                    "expense_id": expense_id,
+                    "name": name,
+                    "product_id": product_id,
+                    "total_amount": total_amount,
+                    "date": date,
+                    "description": description,
+                    "currency_id": currency_id,
+                    "analytic_distribution": analytic_distribution,
+                    "tax_ids": tax_ids,
+                    "payment_mode": payment_mode
+                ]
+            ]
+            
+            return try? JSONSerialization.data(withJSONObject: payload)
+
+        case let .updateReport(token, sheet_id, name, expense_ids):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": [
+                    "token": token,
+                    "sheet_id": sheet_id,
+                    "name": name,
+                    "expense_ids": expense_ids
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+           
                default:
                    return nil
                }

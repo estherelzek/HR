@@ -14,8 +14,6 @@ import UIKit
 //  Created by Esther Elzek on 18/03/2026.
 //
 
-import UIKit
-
 class ReportsViewController: UIViewController {
 
     @IBOutlet weak var reportsTitleLabel: Inspectablelabel!
@@ -25,6 +23,10 @@ class ReportsViewController: UIViewController {
     private let expensesViewModel = ExpensesViewModel()
     private var allItems: [ReportListItem] = []
     private var filteredItems: [ReportListItem] = []
+    // Raw sheets kept so we can reconstruct full sheet on tap
+    private var allSheets: [ExpenseReportSheet] = []
+    // All draft expenses fetched alongside reports — used to populate edit screen
+    private var allDraftExpenses: [EmployeeExpense] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,6 +38,7 @@ class ReportsViewController: UIViewController {
         reportsTitleLabel.text = NSLocalizedString("reports", comment: "")
         searchBar.delegate = self
         searchBar.placeholder = NSLocalizedString("common.search", comment: "Search")
+        hideKeyboardWhenTappedAround()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
@@ -51,12 +54,15 @@ class ReportsViewController: UIViewController {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
 
         showLoader()
-        expensesViewModel.fetchExpenseReports(token: token) { [weak self] result in
-            guard let self = self else { return }
-            self.hideLoader()
+        let group = DispatchGroup()
 
+        group.enter()
+        expensesViewModel.fetchExpenseReports(token: token) { [weak self] result in
+            defer { group.leave() }
+            guard let self = self else { return }
             switch result {
             case .success(let sheets):
+                self.allSheets = sheets
                 let flattened = sheets.flatMap { sheet in
                     sheet.expenses.map { exp in
                         ReportListItem(
@@ -71,12 +77,29 @@ class ReportsViewController: UIViewController {
                 }
                 self.allItems = flattened
                 self.filteredItems = flattened
-                self.tableView.reloadData()
-                self.updateSearchEmptyState()
-
             case .failure(let error):
                 print("❌ Reports load error: \(error.localizedDescription)")
             }
+        }
+
+        group.enter()
+        expensesViewModel.fetchEmployeeExpenses(token: token) { [weak self] result in
+            defer { group.leave() }
+            guard let self = self else { return }
+            switch result {
+            case .success(let expenses):
+                // Keep only draft expenses for editing
+                self.allDraftExpenses = expenses.filter { $0.state.lowercased() == "draft" }
+            case .failure(let error):
+                print("❌ Draft expenses load error: \(error.localizedDescription)")
+            }
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            self.hideLoader()
+            self.tableView.reloadData()
+            self.updateSearchEmptyState()
         }
     }
 
@@ -141,6 +164,18 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
             }
 
             let item = self.filteredItems[indexPath.row]
+            let state = item.state.lowercased()
+            let isDeletable = state == "draft" || state == "submit" || state == "submitted"
+
+            // Block delete if state is not draft or submitted
+            guard isDeletable else {
+                self.showAlert(
+                    title: NSLocalizedString("expenses.error", comment: "Error"),
+                    message: NSLocalizedString("report.cannotDeleteMessage", comment: "")
+                )
+                completion(false)
+                return
+            }
 
             let alert = UIAlertController(
                 title: NSLocalizedString("report.deleteTitle", comment: ""),
@@ -185,7 +220,7 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
                                 ?? NSLocalizedString("report.deleteFailed", comment: "")
                             self.showAlert(
                                 title: NSLocalizedString("expenses.error", comment: "Error"),
-                                message: reason
+                                message: NSLocalizedString("report.deleteFailed", comment: "")
                             )
                             completion(false)
                         }
@@ -209,6 +244,61 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
         config.performsFirstActionWithFullSwipe = false
         return config
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let item = filteredItems[indexPath.row]
+        let state = item.state.lowercased()
+        let isEditable = state == "draft" || state == "submit" || state == "submitted"
+
+        guard isEditable else {
+            showAlert(
+                title: NSLocalizedString("expenses.error", comment: "Error"),
+                message: NSLocalizedString("report.cannotEditMessage", comment: "")
+            )
+            return
+        }
+
+        // Get full sheet from stored sheets
+        guard let fullSheet = allSheets.first(where: { $0.sheet_id == item.sheet_id }) else { return }
+
+        // IDs of expenses already inside this report
+        let reportExpenseIds = Set(fullSheet.expenses.map { $0.id })
+
+        // Build combined list:
+        // - All draft expenses (not yet in any report)
+        // - Plus expenses already in THIS report (which may have state "submitted")
+        // Avoid duplicates using Set on id
+        let reportExpensesAsEmployeeExpense = fullSheet.expenses.map {
+            EmployeeExpense.fromReportExpense($0, sheet: fullSheet)
+        }
+        var seen = Set<Int>()
+        var combinedExpenses: [EmployeeExpense] = []
+        for e in allDraftExpenses + reportExpensesAsEmployeeExpense {
+            if seen.insert(e.id).inserted {
+                combinedExpenses.append(e)
+            }
+        }
+
+        let vc = CreateReportsViewController(nibName: "CreateReportsViewController", bundle: nil)
+        vc.reportToEdit = fullSheet
+        // Pass all available expenses
+        vc.expenses = combinedExpenses
+        // Pre-select only the ones already in the report
+        vc.preselectedExpenseIds = reportExpenseIds
+        vc.onReportUpdated = { [weak self] in
+            self?.loadReports()
+        }
+
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+        }
+
+        present(vc, animated: true)
+    }
+
 }
 
 extension ReportsViewController: UISearchBarDelegate {

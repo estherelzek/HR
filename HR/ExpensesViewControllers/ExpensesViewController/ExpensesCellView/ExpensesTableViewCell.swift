@@ -41,6 +41,7 @@ class ExpensesTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
     func configure(with report: ReportListItem) {
+        print("Configuring cell with report: \(report)")
         // Bold title
         let titleAttr = NSAttributedString(
             string: report.sheet_name,

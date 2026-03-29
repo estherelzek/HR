@@ -73,4 +73,9 @@ class MainLunchCollectionViewCell: UICollectionViewCell {
     @IBAction func favButtonTapped(_ sender: UIButton) {
         onFavTapped?()
     }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
 }

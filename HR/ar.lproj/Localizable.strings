@@ -423,6 +423,14 @@
 "report.submittedPartial" = "تم تقديم %d، وفشل %d. يرجى المحاولة مجدداً.";
 "common.search" = "بحث";
 "expenses.deleteFailed" = "فشل حذف المصروف.";
+"expenses.editTitle" = "تعديل المصروف";
+"expenses.updatedSuccessfully" = "تم تعديل المصروف بنجاح.";
+"expenses.updateFailed" = "فشل تعديل المصروف.";
+"common.edit" = "تعديل";
+"common.update" = "تحديث";
+"expense.cannotDelete" = "لا يمكن الحذف";
+"expense.cannotDeleteMessage" = "يمكن حذف المصروفات في حالة المسودة أو المقدمة فقط.";
+"report.cannotDeleteMessage" = "يمكن حذف التقارير في حالة المسودة أو المقدمة فقط.";
 "report.deleteFailed" = "فشل حذف التقرير.";
 "expenses.deleteTitle" = "حذف المصروف";
 "expenses.deleteMessage" = "هل أنت متأكد من حذف \"%@\"؟";
@@ -432,3 +440,13 @@
 "common.loading" = "جاري التحميل...";
 "common.noResults" = "لا توجد نتائج";
 
+"expenses.cannotEditMessage" = "يمكن تعديل المصروفات في حالة المسودة أو المقدمة فقط.";
+"report.editTitle" = "تعديل التقرير";
+"report.editMessage" = "قم بتحديث اسم التقرير والمصروفات";
+"report.namePlaceholder" = "اسم التقرير";
+"report.updateFailed" = "فشل تعديل التقرير.";
+"report.updatedSuccessfully" = "تم تعديل التقرير بنجاح.";
+"report.cannotEditMessage" = "يمكن تعديل التقارير في حالة المسودة أو المقدمة فقط.";
+"report.nameRequired" = "اسم التقرير مطلوب.";
+"report.selectAtLeastOneExpense" = "يرجى اختيار مصروف واحد على الأقل.";
+"common.noResults" = "لم يتم العثور على نتائج.";

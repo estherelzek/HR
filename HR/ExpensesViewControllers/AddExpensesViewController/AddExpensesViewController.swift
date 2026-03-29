@@ -12,7 +12,12 @@ class AddExpensesViewController: UIViewController {
     
     // Called after expense is successfully created
     var onExpenseCreated: (() -> Void)?
-    
+    // Called after expense is successfully updated
+    var onExpenseUpdated: (() -> Void)?
+
+    // Set this to enter edit mode — prefills all fields and changes Save → Update
+    var expenseToEdit: EmployeeExpense?
+
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var addExpensesTitleLabel: Inspectablelabel!
@@ -37,7 +42,6 @@ class AddExpensesViewController: UIViewController {
     @IBOutlet weak var currencyTextField: UITextField!
     @IBOutlet weak var calculatedTotalByCurrency: Inspectablelabel!
     @IBOutlet weak var ratioCurrenciesLabel: Inspectablelabel!
-    
     @IBOutlet weak var flexableStackOfLabels: UIStackView!
     
     // Height constraint for flexableStackOfLabels — set to 0 when hidden to collapse space
@@ -59,7 +63,9 @@ class AddExpensesViewController: UIViewController {
     private var selectedAnalyticDistribution: [Int: Int] = [:] // id: percentage
     private var selectedTaxIds: [Int] = []
     private var selectedPaidBy: String = "employee" // Default to employee
-    
+    // Currency ID for edit mode
+    private var selectedCurrencyId: Int = 1
+
     override func viewDidLoad() {
         super.viewDidLoad()
         // Find the existing height constraint from XIB and store it
@@ -140,8 +146,7 @@ class AddExpensesViewController: UIViewController {
         expensesViewModel.fetchCurrencies(token: token) { [weak self] result in
             defer { group.leave() }
             switch result {
-            case .success(let currencies):
-                print("Currencies loaded:", currencies)
+            case .success: break
             case .failure(let error):
                 print("Currency error:", error)
             }
@@ -149,11 +154,25 @@ class AddExpensesViewController: UIViewController {
 
         group.notify(queue: .main) { [weak self] in
             self?.hideLoader()
+            // Prefill after all data is loaded
+            self?.prefillEditData()
         }
     }
 
     private func setupLocalization() {
-        addExpensesTitleLabel.text = NSLocalizedString("expenses.addTitle", comment: "Add Expenses Title")
+        // Switch title + button based on edit mode
+        let isEditing = expenseToEdit != nil
+        addExpensesTitleLabel.text = isEditing
+            ? NSLocalizedString("expenses.editTitle", comment: "Edit Expense")
+            : NSLocalizedString("expenses.addTitle", comment: "Add Expenses Title")
+        saveButton.setTitle(
+            isEditing
+                ? NSLocalizedString("common.update", comment: "Update")
+                : NSLocalizedString("common.save", comment: "Save"),
+            for: .normal
+        )
+        
+        discardButton.setTitle(NSLocalizedString("common.discard", comment: "Discard"), for: .normal)
         descriptionTitleLable.text = NSLocalizedString("expenses.description", comment: "Description")
         categoryTitleLabel.text = NSLocalizedString("expenses.category", comment: "Category")
         expensesDateTitleLabel.text = NSLocalizedString("expenses.date", comment: "Date")
@@ -162,10 +181,6 @@ class AddExpensesViewController: UIViewController {
         includeedTaxesTitleLabel.text = NSLocalizedString("expenses.includedTaxes", comment: "Included Taxes")
         paidByTitleLabel.text = NSLocalizedString("expenses.paidBy", comment: "Paid By")
         notesTitleLabel.text = NSLocalizedString("expenses.notes", comment: "Notes")
-        
-        discardButton.setTitle(NSLocalizedString("common.discard", comment: "Discard"), for: .normal)
-        saveButton.setTitle(NSLocalizedString("common.save", comment: "Save"), for: .normal)
-        
         descriptionTextField.placeholder = NSLocalizedString("expenses.descriptionPlaceholder", comment: "Enter description")
         categoryTextField.placeholder = NSLocalizedString("expenses.categoryPlaceholder", comment: "Select category")
         expenseDateTextField.placeholder = NSLocalizedString("expenses.datePlaceholder", comment: "Select date")
@@ -174,14 +189,8 @@ class AddExpensesViewController: UIViewController {
         includedTaxesTextField.placeholder = NSLocalizedString("expenses.includedTaxesPlaceholder", comment: "Select taxes")
         notesTextField.placeholder = NSLocalizedString("expenses.notesPlaceholder", comment: "Enter notes")
         currencyTextField.placeholder = NSLocalizedString("expenses.currency", comment: "Currency field")
-     //   calculatedTotalByCurrency.placeholder = NSLocalizedString("expenses.calculatedTotalByCurrency",comment: "Calculated total by currency")
-     //   ratioCurrenciesLabel.placeholder = NSLocalizedString("expenses.ratioCurrencies",comment: "Currency ratio label")
         let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
-        if isRTL {
-            view.semanticContentAttribute = .forceRightToLeft
-        } else {
-            view.semanticContentAttribute = .forceLeftToRight
-        }
+        view.semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
     }
     
     private func setupSegmentedControl() {
@@ -464,56 +473,173 @@ class AddExpensesViewController: UIViewController {
         includedTaxesTextField.text = taxNames.joined(separator: ", ")
     }
 
+    // MARK: - Prefill fields when editing
+    private func prefillEditData() {
+        guard let expense = expenseToEdit else { return }
+
+        descriptionTextField.text = expense.name
+        totalTextField.text = String(format: "%.2f", expense.total_amount)
+        notesTextField.text = expense.description
+
+        // Parse API date (yyyy-MM-dd) back to readable display
+        let apiFormatter = DateFormatter()
+        apiFormatter.dateFormat = "yyyy-MM-dd"
+        if let date = apiFormatter.date(from: expense.date) {
+            selectedDate = date
+            expenseDateTextField.text = dateFormatter.string(from: date)
+            datePicker.setDate(date, animated: false)
+        } else {
+            expenseDateTextField.text = expense.date
+        }
+
+        // Prefill category (dropdown-backed)
+        if let category = expenseCategoriesList.first(where: { $0.id == expense.product_id }) {
+            selectedCategoryId = category.id
+            categoryTextField.text = category.name
+        } else {
+            // fallback if list not found yet
+            selectedCategoryId = expense.product_id
+            categoryTextField.text = expense.product
+        }
+
+        // Prefill currency (dropdown-backed)
+        if let matchedCurrency = expensesViewModel.currencies.first(where: {
+            $0.currency_code.caseInsensitiveCompare(expense.currency) == .orderedSame ||
+            $0.name.caseInsensitiveCompare(expense.currency) == .orderedSame ||
+            $0.symbol.caseInsensitiveCompare(expense.currency) == .orderedSame
+        }) {
+            selectedCurrency = matchedCurrency
+            selectedCurrencyId = matchedCurrency.id
+            currencyTextField.text = matchedCurrency.name
+            calculateCurrencyConversion()
+        } else if let companyCurrency = expensesViewModel.currencies.first(where: { $0.is_company_currency }) {
+            selectedCurrency = companyCurrency
+            selectedCurrencyId = companyCurrency.id
+            currencyTextField.text = companyCurrency.name
+            calculateCurrencyConversion()
+        } else {
+            currencyTextField.text = expense.currency
+        }
+
+        // Prefill taxes from API payload
+        if let taxes = expense.taxes, !taxes.isEmpty {
+            selectedTaxIds = taxes.map { $0.id }
+            updateTaxDisplay()
+        } else {
+            selectedTaxIds.removeAll()
+            includedTaxesTextField.text = ""
+        }
+
+        // Prefill analytic distribution from API payload {"316": 100.0}
+        selectedAnalyticDistribution.removeAll()
+        if let distribution = expense.analytic_distribution, !distribution.isEmpty {
+            for (key, value) in distribution {
+                if let accountId = Int(key) {
+                    selectedAnalyticDistribution[accountId] = Int(value.rounded())
+                }
+            }
+
+            let display = selectedAnalyticDistribution.compactMap { id, percentage -> String? in
+                guard let name = analyticAccountsList.first(where: { $0.id == id })?.name else { return nil }
+                return "\(name) \(percentage)%"
+            }.joined(separator: ", ")
+
+            analyticDistributionTextField.text = display
+        } else {
+            analyticDistributionTextField.text = ""
+        }
+
+        // Prefill paid-by from payment_mode (NOT state)
+        switch expense.payment_mode?.lowercased() {
+        case "company", "company_account":
+            employeeOrCompanySegment.selectedSegmentIndex = 1
+            selectedPaidBy = "company"
+        default:
+            employeeOrCompanySegment.selectedSegmentIndex = 0
+            selectedPaidBy = "employee"
+        }
+    }
+    
+
+    // MARK: - Save / Update button handler
     @IBAction func saveButtonTapped(_ sender: Any) {
         guard !descriptionTextField.text!.trimmingCharacters(in: .whitespaces).isEmpty else {
             showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
                      message: NSLocalizedString("expenses.descriptionRequired", comment: "Description is required"))
             return
         }
-        
         guard !categoryTextField.text!.isEmpty, let categoryId = selectedCategoryId else {
             showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
                      message: NSLocalizedString("expenses.categoryRequired", comment: "Category is required"))
             return
         }
-        
         guard let selectedDate = selectedDate else {
             showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
                      message: NSLocalizedString("expenses.dateRequired", comment: "Date is required"))
             return
         }
-        
         guard !totalTextField.text!.isEmpty,
               let totalAmount = Double(totalTextField.text ?? "") else {
             showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
                      message: NSLocalizedString("expenses.totalRequired", comment: "Total is required and must be a number"))
             return
         }
-        
         guard !selectedAnalyticDistribution.isEmpty else {
             showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
                      message: NSLocalizedString("expenses.analyticRequired", comment: "Please select analytic distribution"))
             return
         }
-        
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
             showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
                      message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing"))
             return
         }
-        
-        // Convert date to API format (yyyy-MM-dd)
+
         let apiDateString = selectedDate.toAPIDateString()
-        
-        // Convert analytic distribution to [String: Int]
         var analyticDistributionStr: [String: Int] = [:]
         for (key, value) in selectedAnalyticDistribution {
             analyticDistributionStr[String(key)] = value
         }
-        
-        // Show loading overlay
+
         showLoader(message: NSLocalizedString("expenses.pleaseWait", comment: "Please wait"))
 
+        // MARK: Edit mode
+        if let expense = expenseToEdit {
+            expensesViewModel.updateExpense(
+                token: token,
+                expenseId: expense.id,
+                name: descriptionTextField.text ?? "",
+                product_id: categoryId,
+                total_amount: totalAmount,
+                date: apiDateString,
+                description: notesTextField.text ?? "",
+                currency_id: selectedCurrencyId,
+                analytic_distribution: analyticDistributionStr,
+                tax_ids: selectedTaxIds,
+                payment_mode: selectedPaidBy
+            ) { [weak self] result in
+                DispatchQueue.main.async {
+                    self?.hideLoader()
+                    switch result {
+                    case .success:
+                        self?.showAlert(
+                            title: NSLocalizedString("expenses.success", comment: "Success"),
+                            message: NSLocalizedString("expenses.updatedSuccessfully", comment: "Expense updated successfully")
+                        )
+                        self?.onExpenseUpdated?()
+                    case .failure(let error):
+                        if case .requestFailed(let backendMessage) = error {
+                            self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: backendMessage)
+                        } else {
+                            self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: error.localizedDescription)
+                        }
+                    }
+                }
+            }
+            return
+        }
+
+        // MARK: Create mode
         expensesViewModel.createExpense(
             token: token,
             name: descriptionTextField.text ?? "",
@@ -527,7 +653,6 @@ class AddExpensesViewController: UIViewController {
         ) { [weak self] result in
             DispatchQueue.main.async {
                 self?.hideLoader()
-
                 switch result {
                 case .success(let response):
                     self?.showAlert(
@@ -537,19 +662,12 @@ class AddExpensesViewController: UIViewController {
                     self?.clearForm()
                     self?.onExpenseCreated?()
                     print("✅ Expense created: \(response.expense_id)")
-
                 case .failure(let error):
                     if case .requestFailed(let backendMessage) = error {
-                        self?.showAlert(
-                            title: NSLocalizedString("expenses.error", comment: "Error"),
-                            message: backendMessage
-                        )
+                        self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: backendMessage)
                         print("❌ Backend Error: \(backendMessage)")
                     } else {
-                        self?.showAlert(
-                            title: NSLocalizedString("expenses.error", comment: "Error"),
-                            message: error.localizedDescription
-                        )
+                        self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: error.localizedDescription)
                         print("❌ Network Error: \(error.localizedDescription)")
                     }
                 }

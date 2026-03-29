@@ -547,6 +547,18 @@ class InspectableCollectionView: UICollectionView {
 }
 
 extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboardGlobal))
+        tap.cancelsTouchesInView = false
+        view.addGestureRecognizer(tap)
+    }
+
+    @objc func dismissKeyboardGlobal() {
+        view.endEditing(true)
+    }
+}
+
+extension UIViewController {
     func showToast(message: String, duration: TimeInterval = 5.0) {
         let toastLabel = UILabel()
         toastLabel.text = message

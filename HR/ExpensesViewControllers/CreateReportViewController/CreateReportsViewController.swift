@@ -21,20 +21,41 @@ class CreateReportsViewController: UIViewController {
     @IBOutlet weak var employeeTextField: InspectableTextField!
    // @IBOutlet weak var managerTextField: InspectableTextField!
     @IBOutlet weak var companyTextField: InspectableTextField!
- 
     @IBOutlet weak var saveReportButton: InspectableButton!
     @IBOutlet weak var employeeOrCompanySegment: UISegmentedControl!
+    
     var expenses: [EmployeeExpense] = []
+    var reportToEdit: ExpenseReportSheet?
+    var onReportUpdated: (() -> Void)?
+    var preselectedExpenseIds: Set<Int> = []
     private var selectedPaidBy: String = "employee"
     private var selectedExpenseIds = Set<Int>()
     private let expensesViewModel = ExpensesViewModel()
-
-    // Convenience: selected expense objects
+    private var isEditMode: Bool { reportToEdit != nil }
     private var selectedExpenses: [EmployeeExpense] {
-        expenses.filter { selectedExpenseIds.contains($0.id) }
+        filteredExpenses.filter { selectedExpenseIds.contains($0.id)
+            
+        }
     }
 
+    // Filter expenses by payment mode matching the selected Paid By mode
+    private var filteredExpenses: [EmployeeExpense] {
+        let targetPaymentMode: String? = selectedPaidBy == "company" ? "company_account" : "employee_account"
+        
+        return expenses.filter { expense in
+            // If expense has no payment_mode, include it (backward compat)
+            guard let expensePaymentMode = expense.payment_mode else { return true }
+            
+            // Match expense payment_mode with report payment_mode
+            return expensePaymentMode == targetPaymentMode
+        }
+        print("✅ Filtered expenses for Paid By '\(filteredExpenses)")
+    }
+   
+
     override func viewDidLoad() {
+        print("expenses in create report: \(expenses) , \(expenses.count)")
+        print("report to edit: \(String(describing: reportToEdit))")
         super.viewDidLoad()
         setupLocalization()
         prefillReportUserData()
@@ -42,6 +63,9 @@ class CreateReportsViewController: UIViewController {
         updateEmptyState()
         setupSegmentedControl()
         setupKeyboardDismissal()
+        if let sheet = reportToEdit {
+            prefillEditData(from: sheet)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -50,7 +74,7 @@ class CreateReportsViewController: UIViewController {
     }
 
     private func updateEmptyState() {
-        if expenses.isEmpty {
+        if filteredExpenses.isEmpty {
             let label = UILabel()
             label.text = NSLocalizedString("report.noDraftExpenses", comment: "")
             label.textAlignment = .center
@@ -63,18 +87,24 @@ class CreateReportsViewController: UIViewController {
 
     // MARK: - Localization
     private func setupLocalization() {
-        createReportTitleLabel.text = NSLocalizedString("report.createTitle", comment: "Create Report")
+        createReportTitleLabel.text = isEditMode
+            ? NSLocalizedString("report.editTitle", comment: "Edit Report")
+            : NSLocalizedString("report.createTitle", comment: "Create Report")
+
+        saveReportButton.setTitle(
+            isEditMode
+                ? NSLocalizedString("common.update", comment: "Update")
+                : NSLocalizedString("report.save", comment: "Save"),
+            for: .normal
+        )
+
         employeetitleLabel.text = NSLocalizedString("report.employee", comment: "Employee")
-      //  managerTitleLabel.text = NSLocalizedString("report.manager", comment: "Manager")
         companyTitleLabel.text = NSLocalizedString("report.company", comment: "Company")
         paidByTitleLabel.text = NSLocalizedString("report.paidBy", comment: "Paid By")
         expenseReportSumaryTextField.placeholder = NSLocalizedString("report.summaryPlaceholder", comment: "")
         employeeTextField.placeholder = NSLocalizedString("report.employeePlaceholder", comment: "")
-       // managerTextField.placeholder = NSLocalizedString("report.managerPlaceholder", comment: "")
         companyTextField.placeholder = NSLocalizedString("report.companyPlaceholder", comment: "")
-//        paidByTextField.placeholder = NSLocalizedString("report.paidByPlaceholder", comment: "")
         addExpenseToReportButton.setTitle(NSLocalizedString("report.addExpense", comment: ""), for: .normal)
-        saveReportButton.setTitle(NSLocalizedString("report.save", comment: ""), for: .normal)
 
         let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
         view.semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
@@ -86,7 +116,6 @@ class CreateReportsViewController: UIViewController {
             print("❌ tableView IBOutlet is not connected in XIB")
             return
         }
-
         tableView.delegate = self
         tableView.dataSource = self
         tableView.separatorStyle = .none
@@ -95,10 +124,10 @@ class CreateReportsViewController: UIViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 80
         tableView.allowsMultipleSelection = true
-
         let nib = UINib(nibName: "ExpenseCellInReportTableViewCell", bundle: nil)
         tableView.register(nib, forCellReuseIdentifier: "ExpenseCellInReportTableViewCell")
     }
+    
     private func setupSegmentedControl() {
         employeeOrCompanySegment.removeAllSegments()
         employeeOrCompanySegment.insertSegment(
@@ -122,6 +151,9 @@ class CreateReportsViewController: UIViewController {
     @objc private func segmentedControlChanged(_ sender: UISegmentedControl) {
         selectedPaidBy = sender.selectedSegmentIndex == 0 ? "employee" : "company"
         print("✅ Paid By: \(selectedPaidBy)")
+        // Reload table to show only matching payment_mode expenses
+        tableView.reloadData()
+        updateEmptyState()
     }
     // MARK: - Button Action
     @IBAction func addexpenseToReportButtonTapped(_ sender: Any) {
@@ -147,6 +179,47 @@ class CreateReportsViewController: UIViewController {
             return
         }
 
+        // MARK: Edit mode — call updateReport
+        if let sheet = reportToEdit {
+            let expenseIds = selectedExpenses.map { $0.id }
+            let reportName = expenseReportSumaryTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? sheet.name
+
+            showLoader()
+            expensesViewModel.updateReport(
+                token: token,
+                sheetId: sheet.sheet_id,
+                name: reportName,
+                expenseIds: expenseIds
+            ) { [weak self] result in
+                guard let self = self else { return }
+                self.hideLoader()
+                switch result {
+                case .success:
+                    self.showReportAlert(
+                        title: NSLocalizedString("expenses.success", comment: "Success"),
+                        message: NSLocalizedString("report.updatedSuccessfully", comment: "Report updated successfully"),
+                        onOK: { [weak self] in
+                            self?.onReportUpdated?()
+                            self?.dismiss(animated: true)
+                        }
+                    )
+                case .failure(let error):
+                    let message: String
+                    if case .requestFailed(let backendMessage) = error {
+                        message = backendMessage
+                    } else {
+                        message = NSLocalizedString("report.updateFailed", comment: "")
+                    }
+                    self.showReportAlert(
+                        title: NSLocalizedString("expenses.error", comment: "Error"),
+                        message: message
+                    )
+                }
+            }
+            return
+        }
+
+        // MARK: Create mode — batch submit expenses
         let expenseIds = selectedExpenses.map { $0.id }
         print("✅ Submitting expense IDs:", expenseIds)
 
@@ -206,12 +279,42 @@ class CreateReportsViewController: UIViewController {
         employeeTextField.text = UserDefaults.standard.employeeName
         companyTextField.text = UserDefaults.standard.companyName ?? ""
     }
+
+    // MARK: - Prefill for edit mode
+    private func prefillEditData(from sheet: ExpenseReportSheet) {
+        expenseReportSumaryTextField.text = sheet.name
+        // Pre-select only expenses already belonging to this report
+        selectedExpenseIds = preselectedExpenseIds.isEmpty
+            ? Set(sheet.expenses.map { $0.id })
+            : preselectedExpenseIds
+
+        let reportPaymentMode = sheet.payment_mode_label?.lowercased()
+        let expensePaymentMode = sheet.expenses.first?.payment_mode?.lowercased()
+        let paymentModeLabel = sheet.expenses.first?.payment_mode_label?.lowercased()
+
+        let isCompanyPaid: Bool = {
+            if reportPaymentMode == "company_account" || reportPaymentMode == "company" {
+                return true
+            }
+            if expensePaymentMode == "company_account" || expensePaymentMode == "company" {
+                return true
+            }
+            if paymentModeLabel == "company" {
+                return true
+            }
+            return false
+        }()
+
+        employeeOrCompanySegment.selectedSegmentIndex = isCompanyPaid ? 1 : 0
+        selectedPaidBy = isCompanyPaid ? "company" : "employee"
+    }
 }
 
 extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        expenses.count
+       
+        filteredExpenses.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -223,7 +326,7 @@ extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSourc
             return UITableViewCell()
         }
 
-        let expense = expenses[indexPath.row]
+        let expense = filteredExpenses[indexPath.row]
         let selected = selectedExpenseIds.contains(expense.id)
         cell.configure(with: expense, isSelected: selected)
 
@@ -241,7 +344,8 @@ extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSourc
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let expense = expenses[indexPath.row]
+      
+        let expense = filteredExpenses[indexPath.row]
 
         if selectedExpenseIds.contains(expense.id) {
             selectedExpenseIds.remove(expense.id)

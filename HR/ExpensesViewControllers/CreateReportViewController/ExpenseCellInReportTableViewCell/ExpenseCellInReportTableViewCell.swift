@@ -35,12 +35,20 @@ class ExpenseCellInReportTableViewCell: UITableViewCell {
     }
 
     func configure(with expense: EmployeeExpense, isSelected: Bool) {
-        descriptionLabel?.text = expense.description.isEmpty ? expense.name : expense.description
+        descriptionLabel?.text = expense.name
         DateLabel?.text = expense.date
         totalLabel?.text = "\(expense.total_amount) \(expense.currency)"
-        StatusLabel?.text = expense.state.capitalized
 
-        switch expense.state {
+        let isDeletable = expense.state.lowercased() == "draft" || expense.state.lowercased() == "submitted"
+
+        // Show state with deletable hint
+        let stateText = expense.state.capitalized
+        let deletableHint = isDeletable
+            ? ""
+            : "  ⚠️ \(NSLocalizedString("expense.cannotDelete", comment: ""))"
+        StatusLabel?.text = stateText
+
+        switch expense.state.lowercased() {
         case "draft":
             StatusLabel?.textColor = .systemGray
         case "submitted":
@@ -48,8 +56,12 @@ class ExpenseCellInReportTableViewCell: UITableViewCell {
         case "approved":
             StatusLabel?.textColor = UIColor.border
         default:
-            StatusLabel?.textColor = .label
+            StatusLabel?.textColor = .systemRed
         }
+
+        // Dim cell if not deletable
+//        contentView.alpha = isDeletable ? 1.0 : 0.5
+//        selectButton?.isEnabled = isDeletable
 
         isExpenseSelected = isSelected
     }

@@ -128,7 +128,7 @@
 "TimeOffRequest_MorningOrNight" = "Morning or Night";
 "TimeOffRequest_HalfDay" = "Half Day";
 "TimeOffRequest_CustomHours" = "Custom Hours";
-"TimeOffRequest_Duration" = "Durationnn";
+"TimeOffRequest_Duration" = "Duration";
 "TimeOffRequest_AddDescription" = "Add Description";
 "Clock" = "Clock";
 "Save" = "Save";
@@ -421,8 +421,16 @@
 "report.submittedSuccess" = "%d expense(s) submitted successfully.";
 "report.submittedPartial" = "%d submitted, %d failed. Please try again.";
 "common.search" = "Search";
-"expenses.deleteFailed" = "Failed to delete expense.";
-"report.deleteFailed" = "Failed to delete report.";
+"expenses.deleteFailed" = "Only expenses with Draft or Submitted status can be deleted.";
+"expenses.editTitle" = "Edit Expense";
+"expenses.updatedSuccessfully" = "Expense updated successfully.";
+"expenses.updateFailed" = "Failed to update expense.";
+"common.edit" = "Edit";
+"common.update" = "Update";
+"expense.cannotDelete" = "Cannot be deleted";
+"expense.cannotDeleteMessage" = "Only expenses with Draft or Submitted status can be deleted.";
+"report.cannotDeleteMessage" = "Only reports with Draft or Submitted status can be deleted.";
+"report.deleteFailed" = "Only reports with Draft or Submitted status can be deleted.";
 // en.lproj
 "expenses.deleteTitle" = "Delete Expense";
 "expenses.deleteMessage" = "Are you sure you want to delete \"%@\"?";
@@ -431,3 +439,12 @@
 "common.cancel" = "Cancel";
 "common.loading" = "Loading...";
 "common.noResults" = "No results";
+"report.editTitle" = "Edit Report";
+"report.editMessage" = "Update report name and expenses";
+"report.namePlaceholder" = "Report name";
+"report.updateFailed" = "Failed to update report.";
+"report.updatedSuccessfully" = "Report updated successfully.";
+"report.cannotEditMessage" = "Only reports with Draft or Submitted status can be edited.";
+"report.nameRequired" = "Report name is required.";
+"report.selectAtLeastOneExpense" = "Please select at least one expense.";
+"common.noResults" = "No results found.";
