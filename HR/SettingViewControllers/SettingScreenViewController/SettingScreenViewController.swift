@@ -269,6 +269,7 @@ extension SettingScreenViewController: Localizable {
   
     func navigateToChangeProtectionViewController(){
         let protectionMethod = UserDefaults.standard.string(forKey: "selectedProtectionMethod") ?? ""
+        print("Selected protection method: \(protectionMethod)") // Debug log
         if protectionMethod == "pin" {
             let pinVC = PinCodeViewController(nibName: "PinCodeViewController", bundle: nil)
             pinVC.modalPresentationStyle = .fullScreen
@@ -279,10 +280,21 @@ extension SettingScreenViewController: Localizable {
         } else if protectionMethod == "fingerprint" {
             let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
             fingerprintVC.modalPresentationStyle = .fullScreen
+            // ✅ Set verification flag to verify current fingerprint before allowing change
+            fingerprintVC.needsVerification = true
             self.present(fingerprintVC, animated: true)
+        } else if protectionMethod == "faceID" {
+            let faceAuthVC = FaceAuthenticationViewController(nibName: "FaceAuthenticationViewController", bundle: nil)
+            faceAuthVC.modalPresentationStyle = .fullScreen
+            // ✅ Set verification flag to verify current face before allowing change
+            faceAuthVC.needToChangeProtectionMethod = true
+            faceAuthVC.needsVerification = true
+            self.present(faceAuthVC, animated: true)
         } else {
             let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController",bundle: nil)
             protectionMethodVC.modalPresentationStyle = .fullScreen
+            // ✅ Set verification flag for changing protection method
+            protectionMethodVC.needsVerification = true
             self.present(protectionMethodVC, animated: true)
      }
    }

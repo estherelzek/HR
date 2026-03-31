@@ -11,7 +11,10 @@ import LocalAuthentication
 class FaceAuthenticationViewController: UIViewController {
 
     @IBOutlet weak var titleLabel: UILabel!
-
+    
+    // ✅ Flag to indicate we're changing protection method (requires verification)
+    var needsVerification: Bool = false
+    var needToChangeProtectionMethod: Bool = false
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,34 +42,45 @@ class FaceAuthenticationViewController: UIViewController {
  
     // MARK: - Success
     private func handleSuccess() {
-        print("➡️ Proceeding to next screen")
-        goToCheckingVC()
-        // OR: dismiss(animated: true)
+        print("➡️ Proceeding after Face ID success")
+        print("✅ needToChangeProtectionMethod: \(needToChangeProtectionMethod)")
+        print("✅ needsVerification: \(needsVerification)")
+        // ✅ If changing protection method, dismiss this screen to go back to protection selector
+        
+//        if needToChangeProtectionMethod {
+//                goToProtectionMethod()
+//        
+//        } else {
+//            goToCheckingVC()
+//        }
+        
+        if needsVerification {
+            if needToChangeProtectionMethod {
+                needToChangeProtectionMethod = false
+                goToProtectionMethod()
+               
+            } else {
+                goToCheckingVC()
+            }
+        } else {
+            goToCheckingVC()
+        }
+        
+        
     }
 
-//    // MARK: - Failure Handling
-//    private func handleFailure(error: Error?) {
-//        let nsError = error as NSError?
-//
-//        switch nsError?.code {
-//        case LAError.userCancel.rawValue:
-//            print("👤 User canceled Face ID")
-//            showRetryAlert(message: "Authentication was canceled.")
-//
-//        case LAError.userFallback.rawValue:
-//            print("🔢 User chose fallback (PIN/password)")
-//            showFallbackAlert()
-//
-//        case LAError.biometryLockout.rawValue:
-//            print("🔒 Face ID locked out (too many attempts)")
-//            showUnavailableAlert(message: "Face ID is locked. Unlock your phone and try again.")
-//
-//        default:
-//            print("⚠️ Unknown Face ID error")
-//            showRetryAlert(message: "Face ID failed. Please try again.")
-//        }
-//    }
-
+    private func goToProtectionMethod() {
+        if let rootVC  = self.view.window?.rootViewController as? ViewController {
+            let protectionMethodVC = ProtectionMethodViewController(nibName: "ProtectionMethodViewController", bundle: nil)
+            rootVC.switchTo(viewController: protectionMethodVC)
+            rootVC.bottomBarView.isHidden = false
+            rootVC.titlesBarView.isHidden = false
+            rootVC.homeButton.tintColor = .lightGray
+            rootVC.timeOffButton.tintColor = .lightGray
+            rootVC.settingButton.tintColor = .lightGray
+        }
+        self.view.window?.rootViewController?.dismiss(animated: true, completion: nil)
+    }
     // MARK: - Alerts
 
     private func showRetryAlert(message: String) {

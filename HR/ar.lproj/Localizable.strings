@@ -450,3 +450,8 @@
 "report.nameRequired" = "اسم التقرير مطلوب.";
 "report.selectAtLeastOneExpense" = "يرجى اختيار مصروف واحد على الأقل.";
 "common.noResults" = "لم يتم العثور على نتائج.";
+"expenses.multiSelectHint" = "وضع الاختيار المتعدد";
+"expenses.multiSelectHintMessage" = "اضغط على المصروفات لتحديدها، ثم اضغط على زر الحذف مجدداً للحذف.";
+"expenses.multiDeleteMessage" = "هل أنت متأكد من حذف %d مصروف(ات)؟";
+"expenses.partialDeleteTitle" = "حذف جزئي";
+"expenses.partialDeleteMessage" = "تم حذف %d، وفشل حذف %d.";

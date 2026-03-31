@@ -193,7 +193,7 @@
 "checked_in_description" = "You are currently checked in.";
 "checked_in_description_with_time" = "Checked in at %@";
 "checked_out_description" = "You are currently checked out.";
-"checked_out_description_with_time" = "Last check-out at %@ • ";
+"checked_out_description_with_time" = "Last check-out at %@  ";
 "attendance_processing" = "Processing your attendance... Please wait.";
 
 /* Alerts - General */
@@ -448,3 +448,8 @@
 "report.nameRequired" = "Report name is required.";
 "report.selectAtLeastOneExpense" = "Please select at least one expense.";
 "common.noResults" = "No results found.";
+"expenses.multiSelectHint" = "Multi-Select Mode";
+"expenses.multiSelectHintMessage" = "Tap expenses to select them, then tap the trash button again to delete.";
+"expenses.multiDeleteMessage" = "Are you sure you want to delete %d expense(s)?";
+"expenses.partialDeleteTitle" = "Partial Deletion";
+"expenses.partialDeleteMessage" = "%d deleted, %d could not be deleted.";

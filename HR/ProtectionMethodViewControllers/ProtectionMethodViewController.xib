@@ -30,10 +30,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="figer print" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HTj-N3-h8e" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="285.66666666666669" width="358" height="50"/>
+                    <rect key="frame" x="16" y="218" width="358" height="50"/>
                     <color key="backgroundColor" name="alartColor "/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="50" id="IrW-xB-yps"/>
+                        <constraint firstAttribute="height" constant="50" id="FH0-XB-XuM"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                     <textInputTraits key="textInputTraits"/>
@@ -60,7 +60,7 @@
                     </userDefinedRuntimeAttributes>
                 </textField>
                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="pin code" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fJq-RI-CgP" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="351.66666666666669" width="358" height="50"/>
+                    <rect key="frame" x="16" y="352" width="358" height="50"/>
                     <color key="backgroundColor" name="alartColor "/>
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="MjY-pl-Bi3"/>
@@ -81,7 +81,7 @@
                     </userDefinedRuntimeAttributes>
                 </textField>
                 <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="gIE-as-UbS">
-                    <rect key="frame" x="110" y="512.66666666666663" width="200" height="30"/>
+                    <rect key="frame" x="110" y="513" width="200" height="30"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w32-rG-0OD" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
@@ -120,7 +120,7 @@
                     </constraints>
                 </stackView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="touchid" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="pil-IH-XGb">
-                    <rect key="frame" x="311" y="294.66666666666669" width="56" height="32"/>
+                    <rect key="frame" x="311" y="227" width="56" height="32"/>
                     <color key="tintColor" name="purplecolor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="32" id="4Qu-qX-h3k"/>
@@ -128,7 +128,7 @@
                     </constraints>
                 </imageView>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mappin.square" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="m1J-Tu-dO8">
-                    <rect key="frame" x="315.66666666666669" y="363" width="52" height="28"/>
+                    <rect key="frame" x="315.66666666666669" y="363.33333333333337" width="52" height="28"/>
                     <color key="tintColor" name="purplecolor"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="52" id="Alj-q6-QQt"/>
@@ -136,10 +136,10 @@
                     </constraints>
                 </imageView>
                 <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="face authentication" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="scT-vs-mPM" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="219.66666666666666" width="358" height="49.999999999999972"/>
+                    <rect key="frame" x="16" y="285" width="358" height="49.999999999999972"/>
                     <color key="backgroundColor" name="alartColor "/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="50" id="wHN-MR-iWU"/>
+                        <constraint firstAttribute="height" constant="50" id="5pI-5n-Bmf"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
                     <textInputTraits key="textInputTraits"/>
@@ -165,16 +165,8 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </textField>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="faceid" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="bBl-1Z-CaH">
-                    <rect key="frame" x="311" y="229.66666666666666" width="56" height="29.999999999999972"/>
-                    <color key="tintColor" name="purplecolor"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="56" id="7sd-gE-SVJ"/>
-                        <constraint firstAttribute="height" constant="32" id="XNR-Pq-vYP"/>
-                    </constraints>
-                </imageView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1mW-eo-FUY" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="50" y="456.66666666666669" width="290" height="40"/>
+                    <rect key="frame" x="50" y="457" width="290" height="40"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="UnX-iv-5td"/>
@@ -226,34 +218,40 @@
                         <constraint firstAttribute="height" constant="40" id="2RC-AD-PoZ"/>
                     </constraints>
                 </stackView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="faceid" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="bBl-1Z-CaH">
+                    <rect key="frame" x="315" y="295" width="56" height="30"/>
+                    <color key="tintColor" name="purplecolor"/>
+                </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" name="baseColorView"/>
             <constraints>
-                <constraint firstItem="HTj-N3-h8e" firstAttribute="top" secondItem="bBl-1Z-CaH" secondAttribute="bottom" constant="25" id="0At-yb-Ujt"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="scT-vs-mPM" secondAttribute="trailing" constant="16" id="17I-9n-e5p"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="HTj-N3-h8e" secondAttribute="trailing" constant="16" id="123-5b-qs3"/>
                 <constraint firstItem="3Gb-gf-uNo" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="36" id="39W-D5-ZXv"/>
-                <constraint firstItem="HTj-N3-h8e" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="5Hq-Cv-HJd"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="pil-IH-XGb" secondAttribute="trailing" constant="23" id="6LT-nl-VTf"/>
-                <constraint firstItem="m1J-Tu-dO8" firstAttribute="top" secondItem="HTj-N3-h8e" secondAttribute="bottom" constant="25.5" id="ATa-cG-wkq"/>
                 <constraint firstItem="1mW-eo-FUY" firstAttribute="top" secondItem="fJq-RI-CgP" secondAttribute="bottom" constant="55" id="C4q-J9-UHO"/>
-                <constraint firstItem="HTj-N3-h8e" firstAttribute="top" secondItem="scT-vs-mPM" secondAttribute="bottom" constant="16" id="E8n-gs-F4a"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="m1J-Tu-dO8" secondAttribute="trailing" constant="22.5" id="GLc-tE-KWa"/>
                 <constraint firstItem="1mW-eo-FUY" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="50" id="HU3-vi-QZ3"/>
-                <constraint firstItem="scT-vs-mPM" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="Il6-6P-CMt"/>
+                <constraint firstItem="bBl-1Z-CaH" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="315" id="Hbg-vD-ccW"/>
                 <constraint firstItem="3Gb-gf-uNo" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="JdR-Im-KqD"/>
-                <constraint firstItem="scT-vs-mPM" firstAttribute="top" secondItem="3Gb-gf-uNo" secondAttribute="bottom" constant="49.666666666666629" id="Lpn-F6-pH1"/>
                 <constraint firstItem="gIE-as-UbS" firstAttribute="top" secondItem="1mW-eo-FUY" secondAttribute="bottom" constant="16" id="N1w-EX-qhE"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="3Gb-gf-uNo" secondAttribute="trailing" constant="4" id="NbM-jn-6uy"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="gIE-as-UbS" secondAttribute="trailing" constant="80" id="PBn-iT-gXe"/>
-                <constraint firstItem="fJq-RI-CgP" firstAttribute="top" secondItem="pil-IH-XGb" secondAttribute="bottom" constant="25" id="UaV-wh-mi4"/>
+                <constraint firstItem="fJq-RI-CgP" firstAttribute="top" secondItem="scT-vs-mPM" secondAttribute="bottom" constant="17" id="PNc-Qh-lls"/>
+                <constraint firstItem="scT-vs-mPM" firstAttribute="top" secondItem="HTj-N3-h8e" secondAttribute="bottom" constant="17" id="Ts2-6V-tFx"/>
                 <constraint firstItem="fJq-RI-CgP" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="VSp-qJ-zy0"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="fJq-RI-CgP" secondAttribute="trailing" constant="16" id="XG9-aV-nzT"/>
+                <constraint firstItem="bBl-1Z-CaH" firstAttribute="top" secondItem="HTj-N3-h8e" secondAttribute="bottom" constant="26" id="Yzk-lU-l9z"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="scT-vs-mPM" secondAttribute="trailing" constant="16" id="b9k-hu-yLv"/>
+                <constraint firstItem="scT-vs-mPM" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="dNC-hE-O2C"/>
+                <constraint firstItem="pil-IH-XGb" firstAttribute="centerY" secondItem="HTj-N3-h8e" secondAttribute="centerY" id="dlF-Ca-XfP"/>
+                <constraint firstItem="bBl-1Z-CaH" firstAttribute="centerY" secondItem="scT-vs-mPM" secondAttribute="centerY" id="e2O-gc-XAf"/>
                 <constraint firstItem="gIE-as-UbS" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="110" id="jVs-YR-yIh"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="1mW-eo-FUY" secondAttribute="trailing" constant="50" id="kOy-Gh-qgh"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="bBl-1Z-CaH" secondAttribute="trailing" constant="23" id="lef-8B-gbt"/>
-                <constraint firstItem="fJq-RI-CgP" firstAttribute="top" secondItem="HTj-N3-h8e" secondAttribute="bottom" constant="16" id="rSL-vN-8DL"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="HTj-N3-h8e" secondAttribute="trailing" constant="16" id="ybj-ze-JXZ"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="bBl-1Z-CaH" secondAttribute="trailing" constant="19" id="qJA-OT-V6q"/>
+                <constraint firstItem="HTj-N3-h8e" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="t3T-Zi-6O7"/>
+                <constraint firstItem="m1J-Tu-dO8" firstAttribute="centerY" secondItem="fJq-RI-CgP" secondAttribute="centerY" id="x7d-Qv-QdY"/>
+                <constraint firstItem="HTj-N3-h8e" firstAttribute="top" secondItem="3Gb-gf-uNo" secondAttribute="bottom" constant="48" id="yCC-cM-nMn"/>
             </constraints>
             <point key="canvasLocation" x="-1271" y="-228"/>
         </view>

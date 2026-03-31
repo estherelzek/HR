@@ -33,14 +33,12 @@ class CreateReportsViewController: UIViewController {
     private let expensesViewModel = ExpensesViewModel()
     private var isEditMode: Bool { reportToEdit != nil }
     private var selectedExpenses: [EmployeeExpense] {
-        filteredExpenses.filter { selectedExpenseIds.contains($0.id)
-            
-        }
+        filteredExpenses.filter { selectedExpenseIds.contains($0.id)}
     }
 
     // Filter expenses by payment mode matching the selected Paid By mode
     private var filteredExpenses: [EmployeeExpense] {
-        let targetPaymentMode: String? = selectedPaidBy == "company" ? "company_account" : "employee_account"
+        let targetPaymentMode: String? = selectedPaidBy == "company" ? "company_account" : "own_account"
         
         return expenses.filter { expense in
             // If expense has no payment_mode, include it (backward compat)

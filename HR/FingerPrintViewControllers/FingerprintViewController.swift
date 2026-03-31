@@ -11,6 +11,9 @@ import LocalAuthentication
 class FingerprintViewController: UIViewController {
 
     @IBOutlet weak var fingerPrintTitleLabel: UILabel!
+    
+    // Flag to indicate we're changing protection method (requires verification)
+    var needsVerification: Bool = false
 
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -28,7 +31,7 @@ class FingerprintViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        // 🔐 Start Touch ID automatically
+        // Start Touch ID automatically
         authenticateWithTouchID()
     }
 
@@ -41,40 +44,31 @@ class FingerprintViewController: UIViewController {
         let context = LAContext()
         var error: NSError?
 
-        print("🔍 Checking Touch ID availability...")
+        print("Checking Touch ID availability...")
 
         guard context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error) else {
-            print("❌ Touch ID not available: \(error?.localizedDescription ?? "Unknown error")")
+            print("Touch ID not available: \(error?.localizedDescription ?? "Unknown error")")
             showUnavailableAlert(message: error?.localizedDescription ?? "Touch ID is not available.")
             return
         }
 
         // Ensure it is Touch ID (not Face ID)
         if context.biometryType != .touchID {
-            print("⚠️ Biometry available, but NOT Touch ID")
+            print("Biometry available, but not Touch ID")
             showUnavailableAlert(message: "Touch ID is not supported on this device.")
             return
         }
 
-        print("✅ Touch ID is available and enrolled")
-
-        let reason = NSLocalizedString(
-            "touch_id_reason",
-            comment: "Authenticate using your fingerprint"
-        )
+        let reason = NSLocalizedString("touch_id_reason", comment: "Authenticate using your fingerprint")
 
         context.evaluatePolicy(
             .deviceOwnerAuthenticationWithBiometrics,
             localizedReason: reason
         ) { success, authError in
-
             DispatchQueue.main.async {
                 if success {
-                    print("🎉 Touch ID authentication SUCCESS")
                     self.handleSuccess()
                 } else {
-                    let message = authError?.localizedDescription ?? "Authentication failed"
-                    print("❌ Touch ID authentication FAILED: \(message)")
                     self.handleFailure(error: authError)
                 }
             }
@@ -83,9 +77,14 @@ class FingerprintViewController: UIViewController {
 
     // MARK: - Success
     private func handleSuccess() {
-        print("➡️ Proceeding after Touch ID success")
-        goToCheckingVC()
-        // OR dismiss(animated: true)
+        print("Proceeding after Touch ID success")
+        
+        // If changing protection method, dismiss to return to ProtectionMethod screen
+        if needsVerification {
+            dismiss(animated: true)
+        } else {
+            goToCheckingVC()
+        }
     }
 
     // MARK: - Failure Handling
@@ -94,25 +93,20 @@ class FingerprintViewController: UIViewController {
 
         switch nsError?.code {
         case LAError.userCancel.rawValue:
-            print("👤 User canceled Touch ID")
             showRetryAlert(message: "Authentication was canceled.")
 
         case LAError.userFallback.rawValue:
-            print("🔢 User chose fallback (PIN)")
             showFallbackAlert()
 
         case LAError.biometryLockout.rawValue:
-            print("🔒 Touch ID locked out")
             showUnavailableAlert(message: "Touch ID is locked. Unlock your phone and try again.")
 
         default:
-            print("⚠️ Unknown Touch ID error")
             showRetryAlert(message: "Touch ID failed. Please try again.")
         }
     }
 
     // MARK: - Alerts
-
     private func showRetryAlert(message: String) {
         let alert = UIAlertController(
             title: NSLocalizedString("authentication_failed", comment: ""),
@@ -123,19 +117,13 @@ class FingerprintViewController: UIViewController {
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("try_again", comment: ""),
             style: .default,
-            handler: { _ in
-                print("🔁 User tapped Try Again")
-                self.authenticateWithTouchID()
-            }
+            handler: { _ in self.authenticateWithTouchID() }
         ))
 
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("cancel", comment: ""),
             style: .cancel,
-            handler: { _ in
-                print("🚪 User canceled Touch ID flow")
-                self.dismiss(animated: true)
-            }
+            handler: { _ in self.dismiss(animated: true) }
         ))
 
         present(alert, animated: true)
@@ -151,10 +139,7 @@ class FingerprintViewController: UIViewController {
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("ok_button", comment: ""),
             style: .default,
-            handler: { _ in
-                print("➡️ Navigating to PIN flow")
-                self.dismiss(animated: true)
-            }
+            handler: { _ in self.dismiss(animated: true) }
         ))
 
         present(alert, animated: true)
@@ -170,10 +155,7 @@ class FingerprintViewController: UIViewController {
         alert.addAction(UIAlertAction(
             title: NSLocalizedString("ok_button", comment: ""),
             style: .default,
-            handler: { _ in
-                print("⬅️ Closing Touch ID screen")
-                self.dismiss(animated: true)
-            }
+            handler: { _ in self.dismiss(animated: true) }
         ))
 
         present(alert, animated: true)
@@ -181,13 +163,11 @@ class FingerprintViewController: UIViewController {
 
     // MARK: - UI Actions
     @IBAction func backButtonTapped(_ sender: Any) {
-        print("⬅️ Back button tapped")
         dismiss(animated: true)
     }
 
     // MARK: - Localization
     @objc private func languageChanged() {
-        print("🌍 Language changed")
         setUpTexts()
     }
 

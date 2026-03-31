@@ -16,9 +16,22 @@ class CollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var validUntilDate: UILabel!
    
     func configure(with leave: LeaveType) {
-        nameOfLeaveType.text = leave.name
-        remainingBlalance.text = "\(Int(leave.remainingBalance ?? 0)) / \(Int(leave.originalBalance ?? 0))"
-        descriptLabel.text = "\(leave.requestUnit?.uppercased() ?? "") AVAILABLE"
-        validUntilDate.text = "Valid Untill 31/12/2025"
-    }
+        print("Configuring cell with leave type: \(leave.name ?? "")")
+            nameOfLeaveType.text = leave.name
+
+            let remaining = leave.remainingBalance ?? 0
+            let original = leave.originalBalance ?? 0
+            remainingBlalance.text = "\(formatBalance(remaining)) / \(formatBalance(original))"
+
+            descriptLabel.text = "\(leave.requestUnit?.uppercased() ?? "") AVAILABLE"
+            validUntilDate.text = "Valid Untill 31/12/2025"
+        }
+
+        private func formatBalance(_ value: Double) -> String {
+            // Show whole numbers without decimals (12.0 -> 12), else keep up to 2 decimals.
+            if value.truncatingRemainder(dividingBy: 1) == 0 {
+                return String(Int(value))
+            }
+            return String(format: "%.2f", value).replacingOccurrences(of: #"\.?0+$"#, with: "", options: .regularExpression)
+        }
 }

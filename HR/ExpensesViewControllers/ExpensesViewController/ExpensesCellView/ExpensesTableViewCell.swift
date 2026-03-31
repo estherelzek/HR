@@ -22,8 +22,9 @@ class ExpensesTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-      //  separatorInset = .zero
-     //   backgroundColor = .clear
+        // Hide select button by default — shown only in multi-select mode
+    //    selectButton?.isHidden = true
+        updateSelectionUI()
     }
 
     

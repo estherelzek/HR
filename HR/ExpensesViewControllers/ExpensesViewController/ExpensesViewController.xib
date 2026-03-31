@@ -40,7 +40,7 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vZQ-GJ-fQn">
+                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vZQ-GJ-fQn">
                     <rect key="frame" x="0.0" y="67" width="45" height="32"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="32" id="iH5-1c-zUO"/>
@@ -50,11 +50,11 @@
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="plain" image="arrow.backward" catalog="system"/>
                 </button>
-                <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="fft-ce-UtY">
-                    <rect key="frame" x="40" y="768" width="313" height="40"/>
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="fft-ce-UtY">
+                    <rect key="frame" x="20" y="768" width="309" height="40"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRf-JT-Jmg" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="146.66666666666666" height="40"/>
+                            <rect key="frame" x="0.0" y="0.0" width="150.66666666666666" height="40"/>
                             <color key="backgroundColor" name="borderColor"/>
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <state key="normal" title="Button"/>
@@ -69,7 +69,7 @@
                             </connections>
                         </button>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xMc-Oh-bIt" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                            <rect key="frame" x="166.66666666666663" y="0.0" width="146.33333333333337" height="40"/>
+                            <rect key="frame" x="158.66666666666663" y="0.0" width="150.33333333333337" height="40"/>
                             <color key="backgroundColor" systemColor="underPageBackgroundColor"/>
                             <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" title="Button"/>
@@ -85,7 +85,7 @@
                         </button>
                     </subviews>
                     <constraints>
-                        <constraint firstAttribute="height" constant="40" id="AUI-GG-zWx"/>
+                        <constraint firstAttribute="height" constant="40" id="Seg-fa-7Ub"/>
                     </constraints>
                 </stackView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tIc-o0-kRu" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
@@ -97,28 +97,44 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </tableView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mzr-Ov-0OE">
+                    <rect key="frame" x="337" y="775" width="48" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="48" id="3gF-jP-Etd"/>
+                        <constraint firstAttribute="height" constant="40" id="RUW-MM-5oG"/>
+                    </constraints>
+                    <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" image="trash" catalog="system"/>
+                    <connections>
+                        <action selector="trashButtonTapped:" destination="-1" eventType="touchUpInside" id="WhK-Li-x7t"/>
+                    </connections>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="tIc-o0-kRu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="1sG-Xn-tBE"/>
                 <constraint firstItem="tIc-o0-kRu" firstAttribute="top" secondItem="aKA-Ty-EFJ" secondAttribute="bottom" constant="8" id="42h-oZ-oCu"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="fft-ce-UtY" secondAttribute="trailing" constant="40" id="7pW-eo-7Vv"/>
                 <constraint firstItem="tIc-o0-kRu" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="DSS-7P-8T0"/>
-                <constraint firstItem="fft-ce-UtY" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="40" id="Jws-9E-8hL"/>
                 <constraint firstItem="tIc-o0-kRu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.752347" id="K3h-Wm-JZS"/>
+                <constraint firstItem="fft-ce-UtY" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Kiu-EA-ggI"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="mzr-Ov-0OE" secondAttribute="trailing" constant="8" id="Qkn-1l-iK5"/>
                 <constraint firstItem="vZQ-GJ-fQn" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="SJF-9q-BnQ"/>
+                <constraint firstItem="mzr-Ov-0OE" firstAttribute="leading" secondItem="fft-ce-UtY" secondAttribute="trailing" constant="8" id="TaE-ol-Byv"/>
                 <constraint firstItem="aKA-Ty-EFJ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="63" id="V0p-iW-guG"/>
+                <constraint firstItem="fft-ce-UtY" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="16" id="Xsy-Ji-O2n"/>
                 <constraint firstAttribute="trailing" secondItem="aKA-Ty-EFJ" secondAttribute="trailing" id="cxu-1w-8Ue"/>
+                <constraint firstItem="mzr-Ov-0OE" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="23" id="doi-9t-4U8"/>
                 <constraint firstItem="aKA-Ty-EFJ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="mWl-NI-13u"/>
-                <constraint firstItem="fft-ce-UtY" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="16" id="n7a-QK-WY9"/>
                 <constraint firstItem="vZQ-GJ-fQn" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="67" id="pXd-kH-car"/>
             </constraints>
-            <point key="canvasLocation" x="-53" y="-166"/>
+            <point key="canvasLocation" x="-161.06870229007632" y="-197.18309859154931"/>
         </view>
     </objects>
     <resources>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
+        <image name="trash" catalog="system" width="117" height="128"/>
         <namedColor name="basecolorText">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
@@ -129,7 +145,7 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="underPageBackgroundColor">
-            <color red="0.70980392160000005" green="0.71764705880000002" blue="0.74117647060000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.70980392156862748" green="0.71764705882352942" blue="0.74117647058823533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

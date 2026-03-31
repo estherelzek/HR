@@ -29,6 +29,8 @@ class ProtectionMethodViewController: UIViewController {
     @IBOutlet weak var pinicone: UIImageView!
     
     private var availableMethod: ProtectionMethod = .none
+    // ✅ Flag to indicate we're changing protection method (requires verification)
+    var needsVerification: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,13 +57,29 @@ class ProtectionMethodViewController: UIViewController {
         UserDefaults.standard.set(ProtectionMethod.fingerprint.rawValue, forKey: "selectedProtectionMethod")
         let fingerprintVC = FingerprintViewController(nibName: "FingerprintViewController", bundle: nil)
         fingerprintVC.modalPresentationStyle = .fullScreen
+        // ✅ Set verification flag if changing protection method
+        fingerprintVC.needsVerification = needsVerification
         present(fingerprintVC, animated: true)
     }
 
+    func navigateToFaceID() {
+        UserDefaults.standard.set(ProtectionMethod.faceID.rawValue, forKey: "selectedProtectionMethod")
+        let vc = FaceAuthenticationViewController(nibName: "FaceAuthenticationViewController", bundle: nil)
+        vc.modalPresentationStyle = .fullScreen
+        // ✅ Set verification flag if changing protection method
+        vc.needsVerification = needsVerification
+     //   vc.needToChangeProtectionMethod = true
+        present(vc, animated: true)
+    }
     func navigateToPinCodeVC() {
         UserDefaults.standard.set(ProtectionMethod.pin.rawValue, forKey: "selectedProtectionMethod")
         let pinCodeVC = PinCodeViewController(nibName: "PinCodeViewController", bundle: nil)
         pinCodeVC.modalPresentationStyle = .fullScreen
+        // ✅ Set verification flag if changing protection method
+        if needsVerification {
+            pinCodeVC.mode = .enter
+            pinCodeVC.needToChangeProtectionMethod = true
+        }
         present(pinCodeVC, animated: true)
     }
 
@@ -144,10 +162,7 @@ extension ProtectionMethodViewController: UITextFieldDelegate {
             navigateToPinCodeVC()
             return false
         case faceAuthentication:
-            UserDefaults.standard.set(ProtectionMethod.faceID.rawValue, forKey: "selectedProtectionMethod")
-            let vc = FaceAuthenticationViewController(nibName: "FaceAuthenticationViewController", bundle: nil)
-            vc.modalPresentationStyle = .fullScreen
-            present(vc, animated: true)
+            navigateToFaceID()
             return false
         default:
             return true

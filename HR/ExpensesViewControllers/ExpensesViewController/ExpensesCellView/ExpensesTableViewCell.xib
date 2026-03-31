@@ -108,7 +108,7 @@
                 <outlet property="selectButton" destination="eXe-85-Hvn" id="jT4-h2-MhG"/>
                 <outlet property="totalLabel" destination="jpl-gB-5tX" id="HeV-rp-vGT"/>
             </connections>
-            <point key="canvasLocation" x="-1415.2671755725191" y="-71.126760563380287"/>
+            <point key="canvasLocation" x="-1635" y="-125"/>
         </tableViewCell>
     </objects>
     <resources>

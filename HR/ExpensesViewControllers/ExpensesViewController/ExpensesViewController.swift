@@ -20,6 +20,15 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     private let expensesViewModel = ExpensesViewModel()
     private var expensesList: [EmployeeExpense] = []
 
+    // MARK: - Multi-select state
+    private var isMultiSelectMode: Bool = false {
+        didSet {
+            selectedExpenseIds.removeAll()
+            tableView.reloadData()
+        }
+    }
+    private var selectedExpenseIds = Set<Int>()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupLocalization()
@@ -63,14 +72,8 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     @IBAction func newButtonTapped(_ sender: UIButton) {
         showActionMenu(
             button: sender,
-            titles: [
-                NSLocalizedString("upload", comment: ""),
-                NSLocalizedString("new_expenses", comment: "")
-            ],
-            actions: [
-                #selector(uploadTapped),
-                #selector(newExpenseTapped)
-            ]
+            titles: [NSLocalizedString("new_expenses", comment: "")],
+            actions: [#selector(newExpenseTapped)]
         )
     }
 
@@ -88,57 +91,125 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         )
     }
 
-    @objc func uploadTapped() {
-        hideActionMenu()
-        print("Upload tapped")
+    // MARK: - Trash Button (Multi-select delete)
+    @IBAction func trashButtonTapped(_ sender: Any) {
+        if !isMultiSelectMode {
+            // Enter multi-select mode — inform user
+            isMultiSelectMode = true
+            showAlert(
+                title: NSLocalizedString("expenses.multiSelectHint", comment: ""),
+                message: NSLocalizedString("expenses.multiSelectHintMessage", comment: "")
+            )
+            return
+        }
+
+        // Already in multi-select — if nothing selected, just exit
+        guard !selectedExpenseIds.isEmpty else {
+            isMultiSelectMode = false
+            return
+        }
+
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
+
+        let count = selectedExpenseIds.count
+        let alert = UIAlertController(
+            title: NSLocalizedString("expenses.deleteTitle", comment: ""),
+            message: String(format: NSLocalizedString("expenses.multiDeleteMessage", comment: ""), count),
+            preferredStyle: .alert
+        )
+
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("common.cancel", comment: "Cancel"),
+            style: .cancel
+        ) { [weak self] _ in
+            self?.isMultiSelectMode = false
+        })
+
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("common.delete", comment: "Delete"),
+            style: .destructive
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            let idsToDelete = Array(self.selectedExpenseIds)
+
+            self.showLoader()
+            self.expensesViewModel.deleteExpense(token: token, expenseIds: idsToDelete) { result in
+                self.hideLoader()
+                switch result {
+                case .success(let response):
+                    let deletedIds = Set(response.deleted?.idList ?? [])
+                    let failedItems = response.failed ?? []
+
+                    // Remove only successfully deleted rows
+                    self.expensesList.removeAll { deletedIds.contains($0.id) }
+                    self.selectedExpenseIds.removeAll()
+                    self.isMultiSelectMode = false
+                    self.tableView.reloadData()
+
+                    // Show partial failure info if any
+                    if !failedItems.isEmpty {
+                        let reasons = failedItems.map { "• \($0.reason)" }.joined(separator: "\n")
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.partialDeleteTitle", comment: ""),
+                            message: String(
+                                format: NSLocalizedString("expenses.partialDeleteMessage", comment: ""),
+                                deletedIds.count,
+                                failedItems.count
+                            ) + "\n\n" + reasons
+                        )
+                    }
+
+                case .failure(let error):
+                    self.isMultiSelectMode = false
+                    self.showAlert(
+                        title: NSLocalizedString("expenses.error", comment: "Error"),
+                        message: NSLocalizedString("expenses.deleteFailed", comment: "")
+                    )
+                    print("❌ Batch delete failed: \(error.localizedDescription)")
+                }
+            }
+        })
+
+        present(alert, animated: true)
     }
 
     @objc func newExpenseTapped() {
         hideActionMenu()
         let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
-
-        // ✅ Reload table when sheet is dismissed
         vc.presentationController?.delegate = self
         vc.onExpenseCreated = { [weak self] in
             self?.loadExpenses()
         }
-
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
             sheet.delegate = self
         }
-
         present(vc, animated: true)
     }
 
     @objc func createReportTapped() {
         hideActionMenu()
         let vc = CreateReportsViewController(nibName: "CreateReportsViewController", bundle: nil)
-
         let draftExpenses = expensesList.filter { $0.state.lowercased() == "draft" }
         vc.expenses = draftExpenses
-
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
         }
-
         present(vc, animated: true)
     }
 
     @objc func viewReportsTapped() {
         hideActionMenu()
         let vc = ReportsViewController(nibName: "ReportsViewController", bundle: nil)
-
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
         }
-
         present(vc, animated: true)
     }
 
@@ -147,7 +218,6 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         expensesLabelTitle.text = NSLocalizedString("expenses_title", comment: "")
         NewButton.setTitle(NSLocalizedString("new_expenses", comment: ""), for: .normal)
         ReportsButton.setTitle(NSLocalizedString("reports", comment: ""), for: .normal)
-
         let isArabic = LanguageManager.shared.currentLanguage() == "ar"
         NewButton.contentHorizontalAlignment = isArabic ? .right : .left
         ReportsButton.contentHorizontalAlignment = isArabic ? .right : .left
@@ -180,15 +250,9 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         menu.layer.shadowOffset = CGSize(width: 0, height: 4)
 
         let frame = button.superview?.convert(button.frame, to: view) ?? .zero
-        menu.frame = CGRect(
-            x: frame.midX - width / 2,
-            y: frame.minY - height - 8,
-            width: width,
-            height: height
-        )
+        menu.frame = CGRect(x: frame.midX - width / 2, y: frame.minY - height - 8, width: width, height: height)
 
         let isArabic = LanguageManager.shared.currentLanguage() == "ar"
-
         for i in 0..<titles.count {
             let btn = UIButton(type: .system)
             btn.frame = CGRect(x: 0, y: CGFloat(i) * 46, width: width, height: 46)
@@ -204,9 +268,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         actionMenuView = menu
     }
 
-    @objc private func outsideTapped() {
-        hideActionMenu()
-    }
+    @objc private func outsideTapped() { hideActionMenu() }
 
     private func hideActionMenu() {
         actionMenuView?.removeFromSuperview()
@@ -216,7 +278,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     }
 }
 
-// MARK: - Reload when AddExpenses sheet is dismissed
+// MARK: - Sheet dismissed → reload
 extension ExpensesViewController: UISheetPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         loadExpenses()
@@ -226,39 +288,66 @@ extension ExpensesViewController: UISheetPresentationControllerDelegate, UIAdapt
 // MARK: - TableView
 extension ExpensesViewController {
 
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
+    func numberOfSections(in tableView: UITableView) -> Int { 1 }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return expensesList.count
+        expensesList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "ExpensesTableViewCell",
-            for: indexPath
-        ) as? ExpensesTableViewCell else {
-            return UITableViewCell()
+            withIdentifier: "ExpensesTableViewCell", for: indexPath
+        ) as? ExpensesTableViewCell else { return UITableViewCell() }
+
+        let expense = expensesList[indexPath.row]
+        cell.configure(with: expense)
+        cell.contentView.layoutMargins = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
+
+        // Show circle select button only in multi-select mode
+        cell.selectButton?.isHidden = !isMultiSelectMode
+
+        if isMultiSelectMode {
+            cell.isExpenseSelected = selectedExpenseIds.contains(expense.id)
+            cell.onToggleSelection = { [weak self, weak cell, weak tableView] in
+                guard let self = self,
+                      let cell = cell,
+                      let ip = tableView?.indexPath(for: cell) else { return }
+                let e = self.expensesList[ip.row]
+                if self.selectedExpenseIds.contains(e.id) {
+                    self.selectedExpenseIds.remove(e.id)
+                } else {
+                    self.selectedExpenseIds.insert(e.id)
+                }
+                tableView?.reloadRows(at: [ip], with: .none)
+            }
+        } else {
+            cell.isExpenseSelected = false
+            cell.onToggleSelection = nil
         }
 
-        cell.configure(with: expensesList[indexPath.row])
-        cell.contentView.layoutMargins = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
         return cell
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 125
-    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat { 125 }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
         let expense = expensesList[indexPath.row]
-        let state = expense.state.lowercased()
-        let isEditable = state == "draft" || state == "submitted"
 
-        guard isEditable else {
+        // In multi-select mode — tap cell = toggle selection
+        if isMultiSelectMode {
+            if selectedExpenseIds.contains(expense.id) {
+                selectedExpenseIds.remove(expense.id)
+            } else {
+                selectedExpenseIds.insert(expense.id)
+            }
+            tableView.reloadRows(at: [indexPath], with: .none)
+            return
+        }
+
+        // Normal mode — tap cell = edit
+        let state = expense.state.lowercased()
+        guard state == "draft" || state == "submitted" else {
             showAlert(
                 title: NSLocalizedString("expenses.error", comment: "Error"),
                 message: NSLocalizedString("expenses.cannotEditMessage", comment: "")
@@ -267,32 +356,31 @@ extension ExpensesViewController {
         }
 
         let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
-        print("editing expense: \(expense)")
         vc.expenseToEdit = expense
-        vc.onExpenseUpdated = { [weak self] in
-            self?.loadExpenses()
-        }
-
+        vc.onExpenseUpdated = { [weak self] in self?.loadExpenses() }
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
         }
-
         present(vc, animated: true)
     }
 
     func tableView(_ tableView: UITableView,
-                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        // Disable swipe delete while in multi-select mode
+        guard !isMultiSelectMode else { return UISwipeActionsConfiguration(actions: []) }
+
         let expense = expensesList[indexPath.row]
         let state = expense.state.lowercased()
-        let isEditable = state == "draft" || state == "submitted"
+        let isDeletable = state == "draft" || state == "submitted"
 
         let deleteTitle = NSLocalizedString("common.delete", comment: "Delete")
         let deleteAction = UIContextualAction(style: .destructive, title: deleteTitle) { [weak self] _, _, completion in
             guard let self = self else { completion(false); return }
 
-            guard isEditable else {
+            guard isDeletable else {
                 self.showAlert(
                     title: NSLocalizedString("expenses.error", comment: "Error"),
                     message: NSLocalizedString("expense.cannotDeleteMessage", comment: "")
@@ -306,7 +394,7 @@ extension ExpensesViewController {
                 message: String(format: NSLocalizedString("expenses.deleteMessage", comment: ""), expense.name),
                 preferredStyle: .alert
             )
-            alert.addAction(UIAlertAction(title: NSLocalizedString("common.cancel", comment: "Cancel"), style: .cancel) { _ in
+            alert.addAction(UIAlertAction(title: NSLocalizedString("common.cancel", comment: ""), style: .cancel) { _ in
                 completion(false)
             })
             alert.addAction(UIAlertAction(title: deleteTitle, style: .destructive) { _ in
@@ -328,10 +416,11 @@ extension ExpensesViewController {
                             self.showAlert(title: NSLocalizedString("expenses.error", comment: ""), message: reason)
                             completion(false)
                         }
-                    case .failure(let error):
-                        self.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
-                                       message: NSLocalizedString("expenses.deleteFailed", comment: ""))
-                        print("❌ Failed to delete expense: \(error.localizedDescription)")
+                    case .failure:
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.error", comment: "Error"),
+                            message: NSLocalizedString("expenses.deleteFailed", comment: "")
+                        )
                         completion(false)
                     }
                 }
@@ -339,7 +428,6 @@ extension ExpensesViewController {
             self.present(alert, animated: true)
         }
         deleteAction.backgroundColor = UIColor.systemRed
-
         let config = UISwipeActionsConfiguration(actions: [deleteAction])
         config.performsFirstActionWithFullSwipe = false
         return config
