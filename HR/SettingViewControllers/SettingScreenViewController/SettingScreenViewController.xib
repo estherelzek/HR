@@ -28,14 +28,14 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X8L-hv-QOy" customClass="InspectableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="8" width="393" height="40"/>
+                    <rect key="frame" x="0.0" y="30" width="393" height="40"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="7jP-Dy-USd">
                             <rect key="frame" x="0.0" y="0.0" width="393" height="40"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings Screen" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ds4-Kk-Dlh">
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Settings" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ds4-Kk-Dlh">
                                     <rect key="frame" x="0.0" y="0.0" width="393" height="40"/>
-                                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="24"/>
+                                    <fontDescription key="fontDescription" name="HiraMinProN-W6" family="Hiragino Mincho ProN" pointSize="30"/>
                                     <color key="textColor" name="basecolorText"/>
                                     <nil key="highlightedColor"/>
                                 </label>
@@ -57,7 +57,7 @@
                     </userDefinedRuntimeAttributes>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="General Settings" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="S0t-mE-05A">
-                    <rect key="frame" x="16" y="68" width="393" height="30"/>
+                    <rect key="frame" x="16" y="90" width="393" height="30"/>
                     <color key="backgroundColor" name="baseColorView"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="gc6-ez-CDg"/>
@@ -67,7 +67,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="jyH-6F-4ZW" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="112" width="361" height="247"/>
+                    <rect key="frame" x="16" y="134" width="361" height="247"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -82,7 +82,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Security" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eVX-Wp-r7m">
-                    <rect key="frame" x="16" y="389" width="361" height="30"/>
+                    <rect key="frame" x="16" y="411" width="361" height="30"/>
                     <color key="backgroundColor" name="baseColorView"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="qhW-cK-r0g"/>
@@ -92,7 +92,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Hty-A3-HKT" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="433" width="361" height="85.333333333333371"/>
+                    <rect key="frame" x="16" y="455" width="361" height="85.333333333333371"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -107,7 +107,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="2AV-ra-9Dd" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="16" y="588.33333333333337" width="361" height="90"/>
+                    <rect key="frame" x="16" y="610.33333333333337" width="361" height="90"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -122,7 +122,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Account" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bm3-wN-Ffw">
-                    <rect key="frame" x="16" y="538.33333333333337" width="361" height="30"/>
+                    <rect key="frame" x="16" y="560.33333333333337" width="361" height="30"/>
                     <color key="backgroundColor" name="baseColorView"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="ssp-Pf-nYM"/>
@@ -141,7 +141,7 @@
                 <constraint firstItem="Hty-A3-HKT" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="84W-rF-n6m"/>
                 <constraint firstItem="jyH-6F-4ZW" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="B9M-kU-NV1"/>
                 <constraint firstItem="jyH-6F-4ZW" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.29" id="CYb-K7-ThN"/>
-                <constraint firstItem="X8L-hv-QOy" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="8" id="EgL-gg-zO6"/>
+                <constraint firstItem="X8L-hv-QOy" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="30" id="EgL-gg-zO6"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="jyH-6F-4ZW" secondAttribute="trailing" constant="16" id="K2O-Dp-UHa"/>
                 <constraint firstItem="S0t-mE-05A" firstAttribute="top" secondItem="X8L-hv-QOy" secondAttribute="bottom" constant="20" id="K7d-ql-8AK"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Hty-A3-HKT" secondAttribute="trailing" constant="16" id="NaT-kx-zcs"/>
@@ -160,7 +160,7 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Bm3-wN-Ffw" secondAttribute="trailing" constant="16" id="tdc-M7-tzg"/>
                 <constraint firstItem="Bm3-wN-Ffw" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="16" id="yjC-vG-18U"/>
             </constraints>
-            <point key="canvasLocation" x="-2402" y="-564"/>
+            <point key="canvasLocation" x="-2402.290076335878" y="-564.08450704225356"/>
         </view>
     </objects>
     <resources>

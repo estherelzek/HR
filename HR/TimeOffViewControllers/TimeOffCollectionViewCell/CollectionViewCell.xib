@@ -29,7 +29,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Valid Until" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0o8-AZ-h80">
-                        <rect key="frame" x="16" y="133" width="169" height="21"/>
+                        <rect key="frame" x="4" y="133" width="193" height="21"/>
                         <color key="backgroundColor" name="baseColorView"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="okb-Yk-vWr"/>
@@ -75,7 +75,7 @@
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <color key="backgroundColor" name="baseColorView"/>
             <constraints>
-                <constraint firstItem="0o8-AZ-h80" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="3PA-Q0-X5v"/>
+                <constraint firstItem="0o8-AZ-h80" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="4" id="3PA-Q0-X5v"/>
                 <constraint firstItem="8GI-X8-AxV" firstAttribute="top" secondItem="zsH-M5-7bu" secondAttribute="bottom" constant="8" id="NLy-9G-gUA"/>
                 <constraint firstItem="zsH-M5-7bu" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="20" id="NmE-4b-Llm"/>
                 <constraint firstAttribute="trailing" secondItem="8GI-X8-AxV" secondAttribute="trailing" constant="10" id="Ubv-Q3-a3R"/>
@@ -86,7 +86,7 @@
                 <constraint firstItem="8GI-X8-AxV" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="eFf-fu-TT9"/>
                 <constraint firstAttribute="trailing" secondItem="VG3-vy-IOO" secondAttribute="trailing" constant="16" id="kF3-k2-fvg"/>
                 <constraint firstItem="VG3-vy-IOO" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="16" id="kil-VB-LrR"/>
-                <constraint firstAttribute="trailing" secondItem="0o8-AZ-h80" secondAttribute="trailing" constant="16" id="xJM-AU-BkS"/>
+                <constraint firstAttribute="trailing" secondItem="0o8-AZ-h80" secondAttribute="trailing" constant="4" id="xJM-AU-BkS"/>
             </constraints>
             <size key="customSize" width="201" height="166"/>
             <userDefinedRuntimeAttributes>

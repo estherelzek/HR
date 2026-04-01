@@ -88,7 +88,7 @@
                 <constraint firstItem="mll-g4-tCY" firstAttribute="top" secondItem="zFp-bb-S96" secondAttribute="bottom" constant="51" id="qid-Ta-84C"/>
                 <constraint firstItem="ItC-wH-mNe" firstAttribute="top" secondItem="WD2-pk-t6c" secondAttribute="bottom" constant="2" id="zRN-wN-88N"/>
             </constraints>
-            <point key="canvasLocation" x="343" y="215"/>
+            <point key="canvasLocation" x="244" y="21"/>
         </view>
     </objects>
     <resources>

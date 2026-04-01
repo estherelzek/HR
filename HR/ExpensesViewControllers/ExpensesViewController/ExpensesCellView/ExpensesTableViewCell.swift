@@ -126,7 +126,6 @@ class ExpensesTableViewCell: UITableViewCell {
         totalLabel.font = UIFont.systemFont(ofSize: 14)
         totalLabel.textColor = .lightGray
 
-        // "You added this expense on **2026-03-16** and its status is **draft**"
         let sentenceFormat = NSLocalizedString("expense.cell.addedOn", comment: "")
         let fullText = String(format: sentenceFormat, expense.date, expense.state)
         let attributed = NSMutableAttributedString(
@@ -137,14 +136,12 @@ class ExpensesTableViewCell: UITableViewCell {
             ]
         )
 
-        // Bold the date
         if let dateRange = fullText.range(of: expense.date) {
             let nsRange = NSRange(dateRange, in: fullText)
             attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 14), range: nsRange)
-            attributed.addAttribute(.foregroundColor, value: UIColor.white, range: nsRange)
+            attributed.addAttribute(.foregroundColor, value: UIColor.border, range: nsRange)
         }
 
-        // Bold the state
         if let stateRange = fullText.range(of: expense.state) {
             let nsRange = NSRange(stateRange, in: fullText)
             attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 14), range: nsRange)
@@ -163,7 +160,6 @@ class ExpensesTableViewCell: UITableViewCell {
         DateLabel.attributedText = attributed
         DateLabel.numberOfLines = 0
 
-        // Show StatusLabel with colored state text
         StatusLabel.isHidden = false
         StatusLabel.text = expense.state.capitalized
         StatusLabel.font = UIFont.boldSystemFont(ofSize: 13)

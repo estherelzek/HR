@@ -26,7 +26,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Expenses" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aKA-Ty-EFJ" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="63" width="393" height="40"/>
+                    <rect key="frame" x="0.0" y="30" width="393" height="40"/>
                     <color key="backgroundColor" name="borderColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="0Je-BZ-Se2"/>
@@ -41,7 +41,7 @@
                     </userDefinedRuntimeAttributes>
                 </label>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vZQ-GJ-fQn">
-                    <rect key="frame" x="0.0" y="67" width="45" height="32"/>
+                    <rect key="frame" x="0.0" y="35" width="45" height="32"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="32" id="iH5-1c-zUO"/>
                         <constraint firstAttribute="width" constant="45" id="y7w-3q-yPb"/>
@@ -51,7 +51,7 @@
                     <buttonConfiguration key="configuration" style="plain" image="arrow.backward" catalog="system"/>
                 </button>
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="fft-ce-UtY">
-                    <rect key="frame" x="20" y="768" width="309" height="40"/>
+                    <rect key="frame" x="20" y="735" width="309" height="40"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRf-JT-Jmg" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="150.66666666666666" height="40"/>
@@ -73,7 +73,7 @@
                             <color key="backgroundColor" systemColor="underPageBackgroundColor"/>
                             <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" title="Button" titleAlignment="center"/>
                             <userDefinedRuntimeAttributes>
                                 <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                     <real key="value" value="5"/>
@@ -89,7 +89,7 @@
                     </constraints>
                 </stackView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tIc-o0-kRu" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="111" width="393" height="641"/>
+                    <rect key="frame" x="0.0" y="78" width="393" height="641"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -98,7 +98,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mzr-Ov-0OE">
-                    <rect key="frame" x="337" y="775" width="48" height="40"/>
+                    <rect key="frame" x="337" y="742" width="48" height="40"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="48" id="3gF-jP-Etd"/>
                         <constraint firstAttribute="height" constant="40" id="RUW-MM-5oG"/>
@@ -122,12 +122,12 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="mzr-Ov-0OE" secondAttribute="trailing" constant="8" id="Qkn-1l-iK5"/>
                 <constraint firstItem="vZQ-GJ-fQn" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="SJF-9q-BnQ"/>
                 <constraint firstItem="mzr-Ov-0OE" firstAttribute="leading" secondItem="fft-ce-UtY" secondAttribute="trailing" constant="8" id="TaE-ol-Byv"/>
-                <constraint firstItem="aKA-Ty-EFJ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="63" id="V0p-iW-guG"/>
+                <constraint firstItem="aKA-Ty-EFJ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="30" id="V0p-iW-guG"/>
                 <constraint firstItem="fft-ce-UtY" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="16" id="Xsy-Ji-O2n"/>
                 <constraint firstAttribute="trailing" secondItem="aKA-Ty-EFJ" secondAttribute="trailing" id="cxu-1w-8Ue"/>
                 <constraint firstItem="mzr-Ov-0OE" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="23" id="doi-9t-4U8"/>
                 <constraint firstItem="aKA-Ty-EFJ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="mWl-NI-13u"/>
-                <constraint firstItem="vZQ-GJ-fQn" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="67" id="pXd-kH-car"/>
+                <constraint firstItem="vZQ-GJ-fQn" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="35" id="pXd-kH-car"/>
             </constraints>
             <point key="canvasLocation" x="-161.06870229007632" y="-197.18309859154931"/>
         </view>

@@ -33,7 +33,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Rcw-nY-h6g" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="8" y="329" width="385" height="393"/>
+                    <rect key="frame" x="8" y="319" width="385" height="393"/>
                     <color key="backgroundColor" red="0.1960784314" green="0.1960784314" blue="0.1960784314" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -42,7 +42,7 @@
                     </userDefinedRuntimeAttributes>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="BJQ-Ec-v9U" customClass="InspectableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="4" y="108" width="385" height="213"/>
+                    <rect key="frame" x="4" y="98" width="385" height="213"/>
                     <subviews>
                         <textField opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="248" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GEc-Hh-vSi" customClass="InspectableTextField" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="8" y="8" width="369" height="40"/>
@@ -152,7 +152,7 @@
                     </userDefinedRuntimeAttributes>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="createReport" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ykU-Ic-eas" customClass="Inspectablelabel" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="60" width="393" height="40"/>
+                    <rect key="frame" x="0.0" y="50" width="393" height="40"/>
                     <color key="backgroundColor" name="borderColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="zxX-IW-yKB"/>
@@ -167,7 +167,7 @@
                     </userDefinedRuntimeAttributes>
                 </label>
                 <stackView opaque="NO" contentMode="scaleToFill" spacing="60" translatesAutoresizingMaskIntoConstraints="NO" id="igX-p3-UGr">
-                    <rect key="frame" x="20" y="744" width="361" height="40"/>
+                    <rect key="frame" x="20" y="734" width="361" height="40"/>
                     <subviews>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gZ2-pT-HdJ" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="150.66666666666666" height="40"/>
@@ -217,7 +217,7 @@
                 <constraint firstItem="Rcw-nY-h6g" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="8" id="ces-2X-2iv"/>
                 <constraint firstItem="Rcw-nY-h6g" firstAttribute="top" secondItem="BJQ-Ec-v9U" secondAttribute="bottom" constant="8" id="dmz-DJ-KxJ"/>
                 <constraint firstAttribute="trailing" secondItem="igX-p3-UGr" secondAttribute="trailing" constant="12" id="doR-A0-s26"/>
-                <constraint firstItem="ykU-Ic-eas" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="60" id="lIN-jC-jaQ"/>
+                <constraint firstItem="ykU-Ic-eas" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="50" id="lIN-jC-jaQ"/>
                 <constraint firstAttribute="trailing" secondItem="ykU-Ic-eas" secondAttribute="trailing" id="mvP-5f-eDV"/>
                 <constraint firstItem="BJQ-Ec-v9U" firstAttribute="top" secondItem="ykU-Ic-eas" secondAttribute="bottom" constant="8" symbolic="YES" id="s1p-gk-eZO"/>
                 <constraint firstItem="igX-p3-UGr" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="20" id="tX1-dc-0hG"/>

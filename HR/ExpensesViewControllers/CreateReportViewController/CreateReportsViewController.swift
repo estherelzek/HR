@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CreateReportsViewController: UIViewController {
+class CreateReportsViewController: UIViewController, UISheetPresentationControllerDelegate {
 
     @IBOutlet weak var createReportTitleLabel: Inspectablelabel!
     @IBOutlet weak var reportInfoView: InspectableView!
@@ -36,15 +36,11 @@ class CreateReportsViewController: UIViewController {
         filteredExpenses.filter { selectedExpenseIds.contains($0.id)}
     }
 
-    // Filter expenses by payment mode matching the selected Paid By mode
     private var filteredExpenses: [EmployeeExpense] {
         let targetPaymentMode: String? = selectedPaidBy == "company" ? "company_account" : "own_account"
         
         return expenses.filter { expense in
-            // If expense has no payment_mode, include it (backward compat)
             guard let expensePaymentMode = expense.payment_mode else { return true }
-            
-            // Match expense payment_mode with report payment_mode
             return expensePaymentMode == targetPaymentMode
         }
         print("✅ Filtered expenses for Paid By '\(filteredExpenses)")
@@ -155,9 +151,15 @@ class CreateReportsViewController: UIViewController {
     }
     // MARK: - Button Action
     @IBAction func addexpenseToReportButtonTapped(_ sender: Any) {
-        // Here you can present expense picker screen if needed.
-        // For now, selection is done directly in this table.
-        print("Add expense tapped")
+        let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
+        vc.presentationController?.delegate = self
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+            sheet.delegate = self
+        }
+        present(vc, animated: true)
     }
 
     @IBAction func saveReportButtonTapped(_ sender: Any) {

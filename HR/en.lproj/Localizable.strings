@@ -21,7 +21,7 @@
 "general_settings" = "General Settings";
 "security_settings" = "Security Settings";
 "account_settings" = "Account Settings";
-"settings_screen" =  "Setting Screen";
+"settings_screen" =  "Settings";
 "english" = "English";
 "arabic" = "Arabic";
 
@@ -453,3 +453,5 @@
 "expenses.multiDeleteMessage" = "Are you sure you want to delete %d expense(s)?";
 "expenses.partialDeleteTitle" = "Partial Deletion";
 "expenses.partialDeleteMessage" = "%d deleted, %d could not be deleted.";
+"common.search" = "Search";
+

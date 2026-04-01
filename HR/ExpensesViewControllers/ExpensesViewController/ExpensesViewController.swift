@@ -70,11 +70,23 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
 
     // MARK: - Actions
     @IBAction func newButtonTapped(_ sender: UIButton) {
-        showActionMenu(
-            button: sender,
-            titles: [NSLocalizedString("new_expenses", comment: "")],
-            actions: [#selector(newExpenseTapped)]
-        )
+//        showActionMenu(
+//            button: sender,
+//            titles: [NSLocalizedString("new_expenses", comment: "")],
+//            actions: [#selector(newExpenseTapped)]
+//        )
+        let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
+        vc.presentationController?.delegate = self
+        vc.onExpenseCreated = { [weak self] in
+            self?.loadExpenses()
+        }
+        if let sheet = vc.sheetPresentationController {
+            sheet.detents = [.large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+            sheet.delegate = self
+        }
+        present(vc, animated: true)
     }
 
     @IBAction func reportsButtonTapped(_ sender: UIButton) {

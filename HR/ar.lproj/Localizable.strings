@@ -455,3 +455,4 @@
 "expenses.multiDeleteMessage" = "هل أنت متأكد من حذف %d مصروف(ات)؟";
 "expenses.partialDeleteTitle" = "حذف جزئي";
 "expenses.partialDeleteMessage" = "تم حذف %d، وفشل حذف %d.";
+"common.search" = "بحث";

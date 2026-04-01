@@ -39,6 +39,7 @@ class AnalyticDistributionViewController: UIViewController {
             onDistributionsSaved?(result)
         }
     }
+    
     private func setupUI() {
         view.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         addLineButton.addTarget(self, action: #selector(addLineButtonTapped), for: .touchUpInside)
@@ -50,7 +51,6 @@ class AnalyticDistributionViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        // ✅ Register the XIB
         tableView.register(
             UINib(nibName: "AnalyticDistributionCellTableViewCell", bundle: nil),
             forCellReuseIdentifier: "AnalyticDistributionCellTableViewCell"
@@ -68,24 +68,34 @@ class AnalyticDistributionViewController: UIViewController {
     }
     
     @objc private func addLineButtonTapped() {
-        // Show picker to select analytic account
-        let alert = UIAlertController(
-            title: NSLocalizedString("expenses.selectAnalytic", comment: "Select Analytic Account"),
-            message: nil,
-            preferredStyle: .actionSheet
-        )
-        
-        for account in analyticAccounts {
-            // Skip if already added
-            if !distributions.contains(where: { $0.account.id == account.id }) {
-                alert.addAction(UIAlertAction(title: account.name, style: .default) { [weak self] _ in
-                    self?.showPercentageInput(for: account)
-                })
-            }
+        // Get available accounts (not already added)
+        let availableAccounts = analyticAccounts.filter { account in
+            !distributions.contains(where: { $0.account.id == account.id })
         }
         
-        alert.addAction(UIAlertAction(title: NSLocalizedString("common.cancel", comment: "Cancel"), style: .cancel))
-        present(alert, animated: true)
+        guard !availableAccounts.isEmpty else {
+            showAlert(
+                title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
+                message: NSLocalizedString("common.noResults", comment: "No results")
+            )
+            return
+        }
+        
+        // Present the new searchable table view controller
+        let tableVC = AnalyticDistributionTableViewController(nibName: "AnalyticDistributionTableViewController", bundle: nil)
+        tableVC.analyticAccounts = availableAccounts
+        
+        tableVC.onAccountSelected = { [weak self] selectedAccount in
+            self?.showPercentageInput(for: selectedAccount)
+        }
+        
+        if let sheet = tableVC.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+        }
+        
+        present(tableVC, animated: true)
     }
     
     private func showPercentageInput(for account: AnalyticAccount) {
@@ -130,36 +140,13 @@ class AnalyticDistributionViewController: UIViewController {
         totalPercentageLabel.text = updateTotalPercentage()
     }
     
-    @objc private func doneButtonTapped() {
-        let total = distributions.reduce(0) { $0 + $1.percentage }
-        
-        if total != 100 {
-            showAlert(
-                title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
-                message: NSLocalizedString("expenses.percentageMustBe100", comment: "Total percentage must be 100%")
-            )
-            return
-        }
-        
-        // Convert to dictionary and return
-        var result: [Int: Int] = [:]
-        for (account, percentage) in distributions {
-            result[account.id] = percentage
-        }
-        
-        onDistributionsSaved?(result)
-        dismiss(animated: true)
-    }
-    
     @objc private func closeButtonTapped() {
-
         var result: [Int: Int] = [:]
         for (account, percentage) in distributions {
             result[account.id] = percentage
         }
 
         onDistributionsSaved?(result)
-
         dismiss(animated: true)
     }
     
@@ -168,21 +155,19 @@ class AnalyticDistributionViewController: UIViewController {
         alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: "OK"), style: .default))
         present(alert, animated: true)
     }
-    
-   
 }
 
 extension AnalyticDistributionViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return distributions.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: "AnalyticDistributionCellTableViewCell",
             for: indexPath
         ) as! AnalyticDistributionCellTableViewCell
-        
+
         let (account, percentage) = distributions[indexPath.row]
         cell.configure(
             accountName: account.name,
@@ -200,7 +185,7 @@ extension AnalyticDistributionViewController: UITableViewDelegate, UITableViewDa
                 self?.updateTotalPercentageLabel()
             }
         )
-        
+
         return cell
     }
 }

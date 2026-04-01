@@ -808,7 +808,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "DC4AB424-BBC7-4A74-9B0A-105043F831D5"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "HR/MainViewControllers/ViewController.swift"
@@ -1358,8 +1358,8 @@
             filePath = "HR/ExpensesViewControllers/CreateReportViewController/CreateReportsViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
+            startingLineNumber = "46"
+            endingLineNumber = "46"
             landmarkName = "filteredExpenses"
             landmarkType = "24">
          </BreakpointContent>
