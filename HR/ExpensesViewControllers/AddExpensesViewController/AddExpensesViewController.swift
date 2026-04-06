@@ -9,15 +9,7 @@ import UIKit
 
 
 class AddExpensesViewController: UIViewController {
-    
-    // Called after expense is successfully created
-    var onExpenseCreated: (() -> Void)?
-    // Called after expense is successfully updated
-    var onExpenseUpdated: (() -> Void)?
-
-    // Set this to enter edit mode — prefills all fields and changes Save → Update
-    var expenseToEdit: EmployeeExpense?
-
+  
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var addExpensesTitleLabel: Inspectablelabel!
@@ -43,8 +35,7 @@ class AddExpensesViewController: UIViewController {
     @IBOutlet weak var calculatedTotalByCurrency: Inspectablelabel!
     @IBOutlet weak var ratioCurrenciesLabel: Inspectablelabel!
     @IBOutlet weak var flexableStackOfLabels: UIStackView!
-    
-    // Height constraint for flexableStackOfLabels — set to 0 when hidden to collapse space
+   
     private var flexableStackHeightConstraint: NSLayoutConstraint?
     private let flexableStackNormalHeight: CGFloat = 35
     private let dateFormatter = DateFormatter()
@@ -53,22 +44,22 @@ class AddExpensesViewController: UIViewController {
     private var activeTextField: UITextField?
     private let expensesViewModel = ExpensesViewModel()
     var selectedCurrency: Currency?
-    // Data sources for dropdowns
     private var expenseCategoriesList: [ExpenseCategory] = []
     private var analyticAccountsList: [AnalyticAccount] = []
     private var taxesList: [Tax] = []
-    
-    // Selected values
     private var selectedCategoryId: Int?
     private var selectedAnalyticDistribution: [Int: Int] = [:] // id: percentage
     private var selectedTaxIds: [Int] = []
     private var selectedPaidBy: String = "employee" // Default to employee
-    // Currency ID for edit mode
     private var selectedCurrencyId: Int = 1
-
+    var onExpenseCreated: (() -> Void)?
+    var onExpenseUpdated: (() -> Void)?
+    var expenseToEdit: EmployeeExpense?
+    private var categoryPickerView: UIPickerView?
+    private var taxesPickerView: UIPickerView?
+    private var currencyPickerView: UIPickerView?
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Find the existing height constraint from XIB and store it
         flexableStackHeightConstraint = flexableStackOfLabels.constraints.first(where: {
             $0.firstAttribute == .height && $0.secondItem == nil
         })
@@ -293,13 +284,7 @@ class AddExpensesViewController: UIViewController {
         expenseDateTextField.text = dateFormatter.string(from: sender.date)
     }
     
-    @objc private func datePickerDone() {
-        if let date = selectedDate {
-            expenseDateTextField.text = dateFormatter.string(from: date)
-        }
-        expenseDateTextField.resignFirstResponder()
-    }
-    
+   
     @objc private func datePickerCancel() {
         expenseDateTextField.resignFirstResponder()
     }
@@ -339,8 +324,9 @@ class AddExpensesViewController: UIViewController {
         pickerView.delegate = self
         pickerView.dataSource = self
         pickerView.tag = 1
+        categoryPickerView = pickerView
         categoryTextField.inputView = pickerView
-        
+
         let toolbar = createPickerToolbar()
         categoryTextField.inputAccessoryView = toolbar
     }
@@ -423,18 +409,21 @@ class AddExpensesViewController: UIViewController {
         pickerView.delegate = self
         pickerView.dataSource = self
         pickerView.tag = 3
+        taxesPickerView = pickerView
         includedTaxesTextField.inputView = pickerView
-        
+
         let toolbar = createPickerToolbar()
         includedTaxesTextField.inputAccessoryView = toolbar
     }
+
     
     private func setupCurrencyDropdown() {
         let pickerView = UIPickerView()
         pickerView.delegate = self
         pickerView.dataSource = self
         pickerView.tag = 4
-        
+        currencyPickerView = pickerView
+
         currencyTextField.inputView = pickerView
         currencyTextField.inputAccessoryView = createPickerToolbar()
     }
@@ -451,9 +440,6 @@ class AddExpensesViewController: UIViewController {
         return toolbar
     }
     
-    @objc private func pickerDone(_ sender: UIBarButtonItem) {
-        view.endEditing(true)
-    }
     
     private func setupKeyboardDismissal() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
@@ -595,14 +581,16 @@ class AddExpensesViewController: UIViewController {
             return
         }
 
+      
+
+        showLoader(message: NSLocalizedString("expenses.pleaseWait", comment: "Please wait"))
         let apiDateString = selectedDate.toAPIDateString()
+        let totalAmountInEGP = normalizedTotalAmountForServer(from:totalAmount)
+
         var analyticDistributionStr: [String: Int] = [:]
         for (key, value) in selectedAnalyticDistribution {
             analyticDistributionStr[String(key)] = value
         }
-
-        showLoader(message: NSLocalizedString("expenses.pleaseWait", comment: "Please wait"))
-
         // MARK: Edit mode
         if let expense = expenseToEdit {
             expensesViewModel.updateExpense(
@@ -610,7 +598,7 @@ class AddExpensesViewController: UIViewController {
                 expenseId: expense.id,
                 name: descriptionTextField.text ?? "",
                 product_id: categoryId,
-                total_amount: totalAmount,
+                total_amount: totalAmountInEGP,
                 date: apiDateString,
                 description: notesTextField.text ?? "",
                 currency_id: selectedCurrencyId,
@@ -644,7 +632,7 @@ class AddExpensesViewController: UIViewController {
             token: token,
             name: descriptionTextField.text ?? "",
             product_id: categoryId,
-            total_amount: totalAmount,
+            total_amount: totalAmountInEGP,
             date: apiDateString,
             description: notesTextField.text ?? "",
             analytic_distribution: analyticDistributionStr,
@@ -701,6 +689,25 @@ class AddExpensesViewController: UIViewController {
         alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: "OK"), style: .default))
         present(alert, animated: true)
     }
+    private func normalizedTotalAmountForServer(from enteredAmount: Double) -> Double {
+        guard let currency = selectedCurrency else {
+            // No selected currency -> keep entered amount as-is (assumed EGP)
+            return enteredAmount
+        }
+
+        let code = currency.currency_code.uppercased()
+        if code == "EGP" {
+            return enteredAmount
+        }
+
+        let rate = currency.conversion_rate
+        guard rate > 0 else {
+            return enteredAmount
+        }
+
+        // Convert selected currency amount to EGP for API payload.
+        return enteredAmount * (1.0 / rate)
+    }
 }
 
 extension AddExpensesViewController: UITextFieldDelegate {
@@ -712,10 +719,6 @@ extension AddExpensesViewController: UITextFieldDelegate {
         activeTextField = nil
     }
     
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        activeTextField = textField
-        return true
-    }
 }
 
 extension AddExpensesViewController: UIPickerViewDelegate, UIPickerViewDataSource {
@@ -789,6 +792,50 @@ extension AddExpensesViewController: UIPickerViewDelegate, UIPickerViewDataSourc
         default:
             break
         }
+    }
+   
+    @objc private func pickerDone(_ sender: UIBarButtonItem) {
+        if categoryTextField.isFirstResponder,
+           (categoryTextField.text ?? "").isEmpty,
+           !expenseCategoriesList.isEmpty {
+            categoryPickerView?.selectRow(0, inComponent: 0, animated: false)
+            pickerView(categoryPickerView!, didSelectRow: 0, inComponent: 0)
+        } else if includedTaxesTextField.isFirstResponder,
+                  (includedTaxesTextField.text ?? "").isEmpty,
+                  !taxesList.isEmpty {
+            taxesPickerView?.selectRow(0, inComponent: 0, animated: false)
+            pickerView(taxesPickerView!, didSelectRow: 0, inComponent: 0)
+        } else if currencyTextField.isFirstResponder,
+                  (currencyTextField.text ?? "").isEmpty,
+                  !expensesViewModel.currencies.isEmpty {
+            currencyPickerView?.selectRow(0, inComponent: 0, animated: false)
+            pickerView(currencyPickerView!, didSelectRow: 0, inComponent: 0)
+        }
+
+        view.endEditing(true)
+    }
+    
+    @objc private func datePickerDone() {
+        // If user didn't scroll, use current picker value
+        let dateToUse = selectedDate ?? datePicker.date
+        selectedDate = dateToUse
+        expenseDateTextField.text = dateFormatter.string(from: dateToUse)
+        expenseDateTextField.resignFirstResponder()
+    }
+    
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        activeTextField = textField
+
+        if textField == expenseDateTextField {
+            if selectedDate == nil {
+                selectedDate = datePicker.date
+                expenseDateTextField.text = dateFormatter.string(from: datePicker.date)
+            } else if let selectedDate = selectedDate {
+                datePicker.setDate(selectedDate, animated: false)
+            }
+        }
+
+        return true
     }
     private func setConversionStack(hidden: Bool, animated: Bool = true) {
         // Setting height to 0 collapses the space in Auto Layout

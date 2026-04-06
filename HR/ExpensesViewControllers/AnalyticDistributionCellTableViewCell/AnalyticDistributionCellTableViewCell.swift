@@ -23,8 +23,6 @@ class AnalyticDistributionCellTableViewCell: UITableViewCell {
     
     private func setupUI() {
         selectionStyle = .none
-        
-        // Setup TextField
         percentageTextField.delegate = self
         percentageTextField.keyboardType = .numberPad
         percentageTextField.borderStyle = .roundedRect
@@ -32,10 +30,8 @@ class AnalyticDistributionCellTableViewCell: UITableViewCell {
         percentageTextField.layer.cornerRadius = 6
         percentageTextField.layer.borderColor = UIColor.lightGray.cgColor
         percentageTextField.textAlignment = .center
-        
         deleteButton.addTarget(self, action: #selector(deleteButtonTapped), for: .touchUpInside)
         deleteButton.tintColor = .systemRed
-        // Setup Label
         accountNameLabel.font = .systemFont(ofSize: 16, weight: .medium)
     }
     

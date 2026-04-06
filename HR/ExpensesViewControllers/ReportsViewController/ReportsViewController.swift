@@ -27,6 +27,8 @@ class ReportsViewController: UIViewController {
     private var allSheets: [ExpenseReportSheet] = []
     // All draft expenses fetched alongside reports — used to populate edit screen
     private var allDraftExpenses: [EmployeeExpense] = []
+    // Guard against concurrent loadReports() calls
+    private var isLoadingReports = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,8 +53,13 @@ class ReportsViewController: UIViewController {
     }
 
     private func loadReports() {
+        guard !isLoadingReports else {
+            print("⚠️ loadReports() skipped — already in progress")
+            return
+        }
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
 
+        isLoadingReports = true
         showLoader()
         let group = DispatchGroup()
 
@@ -63,20 +70,34 @@ class ReportsViewController: UIViewController {
             switch result {
             case .success(let sheets):
                 self.allSheets = sheets
-                let flattened = sheets.flatMap { sheet in
-                    sheet.expenses.map { exp in
-                        ReportListItem(
-                            sheet_id: sheet.sheet_id,
-                            sheet_name: sheet.name,
-                            employee: sheet.employee,
-                            state: sheet.state,
-                            total_amount: sheet.total_amount,
-                            expense: exp
-                        )
-                    }
+
+                // One row per sheet (use first expense for display info)
+                // This prevents duplicates when a sheet has multiple expenses
+                var flattened: [ReportListItem] = []
+                for sheet in sheets {
+                    // Use first expense for cell display, or create a placeholder if empty
+                    let representativeExpense = sheet.expenses.first ?? ExpenseReportExpense(
+                        id: 0,
+                        name: sheet.name,
+                        amount: sheet.total_amount,
+                        date: "",
+                        payment_mode: nil,
+                        payment_mode_label: nil
+                    )
+                    flattened.append(ReportListItem(
+                        sheet_id: sheet.sheet_id,
+                        sheet_name: sheet.name,
+                        employee: sheet.employee,
+                        state: sheet.state,
+                        total_amount: sheet.total_amount,
+                        expense: representativeExpense
+                    ))
                 }
+
                 self.allItems = flattened
                 self.filteredItems = flattened
+                print("allItems count \(self.allItems.count)")
+                print("filteredItems count \(self.filteredItems.count)")
             case .failure(let error):
                 print("❌ Reports load error: \(error.localizedDescription)")
             }
@@ -97,6 +118,7 @@ class ReportsViewController: UIViewController {
 
         group.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
+            self.isLoadingReports = false
             self.hideLoader()
             self.tableView.reloadData()
             self.updateSearchEmptyState()

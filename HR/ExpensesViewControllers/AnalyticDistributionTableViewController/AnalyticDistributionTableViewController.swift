@@ -76,7 +76,6 @@ extension AnalyticDistributionTableViewController: UITableViewDataSource {
             titleLabel.topAnchor.constraint(equalTo: cell.contentView.topAnchor, constant: 10),
             titleLabel.bottomAnchor.constraint(equalTo: cell.contentView.bottomAnchor, constant: -10)
         ])
-
         tableView.separatorStyle = .none
         tableView.backgroundColor = .clear
         cell.backgroundColor = .clear
@@ -88,7 +87,6 @@ extension AnalyticDistributionTableViewController: UITableViewDataSource {
 extension AnalyticDistributionTableViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
         let selectedAccount = filteredAccounts[indexPath.row]
         dismiss(animated: true) { [weak self] in
             self?.onAccountSelected?(selectedAccount)
@@ -109,7 +107,6 @@ extension AnalyticDistributionTableViewController: UISearchBarDelegate {
                 account.code.lowercased().contains(query)
             }
         }
-        
         tableView.reloadData()
     }
     

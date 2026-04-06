@@ -118,7 +118,7 @@ enum API: Endpoint {
        )
     case getCurrencies(token: String)
     case getEmployeeExpenses(token: String)
-    case submitExpense(token: String, expense_id: Int)
+    case submitExpense(token: String, expense_id: Int , name: String)
     case getExpenseReports(token: String)
     case deleteExpense(token: String, expense_ids: [Int])
     case deleteReport(token: String, sheet_ids: [Int])
@@ -139,7 +139,8 @@ enum API: Endpoint {
         token: String,
         sheet_id: Int,
         name: String,
-        expense_ids: [Int]
+        expense_ids: [Int],
+        remove_expense_ids: [Int]
     )
     
     
@@ -443,12 +444,13 @@ enum API: Endpoint {
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
 
-        case let .submitExpense(token, expense_id):
+        case let .submitExpense(token, expense_id , name):
             let payload: [String: Any] = [
                 "jsonrpc": "2.0",
                 "params": [
                     "token": token,
-                    "expense_id": expense_id
+                    "expense_id": expense_id,
+                    "name": name
                 ]
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
@@ -507,7 +509,7 @@ enum API: Endpoint {
             
             return try? JSONSerialization.data(withJSONObject: payload)
 
-        case let .updateReport(token, sheet_id, name, expense_ids):
+        case let .updateReport(token, sheet_id, name, expense_ids, remove_expense_ids):
             let payload: [String: Any] = [
                 "jsonrpc": "2.0",
                 "method": "call",
@@ -515,7 +517,8 @@ enum API: Endpoint {
                     "token": token,
                     "sheet_id": sheet_id,
                     "name": name,
-                    "expense_ids": expense_ids
+                    "expense_ids": expense_ids,
+                    "remove_expense_ids": remove_expense_ids
                 ]
             ]
             return try? JSONSerialization.data(withJSONObject: payload)

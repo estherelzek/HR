@@ -19,15 +19,15 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     private var overlayView: UIView?
     private let expensesViewModel = ExpensesViewModel()
     private var expensesList: [EmployeeExpense] = []
-
-    // MARK: - Multi-select state
+    private let refreshControl = UIRefreshControl()
+    private var selectedExpenseIds = Set<Int>()
     private var isMultiSelectMode: Bool = false {
         didSet {
             selectedExpenseIds.removeAll()
             tableView.reloadData()
         }
     }
-    private var selectedExpenseIds = Set<Int>()
+
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +36,6 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         loadExpenses()
     }
 
-    // MARK: - TableView Setup
     private func setupTableView() {
         tableView.delegate = self
         tableView.dataSource = self
@@ -48,16 +47,29 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
             UINib(nibName: "ExpensesTableViewCell", bundle: nil),
             forCellReuseIdentifier: "ExpensesTableViewCell"
         )
+        // Pull to refresh
+        refreshControl.addTarget(self, action: #selector(handlePullToRefresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl
     }
 
-    // MARK: - Load Expenses
-    private func loadExpenses() {
-        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
+    private func loadExpenses(showLoader: Bool = true) {
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+            refreshControl.endRefreshing()
+            return
+        }
 
-        showLoader()
+        if showLoader {
+            showLoader
+        }
+
         expensesViewModel.fetchEmployeeExpenses(token: token) { [weak self] result in
             guard let self = self else { return }
-            self.hideLoader()
+
+            if showLoader {
+                self.hideLoader()
+            }
+            self.refreshControl.endRefreshing()
+
             switch result {
             case .success(let expenses):
                 self.expensesList = expenses
@@ -70,11 +82,6 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
 
     // MARK: - Actions
     @IBAction func newButtonTapped(_ sender: UIButton) {
-//        showActionMenu(
-//            button: sender,
-//            titles: [NSLocalizedString("new_expenses", comment: "")],
-//            actions: [#selector(newExpenseTapped)]
-//        )
         let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
         vc.presentationController?.delegate = self
         vc.onExpenseCreated = { [weak self] in
@@ -115,7 +122,6 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
             return
         }
 
-        // Already in multi-select — if nothing selected, just exit
         guard !selectedExpenseIds.isEmpty else {
             isMultiSelectMode = false
             return
@@ -151,14 +157,10 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
                 case .success(let response):
                     let deletedIds = Set(response.deleted?.idList ?? [])
                     let failedItems = response.failed ?? []
-
-                    // Remove only successfully deleted rows
                     self.expensesList.removeAll { deletedIds.contains($0.id) }
                     self.selectedExpenseIds.removeAll()
                     self.isMultiSelectMode = false
                     self.tableView.reloadData()
-
-                    // Show partial failure info if any
                     if !failedItems.isEmpty {
                         let reasons = failedItems.map { "• \($0.reason)" }.joined(separator: "\n")
                         self.showAlert(
@@ -184,7 +186,11 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
 
         present(alert, animated: true)
     }
-
+  
+    @objc private func handlePullToRefresh() {
+        loadExpenses(showLoader: false)
+    }
+    
     @objc func newExpenseTapped() {
         hideActionMenu()
         let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
@@ -293,7 +299,9 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
 // MARK: - Sheet dismissed → reload
 extension ExpensesViewController: UISheetPresentationControllerDelegate, UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        loadExpenses()
+        if presentationController.presentedViewController is AddExpensesViewController {
+            loadExpenses()
+        }
     }
 }
 
@@ -444,4 +452,5 @@ extension ExpensesViewController {
         config.performsFirstActionWithFullSwipe = false
         return config
     }
+  
 }

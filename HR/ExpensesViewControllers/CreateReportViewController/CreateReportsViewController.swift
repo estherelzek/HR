@@ -13,13 +13,11 @@ class CreateReportsViewController: UIViewController, UISheetPresentationControll
     @IBOutlet weak var reportInfoView: InspectableView!
     @IBOutlet weak var expenseReportSumaryTextField: InspectableTextField!
     @IBOutlet weak var employeetitleLabel: Inspectablelabel!
-  //  @IBOutlet weak var managerTitleLabel: UILabel!
     @IBOutlet weak var companyTitleLabel: Inspectablelabel!
     @IBOutlet weak var paidByTitleLabel: Inspectablelabel!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var addExpenseToReportButton: InspectableButton!
     @IBOutlet weak var employeeTextField: InspectableTextField!
-   // @IBOutlet weak var managerTextField: InspectableTextField!
     @IBOutlet weak var companyTextField: InspectableTextField!
     @IBOutlet weak var saveReportButton: InspectableButton!
     @IBOutlet weak var employeeOrCompanySegment: UISegmentedControl!
@@ -38,17 +36,14 @@ class CreateReportsViewController: UIViewController, UISheetPresentationControll
 
     private var filteredExpenses: [EmployeeExpense] {
         let targetPaymentMode: String? = selectedPaidBy == "company" ? "company_account" : "own_account"
-        
         return expenses.filter { expense in
             guard let expensePaymentMode = expense.payment_mode else { return true }
             return expensePaymentMode == targetPaymentMode
         }
-        print("✅ Filtered expenses for Paid By '\(filteredExpenses)")
     }
    
 
     override func viewDidLoad() {
-        print("expenses in create report: \(expenses) , \(expenses.count)")
         print("report to edit: \(String(describing: reportToEdit))")
         super.viewDidLoad()
         setupLocalization()
@@ -152,13 +147,20 @@ class CreateReportsViewController: UIViewController, UISheetPresentationControll
     // MARK: - Button Action
     @IBAction func addexpenseToReportButtonTapped(_ sender: Any) {
         let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
+        // Refresh immediately on successful create
+        vc.onExpenseCreated = { [weak self] in
+            self?.refreshExpensesFromServer()
+        }
+        // Also refresh when sheet is dismissed (in case user saved then closed manually)
         vc.presentationController?.delegate = self
+
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
             sheet.delegate = self
         }
+
         present(vc, animated: true)
     }
 
@@ -177,19 +179,33 @@ class CreateReportsViewController: UIViewController, UISheetPresentationControll
                 message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing")
             )
             return
+        
         }
-
+        
+        guard let name = expenseReportSumaryTextField.text else {
+            showReportAlert(
+                title: NSLocalizedString("expenses.error", comment: "Error"),
+                message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing")
+            )
+            return
+        }
         // MARK: Edit mode — call updateReport
         if let sheet = reportToEdit {
             let expenseIds = selectedExpenses.map { $0.id }
             let reportName = expenseReportSumaryTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? sheet.name
+
+            // IDs that were originally in the report but are now deselected
+            let originalIds = Set(sheet.expenses.map { $0.id })
+            let selectedIds = Set(expenseIds)
+            let removeExpenseIds = Array(originalIds.subtracting(selectedIds))
 
             showLoader()
             expensesViewModel.updateReport(
                 token: token,
                 sheetId: sheet.sheet_id,
                 name: reportName,
-                expenseIds: expenseIds
+                expenseIds: expenseIds,
+                removeExpenseIds: removeExpenseIds
             ) { [weak self] result in
                 guard let self = self else { return }
                 self.hideLoader()
@@ -230,7 +246,7 @@ class CreateReportsViewController: UIViewController, UISheetPresentationControll
         showLoader()
         for expenseId in expenseIds {
             group.enter()
-            expensesViewModel.submitExpense(token: token, expenseId: expenseId) { result in
+            expensesViewModel.submitExpense(token: token, expenseId: expenseId , name: name ) { result in
                 switch result {
                 case .success(let response):
                     print("✅ Expense \(expenseId) submitted — sheet: \(response.sheet_id ?? -1), state: \(response.state ?? "")")
@@ -308,17 +324,58 @@ class CreateReportsViewController: UIViewController, UISheetPresentationControll
         employeeOrCompanySegment.selectedSegmentIndex = isCompanyPaid ? 1 : 0
         selectedPaidBy = isCompanyPaid ? "company" : "employee"
     }
+    
+    private func refreshExpensesFromServer() {
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else { return }
+
+        showLoader()
+        expensesViewModel.fetchEmployeeExpenses(token: token) { [weak self] result in
+            guard let self = self else { return }
+            self.hideLoader()
+
+            switch result {
+            case .success(let serverExpenses):
+                // Keep current report-selected expenses if in edit mode (they may be submitted)
+                let reportExpenses: [EmployeeExpense]
+                if let sheet = self.reportToEdit {
+                    reportExpenses = sheet.expenses.map { EmployeeExpense.fromReportExpense($0, sheet: sheet) }
+                } else {
+                    reportExpenses = []
+                }
+
+                // Combine + dedupe by id
+                var seen = Set<Int>()
+                var merged: [EmployeeExpense] = []
+                for expense in serverExpenses + reportExpenses {
+                    if seen.insert(expense.id).inserted {
+                        merged.append(expense)
+                    }
+                }
+                self.expenses = merged
+                // Keep only selections that still exist after refresh
+                let validIds = Set(self.expenses.map { $0.id })
+                self.selectedExpenseIds = self.selectedExpenseIds.intersection(validIds)
+
+                self.tableView.reloadData()
+                self.updateEmptyState()
+
+            case .failure(let error):
+                self.showReportAlert(
+                    title: NSLocalizedString("expenses.error", comment: "Error"),
+                    message: error.localizedDescription
+                )
+            }
+        }
+    }
 }
 
 extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       
         filteredExpenses.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
         guard let cell = tableView.dequeueReusableCell(
             withIdentifier: "ExpenseCellInReportTableViewCell",
             for: indexPath
@@ -329,7 +386,6 @@ extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSourc
         let expense = filteredExpenses[indexPath.row]
         let selected = selectedExpenseIds.contains(expense.id)
         cell.configure(with: expense, isSelected: selected)
-
         cell.onToggleSelection = { [weak self, weak tableView] in
             guard let self = self else { return }
             if self.selectedExpenseIds.contains(expense.id) {
@@ -339,22 +395,19 @@ extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSourc
             }
             tableView?.reloadRows(at: [indexPath], with: .none)
         }
-
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-      
         let expense = filteredExpenses[indexPath.row]
-
         if selectedExpenseIds.contains(expense.id) {
             selectedExpenseIds.remove(expense.id)
         } else {
             selectedExpenseIds.insert(expense.id)
         }
-
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
+    
     private func setupKeyboardDismissal() {
      let    tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -363,5 +416,9 @@ extension CreateReportsViewController: UITableViewDelegate, UITableViewDataSourc
 
     @objc private func dismissKeyboard() {
         view.endEditing(true)
+    }
+    
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        refreshExpensesFromServer()
     }
 }

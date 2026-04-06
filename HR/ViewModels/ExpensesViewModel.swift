@@ -217,11 +217,11 @@ class ExpensesViewModel {
     }
 
     // MARK: - Submit Expense
-    func submitExpense(token: String, expenseId: Int, completion: @escaping (Result<SubmitExpenseResponse, APIError>) -> Void) {
+    func submitExpense(token: String, expenseId: Int , name: String , completion: @escaping (Result<SubmitExpenseResponse, APIError>) -> Void) {
         isLoading = true
         errorMessage = nil
 
-        let endpoint = API.submitExpense(token: token, expense_id: expenseId)
+        let endpoint = API.submitExpense(token: token, expense_id: expenseId , name: name)
 
         NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<SubmitExpenseResponse>.self) { [weak self] result in
             DispatchQueue.main.async {
@@ -285,14 +285,22 @@ class ExpensesViewModel {
 
         let endpoint = API.getExpenseReports(token: token)
 
+        // Keep using your shared decoder request (already logs in NetworkManager if enabled)
         NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<ExpenseReportsResult>.self) { [weak self] result in
             DispatchQueue.main.async {
                 self?.isLoading = false
 
                 switch result {
                 case .success(let response):
+                    // Explicit raw-like debug from decoded object
+                    if let rawData = try? JSONEncoder().encode(response),
+                       let rawString = String(data: rawData, encoding: .utf8) {
+                        print("📦 [RAW REPORT RESPONSE - DECODED]:\n\(rawString)")
+                    }
+
                     completion(.success(response.result.data))
                     print("✅ Expense reports fetched: \(response.result.data.count)")
+
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                     completion(.failure(error))
@@ -416,12 +424,19 @@ class ExpensesViewModel {
         sheetId: Int,
         name: String,
         expenseIds: [Int],
+        removeExpenseIds: [Int] = [],
         completion: @escaping (Result<UpdateReportResponse, APIError>) -> Void
     ) {
         isLoading = true
         errorMessage = nil
 
-        let endpoint = API.updateReport(token: token, sheet_id: sheetId, name: name, expense_ids: expenseIds)
+        let endpoint = API.updateReport(
+            token: token,
+            sheet_id: sheetId,
+            name: name,
+            expense_ids: expenseIds,
+            remove_expense_ids: removeExpenseIds
+        )
 
         NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<UpdateReportResponse>.self) { [weak self] result in
             DispatchQueue.main.async {

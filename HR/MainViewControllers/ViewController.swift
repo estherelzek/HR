@@ -261,7 +261,6 @@ class ViewController: UIViewController {
         timeOffButton.tintColor = .lightGray
         notificationButton.tintColor = .lightGray
         settingButton.tintColor = .purplecolor
-
         switchTo(viewController: settingVC)
     }
 
@@ -275,9 +274,9 @@ class ViewController: UIViewController {
         timeOffButton.tintColor = .lightGray
         notificationButton.tintColor = .lightGray
         settingButton.tintColor = .purplecolor
-
         switchTo(viewController: lunchVC)
     }
+    
     private func showMoreMenu() {
 
         // Prevent duplicates
@@ -359,7 +358,6 @@ class ViewController: UIViewController {
         timeOffButton.tintColor = .lightGray
         notificationButton.tintColor = .lightGray
         settingButton.tintColor = .purplecolor
-
         switchTo(viewController: expensesVC)
     }
     

@@ -146,7 +146,6 @@ class ExpensesTableViewCell: UITableViewCell {
             let nsRange = NSRange(stateRange, in: fullText)
             attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 14), range: nsRange)
 
-            // Color the state
             let stateColor: UIColor
             switch expense.state {
             case "draft":      stateColor = .systemGray
