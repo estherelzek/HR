@@ -59,7 +59,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         }
 
         if showLoader {
-            showLoader
+            self.showLoader()
         }
 
         expensesViewModel.fetchEmployeeExpenses(token: token) { [weak self] result in
@@ -316,12 +316,72 @@ extension ExpensesViewController {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(
-            withIdentifier: "ExpensesTableViewCell", for: indexPath
-        ) as? ExpensesTableViewCell else { return UITableViewCell() }
+            withIdentifier: "ExpensesTableViewCell",
+            for: indexPath
+        ) as? ExpensesTableViewCell else {
+            return UITableViewCell()
+        }
 
         let expense = expensesList[indexPath.row]
         cell.configure(with: expense)
         cell.contentView.layoutMargins = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
+
+        // Submit button visibility and style
+        let isDraft = expense.state.lowercased() == "draft"
+        let isPending = expense.state.lowercased() == "submit" || expense.state.lowercased() == "submitted"
+
+        cell.submitButton?.isHidden = !(isDraft || isPending)
+        cell.setSubmitPendingStyle(isPending)
+
+        cell.onSubmitTapped = { [weak self] in
+            guard let self = self else { return }
+
+            // Don't resubmit pending/submitted
+            if isPending { return }
+
+            guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+                self.showAlert(
+                    title: NSLocalizedString("expenses.error", comment: "Error"),
+                    message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing")
+                )
+                return
+            }
+
+            self.showLoader()
+            self.expensesViewModel.sendExpense(token: token, expenseId: expense.id) { result in
+                self.hideLoader()
+
+                switch result {
+                case .success(let response):
+                    if ((response.submitted?.contains(where: { $0.id == expense.id })) != nil) {
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.success", comment: "Success"),
+                            message: response.message
+                        )
+                        self.loadExpenses()
+                    } else {
+                        let reason = response.failed?.first(where: { $0.id == expense.id })?.reason
+                            ?? response.message
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.error", comment: "Error"),
+                            message: reason
+                        )
+                    }
+
+                case .failure(let error):
+                    let message: String
+                    if case .requestFailed(let backendMessage) = error {
+                        message = backendMessage
+                    } else {
+                        message = error.localizedDescription
+                    }
+                    self.showAlert(
+                        title: NSLocalizedString("expenses.error", comment: "Error"),
+                        message: message
+                    )
+                }
+            }
+        }
 
         // Show circle select button only in multi-select mode
         cell.selectButton?.isHidden = !isMultiSelectMode
@@ -332,6 +392,7 @@ extension ExpensesViewController {
                 guard let self = self,
                       let cell = cell,
                       let ip = tableView?.indexPath(for: cell) else { return }
+
                 let e = self.expensesList[ip.row]
                 if self.selectedExpenseIds.contains(e.id) {
                     self.selectedExpenseIds.remove(e.id)
@@ -377,6 +438,7 @@ extension ExpensesViewController {
 
         let vc = AddExpensesViewController(nibName: "AddExpensesViewController", bundle: nil)
         vc.expenseToEdit = expense
+        print("expenseToEdit: \(expense)")
         vc.onExpenseUpdated = { [weak self] in self?.loadExpenses() }
         if let sheet = vc.sheetPresentationController {
             sheet.detents = [.large()]
@@ -389,7 +451,6 @@ extension ExpensesViewController {
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
     ) -> UISwipeActionsConfiguration? {
-        // Disable swipe delete while in multi-select mode
         guard !isMultiSelectMode else { return UISwipeActionsConfiguration(actions: []) }
 
         let expense = expensesList[indexPath.row]

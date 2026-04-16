@@ -202,10 +202,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
                 defaults.set(middleware.companyId, forKey: "companyIdKey")
                 defaults.set(middleware.apiKey, forKey: "apiKeyKey")
                 defaults.set(middleware.baseUrl, forKey: "baseURL")
-
                 // 🔥 SET API BASE URL FROM ENCRYPTED FILE
                 API.updateDefaultBaseURL(middleware.baseUrl)
-
                 print("✅ Imported CompanyAccess.ihkey successfully")
                 print("🔑 API Key: \(middleware.apiKey)")
                 print("🏠 Base URL: \(middleware.baseUrl)")

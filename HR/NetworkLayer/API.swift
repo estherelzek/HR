@@ -142,7 +142,7 @@ enum API: Endpoint {
         expense_ids: [Int],
         remove_expense_ids: [Int]
     )
-    
+    case sendExpense(token: String, expense_id: Int)
     
     var path: String {
         switch self {
@@ -205,6 +205,8 @@ enum API: Endpoint {
             return "/api/expenses/edit"
         case .updateReport:
             return "/api/expenses/edit_report"
+        case .sendExpense:
+            return "/api/expenses/send"
             
                default:
                    return ""
@@ -522,7 +524,17 @@ enum API: Endpoint {
                 ]
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
-           
+            
+        case let .sendExpense(token, expense_id):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "params": [
+                    "token": token,
+                    "expense_id": expense_id
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
+            
                default:
                    return nil
                }

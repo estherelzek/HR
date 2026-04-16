@@ -459,4 +459,23 @@ class ExpensesViewModel {
             }
         }
     }
+    func sendExpense(token: String, expenseId: Int, completion: @escaping (Result<SendExpenseResult, APIError>) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.sendExpense(token: token, expense_id: expenseId)
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<SendExpenseResult>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let response):
+                    completion(.success(response.result))
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
 }

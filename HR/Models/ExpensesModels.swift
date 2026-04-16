@@ -426,3 +426,27 @@ struct UpdateReportResponse: Codable {
     let sheet_id: Int?
     let name: String?
 }
+struct SendExpenseItem: Codable {
+    let id: Int
+    let name: String
+    let state: String
+    let total_amount: Double
+    let currency: String
+}
+
+struct SendExpenseFailedItem: Codable {
+    let id: Int
+    let name: String
+    let reason: String
+}
+
+struct SendExpenseResult: Codable {
+    let status: String
+    let message: String
+    let submitted: [SendExpenseItem]?
+    let failed: [SendExpenseFailedItem]?
+    let submitted_count: Int?
+    let failed_count: Int?
+    let error_code: String?
+    let http_status: Int?
+}

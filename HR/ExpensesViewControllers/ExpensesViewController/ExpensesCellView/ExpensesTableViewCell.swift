@@ -14,17 +14,18 @@ class ExpensesTableViewCell: UITableViewCell {
     @IBOutlet weak var totalLabel: UILabel!
     @IBOutlet weak var StatusLabel: UILabel!
     @IBOutlet weak var selectButton: UIButton?
+    @IBOutlet weak var submitButton: UIButton?
     
     var isExpenseSelected: Bool = false {
         didSet { updateSelectionUI() }
     }
     var onToggleSelection: (() -> Void)?
+    var onSubmitTapped: (() -> Void)?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Hide select button by default — shown only in multi-select mode
-    //    selectButton?.isHidden = true
         updateSelectionUI()
+        setupSubmitButton()
     }
 
     
@@ -32,15 +33,36 @@ class ExpensesTableViewCell: UITableViewCell {
         isExpenseSelected.toggle()
         onToggleSelection?()
     }
+    
+    @IBAction func submitButtonTapped(_ sender: Any) {
+        onSubmitTapped?()
+    }
+    
+    private func setupSubmitButton() {
+        let config = UIImage.SymbolConfiguration(pointSize: 18, weight: .regular)
+        let submitImage = UIImage(systemName: "paperplane", withConfiguration: config)
+        submitButton?.setImage(submitImage, for: .normal)
+        submitButton?.tintColor = UIColor.border
+    }
+//    
     private func updateSelectionUI() {
         let imageName = isExpenseSelected ? "checkmark.circle.fill" : "circle"
         let image = UIImage(systemName: imageName)
         selectButton?.setImage(image, for: .normal)
         selectButton?.tintColor = isExpenseSelected ? .systemGreen : .lightGray
     }
+    
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
+    func setSubmitPendingStyle(_ isPending: Bool) {
+        let iconName = isPending ? "paperplane" : "paperplane"
+        submitButton?.setImage(UIImage(systemName: iconName), for: .normal)
+        submitButton?.tintColor = isPending ? .systemOrange : UIColor.border
+        submitButton?.isEnabled = !isPending
+    }
+//    
     func configure(with report: ReportListItem) {
         print("Configuring cell with report: \(report)")
         // Bold title
@@ -149,9 +171,16 @@ class ExpensesTableViewCell: UITableViewCell {
             let stateColor: UIColor
             switch expense.state {
             case "draft":      stateColor = .systemGray
+                submitButton?.isEnabled = true
             case "submitted":  stateColor = .systemYellow
+                
+                submitButton?.isEnabled = false
+                submitButton?.tintColor = UIColor.lightGray
             case "approved":   stateColor = UIColor.border
-            default:           stateColor = .white
+                submitButton?.isEnabled = false
+            default:
+                stateColor = .white
+                submitButton?.isEnabled = false
             }
             attributed.addAttribute(.foregroundColor, value: stateColor, range: nsRange)
         }
@@ -164,9 +193,15 @@ class ExpensesTableViewCell: UITableViewCell {
         StatusLabel.font = UIFont.boldSystemFont(ofSize: 13)
         switch expense.state {
         case "draft":      StatusLabel.textColor = .systemGray
+            submitButton?.isEnabled = true
         case "submitted":  StatusLabel.textColor = .systemYellow
+            submitButton?.tintColor = UIColor.lightGray
+            submitButton?.isEnabled = false
         case "approved":   StatusLabel.textColor = UIColor.border
-        default:           StatusLabel.textColor = .white
+            submitButton?.isEnabled = false
+        default:
+            StatusLabel.textColor = .white
+            submitButton?.isEnabled = false
         }
         
     }

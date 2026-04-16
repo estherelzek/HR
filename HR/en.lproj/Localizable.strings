@@ -455,3 +455,5 @@
 "expenses.partialDeleteMessage" = "%d deleted, %d could not be deleted.";
 "common.search" = "Search";
 
+"expenses.submitPending" = "Pending submission";
+"expenses.submitFailed" = "Failed to submit expense.";

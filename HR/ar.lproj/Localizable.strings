@@ -456,3 +456,5 @@
 "expenses.partialDeleteTitle" = "حذف جزئي";
 "expenses.partialDeleteMessage" = "تم حذف %d، وفشل حذف %d.";
 "common.search" = "بحث";
+"expenses.submitPending" = "قيد الإرسال";
+"expenses.submitFailed" = "فشل إرسال المصروف.";
