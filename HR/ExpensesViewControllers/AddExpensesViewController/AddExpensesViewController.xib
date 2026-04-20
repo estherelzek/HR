@@ -247,11 +247,11 @@
                                         <constraint firstAttribute="height" constant="40" id="GGn-GE-dA9"/>
                                     </constraints>
                                 </stackView>
-                                <stackView opaque="NO" contentMode="scaleToFill" spacing="107" translatesAutoresizingMaskIntoConstraints="NO" id="Fam-ps-RzT">
+                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="2" translatesAutoresizingMaskIntoConstraints="NO" id="Fam-ps-RzT">
                                     <rect key="frame" x="20" y="558" width="353" height="40"/>
                                     <subviews>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nfd-ZR-1nu" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="123" height="40"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="131" height="40"/>
                                             <color key="backgroundColor" name="borderColor"/>
                                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <state key="normal" title="Button"/>
@@ -265,8 +265,16 @@
                                                 <action selector="saveButtonTapped:" destination="-1" eventType="touchUpInside" id="CTt-mK-Xdo"/>
                                             </connections>
                                         </button>
+                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MOU-5f-tId">
+                                            <rect key="frame" x="133" y="0.0" width="84.333333333333314" height="40"/>
+                                            <state key="normal" title="Button"/>
+                                            <buttonConfiguration key="configuration" style="plain" image="square.and.arrow.up" catalog="system"/>
+                                            <connections>
+                                                <action selector="addAttachmentButtonTapped:" destination="-1" eventType="touchUpInside" id="7zg-AL-XzT"/>
+                                            </connections>
+                                        </button>
                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BfF-bw-EAY" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                                            <rect key="frame" x="230" y="0.0" width="123" height="40"/>
+                                            <rect key="frame" x="219.33333333333337" y="0.0" width="133.66666666666663" height="40"/>
                                             <color key="backgroundColor" systemColor="underPageBackgroundColor"/>
                                             <color key="tintColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <state key="normal" title="Button"/>
@@ -281,6 +289,7 @@
                                             </connections>
                                         </button>
                                     </subviews>
+                                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="40" id="r5q-Vc-Zfm"/>
                                     </constraints>
@@ -365,10 +374,11 @@
                 <constraint firstAttribute="bottom" secondItem="E49-wn-lVu" secondAttribute="bottom" id="gKu-DB-67I"/>
                 <constraint firstItem="TK0-oG-U4a" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="zZE-71-hQN"/>
             </constraints>
-            <point key="canvasLocation" x="-982" y="-380"/>
+            <point key="canvasLocation" x="-1102" y="-380"/>
         </view>
     </objects>
     <resources>
+        <image name="square.and.arrow.up" catalog="system" width="110" height="128"/>
         <namedColor name="basecolorText">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

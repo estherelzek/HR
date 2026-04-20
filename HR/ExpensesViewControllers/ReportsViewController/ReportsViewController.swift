@@ -173,6 +173,7 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
 
         cell.configure(with: filteredItems[indexPath.row])
         cell.selectButton?.isHidden = true
+        cell.isReportScenario = true
         return cell
     }
 

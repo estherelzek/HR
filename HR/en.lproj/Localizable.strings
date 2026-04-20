@@ -457,3 +457,8 @@
 
 "expenses.submitPending" = "Pending submission";
 "expenses.submitFailed" = "Failed to submit expense.";
+"expenses.addAttachment" = "Add Attachment";
+"expenses.takePhoto" = "Take Photo";
+"expenses.choosePhoto" = "Choose Photo";
+"expenses.chooseFile" = "Choose File (PDF, etc.)";
+"expenses.removeAttachment" = "Remove Attachment";

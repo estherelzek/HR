@@ -53,7 +53,7 @@
                 <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="fft-ce-UtY">
                     <rect key="frame" x="20" y="735" width="309" height="40"/>
                     <subviews>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRf-JT-Jmg" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TRf-JT-Jmg" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="150.66666666666666" height="40"/>
                             <color key="backgroundColor" name="borderColor"/>
                             <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -129,7 +129,7 @@
                 <constraint firstItem="aKA-Ty-EFJ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="mWl-NI-13u"/>
                 <constraint firstItem="vZQ-GJ-fQn" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="35" id="pXd-kH-car"/>
             </constraints>
-            <point key="canvasLocation" x="-161.06870229007632" y="-197.18309859154931"/>
+            <point key="canvasLocation" x="-622" y="-191"/>
         </view>
     </objects>
     <resources>

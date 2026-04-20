@@ -151,4 +151,93 @@ print("endpoint.actionType: \(endpoint.actionType))")
             }
         }.resume()
     }
+
+    // MARK: - Multipart Upload Request
+    func uploadMultipart<T: Decodable>(
+        url: URL,
+        params: [String: Any],
+        fileData: Data?,
+        fileName: String?,
+        fileMimeType: String?,
+        fileFieldName: String = "attachment",
+        as type: T.Type,
+        completion: @escaping (Result<T, APIError>) -> Void
+    ) {
+        let boundary = "Boundary-\(UUID().uuidString)"
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        var body = Data()
+
+        // Add JSON params as individual form fields
+        func appendField(name: String, value: String) {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n".data(using: .utf8)!)
+            body.append("\(value)\r\n".data(using: .utf8)!)
+        }
+
+        // Flatten params to form fields
+        for (key, value) in params {
+            if let dict = value as? [String: Any],
+               let jsonData = try? JSONSerialization.data(withJSONObject: dict),
+               let jsonStr = String(data: jsonData, encoding: .utf8) {
+                appendField(name: key, value: jsonStr)
+            } else if let array = value as? [Any],
+                      let jsonData = try? JSONSerialization.data(withJSONObject: array),
+                      let jsonStr = String(data: jsonData, encoding: .utf8) {
+                appendField(name: key, value: jsonStr)
+            } else {
+                appendField(name: key, value: "\(value)")
+            }
+        }
+
+        // Add file if present
+        if let fileData = fileData,
+           let fileName = fileName,
+           let mimeType = fileMimeType {
+            body.append("--\(boundary)\r\n".data(using: .utf8)!)
+            body.append("Content-Disposition: form-data; name=\"\(fileFieldName)\"; filename=\"\(fileName)\"\r\n".data(using: .utf8)!)
+            body.append("Content-Type: \(mimeType)\r\n\r\n".data(using: .utf8)!)
+            body.append(fileData)
+            body.append("\r\n".data(using: .utf8)!)
+        }
+
+        body.append("--\(boundary)--\r\n".data(using: .utf8)!)
+        request.httpBody = body
+
+        print("🌍 [MULTIPART UPLOAD]")
+        print("➡️ URL: \(url.absoluteString)")
+        print("➡️ File: \(fileName ?? "none") (\(fileData?.count ?? 0) bytes)")
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                print("❌ Upload error: \(error.localizedDescription)")
+                completion(.failure(.requestFailed(error.localizedDescription)))
+                return
+            }
+
+            if let httpResponse = response as? HTTPURLResponse {
+                print("✅ [UPLOAD RESPONSE] Status Code: \(httpResponse.statusCode)")
+            }
+
+            guard let data = data else {
+                completion(.failure(.noData))
+                return
+            }
+
+            if let jsonString = String(data: data, encoding: .utf8) {
+                print("📦 [UPLOAD RESPONSE DATA]:\n\(jsonString)")
+            }
+
+            do {
+                let decoded = try JSONDecoder().decode(T.self, from: data)
+                completion(.success(decoded))
+            } catch {
+                print("❌ Upload Decoding Error: \(error)")
+                completion(.failure(.decodingError))
+            }
+        }.resume()
+    }
 }

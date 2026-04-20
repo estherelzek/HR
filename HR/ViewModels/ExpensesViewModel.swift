@@ -478,4 +478,162 @@ class ExpensesViewModel {
             }
         }
     }
+
+    // MARK: - Create Expense with Attachment (multipart)
+    func createExpenseWithAttachment(
+        token: String,
+        name: String,
+        product_id: Int,
+        total_amount: Double,
+        date: String,
+        description: String,
+        analytic_distribution: [String: Int],
+        tax_ids: [Int],
+        payment_mode: String,
+        attachmentData: Data?,
+        attachmentFileName: String?,
+        attachmentMimeType: String?,
+        completion: @escaping (Result<CreateExpenseResponseData, APIError>) -> Void
+    ) {
+        isLoading = true
+        errorMessage = nil
+
+        let baseURL = API.defaultBaseURL
+        guard let url = URL(string: baseURL + "/api/expenses/create") else {
+            completion(.failure(.invalidURL))
+            return
+        }
+
+        var params: [String: Any] = [
+            "token": token,
+            "name": name,
+            "product_id": product_id,
+            "total_amount": total_amount,
+            "date": date,
+            "description": description,
+            "analytic_distribution": analytic_distribution,
+            "tax_ids": tax_ids,
+            "payment_mode": payment_mode
+        ]
+
+        NetworkManager.shared.uploadMultipart(
+            url: url,
+            params: params,
+            fileData: attachmentData,
+            fileName: attachmentFileName,
+            fileMimeType: attachmentMimeType,
+            fileFieldName: "attachment",
+            as: CreateExpenseResponseNew.self
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let response):
+                    if response.result.status == "error" {
+                        let msg = response.result.message
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                    } else if let expenseId = response.result.expense_id {
+                        let successResponse = CreateExpenseResponseData(
+                            status: response.result.status,
+                            message: response.result.message,
+                            expense_id: expenseId,
+                            name: response.result.name ?? "",
+                            state: response.result.state ?? "",
+                            total_amount: response.result.total_amount ?? 0,
+                            currency: response.result.currency ?? "",
+                            currency_symbol: response.result.currency_symbol ?? "",
+                            date: response.result.date ?? "",
+                            description: response.result.description ?? "",
+                            employee_id: response.result.employee_id ?? 0,
+                            employee_name: response.result.employee_name ?? "",
+                            company_id: response.result.company_id ?? 0,
+                            company_name: response.result.company_name ?? "",
+                            product: response.result.product ?? ExpenseProduct(id: 0, name: "", category: "", category_id: 0),
+                            analytic_distribution: response.result.analytic_distribution ?? [:],
+                            analytic_accounts: response.result.analytic_accounts ?? [],
+                            taxes: response.result.taxes ?? [],
+                            tax_total_percentage: response.result.tax_total_percentage ?? 0,
+                            total_with_tax: response.result.total_with_tax ?? 0
+                        )
+                        completion(.success(successResponse))
+                    } else {
+                        completion(.failure(.decodingError))
+                    }
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
+    // MARK: - Update Expense with Attachment (multipart)
+    func updateExpenseWithAttachment(
+        token: String,
+        expenseId: Int,
+        name: String,
+        product_id: Int,
+        total_amount: Double,
+        date: String,
+        description: String,
+        currency_id: Int,
+        analytic_distribution: [String: Int],
+        tax_ids: [Int],
+        payment_mode: String,
+        attachmentData: Data?,
+        attachmentFileName: String?,
+        attachmentMimeType: String?,
+        completion: @escaping (Result<UpdateExpenseResponse, APIError>) -> Void
+    ) {
+        isLoading = true
+        errorMessage = nil
+
+        let baseURL = API.defaultBaseURL
+        guard let url = URL(string: baseURL + "/api/expenses/edit") else {
+            completion(.failure(.invalidURL))
+            return
+        }
+
+        let params: [String: Any] = [
+            "token": token,
+            "expense_id": expenseId,
+            "name": name,
+            "product_id": product_id,
+            "total_amount": total_amount,
+            "date": date,
+            "description": description,
+            "currency_id": currency_id,
+            "analytic_distribution": analytic_distribution,
+            "tax_ids": tax_ids,
+            "payment_mode": payment_mode
+        ]
+
+        NetworkManager.shared.uploadMultipart(
+            url: url,
+            params: params,
+            fileData: attachmentData,
+            fileName: attachmentFileName,
+            fileMimeType: attachmentMimeType,
+            fileFieldName: "attachment",
+            as: JsonRPCResponse<UpdateExpenseResponse>.self
+        ) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+                switch result {
+                case .success(let response):
+                    if response.result.status.lowercased() == "error" {
+                        let msg = response.result.message ?? "Update failed"
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                    } else {
+                        completion(.success(response.result))
+                    }
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
 }

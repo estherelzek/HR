@@ -127,9 +127,13 @@ class CheckingVC: UIViewController {
                     
                     let now = Date()
                     let formatter = DateFormatter()
-                    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss" // match backend format if needed
+                    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+                    formatter.timeZone = TimeZone(identifier: "UTC")
                     
-                    let currentTimeString = formatter.string(from: now)
+                    // Apply same clock diff adjustment as online flow
+                    let diffMinutes = UserDefaults.standard.double(forKey: "clockDiffMinutes")
+                    let adjustedDate = now.addingTimeInterval(-diffMinutes * 60)
+                    let currentTimeString = formatter.string(from: adjustedDate)
                     
                     if self.isCheckedIn {
                         self.lastCheckIn = currentTimeString
@@ -139,7 +143,7 @@ class CheckingVC: UIViewController {
                         
                         if let checkInString = self.lastCheckIn,
                            let checkInDate = formatter.date(from: checkInString) {
-                            let hours = now.timeIntervalSince(checkInDate) / 3600
+                            let hours = adjustedDate.timeIntervalSince(checkInDate) / 3600
                             self.workedHours = round(hours * 100) / 100
                         }
                     }

@@ -458,3 +458,8 @@
 "common.search" = "بحث";
 "expenses.submitPending" = "قيد الإرسال";
 "expenses.submitFailed" = "فشل إرسال المصروف.";
+"expenses.addAttachment" = "إضافة مرفق";
+"expenses.takePhoto" = "التقاط صورة";
+"expenses.choosePhoto" = "اختيار صورة";
+"expenses.chooseFile" = "اختيار ملف (PDF، إلخ)";
+"expenses.removeAttachment" = "إزالة المرفق";

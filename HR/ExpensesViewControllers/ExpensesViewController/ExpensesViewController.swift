@@ -20,6 +20,10 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     private let expensesViewModel = ExpensesViewModel()
     private var expensesList: [EmployeeExpense] = []
     private let refreshControl = UIRefreshControl()
+    /// true = show ReportsButton, hide submitButton in cells
+    /// false = hide ReportsButton, show submitButton in cells
+    var isReportScenario: Bool = false
+
     private var selectedExpenseIds = Set<Int>()
     private var isMultiSelectMode: Bool = false {
         didSet {
@@ -34,6 +38,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         setupLocalization()
         setupTableView()
         loadExpenses()
+        ReportsButton.isHidden = !isReportScenario
     }
 
     private func setupTableView() {
@@ -326,18 +331,24 @@ extension ExpensesViewController {
         cell.configure(with: expense)
         cell.contentView.layoutMargins = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
 
-        // Submit button visibility and style
-        let isDraft = expense.state.lowercased() == "draft"
-        let isPending = expense.state.lowercased() == "submit" || expense.state.lowercased() == "submitted"
+        // Pass scenario flag to cell
+        cell.isReportScenario = self.isReportScenario
 
-        cell.submitButton?.isHidden = !(isDraft || isPending)
-        cell.setSubmitPendingStyle(isPending)
+        // Submit button visibility and style (only when NOT report scenario)
+        if !isReportScenario {
+            let isDraft = expense.state.lowercased() == "draft"
+            let isPending = expense.state.lowercased() == "submit" || expense.state.lowercased() == "submitted"
+
+            cell.submitButton?.isHidden = !(isDraft || isPending)
+            cell.setSubmitPendingStyle(isPending)
+        }
 
         cell.onSubmitTapped = { [weak self] in
             guard let self = self else { return }
 
             // Don't resubmit pending/submitted
-            if isPending { return }
+            let state = expense.state.lowercased()
+            if state == "submit" || state == "submitted" { return }
 
             guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
                 self.showAlert(

@@ -1,15 +1,9 @@
-//
-//  AddExpensesViewController.swift
-//  HR
-//
-//  Created by Esther Elzek on 10/03/2026.
-//
-
 import UIKit
-
+import UniformTypeIdentifiers
+import MobileCoreServices
 
 class AddExpensesViewController: UIViewController {
-  
+
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var addExpensesTitleLabel: Inspectablelabel!
@@ -35,29 +29,47 @@ class AddExpensesViewController: UIViewController {
     @IBOutlet weak var calculatedTotalByCurrency: Inspectablelabel!
     @IBOutlet weak var ratioCurrenciesLabel: Inspectablelabel!
     @IBOutlet weak var flexableStackOfLabels: UIStackView!
-   
+
+    // MARK: - Callbacks
+    var onExpenseCreated: (() -> Void)?
+    var onExpenseUpdated: (() -> Void)?
+
+    // MARK: - Edit mode
+    var expenseToEdit: EmployeeExpense?
+    private var isEditMode: Bool { expenseToEdit != nil }
+
+    // MARK: - Attachment
+    private var attachmentData: Data?
+    private var attachmentFilename: String?
+    private var attachmentMimeType: String?
+
+    // MARK: - Internal state
     private var flexableStackHeightConstraint: NSLayoutConstraint?
     private let flexableStackNormalHeight: CGFloat = 35
-    private let dateFormatter = DateFormatter()
+    private let dateFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateStyle = .medium
+        f.timeStyle = .none
+        return f
+    }()
     private var datePicker: UIDatePicker!
     private var selectedDate: Date?
     private var activeTextField: UITextField?
     private let expensesViewModel = ExpensesViewModel()
     var selectedCurrency: Currency?
+    private var selectedCurrencyId: Int?
+
     private var expenseCategoriesList: [ExpenseCategory] = []
     private var analyticAccountsList: [AnalyticAccount] = []
     private var taxesList: [Tax] = []
+
     private var selectedCategoryId: Int?
-    private var selectedAnalyticDistribution: [Int: Int] = [:] // id: percentage
+    private var selectedAnalyticDistribution: [Int: Int] = [:]
     private var selectedTaxIds: [Int] = []
-    private var selectedPaidBy: String = "employee" // Default to employee
-    private var selectedCurrencyId: Int = 1
-    var onExpenseCreated: (() -> Void)?
-    var onExpenseUpdated: (() -> Void)?
-    var expenseToEdit: EmployeeExpense?
-    private var categoryPickerView: UIPickerView?
-    private var taxesPickerView: UIPickerView?
-    private var currencyPickerView: UIPickerView?
+    private var selectedPaidBy: String = "employee"
+
+    // MARK: - Lifecycle
+
     override func viewDidLoad() {
         super.viewDidLoad()
         flexableStackHeightConstraint = flexableStackOfLabels.constraints.first(where: {
@@ -75,479 +87,398 @@ class AddExpensesViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        // Force scroll content size to update after layout
         scrollView.layoutIfNeeded()
     }
-    
+
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
+
     // MARK: - Load Data
+
     private func loadExpenseData() {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
-            showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
-                     message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing"))
+            showAlert(title: NSLocalizedString("expenses.error", comment: ""),
+                      message: NSLocalizedString("expenses.tokenMissing", comment: ""))
             return
         }
 
-        showLoader(message: NSLocalizedString("expenses.pleaseWait", comment: "Please wait"))
-        let group = DispatchGroup()
-
-        group.enter()
         expensesViewModel.fetchExpenseCategories(token: token) { [weak self] result in
-            defer { group.leave() }
-            switch result {
-            case .success(let categories):
+            if case .success(let categories) = result {
                 self?.expenseCategoriesList = categories
-                print("✅ Categories loaded: \(categories.count)")
-            case .failure(let error):
-                self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
-                               message: error.localizedDescription)
+                self?.prefillEditData()
             }
         }
 
-        group.enter()
         expensesViewModel.fetchAnalyticAccounts(token: token) { [weak self] result in
-            defer { group.leave() }
-            switch result {
-            case .success(let accounts):
+            if case .success(let accounts) = result {
                 self?.analyticAccountsList = accounts
-                print("✅ Analytic accounts loaded: \(accounts.count)")
-            case .failure(let error):
-                self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
-                               message: error.localizedDescription)
+                self?.prefillEditData()
             }
         }
 
-        group.enter()
         expensesViewModel.fetchTaxes(token: token) { [weak self] result in
-            defer { group.leave() }
-            switch result {
-            case .success(let taxes):
+            if case .success(let taxes) = result {
                 self?.taxesList = taxes
-                print("✅ Taxes loaded: \(taxes.count)")
-            case .failure(let error):
-                self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
-                               message: error.localizedDescription)
+                self?.prefillEditData()
             }
         }
 
-        group.enter()
         expensesViewModel.fetchCurrencies(token: token) { [weak self] result in
-            defer { group.leave() }
-            switch result {
-            case .success: break
-            case .failure(let error):
-                print("Currency error:", error)
+            if case .success(_) = result {
+                self?.prefillEditData()
             }
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            self?.hideLoader()
-            // Prefill after all data is loaded
-            self?.prefillEditData()
         }
     }
 
+    // MARK: - Localization
+
     private func setupLocalization() {
-        // Switch title + button based on edit mode
-        let isEditing = expenseToEdit != nil
-        addExpensesTitleLabel.text = isEditing
+        addExpensesTitleLabel.text = isEditMode
             ? NSLocalizedString("expenses.editTitle", comment: "Edit Expense")
             : NSLocalizedString("expenses.addTitle", comment: "Add Expenses Title")
+
+        descriptionTitleLable.text = NSLocalizedString("expenses.description", comment: "")
+        categoryTitleLabel.text = NSLocalizedString("expenses.category", comment: "")
+        expensesDateTitleLabel.text = NSLocalizedString("expenses.date", comment: "")
+        totalTitleLabel.text = NSLocalizedString("expenses.total", comment: "")
+        analyticDistributionTitleLabel.text = NSLocalizedString("expenses.analyticDistribution", comment: "")
+        includeedTaxesTitleLabel.text = NSLocalizedString("expenses.includedTaxes", comment: "")
+        paidByTitleLabel.text = NSLocalizedString("expenses.paidBy", comment: "")
+        notesTitleLabel.text = NSLocalizedString("expenses.notes", comment: "")
+
+        discardButton.setTitle(NSLocalizedString("common.discard", comment: ""), for: .normal)
         saveButton.setTitle(
-            isEditing
+            isEditMode
                 ? NSLocalizedString("common.update", comment: "Update")
                 : NSLocalizedString("common.save", comment: "Save"),
             for: .normal
         )
-        
-        discardButton.setTitle(NSLocalizedString("common.discard", comment: "Discard"), for: .normal)
-        descriptionTitleLable.text = NSLocalizedString("expenses.description", comment: "Description")
-        categoryTitleLabel.text = NSLocalizedString("expenses.category", comment: "Category")
-        expensesDateTitleLabel.text = NSLocalizedString("expenses.date", comment: "Date")
-        totalTitleLabel.text = NSLocalizedString("expenses.total", comment: "Total")
-        analyticDistributionTitleLabel.text = NSLocalizedString("expenses.analyticDistribution", comment: "Analytic Distribution")
-        includeedTaxesTitleLabel.text = NSLocalizedString("expenses.includedTaxes", comment: "Included Taxes")
-        paidByTitleLabel.text = NSLocalizedString("expenses.paidBy", comment: "Paid By")
-        notesTitleLabel.text = NSLocalizedString("expenses.notes", comment: "Notes")
-        descriptionTextField.placeholder = NSLocalizedString("expenses.descriptionPlaceholder", comment: "Enter description")
-        categoryTextField.placeholder = NSLocalizedString("expenses.categoryPlaceholder", comment: "Select category")
-        expenseDateTextField.placeholder = NSLocalizedString("expenses.datePlaceholder", comment: "Select date")
-        totalTextField.placeholder = NSLocalizedString("expenses.totalPlaceholder", comment: "Enter total amount")
-        analyticDistributionTextField.placeholder = NSLocalizedString("expenses.analyticDistributionPlaceholder", comment: "Select distribution")
-        includedTaxesTextField.placeholder = NSLocalizedString("expenses.includedTaxesPlaceholder", comment: "Select taxes")
-        notesTextField.placeholder = NSLocalizedString("expenses.notesPlaceholder", comment: "Enter notes")
-        currencyTextField.placeholder = NSLocalizedString("expenses.currency", comment: "Currency field")
+
+        descriptionTextField.placeholder = NSLocalizedString("expenses.descriptionPlaceholder", comment: "")
+        categoryTextField.placeholder = NSLocalizedString("expenses.categoryPlaceholder", comment: "")
+        expenseDateTextField.placeholder = NSLocalizedString("expenses.datePlaceholder", comment: "")
+        totalTextField.placeholder = NSLocalizedString("expenses.totalPlaceholder", comment: "")
+        analyticDistributionTextField.placeholder = NSLocalizedString("expenses.analyticDistributionPlaceholder", comment: "")
+        includedTaxesTextField.placeholder = NSLocalizedString("expenses.includedTaxesPlaceholder", comment: "")
+        notesTextField.placeholder = NSLocalizedString("expenses.notesPlaceholder", comment: "")
+        currencyTextField.placeholder = NSLocalizedString("expenses.currency", comment: "")
+
         let isRTL = UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft
         view.semanticContentAttribute = isRTL ? .forceRightToLeft : .forceLeftToRight
     }
-    
+
+    // MARK: - Segmented Control
+
     private func setupSegmentedControl() {
         employeeOrCompanySegment.removeAllSegments()
         employeeOrCompanySegment.insertSegment(
-            withTitle: NSLocalizedString("expenses.employee", comment: "Employee"),
-            at: 0,
-            animated: false
-        )
+            withTitle: NSLocalizedString("expenses.employee", comment: ""), at: 0, animated: false)
         employeeOrCompanySegment.insertSegment(
-            withTitle: NSLocalizedString("expenses.company", comment: "Company"),
-            at: 1,
-            animated: false
-        )
+            withTitle: NSLocalizedString("expenses.company", comment: ""), at: 1, animated: false)
         employeeOrCompanySegment.selectedSegmentIndex = 0
-        employeeOrCompanySegment.addTarget(
-            self,
-            action: #selector(segmentedControlChanged(_:)),
-            for: .valueChanged
-        )
+        employeeOrCompanySegment.addTarget(self, action: #selector(segmentedControlChanged(_:)), for: .valueChanged)
     }
-    
+
     @objc private func segmentedControlChanged(_ sender: UISegmentedControl) {
         selectedPaidBy = sender.selectedSegmentIndex == 0 ? "employee" : "company"
-        print("✅ Paid By: \(selectedPaidBy)")
     }
-    
+
+    // MARK: - Keyboard
+
     private func setupKeyboardNotifications() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow(_:)),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil
-        )
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide(_:)),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil
-        )
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(_:)),
+                                               name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(_:)),
+                                               name: UIResponder.keyboardWillHideNotification, object: nil)
     }
-    
-    @objc private func keyboardWillShow(_ notification: NSNotification) {
-        guard let keyboardFrame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-        
-        let keyboardHeight = keyboardFrame.height
-        let contentInset = UIEdgeInsets(top: 0, left: 0, bottom: keyboardHeight, right: 0)
-        scrollView.contentInset = contentInset
-        scrollView.scrollIndicatorInsets = contentInset
-        
-        if let activeTextField = activeTextField {
-            let textFieldFrame = activeTextField.convert(activeTextField.bounds, to: scrollView)
-            scrollView.scrollRectToVisible(textFieldFrame, animated: true)
+
+    @objc private func keyboardWillShow(_ n: NSNotification) {
+        guard let frame = n.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        let inset = UIEdgeInsets(top: 0, left: 0, bottom: frame.height, right: 0)
+        scrollView.contentInset = inset
+        scrollView.scrollIndicatorInsets = inset
+        if let tf = activeTextField {
+            scrollView.scrollRectToVisible(tf.convert(tf.bounds, to: scrollView), animated: true)
         }
     }
-    
-    @objc private func keyboardWillHide(_ notification: NSNotification) {
-        let contentInset = UIEdgeInsets.zero
-        scrollView.contentInset = contentInset
-        scrollView.scrollIndicatorInsets = contentInset
+
+    @objc private func keyboardWillHide(_ n: NSNotification) {
+        scrollView.contentInset = .zero
+        scrollView.scrollIndicatorInsets = .zero
     }
-    
+
+    // MARK: - Date Picker
+
     private func setupDatePicker() {
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .none
-        
         datePicker = UIDatePicker()
         datePicker.preferredDatePickerStyle = .wheels
         datePicker.datePickerMode = .date
         datePicker.maximumDate = Date()
         datePicker.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
-        
+
         let toolbar = UIToolbar()
         toolbar.sizeToFit()
-        
-        let doneButton = UIBarButtonItem(
-            barButtonSystemItem: .done,
-            target: self,
-            action: #selector(datePickerDone)
-        )
-        doneButton.title = NSLocalizedString("common.done", comment: "Done")
-        
-        let cancelButton = UIBarButtonItem(
-            barButtonSystemItem: .cancel,
-            target: self,
-            action: #selector(datePickerCancel)
-        )
-        cancelButton.title = NSLocalizedString("common.cancel", comment: "Cancel")
-        
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(datePickerDone))
+        let cancel = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(datePickerCancel))
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        
-        toolbar.setItems([cancelButton, spacer, doneButton], animated: false)
-        
+        toolbar.setItems([cancel, spacer, done], animated: false)
+
         expenseDateTextField.inputView = datePicker
         expenseDateTextField.inputAccessoryView = toolbar
     }
-    
+
     @objc private func dateChanged(_ sender: UIDatePicker) {
         selectedDate = sender.date
         expenseDateTextField.text = dateFormatter.string(from: sender.date)
     }
-    
-   
+
+    @objc private func datePickerDone() {
+        if selectedDate == nil {
+            selectedDate = datePicker.date
+            expenseDateTextField.text = dateFormatter.string(from: datePicker.date)
+        }
+        expenseDateTextField.resignFirstResponder()
+    }
+
     @objc private func datePickerCancel() {
         expenseDateTextField.resignFirstResponder()
     }
-    
+
+    // MARK: - Text Fields
+
     private func setupTextFields() {
-        let textFields = [
-            descriptionTextField,
-            categoryTextField,
-            currencyTextField,
-            expenseDateTextField,
-            totalTextField,
-            analyticDistributionTextField,
-            includedTaxesTextField,
-            notesTextField
+        let fields: [UITextField?] = [
+            descriptionTextField, categoryTextField, currencyTextField,
+            expenseDateTextField, totalTextField, analyticDistributionTextField,
+            includedTaxesTextField, notesTextField
         ]
-        
-        for textField in textFields {
-            textField?.delegate = self
-            textField?.borderStyle = .roundedRect
-            textField?.layer.borderWidth = 1
-            textField?.layer.cornerRadius = 8
+        for tf in fields {
+            tf?.delegate = self
+            tf?.borderStyle = .roundedRect
+            tf?.layer.borderWidth = 1
+            tf?.layer.cornerRadius = 8
         }
         totalTextField.addTarget(self, action: #selector(totalAmountChanged), for: .editingChanged)
         totalTextField.keyboardType = .decimalPad
+
         setupCurrencyDropdown()
         setupCategoryDropdown()
         setupAnalyticDistributionDropdown()
         setupTaxesDropdown()
     }
-    
+
     @objc private func totalAmountChanged() {
         calculateCurrencyConversion()
     }
-    
-    private func setupCategoryDropdown() {
-        let pickerView = UIPickerView()
-        pickerView.delegate = self
-        pickerView.dataSource = self
-        pickerView.tag = 1
-        categoryPickerView = pickerView
-        categoryTextField.inputView = pickerView
 
-        let toolbar = createPickerToolbar()
-        categoryTextField.inputAccessoryView = toolbar
-    }
-    
+    // MARK: - Currency Conversion
+
     private func calculateCurrencyConversion() {
-        guard
-            let currency = selectedCurrency,
-            let amountText = totalTextField.text,
-            let amount = Double(amountText)
-        else {
-            setConversionStack(hidden: true)
-            return
-        }
+        guard let currency = selectedCurrency,
+              let text = totalTextField.text, let amount = Double(text),
+              currency.conversion_rate > 0
+        else { setConversionStack(hidden: true); return }
 
         let rate = currency.conversion_rate
-        guard rate > 0 else {
-            setConversionStack(hidden: true)
-            return
-        }
-
-        // Backend rate: 1 EGP = rate targetCurrency
-        // Needed for payout: 1 targetCurrency = 1/rate EGP
         let reverseRate = 1.0 / rate
-        let convertedToEGP = amount * reverseRate
+        let converted = amount * reverseRate
 
         ratioCurrenciesLabel.text = "1 \(currency.currency_code) = \(String(format: "%.2f", reverseRate)) EGP"
-        calculatedTotalByCurrency.text = "\(String(format: "%.2f", convertedToEGP)) EGP"
-
-        print("esther : rate: \(rate) (1 EGP = \(rate) \(currency.currency_code))")
-        print("esther : reverse: 1 \(currency.currency_code) = \(reverseRate) EGP")
-        print("esther : converted: \(amount) \(currency.currency_code) = \(convertedToEGP) EGP")
-
+        calculatedTotalByCurrency.text = "\(String(format: "%.2f", converted)) EGP"
         setConversionStack(hidden: false)
     }
-    
+
+    private func setConversionStack(hidden: Bool, animated: Bool = true) {
+        let h: CGFloat = hidden ? 0 : flexableStackNormalHeight
+        if animated {
+            UIView.animate(withDuration: 0.25) {
+                self.flexableStackOfLabels.alpha = hidden ? 0 : 1
+                self.flexableStackHeightConstraint?.constant = h
+                self.flexableStackOfLabels.isHidden = hidden
+                self.contentView.layoutIfNeeded()
+            }
+        } else {
+            flexableStackOfLabels.alpha = hidden ? 0 : 1
+            flexableStackHeightConstraint?.constant = h
+            flexableStackOfLabels.isHidden = hidden
+            contentView.layoutIfNeeded()
+        }
+    }
+
+    // MARK: - Dropdowns
+
+    private func setupCategoryDropdown() {
+        let pv = UIPickerView()
+        pv.delegate = self; pv.dataSource = self; pv.tag = 1
+        categoryTextField.inputView = pv
+        categoryTextField.inputAccessoryView = createPickerToolbar()
+    }
+
     private func setupAnalyticDistributionDropdown() {
-        // Make it tap-able to show modal
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(analyticDistributionTapped))
-        analyticDistributionTextField.addGestureRecognizer(tapGesture)
+        let tap = UITapGestureRecognizer(target: self, action: #selector(analyticDistributionTapped))
+        analyticDistributionTextField.addGestureRecognizer(tap)
         analyticDistributionTextField.isUserInteractionEnabled = true
     }
 
     @objc private func analyticDistributionTapped() {
-        let modal = AnalyticDistributionViewController(
-            nibName: "AnalyticDistributionViewController",
-            bundle: nil
-        )
-        
+        let modal = AnalyticDistributionViewController(nibName: "AnalyticDistributionViewController", bundle: nil)
         modal.analyticAccounts = analyticAccountsList
-        modal.distributions = selectedAnalyticDistribution.map { id, percentage in
-            let account = analyticAccountsList.first(where: { $0.id == id }) ??
-                         AnalyticAccount(id: id, name: "Unknown", code: "", plan_id: 0, plan_name: "", company_id: nil, company_name: nil)
-            return (account: account, percentage: percentage)
+        modal.distributions = selectedAnalyticDistribution.map { id, pct in
+            let acct = analyticAccountsList.first(where: { $0.id == id })
+                ?? AnalyticAccount(id: id, name: "Unknown", code: "", plan_id: 0, plan_name: "", company_id: nil, company_name: nil)
+            return (account: acct, percentage: pct)
         }
-        
         modal.onDistributionsSaved = { [weak self] result in
             guard let self = self else { return }
-
             self.selectedAnalyticDistribution = result
-
-            let display = result.compactMap { id, percentage -> String? in
+            let display = result.compactMap { id, pct -> String? in
                 guard let name = self.analyticAccountsList.first(where: { $0.id == id })?.name else { return nil }
-                return "\(name) \(percentage)%"
+                return "\(name) \(pct)%"
             }.joined(separator: ", ")
-
             self.analyticDistributionTextField.text = display
         }
-        
         if let sheet = modal.sheetPresentationController {
             sheet.detents = [.medium(), .large()]
             sheet.prefersGrabberVisible = true
             sheet.preferredCornerRadius = 20
         }
-        
         present(modal, animated: true)
     }
-    
-    private func setupTaxesDropdown() {
-        let pickerView = UIPickerView()
-        pickerView.delegate = self
-        pickerView.dataSource = self
-        pickerView.tag = 3
-        taxesPickerView = pickerView
-        includedTaxesTextField.inputView = pickerView
 
-        let toolbar = createPickerToolbar()
-        includedTaxesTextField.inputAccessoryView = toolbar
+    private func setupTaxesDropdown() {
+        let pv = UIPickerView()
+        pv.delegate = self; pv.dataSource = self; pv.tag = 3
+        includedTaxesTextField.inputView = pv
+        includedTaxesTextField.inputAccessoryView = createPickerToolbar()
     }
 
-    
     private func setupCurrencyDropdown() {
-        let pickerView = UIPickerView()
-        pickerView.delegate = self
-        pickerView.dataSource = self
-        pickerView.tag = 4
-        currencyPickerView = pickerView
-
-        currencyTextField.inputView = pickerView
+        let pv = UIPickerView()
+        pv.delegate = self; pv.dataSource = self; pv.tag = 4
+        currencyTextField.inputView = pv
         currencyTextField.inputAccessoryView = createPickerToolbar()
     }
+
     private func createPickerToolbar() -> UIToolbar {
-        let toolbar = UIToolbar()
-        toolbar.sizeToFit()
-        let doneButton = UIBarButtonItem(
-            barButtonSystemItem: .done,
-            target: self,
-            action: #selector(pickerDone(_:))
-        )
+        let toolbar = UIToolbar(); toolbar.sizeToFit()
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(pickerDone))
         let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolbar.setItems([spacer, doneButton], animated: false)
+        toolbar.setItems([spacer, done], animated: false)
         return toolbar
     }
-    
-    
+
+    @objc private func pickerDone() {
+        if let pv = categoryTextField.inputView as? UIPickerView, categoryTextField.isFirstResponder {
+            if selectedCategoryId == nil, !expenseCategoriesList.isEmpty {
+                let cat = expenseCategoriesList[pv.selectedRow(inComponent: 0)]
+                selectedCategoryId = cat.id
+                categoryTextField.text = cat.name
+            }
+        }
+        if let pv = includedTaxesTextField.inputView as? UIPickerView, includedTaxesTextField.isFirstResponder {
+            if selectedTaxIds.isEmpty, !taxesList.isEmpty {
+                let tax = taxesList[pv.selectedRow(inComponent: 0)]
+                selectedTaxIds.append(tax.id)
+                updateTaxDisplay()
+            }
+        }
+        if let pv = currencyTextField.inputView as? UIPickerView, currencyTextField.isFirstResponder {
+            if selectedCurrency == nil, !expensesViewModel.currencies.isEmpty {
+                let c = expensesViewModel.currencies[pv.selectedRow(inComponent: 0)]
+                selectedCurrency = c
+                selectedCurrencyId = c.id
+                currencyTextField.text = c.name
+                calculateCurrencyConversion()
+            }
+        }
+        view.endEditing(true)
+    }
+
     private func setupKeyboardDismissal() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
         view.addGestureRecognizer(tap)
     }
-    
-    @objc private func dismissKeyboard() {
-        view.endEditing(true)
-    }
-    
-    // MARK: - Update Tax Display
+
+    @objc private func dismissKeyboard() { view.endEditing(true) }
+
     private func updateTaxDisplay() {
-        let taxNames = selectedTaxIds.compactMap { id in
-            self.taxesList.first(where: { $0.id == id })?.name
-        }
-        includedTaxesTextField.text = taxNames.joined(separator: ", ")
+        let names = selectedTaxIds.compactMap { id in taxesList.first(where: { $0.id == id })?.name }
+        includedTaxesTextField.text = names.joined(separator: ", ")
     }
 
-    // MARK: - Prefill fields when editing
-    private func prefillEditData() {
-        guard let expense = expenseToEdit else { return }
+    // MARK: - Attachment
 
-        descriptionTextField.text = expense.name
-        totalTextField.text = String(format: "%.2f", expense.total_amount)
-        notesTextField.text = expense.description
+    @IBAction func addAttachmentButtonTapped(_ sender: Any) {
+        let alert = UIAlertController(
+            title: NSLocalizedString("expenses.addAttachment", comment: "Add Attachment"),
+            message: nil,
+            preferredStyle: .actionSheet
+        )
 
-        // Parse API date (yyyy-MM-dd) back to readable display
-        let apiFormatter = DateFormatter()
-        apiFormatter.dateFormat = "yyyy-MM-dd"
-        if let date = apiFormatter.date(from: expense.date) {
-            selectedDate = date
-            expenseDateTextField.text = dateFormatter.string(from: date)
-            datePicker.setDate(date, animated: false)
-        } else {
-            expenseDateTextField.text = expense.date
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("expenses.takePhoto", comment: "Take Photo"),
+            style: .default
+        ) { [weak self] _ in
+            self?.openCamera()
+        })
+
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("expenses.choosePhoto", comment: "Choose Photo"),
+            style: .default
+        ) { [weak self] _ in
+            self?.openPhotoLibrary()
+        })
+
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("expenses.chooseFile", comment: "Choose File (PDF, etc.)"),
+            style: .default
+        ) { [weak self] _ in
+            self?.openDocumentPicker()
+        })
+
+        if attachmentData != nil {
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("expenses.removeAttachment", comment: "Remove Attachment"),
+                style: .destructive
+            ) { [weak self] _ in
+                self?.attachmentData = nil
+                self?.attachmentFilename = nil
+                self?.attachmentMimeType = nil
+                print("🗑 Attachment removed")
+            })
         }
 
-        // Prefill category (dropdown-backed)
-        if let category = expenseCategoriesList.first(where: { $0.id == expense.product_id }) {
-            selectedCategoryId = category.id
-            categoryTextField.text = category.name
-        } else {
-            // fallback if list not found yet
-            selectedCategoryId = expense.product_id
-            categoryTextField.text = expense.product
-        }
-
-        // Prefill currency (dropdown-backed)
-        if let matchedCurrency = expensesViewModel.currencies.first(where: {
-            $0.currency_code.caseInsensitiveCompare(expense.currency) == .orderedSame ||
-            $0.name.caseInsensitiveCompare(expense.currency) == .orderedSame ||
-            $0.symbol.caseInsensitiveCompare(expense.currency) == .orderedSame
-        }) {
-            selectedCurrency = matchedCurrency
-            selectedCurrencyId = matchedCurrency.id
-            currencyTextField.text = matchedCurrency.name
-            calculateCurrencyConversion()
-        } else if let companyCurrency = expensesViewModel.currencies.first(where: { $0.is_company_currency }) {
-            selectedCurrency = companyCurrency
-            selectedCurrencyId = companyCurrency.id
-            currencyTextField.text = companyCurrency.name
-            calculateCurrencyConversion()
-        } else {
-            currencyTextField.text = expense.currency
-        }
-
-        // Prefill taxes from API payload
-        if let taxes = expense.taxes, !taxes.isEmpty {
-            selectedTaxIds = taxes.map { $0.id }
-            updateTaxDisplay()
-        } else {
-            selectedTaxIds.removeAll()
-            includedTaxesTextField.text = ""
-        }
-
-        // Prefill analytic distribution from API payload {"316": 100.0}
-        selectedAnalyticDistribution.removeAll()
-        if let distribution = expense.analytic_distribution, !distribution.isEmpty {
-            for (key, value) in distribution {
-                if let accountId = Int(key) {
-                    selectedAnalyticDistribution[accountId] = Int(value.rounded())
-                }
-            }
-
-            let display = selectedAnalyticDistribution.compactMap { id, percentage -> String? in
-                guard let name = analyticAccountsList.first(where: { $0.id == id })?.name else { return nil }
-                return "\(name) \(percentage)%"
-            }.joined(separator: ", ")
-
-            analyticDistributionTextField.text = display
-        } else {
-            analyticDistributionTextField.text = ""
-        }
-
-        // Prefill paid-by from payment_mode (NOT state)
-        switch expense.payment_mode?.lowercased() {
-        case "company", "company_account":
-            employeeOrCompanySegment.selectedSegmentIndex = 1
-            selectedPaidBy = "company"
-        default:
-            employeeOrCompanySegment.selectedSegmentIndex = 0
-            selectedPaidBy = "employee"
-        }
+        alert.addAction(UIAlertAction(title: NSLocalizedString("common.cancel", comment: ""), style: .cancel))
+        present(alert, animated: true)
     }
-    
 
-    // MARK: - Save / Update button handler
+    private func openCamera() {
+        guard UIImagePickerController.isSourceTypeAvailable(.camera) else { return }
+        let picker = UIImagePickerController()
+        picker.sourceType = .camera
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+
+    private func openPhotoLibrary() {
+        let picker = UIImagePickerController()
+        picker.sourceType = .photoLibrary
+        picker.delegate = self
+        present(picker, animated: true)
+    }
+
+    private func openDocumentPicker() {
+        let types: [UTType] = [.pdf, .png, .jpeg, .image]
+        let picker = UIDocumentPickerViewController(forOpeningContentTypes: types)
+        picker.delegate = self
+        picker.allowsMultipleSelection = false
+        present(picker, animated: true)
+    }
+
+    // MARK: - Save / Update
+
     @IBAction func saveButtonTapped(_ sender: Any) {
         guard !descriptionTextField.text!.trimmingCharacters(in: .whitespaces).isEmpty else {
             showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
@@ -601,7 +532,7 @@ class AddExpensesViewController: UIViewController {
                 total_amount: totalAmountInEGP,
                 date: apiDateString,
                 description: notesTextField.text ?? "",
-                currency_id: selectedCurrencyId,
+                currency_id: selectedCurrencyId ?? 0,
                 analytic_distribution: analyticDistributionStr,
                 tax_ids: selectedTaxIds,
                 payment_mode: selectedPaidBy
@@ -666,7 +597,9 @@ class AddExpensesViewController: UIViewController {
     @IBAction func discardButtonTapped(_ sender: Any) {
         clearForm()
     }
-    
+
+    // MARK: - Helpers
+
     private func clearForm() {
         descriptionTextField.text = ""
         categoryTextField.text = ""
@@ -681,98 +614,149 @@ class AddExpensesViewController: UIViewController {
         selectedAnalyticDistribution.removeAll()
         selectedTaxIds.removeAll()
         selectedPaidBy = "employee"
+        attachmentData = nil
+        attachmentFilename = nil
+        attachmentMimeType = nil
         setConversionStack(hidden: true)
     }
-    
+
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: "OK"), style: .default))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: ""), style: .default))
         present(alert, animated: true)
     }
-    private func normalizedTotalAmountForServer(from enteredAmount: Double) -> Double {
-        guard let currency = selectedCurrency else {
-            // No selected currency -> keep entered amount as-is (assumed EGP)
-            return enteredAmount
+
+    // MARK: - Loading Overlay
+
+    private var loadingOverlay: UIView?
+
+    private func showLoadingOverlay() {
+        loadingOverlay?.removeFromSuperview()
+        let overlay = UIView(frame: view.bounds)
+        overlay.backgroundColor = UIColor.black.withAlphaComponent(0.3)
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .systemBlue
+        indicator.center = overlay.center
+        indicator.startAnimating()
+        overlay.addSubview(indicator)
+        view.addSubview(overlay)
+        loadingOverlay = overlay
+    }
+
+    private func hideLoadingOverlay() {
+        UIView.animate(withDuration: 0.2, animations: { self.loadingOverlay?.alpha = 0 }) { _ in
+            self.loadingOverlay?.removeFromSuperview()
+            self.loadingOverlay = nil
+        }
+    }
+
+    // MARK: - Prefill Edit Data
+
+    private func prefillEditData() {
+        guard let expense = expenseToEdit else { return }
+
+        descriptionTextField.text = expense.name
+        totalTextField.text = String(format: "%.2f", expense.total_amount)
+        notesTextField.text = expense.description
+
+        let apiFormatter = DateFormatter()
+        apiFormatter.dateFormat = "yyyy-MM-dd"
+        if let date = apiFormatter.date(from: expense.date) {
+            selectedDate = date
+            expenseDateTextField.text = dateFormatter.string(from: date)
+            datePicker?.setDate(date, animated: false)
+        } else {
+            expenseDateTextField.text = expense.date
         }
 
-        let code = currency.currency_code.uppercased()
-        if code == "EGP" {
-            return enteredAmount
+        if let cat = expenseCategoriesList.first(where: { $0.id == expense.product_id }) {
+            selectedCategoryId = cat.id
+            categoryTextField.text = cat.name
         }
 
-        let rate = currency.conversion_rate
-        guard rate > 0 else {
-            return enteredAmount
+        if let matched = expensesViewModel.currencies.first(where: {
+            $0.currency_code.caseInsensitiveCompare(expense.currency) == .orderedSame ||
+            $0.name.caseInsensitiveCompare(expense.currency) == .orderedSame ||
+            $0.symbol.caseInsensitiveCompare(expense.currency) == .orderedSame
+        }) {
+            selectedCurrency = matched
+            selectedCurrencyId = matched.id
+            currencyTextField.text = matched.name
+            calculateCurrencyConversion()
+        } else if let company = expensesViewModel.currencies.first(where: { $0.is_company_currency }) {
+            selectedCurrency = company
+            selectedCurrencyId = company.id
+            currencyTextField.text = company.name
         }
 
-        // Convert selected currency amount to EGP for API payload.
-        return enteredAmount * (1.0 / rate)
+        if let pm = expense.payment_mode {
+            let isCompany = pm == "company_account"
+            employeeOrCompanySegment.selectedSegmentIndex = isCompany ? 1 : 0
+            selectedPaidBy = isCompany ? "company" : "employee"
+        }
+
+        if let taxes = expense.taxes {
+            selectedTaxIds = taxes.map { $0.id }
+            updateTaxDisplay()
+        }
+
+        if let dist = expense.analytic_distribution {
+            selectedAnalyticDistribution = [:]
+            for (k, v) in dist {
+                if let id = Int(k) { selectedAnalyticDistribution[id] = Int(v) }
+            }
+            let display = selectedAnalyticDistribution.compactMap { id, pct -> String? in
+                guard let name = analyticAccountsList.first(where: { $0.id == id })?.name else { return nil }
+                return "\(name) \(pct)%"
+            }.joined(separator: ", ")
+            analyticDistributionTextField.text = display
+        }
     }
 }
+
+// MARK: - UITextFieldDelegate
 
 extension AddExpensesViewController: UITextFieldDelegate {
-    func textFieldDidBeginEditing(_ UITextField: UITextField) {
-        activeTextField = UITextField
+    func textFieldDidBeginEditing(_ textField: UITextField) { activeTextField = textField }
+    func textFieldDidEndEditing(_ textField: UITextField) { activeTextField = nil }
+    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+        activeTextField = textField
+        return true
     }
-    
-    func textFieldDidEndEditing(_ UITextField: UITextField) {
-        activeTextField = nil
-    }
-    
 }
 
+// MARK: - UIPickerViewDelegate & DataSource
+
 extension AddExpensesViewController: UIPickerViewDelegate, UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int { 1 }
+
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         switch pickerView.tag {
-        case 1:
-            return expenseCategoriesList.count
-        case 2:
-            return analyticAccountsList.count
-        case 3:
-            return taxesList.count
-        case 4:
-            return expensesViewModel.currencies.count
-        default:
-            return 0
+        case 1: return expenseCategoriesList.count
+        case 3: return taxesList.count
+        case 4: return expensesViewModel.currencies.count
+        default: return 0
         }
     }
+
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch pickerView.tag {
-        case 1:
-            return expenseCategoriesList[row].name
-            
-        case 2:
-            return analyticAccountsList[row].name
-            
-        case 3:
-            return taxesList[row].name
-            
+        case 1: return expenseCategoriesList[row].name
+        case 3: return taxesList[row].name
         case 4:
-            let currency = expensesViewModel.currencies[row]
-            return "\(currency.name) (\(currency.symbol))"
-            
-        default:
-            return nil
+            let c = expensesViewModel.currencies[row]
+            return "\(c.name) (\(c.symbol))"
+        default: return nil
         }
     }
-    
+
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         switch pickerView.tag {
-            
         case 1:
-            let category = expenseCategoriesList[row]
-            selectedCategoryId = category.id
-            categoryTextField.text = category.name
-            
-        case 2:
-            let account = analyticAccountsList[row]
-            selectedAnalyticDistribution[account.id] = 100
-            analyticDistributionTextField.text = account.name
-            
+            let cat = expenseCategoriesList[row]
+            selectedCategoryId = cat.id
+            categoryTextField.text = cat.name
         case 3:
             let tax = taxesList[row]
             if selectedTaxIds.contains(tax.id) {
@@ -781,79 +765,76 @@ extension AddExpensesViewController: UIPickerViewDelegate, UIPickerViewDataSourc
                 selectedTaxIds.append(tax.id)
             }
             updateTaxDisplay()
-            
         case 4:
-            let currency = expensesViewModel.currencies[row]
-            selectedCurrency = currency
-            currencyTextField.text = currency.name
-            
+            let c = expensesViewModel.currencies[row]
+            selectedCurrency = c
+            selectedCurrencyId = c.id
+            currencyTextField.text = c.name
             calculateCurrencyConversion()
-            
-        default:
-            break
+        default: break
         }
     }
-   
-    @objc private func pickerDone(_ sender: UIBarButtonItem) {
-        if categoryTextField.isFirstResponder,
-           (categoryTextField.text ?? "").isEmpty,
-           !expenseCategoriesList.isEmpty {
-            categoryPickerView?.selectRow(0, inComponent: 0, animated: false)
-            pickerView(categoryPickerView!, didSelectRow: 0, inComponent: 0)
-        } else if includedTaxesTextField.isFirstResponder,
-                  (includedTaxesTextField.text ?? "").isEmpty,
-                  !taxesList.isEmpty {
-            taxesPickerView?.selectRow(0, inComponent: 0, animated: false)
-            pickerView(taxesPickerView!, didSelectRow: 0, inComponent: 0)
-        } else if currencyTextField.isFirstResponder,
-                  (currencyTextField.text ?? "").isEmpty,
-                  !expensesViewModel.currencies.isEmpty {
-            currencyPickerView?.selectRow(0, inComponent: 0, animated: false)
-            pickerView(currencyPickerView!, didSelectRow: 0, inComponent: 0)
+}
+
+// MARK: - UIImagePickerControllerDelegate
+
+extension AddExpensesViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        picker.dismiss(animated: true)
+
+        if let image = info[.originalImage] as? UIImage,
+           let data = image.jpegData(compressionQuality: 0.7) {
+            attachmentData = data
+            attachmentFilename = "photo_\(Int(Date().timeIntervalSince1970)).jpg"
+            attachmentMimeType = "image/jpeg"
+            print("📎 Photo attached: \(attachmentFilename ?? ""), size: \(data.count) bytes")
         }
-
-        view.endEditing(true)
     }
-    
-    @objc private func datePickerDone() {
-        // If user didn't scroll, use current picker value
-        let dateToUse = selectedDate ?? datePicker.date
-        selectedDate = dateToUse
-        expenseDateTextField.text = dateFormatter.string(from: dateToUse)
-        expenseDateTextField.resignFirstResponder()
-    }
-    
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
-        activeTextField = textField
 
-        if textField == expenseDateTextField {
-            if selectedDate == nil {
-                selectedDate = datePicker.date
-                expenseDateTextField.text = dateFormatter.string(from: datePicker.date)
-            } else if let selectedDate = selectedDate {
-                datePicker.setDate(selectedDate, animated: false)
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+}
+
+// MARK: - UIDocumentPickerDelegate
+
+extension AddExpensesViewController: UIDocumentPickerDelegate {
+
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let url = urls.first else { return }
+
+        let accessing = url.startAccessingSecurityScopedResource()
+        defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+
+        do {
+            let data = try Data(contentsOf: url)
+            attachmentData = data
+            attachmentFilename = url.lastPathComponent
+
+            let ext = url.pathExtension.lowercased()
+            switch ext {
+            case "pdf":  attachmentMimeType = "application/pdf"
+            case "png":  attachmentMimeType = "image/png"
+            case "jpg", "jpeg": attachmentMimeType = "image/jpeg"
+            default: attachmentMimeType = "application/octet-stream"
             }
-        }
 
-        return true
+            print("📎 File attached: \(attachmentFilename ?? ""), size: \(data.count) bytes")
+        } catch {
+            print("❌ Failed to read file: \(error)")
+        }
     }
-    private func setConversionStack(hidden: Bool, animated: Bool = true) {
-        // Setting height to 0 collapses the space in Auto Layout
-        // Setting it back to normal height restores the space
-        let targetHeight: CGFloat = hidden ? 0 : flexableStackNormalHeight
 
-        if animated {
-            UIView.animate(withDuration: 0.25) {
-                self.flexableStackOfLabels.alpha = hidden ? 0 : 1
-                self.flexableStackHeightConstraint?.constant = targetHeight
-                self.flexableStackOfLabels.isHidden = hidden
-                self.contentView.layoutIfNeeded()
-            }
-        } else {
-            flexableStackOfLabels.alpha = hidden ? 0 : 1
-            flexableStackHeightConstraint?.constant = targetHeight
-            flexableStackOfLabels.isHidden = hidden
-            contentView.layoutIfNeeded()
+    private func normalizedTotalAmountForServer(from amount: Double) -> Double {
+        guard let currency = selectedCurrency, !currency.is_company_currency else {
+            return amount
         }
+        let rate = currency.conversion_rate
+        guard rate > 0 else { return amount }
+        let reverseRate = 1.0 / rate
+        let convertedToEGP = amount * reverseRate
+        return round(convertedToEGP * 100) / 100
     }
 }

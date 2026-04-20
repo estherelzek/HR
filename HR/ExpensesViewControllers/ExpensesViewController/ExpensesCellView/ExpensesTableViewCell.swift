@@ -16,6 +16,12 @@ class ExpensesTableViewCell: UITableViewCell {
     @IBOutlet weak var selectButton: UIButton?
     @IBOutlet weak var submitButton: UIButton?
     
+    var isReportScenario: Bool = false {
+        didSet {
+            submitButton?.isHidden = isReportScenario
+        }
+    }
+
     var isExpenseSelected: Bool = false {
         didSet { updateSelectionUI() }
     }
@@ -44,7 +50,8 @@ class ExpensesTableViewCell: UITableViewCell {
         submitButton?.setImage(submitImage, for: .normal)
         submitButton?.tintColor = UIColor.border
     }
-//    
+    
+    
     private func updateSelectionUI() {
         let imageName = isExpenseSelected ? "checkmark.circle.fill" : "circle"
         let image = UIImage(systemName: imageName)
@@ -52,17 +59,17 @@ class ExpensesTableViewCell: UITableViewCell {
         selectButton?.tintColor = isExpenseSelected ? .systemGreen : .lightGray
     }
     
-    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
+    
     func setSubmitPendingStyle(_ isPending: Bool) {
         let iconName = isPending ? "paperplane" : "paperplane"
         submitButton?.setImage(UIImage(systemName: iconName), for: .normal)
         submitButton?.tintColor = isPending ? .systemOrange : UIColor.border
         submitButton?.isEnabled = !isPending
     }
-//    
+    
     func configure(with report: ReportListItem) {
         print("Configuring cell with report: \(report)")
         // Bold title
@@ -115,7 +122,6 @@ class ExpensesTableViewCell: UITableViewCell {
 
         DateLabel.attributedText = attributed
         DateLabel.numberOfLines = 0
-
         StatusLabel.isHidden = false
         StatusLabel.text = report.state.capitalized
         StatusLabel.font = UIFont.boldSystemFont(ofSize: 13)
@@ -173,7 +179,6 @@ class ExpensesTableViewCell: UITableViewCell {
             case "draft":      stateColor = .systemGray
                 submitButton?.isEnabled = true
             case "submitted":  stateColor = .systemYellow
-                
                 submitButton?.isEnabled = false
                 submitButton?.tintColor = UIColor.lightGray
             case "approved":   stateColor = UIColor.border
