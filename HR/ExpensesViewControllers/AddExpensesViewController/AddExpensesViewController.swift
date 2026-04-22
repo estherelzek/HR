@@ -1,3 +1,4 @@
+
 import UIKit
 import UniformTypeIdentifiers
 import MobileCoreServices
@@ -40,11 +41,13 @@ class AddExpensesViewController: UIViewController {
     private var isEditMode: Bool { expenseToEdit != nil }
 
     // MARK: - Attachment
-    private var attachmentData: Data? = nil {
-        didSet { updateAttachmentButtonIcon() }
-    }
+    private var attachmentData: Data?
     private var attachmentFilename: String?
     private var attachmentMimeType: String?
+    /// Existing attachments from server (for edit mode)
+    var existingAttachments: [ExpenseAttachment] = []
+    /// IDs of existing attachments to delete on save
+    private var deleteAttachmentIds: [Int] = []
 
     // MARK: - Internal state
     private var flexableStackHeightConstraint: NSLayoutConstraint?
@@ -92,8 +95,6 @@ class AddExpensesViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        scrollView.layoutIfNeeded()
-        updateAttachmentButtonIcon()
     }
 
     deinit {
@@ -105,7 +106,7 @@ class AddExpensesViewController: UIViewController {
     private func loadExpenseData() {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
             showAlert(title: NSLocalizedString("expenses.error", comment: ""),
-                      message: NSLocalizedString("expenses.tokenMissing", comment: ""))
+                      message: NSLocalizedString("expenses.tokenMissing", comment: ""), onOK: nil)
             return
         }
 
@@ -416,15 +417,6 @@ class AddExpensesViewController: UIViewController {
 
     // MARK: - Attachment
 
-    private func updateAttachmentButtonIcon() {
-        let hasAttachment = attachmentData != nil
-        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
-        let iconName = hasAttachment ? "paperclip.circle.fill" : "paperclip.circle"
-        let image = UIImage(systemName: iconName, withConfiguration: config)
-        addAttachmentButton?.setImage(image, for: .normal)
-        addAttachmentButton?.tintColor = hasAttachment ? .systemGreen : UIColor.border
-    }
-
     @IBAction func addAttachmentButtonTapped(_ sender: Any) {
         let alert = UIAlertController(
             title: NSLocalizedString("expenses.addAttachment", comment: "Add Attachment"),
@@ -461,7 +453,22 @@ class AddExpensesViewController: UIViewController {
                 self?.attachmentData = nil
                 self?.attachmentFilename = nil
                 self?.attachmentMimeType = nil
-                print("🗑 Attachment removed")
+                self?.updateAttachmentButtonIcon()
+                print("🗑 New attachment removed")
+            })
+        }
+
+        // Show existing server attachments with remove option
+        for att in existingAttachments {
+            alert.addAction(UIAlertAction(
+                title: "🗑 \(att.name)",
+                style: .destructive
+            ) { [weak self] _ in
+                guard let self = self else { return }
+                self.deleteAttachmentIds.append(att.id)
+                self.existingAttachments.removeAll { $0.id == att.id }
+                self.updateAttachmentButtonIcon()
+                print("🗑 Marked existing attachment \(att.id) for deletion")
             })
         }
 
@@ -492,143 +499,148 @@ class AddExpensesViewController: UIViewController {
         present(picker, animated: true)
     }
 
+    // MARK: - Attachment Icon Update
+
+    private func updateAttachmentButtonIcon() {
+        let hasNewAttachment = attachmentData != nil
+        let hasExistingAttachments = !existingAttachments.isEmpty
+        let hasAttachment = hasNewAttachment || hasExistingAttachments
+        let iconName = hasAttachment ? "paperclip.circle.fill" : "paperclip.circle"
+        let config = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
+        addAttachmentButton?.setImage(UIImage(systemName: iconName, withConfiguration: config), for: .normal)
+        addAttachmentButton?.tintColor = hasAttachment ? .systemGreen : .lightGray
+    }
+
     // MARK: - Save / Update
 
     @IBAction func saveButtonTapped(_ sender: Any) {
-        guard !descriptionTextField.text!.trimmingCharacters(in: .whitespaces).isEmpty else {
-            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
-                     message: NSLocalizedString("expenses.descriptionRequired", comment: "Description is required"))
-            return
+        guard validateForm() else { return }
+        performSave()
+    }
+
+    @IBAction func discardButtonTapped(_ sender: Any) {
+        clearForm()
+    }
+
+    // MARK: - Validation
+
+    private func validateForm() -> Bool {
+        guard let desc = descriptionTextField.text, !desc.trimmingCharacters(in: .whitespaces).isEmpty else {
+            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: ""),
+                      message: NSLocalizedString("expenses.descriptionRequired", comment: ""), onOK: nil)
+            return false
         }
-        guard !categoryTextField.text!.isEmpty, let categoryId = selectedCategoryId else {
-            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
-                     message: NSLocalizedString("expenses.categoryRequired", comment: "Category is required"))
-            return
+        guard selectedCategoryId != nil else {
+            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: ""),
+                      message: NSLocalizedString("expenses.categoryRequired", comment: ""), onOK: nil)
+            return false
         }
-        guard let selectedDate = selectedDate else {
-            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
-                     message: NSLocalizedString("expenses.dateRequired", comment: "Date is required"))
-            return
+        guard selectedDate != nil else {
+            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: ""),
+                      message: NSLocalizedString("expenses.dateRequired", comment: ""), onOK: nil)
+            return false
         }
-        guard !totalTextField.text!.isEmpty,
-              let totalAmount = Double(totalTextField.text ?? "") else {
-            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
-                     message: NSLocalizedString("expenses.totalRequired", comment: "Total is required and must be a number"))
-            return
+        guard let totalText = totalTextField.text, Double(totalText) != nil else {
+            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: ""),
+                      message: NSLocalizedString("expenses.totalRequired", comment: ""), onOK: nil)
+            return false
         }
         guard !selectedAnalyticDistribution.isEmpty else {
-            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: "Validation"),
-                     message: NSLocalizedString("expenses.analyticRequired", comment: "Please select analytic distribution"))
-            return
+            showAlert(title: NSLocalizedString("expenses.validationTitle", comment: ""),
+                      message: NSLocalizedString("expenses.analyticRequired", comment: ""), onOK: nil)
+            return false
         }
-        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
-            showAlert(title: NSLocalizedString("expenses.error", comment: "Error"),
-                     message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing"))
-            return
+        guard UserDefaults.standard.string(forKey: "employeeToken") != nil else {
+            showAlert(title: NSLocalizedString("expenses.error", comment: ""),
+                      message: NSLocalizedString("expenses.tokenMissing", comment: ""), onOK: nil)
+            return false
         }
+        return true
+    }
 
-      
+    // MARK: - Perform Save / Update
 
-        showLoader(message: NSLocalizedString("expenses.pleaseWait", comment: "Please wait"))
-        let apiDateString = selectedDate.toAPIDateString()
-        let totalAmountInEGP = normalizedTotalAmountForServer(from:totalAmount)
+    private func performSave() {
+        let token = UserDefaults.standard.string(forKey: "employeeToken")!
+        let categoryId = selectedCategoryId!
+        let totalAmount = Double(totalTextField.text ?? "0")!
+        let apiDateString = selectedDate!.toAPIDateString()
+        let totalAmountInEGP = normalizedTotalAmountForServer(from: totalAmount)
 
         var analyticDistributionStr: [String: Int] = [:]
         for (key, value) in selectedAnalyticDistribution {
             analyticDistributionStr[String(key)] = value
         }
 
-        // Build attachment array from selected file
         var attachmentsArray: [[String: String]] = []
         if let data = attachmentData,
            let filename = attachmentFilename,
            let mime = attachmentMimeType {
-            let base64 = data.base64EncodedString()
-            attachmentsArray.append([
-                "name": filename,
-                "data": base64,
-                "mimetype": mime
-            ])
+            attachmentsArray.append(["name": filename, "data": data.base64EncodedString(), "mimetype": mime])
         }
 
-        // MARK: Edit mode
+        showLoadingOverlay()
+
         if let expense = expenseToEdit {
+            // Edit mode
             expensesViewModel.updateExpense(
-                token: token,
-                expenseId: expense.id,
+                token: token, expenseId: expense.id,
                 name: descriptionTextField.text ?? "",
-                product_id: categoryId,
-                total_amount: totalAmountInEGP,
-                date: apiDateString,
-                description: notesTextField.text ?? "",
+                product_id: categoryId, total_amount: totalAmountInEGP,
+                date: apiDateString, description: notesTextField.text ?? "",
                 currency_id: selectedCurrencyId ?? 0,
                 analytic_distribution: analyticDistributionStr,
-                tax_ids: selectedTaxIds,
-                payment_mode: selectedPaidBy,
-                attachments: attachmentsArray
+                tax_ids: selectedTaxIds, payment_mode: selectedPaidBy,
+                attachments: attachmentsArray,
+                delete_attachment_ids: deleteAttachmentIds
             ) { [weak self] result in
                 DispatchQueue.main.async {
-                    self?.hideLoader()
+                    self?.hideLoadingOverlay()
                     switch result {
                     case .success:
                         self?.onExpenseUpdated?()
                         self?.showAlert(
-                            title: NSLocalizedString("expenses.success", comment: "Success"),
-                            message: NSLocalizedString("expenses.updatedSuccessfully", comment: "Expense updated successfully"),
+                            title: NSLocalizedString("expenses.success", comment: ""),
+                            message: NSLocalizedString("expenses.updatedSuccessfully", comment: ""),
                             onOK: { self?.dismiss(animated: true) }
                         )
                     case .failure(let error):
-                        if case .requestFailed(let backendMessage) = error {
-                            self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: backendMessage)
-                        } else {
-                            self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: error.localizedDescription)
-                        }
+                        let msg: String
+                        if case .requestFailed(let m) = error { msg = m } else { msg = error.localizedDescription }
+                        self?.showAlert(title: NSLocalizedString("expenses.error", comment: ""), message: msg, onOK: nil)
                     }
                 }
             }
-            return
-        }
-
-        // MARK: Create mode
-        expensesViewModel.createExpense(
-            token: token,
-            name: descriptionTextField.text ?? "",
-            product_id: categoryId,
-            total_amount: totalAmountInEGP,
-            date: apiDateString,
-            description: notesTextField.text ?? "",
-            analytic_distribution: analyticDistributionStr,
-            tax_ids: selectedTaxIds,
-            payment_mode: selectedPaidBy,
-            attachments: attachmentsArray
-        ) { [weak self] result in
-            DispatchQueue.main.async {
-                self?.hideLoader()
-                switch result {
-                case .success(let response):
-                    self?.onExpenseCreated?()
-                    self?.showAlert(
-                        title: NSLocalizedString("expenses.success", comment: "Success"),
-                        message: NSLocalizedString("expenses.createdSuccessfully", comment: "Expense created successfully"),
-                        onOK: { self?.dismiss(animated: true) }
-                    )
-                    self?.clearForm()
-                    print("✅ Expense created: \(response.expense_id)")
-                case .failure(let error):
-                    if case .requestFailed(let backendMessage) = error {
-                        self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: backendMessage)
-                        print("❌ Backend Error: \(backendMessage)")
-                    } else {
-                        self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: error.localizedDescription)
-                        print("❌ Network Error: \(error.localizedDescription)")
+        } else {
+            // Create mode
+            expensesViewModel.createExpense(
+                token: token, name: descriptionTextField.text ?? "",
+                product_id: categoryId, total_amount: totalAmountInEGP,
+                date: apiDateString, description: notesTextField.text ?? "",
+                analytic_distribution: analyticDistributionStr,
+                tax_ids: selectedTaxIds, payment_mode: selectedPaidBy,
+                attachments: attachmentsArray
+            ) { [weak self] result in
+                DispatchQueue.main.async {
+                    self?.hideLoadingOverlay()
+                    switch result {
+                    case .success(let response):
+                        self?.onExpenseCreated?()
+                        self?.clearForm()
+                        print("✅ Expense created: \(response.expense_id)")
+                        self?.showAlert(
+                            title: NSLocalizedString("expenses.success", comment: ""),
+                            message: NSLocalizedString("expenses.createdSuccessfully", comment: ""),
+                            onOK: { self?.dismiss(animated: true) }
+                        )
+                    case .failure(let error):
+                        let msg: String
+                        if case .requestFailed(let m) = error { msg = m } else { msg = error.localizedDescription }
+                        self?.showAlert(title: NSLocalizedString("expenses.error", comment: ""), message: msg, onOK: nil)
                     }
                 }
             }
         }
-    }
-
-    @IBAction func discardButtonTapped(_ sender: Any) {
-        clearForm()
     }
 
     // MARK: - Helpers
@@ -650,6 +662,9 @@ class AddExpensesViewController: UIViewController {
         attachmentData = nil
         attachmentFilename = nil
         attachmentMimeType = nil
+        existingAttachments.removeAll()
+        deleteAttachmentIds.removeAll()
+        updateAttachmentButtonIcon()
         setConversionStack(hidden: true)
     }
 
@@ -670,7 +685,7 @@ class AddExpensesViewController: UIViewController {
         let overlay = UIView(frame: view.bounds)
         overlay.backgroundColor = UIColor.black.withAlphaComponent(0.3)
         let indicator = UIActivityIndicatorView(style: .large)
-        indicator.color = .systemBlue
+        indicator.color = UIColor.purplecolor
         indicator.center = overlay.center
         indicator.startAnimating()
         overlay.addSubview(indicator)
@@ -746,6 +761,12 @@ class AddExpensesViewController: UIViewController {
             }.joined(separator: ", ")
             analyticDistributionTextField.text = display
         }
+
+        // Prefill existing attachments
+        if let atts = expense.attachments, !atts.isEmpty {
+            existingAttachments = atts
+        }
+        updateAttachmentButtonIcon()
     }
 }
 
@@ -825,6 +846,7 @@ extension AddExpensesViewController: UIImagePickerControllerDelegate, UINavigati
             attachmentFilename = "photo_\(Int(Date().timeIntervalSince1970)).jpg"
             attachmentMimeType = "image/jpeg"
             print("📎 Photo attached: \(attachmentFilename ?? ""), size: \(data.count) bytes")
+            updateAttachmentButtonIcon()
         }
     }
 
@@ -857,6 +879,7 @@ extension AddExpensesViewController: UIDocumentPickerDelegate {
             }
 
             print("📎 File attached: \(attachmentFilename ?? ""), size: \(data.count) bytes")
+            updateAttachmentButtonIcon()
         } catch {
             print("❌ Failed to read file: \(error)")
         }

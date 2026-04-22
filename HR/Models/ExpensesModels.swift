@@ -49,6 +49,15 @@ struct TaxesResult: Codable {
     let data: [Tax]
 }
 
+// MARK: - Expense Attachment
+struct ExpenseAttachment: Codable {
+    let id: Int
+    let name: String
+    let mimetype: String
+    let file_size: Int?
+    let url: String?
+}
+
 // MARK: - Employee Expense
 struct EmployeeExpense: Codable, Identifiable {
     let id: Int
@@ -83,12 +92,17 @@ struct EmployeeExpense: Codable, Identifiable {
     let taxes: [TaxInfo]?
     let analytic_distribution: [String: Double]?
 
+    // Attachments
+    let attachments: [ExpenseAttachment]?
+    let attachment_count: Int?
+
     enum CodingKeys: String, CodingKey {
         case id, name, employee, employee_id, company, company_id, product, product_id
         case total_amount, currency, date, state, sheet_id, sheet_name, description
         case tax_amount, draft_total_amount
         case currency_symbol, currency_position
         case payment_mode, taxes, tax_total_percentage, total_with_tax, analytic_distribution
+        case attachments, attachment_count
     }
 
     init(from decoder: Decoder) throws {
@@ -140,6 +154,8 @@ struct EmployeeExpense: Codable, Identifiable {
         payment_mode = try container.decodeIfPresent(String.self, forKey: .payment_mode)
         taxes = try container.decodeIfPresent([TaxInfo].self, forKey: .taxes)
         analytic_distribution = try container.decodeIfPresent([String: Double].self, forKey: .analytic_distribution)
+        attachments = try container.decodeIfPresent([ExpenseAttachment].self, forKey: .attachments)
+        attachment_count = try container.decodeIfPresent(Int.self, forKey: .attachment_count)
     }
 }
 
