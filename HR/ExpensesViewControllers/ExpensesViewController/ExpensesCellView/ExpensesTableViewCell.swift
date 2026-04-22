@@ -64,9 +64,9 @@ class ExpensesTableViewCell: UITableViewCell {
     }
     
     func setSubmitPendingStyle(_ isPending: Bool) {
-        let iconName = isPending ? "paperplane" : "paperplane"
+        let iconName = isPending ? "paperplane.fill" : "paperplane"
         submitButton?.setImage(UIImage(systemName: iconName), for: .normal)
-        submitButton?.tintColor = isPending ? .systemOrange : UIColor.border
+        submitButton?.tintColor = isPending ? .lightGray : UIColor.border
         submitButton?.isEnabled = !isPending
     }
     
@@ -178,14 +178,17 @@ class ExpensesTableViewCell: UITableViewCell {
             switch expense.state {
             case "draft":      stateColor = .systemGray
                 submitButton?.isEnabled = true
+                submitButton?.tintColor = UIColor.border
             case "submitted":  stateColor = .systemYellow
                 submitButton?.isEnabled = false
                 submitButton?.tintColor = UIColor.lightGray
             case "approved":   stateColor = UIColor.border
                 submitButton?.isEnabled = false
+                submitButton?.tintColor = UIColor.lightGray
             default:
                 stateColor = .white
                 submitButton?.isEnabled = false
+                submitButton?.tintColor = UIColor.lightGray
             }
             attributed.addAttribute(.foregroundColor, value: stateColor, range: nsRange)
         }
@@ -199,14 +202,17 @@ class ExpensesTableViewCell: UITableViewCell {
         switch expense.state {
         case "draft":      StatusLabel.textColor = .systemGray
             submitButton?.isEnabled = true
+            submitButton?.tintColor = UIColor.border
         case "submitted":  StatusLabel.textColor = .systemYellow
             submitButton?.tintColor = UIColor.lightGray
             submitButton?.isEnabled = false
         case "approved":   StatusLabel.textColor = UIColor.border
             submitButton?.isEnabled = false
+            submitButton?.tintColor = UIColor.lightGray
         default:
             StatusLabel.textColor = .white
             submitButton?.isEnabled = false
+            submitButton?.tintColor = UIColor.lightGray
         }
         
     }
