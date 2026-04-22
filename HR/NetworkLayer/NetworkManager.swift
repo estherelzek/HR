@@ -55,14 +55,20 @@ final class OfflineURLStorage {
     }
     
     func isTimeSetAutomatically() -> Bool {
+        #if targetEnvironment(simulator)
+        // Simulator cannot read system time preferences — always assume automatic
+        print("⚠️ Running on Simulator — assuming time is set automatically")
+        return true
+        #else
         guard let automatic = CFPreferencesCopyAppValue(
             "TMAutomaticTimeEnabled" as CFString,
             "com.apple.preferences.datetime" as CFString
         ) as? Bool else {
-           print("If we can’t read it, assume false (manual)") 
+           print("If we can't read it, assume false (manual)")
             return false
         }
         return automatic
+        #endif
     }
 }
 

@@ -1,4 +1,4 @@
-//
+ //
 //  API.swift
 //  HR
 //
@@ -114,7 +114,8 @@ enum API: Endpoint {
            description: String,
            analytic_distribution: [String: Int],
            tax_ids: [Int],
-           payment_mode: String
+           payment_mode: String,
+           attachments: [[String: String]] = []
        )
     case getCurrencies(token: String)
     case getEmployeeExpenses(token: String)
@@ -133,7 +134,9 @@ enum API: Endpoint {
         currency_id: Int,
         analytic_distribution: [String: Int],
         tax_ids: [Int],
-        payment_mode: String
+        payment_mode: String,
+        attachments: [[String: String]] = [],
+        delete_attachment_ids: [Int] = []
     )
     case updateReport(
         token: String,
@@ -411,10 +414,8 @@ enum API: Endpoint {
                    ]
                    return try? JSONSerialization.data(withJSONObject: payload)
 
-               case let .createExpense(token, name, product_id, total_amount, date, description, analytic_distribution, tax_ids,payment_mode):
-                   let payload: [String: Any] = [
-                       "jsonrpc": "2.0",
-                       "params": [
+               case let .createExpense(token, name, product_id, total_amount, date, description, analytic_distribution, tax_ids, payment_mode, attachments):
+                   var params: [String: Any] = [
                            "token": token,
                            "name": name,
                            "product_id": product_id,
@@ -424,7 +425,13 @@ enum API: Endpoint {
                            "analytic_distribution": analytic_distribution,
                            "tax_ids": tax_ids,
                            "payment_mode": payment_mode
-                       ]
+                   ]
+                   if !attachments.isEmpty {
+                       params["attachments"] = attachments
+                   }
+                   let payload: [String: Any] = [
+                       "jsonrpc": "2.0",
+                       "params": params
                    ]
                    return try? JSONSerialization.data(withJSONObject: payload)
             
@@ -490,11 +497,8 @@ enum API: Endpoint {
             ]
             return try? JSONSerialization.data(withJSONObject: payload)
 
-        case let .updateExpense(token, expense_id, name, product_id, total_amount, date, description, currency_id, analytic_distribution, tax_ids, payment_mode):
-            let payload: [String: Any] = [
-                "jsonrpc": "2.0",
-                "method": "call",
-                "params": [
+        case let .updateExpense(token, expense_id, name, product_id, total_amount, date, description, currency_id, analytic_distribution, tax_ids, payment_mode, attachments, delete_attachment_ids):
+            var params: [String: Any] = [
                     "token": token,
                     "expense_id": expense_id,
                     "name": name,
@@ -506,9 +510,18 @@ enum API: Endpoint {
                     "analytic_distribution": analytic_distribution,
                     "tax_ids": tax_ids,
                     "payment_mode": payment_mode
-                ]
             ]
-            
+            if !attachments.isEmpty {
+                params["attachments"] = attachments
+            }
+            if !delete_attachment_ids.isEmpty {
+                params["delete_attachment_ids"] = delete_attachment_ids
+            }
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": params
+            ]
             return try? JSONSerialization.data(withJSONObject: payload)
 
         case let .updateReport(token, sheet_id, name, expense_ids, remove_expense_ids):

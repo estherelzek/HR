@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="AddExpensesViewController" customModule="HR" customModuleProvider="target">
             <connections>
+                <outlet property="addAttachmentButton" destination="MOU-5f-tId" id="VTE-Uv-DgR"/>
                 <outlet property="addExpensesTitleLabel" destination="TK0-oG-U4a" id="vv3-8d-KJa"/>
                 <outlet property="analyticDistributionTextField" destination="QFG-4e-oxJ" id="nUN-ks-MgW"/>
                 <outlet property="analyticDistributionTitleLabel" destination="tiW-GF-Xdo" id="41b-lF-TTh"/>

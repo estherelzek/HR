@@ -109,6 +109,7 @@ class ExpensesViewModel {
         analytic_distribution: [String: Int],
         tax_ids: [Int],
         payment_mode: String,
+        attachments: [[String: String]] = [],
         completion: @escaping (Result<CreateExpenseResponseData, APIError>) -> Void
     ) {
         isLoading = true
@@ -123,7 +124,8 @@ class ExpensesViewModel {
             description: description,
             analytic_distribution: analytic_distribution,
             tax_ids: tax_ids,
-            payment_mode: payment_mode
+            payment_mode: payment_mode,
+            attachments: attachments
         )
         
         NetworkManager.shared.requestDecodable(endpoint, as: CreateExpenseResponseNew.self) { [weak self] result in
@@ -377,6 +379,8 @@ class ExpensesViewModel {
         analytic_distribution: [String: Int],
         tax_ids: [Int],
         payment_mode: String,
+        attachments: [[String: String]] = [],
+        delete_attachment_ids: [Int] = [],
         completion: @escaping (Result<UpdateExpenseResponse, APIError>) -> Void
     ) {
         isLoading = true
@@ -393,7 +397,9 @@ class ExpensesViewModel {
             currency_id: currency_id,
             analytic_distribution: analytic_distribution,
             tax_ids: tax_ids,
-            payment_mode: payment_mode
+            payment_mode: payment_mode,
+            attachments: attachments,
+            delete_attachment_ids: delete_attachment_ids
         )
 
         NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<UpdateExpenseResponse>.self) { [weak self] result in

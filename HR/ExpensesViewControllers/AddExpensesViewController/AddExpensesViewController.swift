@@ -29,6 +29,7 @@ class AddExpensesViewController: UIViewController {
     @IBOutlet weak var calculatedTotalByCurrency: Inspectablelabel!
     @IBOutlet weak var ratioCurrenciesLabel: Inspectablelabel!
     @IBOutlet weak var flexableStackOfLabels: UIStackView!
+    @IBOutlet weak var addAttachmentButton: UIButton!
 
     // MARK: - Callbacks
     var onExpenseCreated: (() -> Void)?
@@ -39,7 +40,9 @@ class AddExpensesViewController: UIViewController {
     private var isEditMode: Bool { expenseToEdit != nil }
 
     // MARK: - Attachment
-    private var attachmentData: Data?
+    private var attachmentData: Data? = nil {
+        didSet { updateAttachmentButtonIcon() }
+    }
     private var attachmentFilename: String?
     private var attachmentMimeType: String?
 
@@ -72,10 +75,12 @@ class AddExpensesViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("expenseToEdit: \(String(describing: expenseToEdit))")
         flexableStackHeightConstraint = flexableStackOfLabels.constraints.first(where: {
             $0.firstAttribute == .height && $0.secondItem == nil
         })
         setConversionStack(hidden: true, animated: false)
+        updateAttachmentButtonIcon()
         setupLocalization()
         setupSegmentedControl()
         setupDatePicker()
@@ -88,6 +93,7 @@ class AddExpensesViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         scrollView.layoutIfNeeded()
+        updateAttachmentButtonIcon()
     }
 
     deinit {
@@ -410,6 +416,15 @@ class AddExpensesViewController: UIViewController {
 
     // MARK: - Attachment
 
+    private func updateAttachmentButtonIcon() {
+        let hasAttachment = attachmentData != nil
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .medium)
+        let iconName = hasAttachment ? "paperclip.circle.fill" : "paperclip.circle"
+        let image = UIImage(systemName: iconName, withConfiguration: config)
+        addAttachmentButton?.setImage(image, for: .normal)
+        addAttachmentButton?.tintColor = hasAttachment ? .systemGreen : UIColor.border
+    }
+
     @IBAction func addAttachmentButtonTapped(_ sender: Any) {
         let alert = UIAlertController(
             title: NSLocalizedString("expenses.addAttachment", comment: "Add Attachment"),
@@ -522,6 +537,20 @@ class AddExpensesViewController: UIViewController {
         for (key, value) in selectedAnalyticDistribution {
             analyticDistributionStr[String(key)] = value
         }
+
+        // Build attachment array from selected file
+        var attachmentsArray: [[String: String]] = []
+        if let data = attachmentData,
+           let filename = attachmentFilename,
+           let mime = attachmentMimeType {
+            let base64 = data.base64EncodedString()
+            attachmentsArray.append([
+                "name": filename,
+                "data": base64,
+                "mimetype": mime
+            ])
+        }
+
         // MARK: Edit mode
         if let expense = expenseToEdit {
             expensesViewModel.updateExpense(
@@ -535,17 +564,19 @@ class AddExpensesViewController: UIViewController {
                 currency_id: selectedCurrencyId ?? 0,
                 analytic_distribution: analyticDistributionStr,
                 tax_ids: selectedTaxIds,
-                payment_mode: selectedPaidBy
+                payment_mode: selectedPaidBy,
+                attachments: attachmentsArray
             ) { [weak self] result in
                 DispatchQueue.main.async {
                     self?.hideLoader()
                     switch result {
                     case .success:
+                        self?.onExpenseUpdated?()
                         self?.showAlert(
                             title: NSLocalizedString("expenses.success", comment: "Success"),
-                            message: NSLocalizedString("expenses.updatedSuccessfully", comment: "Expense updated successfully")
+                            message: NSLocalizedString("expenses.updatedSuccessfully", comment: "Expense updated successfully"),
+                            onOK: { self?.dismiss(animated: true) }
                         )
-                        self?.onExpenseUpdated?()
                     case .failure(let error):
                         if case .requestFailed(let backendMessage) = error {
                             self?.showAlert(title: NSLocalizedString("expenses.error", comment: "Error"), message: backendMessage)
@@ -568,18 +599,20 @@ class AddExpensesViewController: UIViewController {
             description: notesTextField.text ?? "",
             analytic_distribution: analyticDistributionStr,
             tax_ids: selectedTaxIds,
-            payment_mode: selectedPaidBy
+            payment_mode: selectedPaidBy,
+            attachments: attachmentsArray
         ) { [weak self] result in
             DispatchQueue.main.async {
                 self?.hideLoader()
                 switch result {
                 case .success(let response):
+                    self?.onExpenseCreated?()
                     self?.showAlert(
                         title: NSLocalizedString("expenses.success", comment: "Success"),
-                        message: NSLocalizedString("expenses.createdSuccessfully", comment: "Expense created successfully")
+                        message: NSLocalizedString("expenses.createdSuccessfully", comment: "Expense created successfully"),
+                        onOK: { self?.dismiss(animated: true) }
                     )
                     self?.clearForm()
-                    self?.onExpenseCreated?()
                     print("✅ Expense created: \(response.expense_id)")
                 case .failure(let error):
                     if case .requestFailed(let backendMessage) = error {
@@ -620,9 +653,11 @@ class AddExpensesViewController: UIViewController {
         setConversionStack(hidden: true)
     }
 
-    private func showAlert(title: String, message: String) {
+    private func showAlert(title: String, message: String, onOK: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: ""), style: .default))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("common.ok", comment: ""), style: .default) { _ in
+            onOK?()
+        })
         present(alert, animated: true)
     }
 
