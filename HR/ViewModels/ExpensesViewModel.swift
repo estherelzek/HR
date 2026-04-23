@@ -206,8 +206,11 @@ class ExpensesViewModel {
 
                 switch result {
                 case .success(let response):
+                    // Save is_17_version flag (default to false if nil)
+                    let is17 = response.result.is_17_version ?? false
+                    UserDefaults.standard.set(is17, forKey: "is_17_version")
                     completion(.success(response.result.data))
-                    print("✅ Employee Expenses fetched: \(response.result.count)")
+                    print("✅ Employee Expenses fetched: \(response)")
 
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription

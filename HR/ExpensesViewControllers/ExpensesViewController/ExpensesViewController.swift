@@ -78,6 +78,9 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
             switch result {
             case .success(let expenses):
                 self.expensesList = expenses
+                // Update report scenario from saved flag
+                self.isReportScenario = UserDefaults.standard.bool(forKey: "is_17_version")
+                self.ReportsButton.isHidden = !self.isReportScenario
                 self.tableView.reloadData()
             case .failure(let error):
                 print("❌ Failed to load expenses: \(error.localizedDescription)")
@@ -439,7 +442,7 @@ extension ExpensesViewController {
 
         // Normal mode — tap cell = edit
         let state = expense.state.lowercased()
-        guard state == "draft" || state == "submitted" else {
+        guard state == "draft"  else {
             showAlert(
                 title: NSLocalizedString("expenses.error", comment: "Error"),
                 message: NSLocalizedString("expenses.cannotEditMessage", comment: "")

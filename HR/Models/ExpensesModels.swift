@@ -163,6 +163,7 @@ struct EmployeeExpensesResult: Codable {
     let status: String
     let message: String
     let count: Int
+    let is_17_version: Bool?
     let data: [EmployeeExpense]
 }
 

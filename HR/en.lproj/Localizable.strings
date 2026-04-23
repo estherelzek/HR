@@ -444,7 +444,7 @@
 "report.namePlaceholder" = "Report name";
 "report.updateFailed" = "Failed to update report.";
 "report.updatedSuccessfully" = "Report updated successfully.";
-"report.cannotEditMessage" = "Only reports with Draft or Submitted status can be edited.";
+
 "report.nameRequired" = "Report name is required.";
 "report.selectAtLeastOneExpense" = "Please select at least one expense.";
 "common.noResults" = "No results found.";
@@ -462,3 +462,4 @@
 "expenses.choosePhoto" = "Choose Photo";
 "expenses.chooseFile" = "Choose File (PDF, etc.)";
 "expenses.removeAttachment" = "Remove Attachment";
+"expenses.cannotEditMessage" = "Expenses can only be edited when in draft state.";

@@ -440,7 +440,7 @@
 "common.loading" = "جاري التحميل...";
 "common.noResults" = "لا توجد نتائج";
 
-"expenses.cannotEditMessage" = "يمكن تعديل المصروفات في حالة المسودة أو المقدمة فقط.";
+"expenses.cannotEditMessage" = "يمكن تعديل المصروفات في حالة المسودة .";
 "report.editTitle" = "تعديل التقرير";
 "report.editMessage" = "قم بتحديث اسم التقرير والمصروفات";
 "report.namePlaceholder" = "اسم التقرير";
