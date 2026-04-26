@@ -66,7 +66,7 @@ class NotificationManager {
         content.title = NSLocalizedString("checkout_reminder_title", comment: "Time to Check Out")
         content.body = NSLocalizedString("checkout_reminder_body", comment: "You've completed your working hours. Don't forget to check out!")
         content.sound = .default
-        content.badge = 1
+        content.badge = NSNumber(value: NotificationStore.shared.count() + 1)
         
         let triggerDate = Calendar.current.dateComponents(
             [.year, .month, .day, .hour, .minute, .second],

@@ -34,6 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         requestNotificationAuthorization()
         application.registerForRemoteNotifications()
         Messaging.messaging().delegate = self
+        UIApplication.shared.applicationIconBadgeNumber = 0
         return true
     }
     
@@ -125,6 +126,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     ) {
 
         UserDefaults.standard.set(true, forKey: "openedFromNotification")
+        UIApplication.shared.applicationIconBadgeNumber = 0
+        NotificationStore.shared.clearBadge()
 
         NotificationCenter.default.post(
             name: .openNotificationsScreen,

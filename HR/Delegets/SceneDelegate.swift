@@ -93,6 +93,7 @@ import UIKit
         func sceneDidBecomeActive(_ scene: UIScene) {
             print("📱 App became active — trying to resend offline requests...")
        //    NetworkManager.shared.resendOfflineRequests()
+            UIApplication.shared.applicationIconBadgeNumber = 0
         }
 
         func sceneDidDisconnect(_ scene: UIScene) {

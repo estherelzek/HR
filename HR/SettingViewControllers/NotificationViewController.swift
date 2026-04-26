@@ -27,6 +27,7 @@ class NotificationViewController: UIViewController {
         setUpTexts()
         setupTableView()
         loadNotifications()
+        NotificationStore.shared.clearBadge()
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(newNotificationReceived),
