@@ -243,6 +243,7 @@ class ScanAndInfoViewController: UIViewController , AVCaptureMetadataOutputObjec
     }
 
     func setUpTexts() {
+        scanQRbutton.setImage(UIImage(named: "scanning"), for: .normal)
         doneButton.setTitle(NSLocalizedString("done_button", comment: ""), for: .normal)
         enterCompanyInfoLabel.text = NSLocalizedString("enter-company-info", comment: "")
         orButton.text = NSLocalizedString("or", comment: "")

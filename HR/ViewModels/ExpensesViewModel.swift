@@ -222,11 +222,11 @@ class ExpensesViewModel {
     }
 
     // MARK: - Submit Expense
-    func submitExpense(token: String, expenseId: Int , name: String , completion: @escaping (Result<SubmitExpenseResponse, APIError>) -> Void) {
+    func submitExpense(token: String, expenseIds: [Int], name: String, completion: @escaping (Result<SubmitExpenseResponse, APIError>) -> Void) {
         isLoading = true
         errorMessage = nil
 
-        let endpoint = API.submitExpense(token: token, expense_id: expenseId , name: name)
+        let endpoint = API.submitExpense(token: token, expense_ids: expenseIds, name: name)
 
         NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<SubmitExpenseResponse>.self) { [weak self] result in
             DispatchQueue.main.async {
@@ -241,13 +241,13 @@ class ExpensesViewModel {
                         print("❌ Submit Expense Error: \(msg)")
                     } else {
                         completion(.success(response.result))
-                        print("✅ Expense \(expenseId) submitted. Sheet ID: \(response.result.sheet_id ?? -1)")
+                        print("✅ Expenses \(expenseIds) submitted. Sheet ID: \(response.result.sheet_id ?? -1)")
                     }
 
                 case .failure(let error):
                     self?.errorMessage = error.localizedDescription
                     completion(.failure(error))
-                    print("❌ Failed to submit expense \(expenseId): \(error)")
+                 //   print("❌ Failed to submit expense \(expenseId): \(error)")
                 }
             }
         }

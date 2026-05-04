@@ -235,49 +235,35 @@ class CreateReportsViewController: UIViewController, UISheetPresentationControll
             return
         }
 
-        // MARK: Create mode — batch submit expenses
+        // MARK: Create mode — submit all expenses in one request
         let expenseIds = selectedExpenses.map { $0.id }
         print("✅ Submitting expense IDs:", expenseIds)
 
-        var successCount = 0
-        var failedIds: [Int] = []
-        let group = DispatchGroup()
-
         showLoader()
-        for expenseId in expenseIds {
-            group.enter()
-            expensesViewModel.submitExpense(token: token, expenseId: expenseId , name: name ) { result in
-                switch result {
-                case .success(let response):
-                    print("✅ Expense \(expenseId) submitted — sheet: \(response.sheet_id ?? -1), state: \(response.state ?? "")")
-                    successCount += 1
-                case .failure(let error):
-                    print("❌ Failed to submit expense \(expenseId): \(error.localizedDescription)")
-                    failedIds.append(expenseId)
-                }
-                group.leave()
-            }
-        }
-
-        group.notify(queue: .main) { [weak self] in
+        expensesViewModel.submitExpense(token: token, expenseIds: expenseIds, name: name) { [weak self] result in
             guard let self = self else { return }
             self.hideLoader()
-            if failedIds.isEmpty {
+
+            switch result {
+            case .success(let response):
+                print("✅ All expenses submitted — sheet: \(response.sheet_id ?? -1), state: \(response.state ?? "")")
                 self.showReportAlert(
                     title: NSLocalizedString("expenses.success", comment: "Success"),
-                    message: String(format: NSLocalizedString("report.submittedSuccess", comment: ""), successCount),
+                    message: String(format: NSLocalizedString("report.submittedSuccess", comment: ""), expenseIds.count),
                     onOK: { [weak self] in
                         self?.dismiss(animated: true)
                     }
                 )
-            } else {
+            case .failure(let error):
+                let message: String
+                if case .requestFailed(let backendMessage) = error {
+                    message = backendMessage
+                } else {
+                    message = error.localizedDescription
+                }
                 self.showReportAlert(
                     title: NSLocalizedString("expenses.error", comment: "Error"),
-                    message: String(
-                        format: NSLocalizedString("report.submittedPartial", comment: ""),
-                        successCount,
-                        failedIds.count
-                    )
+                    message: message
                 )
             }
         }

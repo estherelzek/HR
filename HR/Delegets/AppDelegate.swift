@@ -35,6 +35,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         application.registerForRemoteNotifications()
         Messaging.messaging().delegate = self
         UIApplication.shared.applicationIconBadgeNumber = 0
+        
+        // MARK: - Check for location updates on app launch
+        let locationVM = LocationUpdateViewModel()
+        locationVM.checkLocationUpdates { result in
+            switch result {
+            case .success(let changed):
+                if changed {
+                    print("📍 Location data has been refreshed")
+                } else {
+                    print("📍 Location data is current")
+                }
+            case .failure(let error):
+                print("⚠️ Could not check location updates: \(error)")
+            }
+        }
+        
         return true
     }
     
