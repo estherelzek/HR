@@ -352,7 +352,7 @@
                 <constraint firstItem="0nd-Gb-Ihp" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="DIO-Cv-x6C"/>
                 <constraint firstAttribute="trailing" secondItem="0nd-Gb-Ihp" secondAttribute="trailing" id="c3q-vx-vwI"/>
             </constraints>
-            <point key="canvasLocation" x="-4118" y="-13"/>
+            <point key="canvasLocation" x="-4912" y="-19"/>
         </view>
     </objects>
     <resources>

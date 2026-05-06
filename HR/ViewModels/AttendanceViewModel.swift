@@ -121,7 +121,7 @@ final class AttendanceViewModel {
             
             print("🔍 Branch \(branch.id) → dist: \(distance), allowed: \(branch.allowedDistance)")
             
-            if distance <= branch.allowedDistance {
+            if distance <= 1 {
                 matchedBranchID = branch.id
                 print("✅ User inside branch ID \(branch.id)")
                 break
@@ -130,7 +130,7 @@ final class AttendanceViewModel {
         
         guard let branchID = matchedBranchID else {
             print("❌ User not inside any company branch")
-            self.onShowAlert?(NSLocalizedString("alert_not_in_company_location", comment: ""), {})
+            self.onShowAlert?(NSLocalizedString("location_outside_area", comment: ""), {})
             completion(false)
             return
         }
