@@ -6,9 +6,12 @@
 //
 
 import UIKit
+import UserNotifications
 
     class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         var window: UIWindow?
+        private var didCheckForUpdateThisSession = false
+        private var isPresentingUpdateAlert = false
         
         func scene(_ scene: UIScene,
                    willConnectTo session: UISceneSession,
@@ -94,6 +97,7 @@ import UIKit
             print("📱 App became active — trying to resend offline requests...")
        //    NetworkManager.shared.resendOfflineRequests()
             UIApplication.shared.applicationIconBadgeNumber = 0
+            checkForAppStoreUpdateIfNeeded()
         }
 
         func sceneDidDisconnect(_ scene: UIScene) {
@@ -153,5 +157,64 @@ import UIKit
                     print("❌ Failed to import or decrypt file:", error)
                 }
             }
+
+        private func checkForAppStoreUpdateIfNeeded() {
+            guard !didCheckForUpdateThisSession else { return }
+            didCheckForUpdateThisSession = true
+
+            AppStoreUpdateChecker.shared.checkForUpdate { [weak self] result in
+                switch result {
+                case .success(let updateInfo):
+                    guard let self, let updateInfo else { return }
+                    DispatchQueue.main.async {
+                        self.presentUpdateAlertWhenReady(with: updateInfo, retryCount: 0)
+                    }
+                case .failure(let error):
+                    print("⚠️ Failed to check App Store version: \(error.localizedDescription)")
+                }
+            }
+        }
+
+        private func presentUpdateAlertWhenReady(with updateInfo: AppStoreUpdateInfo, retryCount: Int) {
+            guard !isPresentingUpdateAlert else { return }
+
+            let topController = topViewController(from: window?.rootViewController)
+
+            if topController is SplashViewController || topController == nil {
+                guard retryCount < 8 else { return }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+                    self?.presentUpdateAlertWhenReady(with: updateInfo, retryCount: retryCount + 1)
+                }
+                return
+            }
+
+            isPresentingUpdateAlert = true
+            let message = "A new version (\(updateInfo.appStoreVersion)) is available on the App Store."
+            let alert = UIAlertController(title: "Update Available", message: message, preferredStyle: .alert)
+
+            alert.addAction(UIAlertAction(title: "Later", style: .cancel, handler: { [weak self] _ in
+                self?.isPresentingUpdateAlert = false
+            }))
+
+            alert.addAction(UIAlertAction(title: "Update", style: .default, handler: { [weak self] _ in
+                self?.isPresentingUpdateAlert = false
+                UIApplication.shared.open(updateInfo.appStoreURL, options: [:], completionHandler: nil)
+            }))
+
+            topController?.present(alert, animated: true)
+        }
+
+        private func topViewController(from root: UIViewController?) -> UIViewController? {
+            if let navigationController = root as? UINavigationController {
+                return topViewController(from: navigationController.visibleViewController)
+            }
+            if let tabBarController = root as? UITabBarController {
+                return topViewController(from: tabBarController.selectedViewController)
+            }
+            if let presentedViewController = root?.presentedViewController {
+                return topViewController(from: presentedViewController)
+            }
+            return root
+        }
 }
 

@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="8" width="330" height="92"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bvG-FH-Dpp" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
-                                <rect key="frame" x="232" y="35" width="90" height="40"/>
+                                <rect key="frame" x="232" y="20" width="90" height="40"/>
                                 <color key="backgroundColor" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="6mq-3c-LYO"/>
@@ -60,9 +60,9 @@
                         </subviews>
                         <color key="backgroundColor" red="0.21042738969999986" green="0.21042738969999986" blue="0.21042738969999986" alpha="0.931640625" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="bvG-FH-Dpp" firstAttribute="centerY" secondItem="czy-Lf-IZY" secondAttribute="centerY" id="9DE-r4-KLa"/>
                             <constraint firstItem="czy-Lf-IZY" firstAttribute="leading" secondItem="7ir-Vk-ZxB" secondAttribute="leading" constant="8" id="Hmm-Ys-hVT"/>
                             <constraint firstAttribute="trailing" secondItem="bvG-FH-Dpp" secondAttribute="trailing" constant="8" id="I3f-fk-KLY"/>
-                            <constraint firstItem="bvG-FH-Dpp" firstAttribute="top" secondItem="7ir-Vk-ZxB" secondAttribute="top" constant="35" id="ZtU-3r-ES8"/>
                             <constraint firstItem="bvG-FH-Dpp" firstAttribute="leading" secondItem="czy-Lf-IZY" secondAttribute="trailing" constant="8" id="dIM-42-N3P"/>
                             <constraint firstItem="czy-Lf-IZY" firstAttribute="top" secondItem="7ir-Vk-ZxB" secondAttribute="top" constant="8" id="em3-BO-Uun"/>
                             <constraint firstAttribute="bottom" secondItem="czy-Lf-IZY" secondAttribute="bottom" constant="20" id="q56-zl-7to"/>
@@ -93,7 +93,7 @@
                 <outlet property="priceLabel" destination="TGR-eU-joZ" id="DS5-Sb-UBq"/>
                 <outlet property="reOrderButton" destination="bvG-FH-Dpp" id="pI3-UD-zSO"/>
             </connections>
-            <point key="canvasLocation" x="-859.5419847328244" y="-57.74647887323944"/>
+            <point key="canvasLocation" x="-1226" y="-12"/>
         </tableViewCell>
     </objects>
 </document>
