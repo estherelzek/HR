@@ -253,6 +253,36 @@ class ExpensesViewModel {
         }
     }
 
+    // MARK: - Submit Report (sheet)
+    func submitReport(token: String, sheetId: Int, completion: @escaping (Result<SubmitReportResponse, APIError>) -> Void) {
+        isLoading = true
+        errorMessage = nil
+
+        let endpoint = API.submitReport(token: token, sheet_id: sheetId)
+
+        NetworkManager.shared.requestDecodable(endpoint, as: JsonRPCResponse<SubmitReportResponse>.self) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.isLoading = false
+
+                switch result {
+                case .success(let response):
+                    if response.result.status.lowercased() == "error" {
+                        let msg = response.result.message
+                        self?.errorMessage = msg
+                        completion(.failure(.requestFailed(msg)))
+                    } else {
+                        completion(.success(response.result))
+                        print("✅ Report (sheet) \(sheetId) submitted.")
+                    }
+
+                case .failure(let error):
+                    self?.errorMessage = error.localizedDescription
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
     // MARK: - Fetch Currencies
     func fetchCurrencies(token: String, completion: @escaping (Result<[Currency], APIError>) -> Void) {
         

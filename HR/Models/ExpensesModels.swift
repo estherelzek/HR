@@ -202,6 +202,13 @@ struct SubmitExpenseResponse: Codable {
     let state: String?
 }
 
+// MARK: - Submit Report Response
+struct SubmitReportResponse: Codable {
+    let status: String
+    let message: String
+    let sheet_id: Int?
+}
+
 // MARK: - Expense Categories
 struct ExpenseCategory: Codable, Identifiable {
     let id: Int

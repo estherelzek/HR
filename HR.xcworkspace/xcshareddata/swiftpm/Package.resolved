@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
-        "revision" : "674d9a7ee9858207181a3dd0b42c77298c6fb71b",
-        "version" : "12.8.0"
+        "revision" : "d10045cace0b4c335c4efa8f7df7e9a9fc5a7c60",
+        "version" : "12.13.0"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/googleads/google-ads-on-device-conversion-ios-sdk",
       "state" : {
-        "revision" : "35b601a60fbbea2de3ea461f604deaaa4d8bbd0c",
-        "version" : "3.2.0"
+        "revision" : "19dffda9a9caf8d86570ff846535902d8509d7bf",
+        "version" : "3.5.0"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/GoogleAppMeasurement.git",
       "state" : {
-        "revision" : "2ffd220823f3716904733162e9ae685545c276d1",
-        "version" : "12.8.0"
+        "revision" : "c2c76bebcfbb90d90ea10599f934f9af160e1604",
+        "version" : "12.13.0"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/google/gtm-session-fetcher.git",
       "state" : {
-        "revision" : "fb7f2740b1570d2f7599c6bb9531bf4fad6974b7",
-        "version" : "5.0.0"
+        "revision" : "c0ac7575d70050c2973ba2318bd5af47f8e8153a",
+        "version" : "5.3.0"
       }
     },
     {

@@ -463,3 +463,11 @@
 "expenses.chooseFile" = "Choose File (PDF, etc.)";
 "expenses.removeAttachment" = "Remove Attachment";
 "expenses.cannotEditMessage" = "Expenses can only be edited when in draft state.";
+
+/* Report submission - sheet-level */
+"report.sheetMissing" = "Report ID not found. Please try again.";
+"report.submittedSheetSuccess" = "Report submitted successfully.";
+"report.submittedSheetFailed" = "Failed to submit report.";
+"report.submitInProgress" = "Submitting report...";
+"report.sheetAlreadySubmitted" = "Report already submitted.";
+"report.employeeIdMissing" = "Employee ID not available. Please login.";

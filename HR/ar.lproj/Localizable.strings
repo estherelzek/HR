@@ -463,3 +463,11 @@
 "expenses.choosePhoto" = "اختيار صورة";
 "expenses.chooseFile" = "اختيار ملف (PDF، إلخ)";
 "expenses.removeAttachment" = "إزالة المرفق";
+
+/* Report submission - sheet-level */
+"report.sheetMissing" = "لم يتم العثور على معرف التقرير. الرجاء المحاولة مرة أخرى.";
+"report.submittedSheetSuccess" = "تم تقديم التقرير بنجاح.";
+"report.submittedSheetFailed" = "فشل في تقديم التقرير.";
+"report.submitInProgress" = "جارٍ تقديم التقرير...";
+"report.sheetAlreadySubmitted" = "تم تقديم التقرير بالفعل.";
+"report.employeeIdMissing" = "معرّف الموظف غير متوفر. يرجى تسجيل الدخول.";

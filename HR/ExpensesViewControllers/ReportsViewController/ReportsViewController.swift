@@ -172,8 +172,64 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
         }
 
         cell.configure(with: filteredItems[indexPath.row])
+        let item = filteredItems[indexPath.row]
         cell.selectButton?.isHidden = true
         cell.isReportScenario = true
+
+        // Show submit button only when sheet is draft or submit/submitted
+        let state = item.state.lowercased()
+        let isDraft = state == "draft"
+        let isPending = state == "submit" || state == "submitted"
+        cell.submitButton?.isHidden = !(isDraft || isPending)
+        cell.setSubmitPendingStyle(isPending)
+
+        cell.onSubmitTapped = { [weak self] in
+            guard let self = self else { return }
+
+            // Don't resubmit pending/submitted
+            let state = item.state.lowercased()
+            if state == "submit" || state == "submitted" { return }
+
+            guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+                self.showAlert(
+                    title: NSLocalizedString("expenses.error", comment: "Error"),
+                    message: NSLocalizedString("expenses.tokenMissing", comment: "Token is missing")
+                )
+                return
+            }
+
+            self.showLoader()
+            self.expensesViewModel.submitReport(token: token, sheetId: item.sheet_id) { result in
+                self.hideLoader()
+                switch result {
+                case .success(let response):
+                    if response.sheet_id == item.sheet_id {
+                        self.showAlert(
+                            title: NSLocalizedString("report.submittedSheetSuccess", comment: "Success"),
+                            message: response.message
+                        )
+                        self.loadReports()
+                    } else {
+                        let reason = response.message
+                        self.showAlert(
+                            title: NSLocalizedString("report.submittedSheetFailed", comment: "Error"),
+                            message: reason
+                        )
+                    }
+                case .failure(let error):
+                    let message: String
+                    if case .requestFailed(let backendMessage) = error {
+                        message = backendMessage
+                    } else {
+                        message = error.localizedDescription
+                    }
+                    self.showAlert(
+                        title: NSLocalizedString("report.submittedSheetFailed", comment: "Error"),
+                        message: message
+                    )
+                }
+            }
+        }
         return cell
     }
 

@@ -18,7 +18,8 @@ class ExpensesTableViewCell: UITableViewCell {
     
     var isReportScenario: Bool = false {
         didSet {
-            submitButton?.isHidden = isReportScenario
+            // keep control of submit button visibility to the view controller
+            // so the controller can decide when to show/hide the submit button
         }
     }
 

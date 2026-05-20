@@ -38,7 +38,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         setupLocalization()
         setupTableView()
         loadExpenses()
-        ReportsButton.isHidden = !isReportScenario
+       // ReportsButton.isHidden = !isReportScenario
     }
 
     private func setupTableView() {
@@ -360,39 +360,82 @@ extension ExpensesViewController {
                 )
                 return
             }
-
-            self.showLoader()
-            self.expensesViewModel.sendExpense(token: token, expenseId: expense.id) { result in
-                self.hideLoader()
-
-                switch result {
-                case .success(let response):
-                    if ((response.submitted?.contains(where: { $0.id == expense.id })) != nil) {
-                        self.showAlert(
-                            title: NSLocalizedString("expenses.success", comment: "Success"),
-                            message: response.message
-                        )
-                        self.loadExpenses()
-                    } else {
-                        let reason = response.failed?.first(where: { $0.id == expense.id })?.reason
-                            ?? response.message
-                        self.showAlert(
-                            title: NSLocalizedString("expenses.error", comment: "Error"),
-                            message: reason
-                        )
-                    }
-
-                case .failure(let error):
-                    let message: String
-                    if case .requestFailed(let backendMessage) = error {
-                        message = backendMessage
-                    } else {
-                        message = error.localizedDescription
-                    }
+            // If we are in report scenario, submit the full report (sheet) instead
+            if self.isReportScenario {
+                // Need a sheet id to submit
+                guard let sheetId = expense.sheet_id else {
                     self.showAlert(
                         title: NSLocalizedString("expenses.error", comment: "Error"),
-                        message: message
+                        message: NSLocalizedString("report.sheetIdMissing", comment: "Sheet id is missing")
                     )
+                    return
+                }
+
+                self.showLoader()
+                self.expensesViewModel.submitReport(token: token, sheetId: sheetId) { result in
+                    self.hideLoader()
+                    switch result {
+                    case .success(let response):
+                        if response.sheet_id == sheetId {
+                            self.showAlert(
+                                title: NSLocalizedString("expenses.success", comment: "Success"),
+                                message: response.message
+                            )
+                            self.loadExpenses()
+                        } else {
+                            let reason = response.message
+                            self.showAlert(
+                                title: NSLocalizedString("expenses.error", comment: "Error"),
+                                message: reason
+                            )
+                        }
+                    case .failure(let error):
+                        let message: String
+                        if case .requestFailed(let backendMessage) = error {
+                            message = backendMessage
+                        } else {
+                            message = error.localizedDescription
+                        }
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.error", comment: "Error"),
+                            message: message
+                        )
+                    }
+                }
+            } else {
+                self.showLoader()
+                self.expensesViewModel.sendExpense(token: token, expenseId: expense.id) { result in
+                    self.hideLoader()
+
+                    switch result {
+                    case .success(let response):
+                        if ((response.submitted?.contains(where: { $0.id == expense.id })) != nil) {
+                            self.showAlert(
+                                title: NSLocalizedString("expenses.success", comment: "Success"),
+                                message: response.message
+                            )
+                            self.loadExpenses()
+                        } else {
+                            let reason = response.failed?.first(where: { $0.id == expense.id })?.reason
+                                ?? response.message
+                            self.showAlert(
+                                title: NSLocalizedString("expenses.error", comment: "Error"),
+                                message: reason
+                            )
+                        }
+
+                    case .failure(let error):
+                        let message: String
+                        if case .requestFailed(let backendMessage) = error {
+                            message = backendMessage
+                        } else {
+                            message = error.localizedDescription
+                        }
+                        self.showAlert(
+                            title: NSLocalizedString("expenses.error", comment: "Error"),
+                            message: message
+                        )
+                    }
                 }
             }
         }

@@ -121,6 +121,7 @@ enum API: Endpoint {
    case getEmployeeExpenses(token: String)
    case submitExpense(token: String, expense_ids: [Int], name: String)
    case getExpenseReports(token: String)
+    case submitReport(token: String, sheet_id: Int)
    case deleteExpense(token: String, expense_ids: [Int])
    case deleteReport(token: String, sheet_ids: [Int])
    case updateExpense(
@@ -201,6 +202,8 @@ enum API: Endpoint {
            return "/api/expenses/submit"
        case .getExpenseReports:
            return "/api/expenses/report"
+        case .submitReport:
+            return "/api/expenses/sheet/action_submit"
        case .deleteExpense:
            return "/api/expenses/delete"
        case .deleteReport:
@@ -466,6 +469,16 @@ enum API: Endpoint {
                 ]
             ]
            return try? JSONSerialization.data(withJSONObject: payload)
+        case let .submitReport(token, sheet_id):
+            let payload: [String: Any] = [
+                "jsonrpc": "2.0",
+                "method": "call",
+                "params": [
+                    "token": token,
+                    "sheet_id": sheet_id
+                ]
+            ]
+            return try? JSONSerialization.data(withJSONObject: payload)
            
        case let .getExpenseReports(token):
            let payload: [String: Any] = [
