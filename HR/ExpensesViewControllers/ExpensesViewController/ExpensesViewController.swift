@@ -6,8 +6,9 @@
 //
 
 import UIKit
+import SwiftUI
 
-class ExpensesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ExpensesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
 
     @IBOutlet weak var expensesLabelTitle: Inspectablelabel!
     @IBOutlet weak var backButton: UIButton!
@@ -15,10 +16,14 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet weak var NewButton: InspectableButton!
     @IBOutlet weak var ReportsButton: InspectableButton!
 
+    @IBOutlet weak var filterButton: UIButton!
+    @IBOutlet weak var searchBar: UISearchBar!
     private var actionMenuView: UIView?
     private var overlayView: UIView?
     private let expensesViewModel = ExpensesViewModel()
     private var expensesList: [EmployeeExpense] = []
+    /// Keep the unfiltered list as fetched from server
+    private var allExpensesList: [EmployeeExpense] = []
     private let refreshControl = UIRefreshControl()
     /// true = show ReportsButton, hide submitButton in cells
     /// false = hide ReportsButton, show submitButton in cells
@@ -37,6 +42,10 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         super.viewDidLoad()
         setupLocalization()
         setupTableView()
+        // Setup search bar behavior
+        searchBar.delegate = self
+        searchBar.returnKeyType = .search
+        searchBar.enablesReturnKeyAutomatically = false
         loadExpenses()
        // ReportsButton.isHidden = !isReportScenario
     }
@@ -77,6 +86,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
 
             switch result {
             case .success(let expenses):
+                self.allExpensesList = expenses
                 self.expensesList = expenses
                 // Update report scenario from saved flag
                 self.isReportScenario = UserDefaults.standard.bool(forKey: "is_17_version")
@@ -86,6 +96,111 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
                 print("❌ Failed to load expenses: \(error.localizedDescription)")
             }
         }
+    }
+
+    // MARK: - Filter Presentation
+    private var currentFilters: FiltersData = .empty
+
+    @IBAction func filterButtonTapped(_ sender: Any) {
+        // Present the SwiftUI FiltersView as a bottom sheet
+        let filtersView = FiltersView(initial: currentFilters, onApply: { [weak self] data in
+            guard let self = self else { return }
+            self.currentFilters = data
+            self.applyFilters(data)
+        }, onReset: { [weak self] _ in
+            guard let self = self else { return }
+            self.currentFilters = FiltersData.empty
+            self.applyFilters(FiltersData.empty)
+        })
+
+        let host = UIHostingController(rootView: filtersView)
+        host.modalPresentationStyle = .pageSheet
+        if let sheet = host.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+            sheet.preferredCornerRadius = 20
+        }
+        present(host, animated: true)
+    }
+
+    private func applyFilters(_ filters: FiltersData) {
+        // Compute filtered array and apply
+        let filtered = filteredExpenses(from: filters)
+        self.expensesList = filtered
+        self.tableView.reloadData()
+    }
+
+    /// Returns a filtered expenses array from the master `allExpensesList` without mutating state.
+    private func filteredExpenses(from filters: FiltersData) -> [EmployeeExpense] {
+        var filtered = allExpensesList
+
+        // Date filtering
+        if filters.dateEnabled {
+            let from = Calendar.current.startOfDay(for: filters.fromDate)
+            // include full day for toDate
+            let to = Calendar.current.date(byAdding: DateComponents(day: 1, second: -1), to: filters.toDate) ?? filters.toDate
+
+            filtered = filtered.filter { expense in
+                guard let ed = parseExpenseDate(expense.date) else { return false }
+                return (ed >= from) && (ed <= to)
+            }
+        }
+
+        // Status filtering
+        if filters.statusEnabled, let sel = filters.selectedStatus, !sel.isEmpty {
+            let target = sel.lowercased()
+            filtered = filtered.filter { $0.state.lowercased() == target }
+        }
+
+        // Attachment filtering
+        if filters.attachmentEnabled, let has = filters.hasAttachment {
+            if has {
+                filtered = filtered.filter { ($0.attachments?.isEmpty == false) || (($0.attachment_count ?? 0) > 0) }
+            } else {
+                filtered = filtered.filter { ($0.attachments?.isEmpty ?? true) && (($0.attachment_count ?? 0) == 0) }
+            }
+        }
+
+        return filtered
+    }
+
+    private func parseExpenseDate(_ s: String) -> Date? {
+        // Try several common formats
+        let formats = ["dd-MM-yyyy", "dd/MM/yyyy", "yyyy-MM-dd", "yyyy/MM/dd", "dd-MM-yyyy HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss"]
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        for f in formats {
+            formatter.dateFormat = f
+            if let d = formatter.date(from: s) { return d }
+        }
+        return nil
+    }
+
+    // MARK: - SearchBar (search by name only)
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        // Start from the filtered results according to currentFilters, then apply name filter
+        var base = filteredExpenses(from: currentFilters)
+
+        if !trimmed.isEmpty {
+            base = base.filter { $0.name.range(of: trimmed, options: .caseInsensitive) != nil }
+        }
+
+        self.expensesList = base
+        tableView.reloadData()
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+        // restore filtered results
+        self.expensesList = filteredExpenses(from: currentFilters)
+        tableView.reloadData()
     }
 
     // MARK: - Actions

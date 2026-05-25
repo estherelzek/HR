@@ -23,17 +23,6 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Agy-dj-UA6">
-                    <rect key="frame" x="0.0" y="174" width="393" height="44"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="44" id="nJO-CS-0fr"/>
-                    </constraints>
-                    <textInputTraits key="textInputTraits"/>
-                    <connections>
-                        <outlet property="delegate" destination="-1" id="0Lx-85-7Ja"/>
-                    </connections>
-                </searchBar>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="XFE-nA-OF4" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
                     <rect key="frame" x="0.0" y="226" width="393" height="586"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -58,25 +47,48 @@
                         </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                 </label>
+                <stackView opaque="NO" contentMode="scaleToFill" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="WPS-0u-dnq">
+                    <rect key="frame" x="0.0" y="164" width="393" height="60"/>
+                    <subviews>
+                        <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="Agy-dj-UA6">
+                            <rect key="frame" x="0.0" y="0.0" width="309" height="60"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <textInputTraits key="textInputTraits"/>
+                            <connections>
+                                <outlet property="delegate" destination="-1" id="0Lx-85-7Ja"/>
+                            </connections>
+                        </searchBar>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P9e-Uw-341">
+                            <rect key="frame" x="331" y="0.0" width="62" height="60"/>
+                            <color key="tintColor" name="borderColor"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" image="line.3.horizontal.decrease" catalog="system"/>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="60" id="BzS-gF-8WC"/>
+                    </constraints>
+                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="Agy-dj-UA6" firstAttribute="top" secondItem="35s-TK-lzc" secondAttribute="bottom" constant="12" id="2LM-kg-aXp"/>
                 <constraint firstItem="35s-TK-lzc" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="3DM-9j-Fvg"/>
-                <constraint firstItem="XFE-nA-OF4" firstAttribute="top" secondItem="Agy-dj-UA6" secondAttribute="bottom" constant="8" id="3yl-Fd-eVa"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="WPS-0u-dnq" secondAttribute="trailing" id="CYt-dy-ZMh"/>
+                <constraint firstItem="XFE-nA-OF4" firstAttribute="top" secondItem="WPS-0u-dnq" secondAttribute="bottom" constant="2" id="FLJ-TD-Dik"/>
                 <constraint firstItem="35s-TK-lzc" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="GVJ-B4-nEJ"/>
-                <constraint firstItem="35s-TK-lzc" firstAttribute="trailing" secondItem="Agy-dj-UA6" secondAttribute="trailing" id="GVw-se-SBH"/>
-                <constraint firstItem="Agy-dj-UA6" firstAttribute="trailing" secondItem="XFE-nA-OF4" secondAttribute="trailing" id="Og9-Bt-0s5"/>
+                <constraint firstItem="WPS-0u-dnq" firstAttribute="top" secondItem="35s-TK-lzc" secondAttribute="bottom" constant="2" id="Go7-4d-HTy"/>
+                <constraint firstItem="WPS-0u-dnq" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="OIr-gS-Z2I"/>
+                <constraint firstItem="XFE-nA-OF4" firstAttribute="leading" secondItem="WPS-0u-dnq" secondAttribute="leading" id="f9x-Vg-ywu"/>
                 <constraint firstAttribute="bottom" secondItem="XFE-nA-OF4" secondAttribute="bottom" constant="40" id="fPi-gO-zTw"/>
                 <constraint firstItem="35s-TK-lzc" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="4" id="i8o-IF-UoO"/>
-                <constraint firstItem="35s-TK-lzc" firstAttribute="leading" secondItem="Agy-dj-UA6" secondAttribute="leading" id="yPk-YP-2EX"/>
-                <constraint firstItem="Agy-dj-UA6" firstAttribute="leading" secondItem="XFE-nA-OF4" secondAttribute="leading" id="zw4-2z-lch"/>
+                <constraint firstItem="XFE-nA-OF4" firstAttribute="trailing" secondItem="WPS-0u-dnq" secondAttribute="trailing" id="w18-cG-Inf"/>
             </constraints>
-            <point key="canvasLocation" x="-45" y="-57"/>
+            <point key="canvasLocation" x="-19.083969465648853" y="-13.380281690140846"/>
         </view>
     </objects>
     <resources>
+        <image name="line.3.horizontal.decrease" catalog="system" width="128" height="73"/>
         <namedColor name="basecolorText">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

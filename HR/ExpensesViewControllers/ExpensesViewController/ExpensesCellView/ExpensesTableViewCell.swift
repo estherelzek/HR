@@ -20,6 +20,7 @@ class ExpensesTableViewCell: UITableViewCell {
         didSet {
             // keep control of submit button visibility to the view controller
             // so the controller can decide when to show/hide the submit button
+           
         }
     }
 
@@ -103,6 +104,9 @@ class ExpensesTableViewCell: UITableViewCell {
         )
 
         if let dateRange = fullText.range(of: report.expense.date) {
+            if isReportScenario {
+                submitButton?.isHidden = true
+            }
             let nsRange = NSRange(dateRange, in: fullText)
             attributed.addAttribute(.font, value: UIFont.boldSystemFont(ofSize: 14), range: nsRange)
             attributed.addAttribute(.foregroundColor, value: UIColor.white, range: nsRange)

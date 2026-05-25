@@ -31,18 +31,15 @@
                                         <color key="textColor" name="purplecolor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Xdv-Hm-5e8">
+                                    <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Xdv-Hm-5e8">
                                         <rect key="frame" x="0.0" y="43.666666666666671" width="169" height="34.666666666666671"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="clock" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="N60-JU-48F">
-                                                <rect key="frame" x="0.0" y="8" width="30" height="19"/>
+                                                <rect key="frame" x="0.0" y="8" width="84.666666666666671" height="19"/>
                                                 <color key="tintColor" name="borderColor"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" constant="30" id="8eQ-LA-svz"/>
-                                                </constraints>
                                             </imageView>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vXD-xt-7pM">
-                                                <rect key="frame" x="30" y="7.3333333333333339" width="139" height="20.333333333333329"/>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vXD-xt-7pM">
+                                                <rect key="frame" x="84.666666666666686" y="7.3333333333333339" width="84.333333333333314" height="20.333333333333329"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                 <color key="textColor" name="borderColor"/>
                                                 <nil key="highlightedColor"/>

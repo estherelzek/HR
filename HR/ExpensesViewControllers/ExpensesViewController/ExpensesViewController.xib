@@ -16,6 +16,8 @@
                 <outlet property="ReportsButton" destination="xMc-Oh-bIt" id="NIM-bR-AUf"/>
                 <outlet property="backButton" destination="vZQ-GJ-fQn" id="DyO-Q6-1nd"/>
                 <outlet property="expensesLabelTitle" destination="aKA-Ty-EFJ" id="PSh-zd-bye"/>
+                <outlet property="filterButton" destination="ZVA-yx-raY" id="8sc-K1-MyP"/>
+                <outlet property="searchBar" destination="GKf-Xv-VZt" id="NuP-hg-thi"/>
                 <outlet property="tableView" destination="tIc-o0-kRu" id="NBm-wo-DVh"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -89,7 +91,7 @@
                     </constraints>
                 </stackView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="tIc-o0-kRu" customClass="InspectableTableView" customModule="HR" customModuleProvider="target">
-                    <rect key="frame" x="0.0" y="78" width="393" height="641"/>
+                    <rect key="frame" x="0.0" y="149" width="393" height="570"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
@@ -110,30 +112,57 @@
                         <action selector="trashButtonTapped:" destination="-1" eventType="touchUpInside" id="WhK-Li-x7t"/>
                     </connections>
                 </button>
+                <stackView opaque="NO" contentMode="scaleToFill" spacing="22" translatesAutoresizingMaskIntoConstraints="NO" id="sF2-Vd-YRS">
+                    <rect key="frame" x="0.0" y="70" width="393" height="60"/>
+                    <subviews>
+                        <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="GKf-Xv-VZt">
+                            <rect key="frame" x="0.0" y="0.0" width="309" height="60"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <textInputTraits key="textInputTraits"/>
+                        </searchBar>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZVA-yx-raY">
+                            <rect key="frame" x="331" y="0.0" width="62" height="60"/>
+                            <color key="tintColor" name="borderColor"/>
+                            <state key="normal" title="Button"/>
+                            <buttonConfiguration key="configuration" style="plain" image="line.3.horizontal.decrease" catalog="system"/>
+                            <connections>
+                                <action selector="filterButtonTapped:" destination="-1" eventType="touchUpInside" id="ZV8-id-CKJ"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <constraints>
+                        <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="60" id="94c-um-exW"/>
+                        <constraint firstAttribute="height" constant="60" id="lXK-z1-lqR"/>
+                    </constraints>
+                </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="tIc-o0-kRu" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="1sG-Xn-tBE"/>
-                <constraint firstItem="tIc-o0-kRu" firstAttribute="top" secondItem="aKA-Ty-EFJ" secondAttribute="bottom" constant="8" id="42h-oZ-oCu"/>
-                <constraint firstItem="tIc-o0-kRu" firstAttribute="trailing" secondItem="fnl-2z-Ty3" secondAttribute="trailing" id="DSS-7P-8T0"/>
-                <constraint firstItem="tIc-o0-kRu" firstAttribute="height" secondItem="i5M-Pr-FkT" secondAttribute="height" multiplier="0.752347" id="K3h-Wm-JZS"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="sF2-Vd-YRS" secondAttribute="trailing" id="1Sg-nF-snH"/>
+                <constraint firstItem="sF2-Vd-YRS" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="2tz-km-OWc"/>
+                <constraint firstItem="tIc-o0-kRu" firstAttribute="trailing" secondItem="sF2-Vd-YRS" secondAttribute="trailing" id="4jw-Bj-kSl"/>
+                <constraint firstItem="tIc-o0-kRu" firstAttribute="top" secondItem="sF2-Vd-YRS" secondAttribute="bottom" constant="19" id="EmP-jn-RFM"/>
                 <constraint firstItem="fft-ce-UtY" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Kiu-EA-ggI"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="mzr-Ov-0OE" secondAttribute="trailing" constant="8" id="Qkn-1l-iK5"/>
                 <constraint firstItem="vZQ-GJ-fQn" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="SJF-9q-BnQ"/>
                 <constraint firstItem="mzr-Ov-0OE" firstAttribute="leading" secondItem="fft-ce-UtY" secondAttribute="trailing" constant="8" id="TaE-ol-Byv"/>
                 <constraint firstItem="aKA-Ty-EFJ" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="30" id="V0p-iW-guG"/>
-                <constraint firstItem="fft-ce-UtY" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="16" id="Xsy-Ji-O2n"/>
+                <constraint firstItem="sF2-Vd-YRS" firstAttribute="top" secondItem="aKA-Ty-EFJ" secondAttribute="bottom" id="X45-25-DCf"/>
                 <constraint firstAttribute="trailing" secondItem="aKA-Ty-EFJ" secondAttribute="trailing" id="cxu-1w-8Ue"/>
-                <constraint firstItem="mzr-Ov-0OE" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="23" id="doi-9t-4U8"/>
+                <constraint firstItem="tIc-o0-kRu" firstAttribute="leading" secondItem="sF2-Vd-YRS" secondAttribute="leading" id="dRG-te-hQX"/>
+                <constraint firstItem="mzr-Ov-0OE" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="23" id="gZ3-hu-Gym"/>
                 <constraint firstItem="aKA-Ty-EFJ" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="mWl-NI-13u"/>
+                <constraint firstItem="fft-ce-UtY" firstAttribute="top" secondItem="tIc-o0-kRu" secondAttribute="bottom" constant="16" id="pR8-4y-EIq"/>
                 <constraint firstItem="vZQ-GJ-fQn" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="35" id="pXd-kH-car"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="mzr-Ov-0OE" secondAttribute="bottom" constant="2" id="pjf-T2-KtI"/>
             </constraints>
-            <point key="canvasLocation" x="-622" y="-191"/>
+            <point key="canvasLocation" x="-570" y="-196"/>
         </view>
     </objects>
     <resources>
         <image name="arrow.backward" catalog="system" width="128" height="95"/>
+        <image name="line.3.horizontal.decrease" catalog="system" width="128" height="73"/>
         <image name="trash" catalog="system" width="117" height="128"/>
         <namedColor name="basecolorText">
             <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
