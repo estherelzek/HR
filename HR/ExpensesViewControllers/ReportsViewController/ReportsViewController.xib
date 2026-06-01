@@ -12,6 +12,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ReportsViewController" customModule="HR" customModuleProvider="target">
             <connections>
+                <outlet property="filterButton" destination="P9e-Uw-341" id="GJe-7z-c0Q"/>
                 <outlet property="reportsTitleLabel" destination="35s-TK-lzc" id="hQf-9m-H1V"/>
                 <outlet property="searchBar" destination="Agy-dj-UA6" id="abH-F6-0KP"/>
                 <outlet property="tableView" destination="XFE-nA-OF4" id="bxN-ov-sTN"/>

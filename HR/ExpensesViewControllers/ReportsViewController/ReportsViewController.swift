@@ -19,7 +19,7 @@ class ReportsViewController: UIViewController {
     @IBOutlet weak var reportsTitleLabel: Inspectablelabel!
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: InspectableTableView!
-
+    @IBOutlet weak var filterButton: UIButton!
     private let expensesViewModel = ExpensesViewModel()
     private var allItems: [ReportListItem] = []
     private var filteredItems: [ReportListItem] = []
@@ -29,13 +29,101 @@ class ReportsViewController: UIViewController {
     private var allDraftExpenses: [EmployeeExpense] = []
     // Guard against concurrent loadReports() calls
     private var isLoadingReports = false
-
+    private var selectedStatusFilter: String?
+    private var selectedDateFilter: Date?
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupFilterMenu()
         loadReports()
     }
+    
+    private func setupFilterMenu() {
 
+        let allAction = UIAction(
+            title: NSLocalizedString("filter.all", comment: "All statuses")
+        ) { [weak self] _ in
+            self?.selectedStatusFilter = nil
+            self?.applyFilters()
+        }
+
+        let draftAction = UIAction(
+            title: NSLocalizedString("status.draft", comment: "Draft")
+        ) { [weak self] _ in
+            self?.selectedStatusFilter = "draft"
+            self?.applyFilters()
+        }
+
+        let submitAction = UIAction(
+            title: NSLocalizedString("status.submitted", comment: "Submitted")
+        ) { [weak self] _ in
+            self?.selectedStatusFilter = "submit"
+            self?.applyFilters()
+        }
+
+        let approvedAction = UIAction(
+            title: NSLocalizedString("status.approved", comment: "Approved")
+        ) { [weak self] _ in
+            self?.selectedStatusFilter = "approved"
+            self?.applyFilters()
+        }
+
+        let refusedAction = UIAction(
+            title: NSLocalizedString("status.refused", comment: "Refused")
+        ) { [weak self] _ in
+            self?.selectedStatusFilter = "refused"
+            self?.applyFilters()
+        }
+
+        let resetAction = UIAction(
+            title: NSLocalizedString("common.reset", comment: "Reset"),
+            image: UIImage(systemName: "arrow.counterclockwise")
+        ) { [weak self] _ in
+            self?.selectedStatusFilter = nil
+            self?.searchBar.text = ""
+            self?.applySearch("")
+        }
+
+        filterButton.menu = UIMenu(
+            title: NSLocalizedString("filter.title", comment: "Filter"),
+            children: [
+                allAction,
+                draftAction,
+                submitAction,
+                approvedAction,
+                refusedAction,
+                resetAction
+            ]
+        )
+
+        filterButton.showsMenuAsPrimaryAction = true
+    }
+    
+    private func applyFilters() {
+
+        var result = allItems
+
+        if let status = selectedStatusFilter {
+            result = result.filter {
+                $0.state.lowercased() == status.lowercased()
+            }
+        }
+
+        let searchText = searchBar.text?
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased() ?? ""
+
+        if !searchText.isEmpty {
+            result = result.filter {
+                $0.sheet_name.lowercased().contains(searchText)
+            }
+        }
+
+        filteredItems = result
+        tableView.reloadData()
+        updateSearchEmptyState()
+    }
+    
     private func setupUI() {
         reportsTitleLabel.text = NSLocalizedString("reports", comment: "")
         searchBar.delegate = self
@@ -135,10 +223,7 @@ class ReportsViewController: UIViewController {
         }
 
         filteredItems = allItems.filter {
-            $0.sheet_name.lowercased().contains(q) ||
-            $0.employee.lowercased().contains(q) ||
-            $0.expense.name.lowercased().contains(q) ||
-            $0.state.lowercased().contains(q)
+            $0.sheet_name.lowercased().contains(q)
         }
 
         tableView.reloadData()
@@ -323,6 +408,7 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
         config.performsFirstActionWithFullSwipe = false
         return config
     }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -338,10 +424,8 @@ extension ReportsViewController: UITableViewDataSource, UITableViewDelegate {
             return
         }
 
-        // Get full sheet from stored sheets
         guard let fullSheet = allSheets.first(where: { $0.sheet_id == item.sheet_id }) else { return }
 
-        // IDs of expenses already inside this report
         let reportExpenseIds = Set(fullSheet.expenses.map { $0.id })
 
         // Build combined list:

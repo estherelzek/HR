@@ -12,10 +12,8 @@ public struct FiltersData: Equatable {
     public var dateEnabled: Bool
     public var fromDate: Date
     public var toDate: Date
-
     public var statusEnabled: Bool
     public var selectedStatus: String? // nil or "All" means no status filtering
-
     public var attachmentEnabled: Bool
     public var hasAttachment: Bool? // nil = none selected
 
@@ -64,13 +62,28 @@ struct FiltersView: View {
 
     // Status filter
     enum ExpenseStatus: String, CaseIterable, Identifiable {
-        case all = "All"
-        case draft = "Draft"
-        case reported = "Reported"
-        case approved = "Approved"
-        case refused = "Refused"
+        case all
+        case draft
+        case reported
+        case approved
+        case refused
 
         var id: String { rawValue }
+
+        var localizedTitle: String {
+            switch self {
+            case .all:
+                return NSLocalizedString("filter.all", comment: "")
+            case .draft:
+                return NSLocalizedString("status.draft", comment: "")
+            case .reported:
+                return NSLocalizedString("status.reported", comment: "")
+            case .approved:
+                return NSLocalizedString("status.approved", comment: "")
+            case .refused:
+                return NSLocalizedString("status.refused", comment: "")
+            }
+        }
     }
     @State private var statusFilterEnabled: Bool = false
     @State private var selectedStatus: ExpenseStatus = .all
@@ -108,13 +121,15 @@ struct FiltersView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 24) {
                     // Date Filter Section
-                    FilterSectionHeader(title: "Filter by date", isOn: $dateFilterEnabled, accent: lime)
-
+                    FilterSectionHeader(
+                        title: NSLocalizedString("filter.byDate", comment: ""),
+                        isOn: $dateFilterEnabled,
+                        accent: lime
+                    )
                     if dateFilterEnabled {
                         VStack(alignment: .leading, spacing: 12) {
                             HStack {
-                                Text("From:")
-                                    .foregroundColor(.white)
+                                Text(NSLocalizedString("filter.from", comment: ""))                                    .foregroundColor(.white)
                                 Spacer()
                                 Text(dateFormatter.string(from: fromDate))
                                     .foregroundColor(lime)
@@ -125,7 +140,7 @@ struct FiltersView: View {
                                 .accentColor(lime)
 
                             HStack {
-                                Text("To:")
+                                Text(NSLocalizedString("filter.to", comment: ""))
                                     .foregroundColor(.white)
                                 Spacer()
                                 Text(dateFormatter.string(from: toDate))
@@ -137,7 +152,7 @@ struct FiltersView: View {
                                 .accentColor(lime)
 
                             if !dateRangeIsValid {
-                                Text("Please check the date you entered")
+                                Text(NSLocalizedString("filter.invalidDateRange", comment: ""))
                                     .foregroundColor(.red)
                                     .font(.subheadline)
                             }
@@ -145,13 +160,14 @@ struct FiltersView: View {
                     }
 
                     // Status Filter
-                    FilterSectionHeader(title: "Filter by status", isOn: $statusFilterEnabled, accent: lime)
+                    FilterSectionHeader(title: NSLocalizedString("filter.byStatus", comment: ""), isOn: $statusFilterEnabled, accent: lime)
 
                     if statusFilterEnabled {
                         VStack(alignment: .leading, spacing: 12) {
                             // create a horizontal wrap-like layout
                             FlowLayout(mode: .scrollable, items: ExpenseStatus.allCases) { status in
-                                TagButton(text: status.rawValue,
+                                TagButton(
+                                    text: status.localizedTitle,
                                           isSelected: selectedStatus == status,
                                           onTap: { selectedStatus = status },
                                           accent: lime)
@@ -160,15 +176,17 @@ struct FiltersView: View {
                     }
 
                     // Attachment Filter
-                    FilterSectionHeader(title: "Filter by attachment", isOn: $attachmentFilterEnabled, accent: lime)
+                    FilterSectionHeader(title: NSLocalizedString("filter.byAttachment", comment: ""), isOn: $attachmentFilterEnabled, accent: lime)
 
                     if attachmentFilterEnabled {
                         HStack(spacing: 12) {
-                            TagButton(text: "Has attachment",
+                            TagButton(
+                                text: NSLocalizedString("filter.hasAttachment", comment: ""),
                                       isSelected: hasAttachment == true,
                                       onTap: { hasAttachment = true },
                                       accent: lime)
-                            TagButton(text: "No attachment",
+                            TagButton(
+                                text: NSLocalizedString("filter.noAttachment", comment: ""),
                                       isSelected: hasAttachment == false,
                                       onTap: { hasAttachment = false },
                                       accent: lime)
@@ -183,7 +201,7 @@ struct FiltersView: View {
             HStack(spacing: 16) {
                 Spacer()
                 Button(action: applyTapped) {
-                    Text("Apply")
+                    Text(NSLocalizedString("common.apply", comment: ""))
                         .bold()
                         .frame(width: 120, height: 44)
                         .background(lime)
@@ -192,7 +210,7 @@ struct FiltersView: View {
                 }
 
                 Button(action: resetTapped) {
-                    Text("Reset")
+                    Text(NSLocalizedString("common.reset", comment: ""))
                         .bold()
                         .frame(width: 100, height: 44)
                         .background(Color(white: 0.85))

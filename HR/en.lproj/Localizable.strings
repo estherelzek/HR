@@ -34,7 +34,36 @@
 "email" = "Email";
 "password" = "Password";
 
+"filter.title" = "Filter";
+"filter.all" = "All";
 
+"status.draft" = "Draft";
+"status.submitted" = "Submitted";
+"status.approved" = "Approved";
+"status.refused" = "Refused";
+
+"common.reset" = "Reset";
+"filter.byDate" = "Filter by Date";
+"filter.byStatus" = "Filter by Status";
+"filter.byAttachment" = "Filter by Attachment";
+
+"filter.from" = "From";
+"filter.to" = "To";
+
+"filter.invalidDateRange" = "Please check the date you entered";
+
+"filter.hasAttachment" = "Has Attachment";
+"filter.noAttachment" = "No Attachment";
+
+"filter.all" = "All";
+
+"status.draft" = "Draft";
+"status.reported" = "Reported";
+"status.approved" = "Approved";
+"status.refused" = "Refused";
+
+"common.apply" = "Apply";
+"common.reset" = "Reset";
 //chose protection method
 "choose_protection_method" = "Choose Protection Method";
 "use_fingerprint" = "Use Fingerprint";

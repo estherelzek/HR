@@ -105,7 +105,36 @@
 "ok_button" = "موافق";
 "cancel_button" = "إلغاء";
 
+"filter.title" = "تصفية";
+"filter.all" = "الكل";
 
+"status.draft" = "مسودة";
+"status.submitted" = "تم الإرسال";
+"status.approved" = "معتمد";
+"status.refused" = "مرفوض";
+
+"common.reset" = "إعادة تعيين";
+"filter.byDate" = "تصفية حسب التاريخ";
+"filter.byStatus" = "تصفية حسب الحالة";
+"filter.byAttachment" = "تصفية حسب المرفقات";
+
+"filter.from" = "من";
+"filter.to" = "إلى";
+
+"filter.invalidDateRange" = "يرجى التحقق من نطاق التاريخ المدخل";
+
+"filter.hasAttachment" = "يوجد مرفق";
+"filter.noAttachment" = "لا يوجد مرفق";
+
+"filter.all" = "الكل";
+
+"status.draft" = "مسودة";
+"status.reported" = "تم الإبلاغ";
+"status.approved" = "معتمد";
+"status.refused" = "مرفوض";
+
+"common.apply" = "تطبيق";
+"common.reset" = "إعادة تعيين";
 "error" = "خطأ";
 "success" = "نجاح";
 "no_pin_set" = "لم يتم تعيين رقم التعريف الشخصي. يرجى تعيينه أولاً.";

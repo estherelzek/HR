@@ -46,6 +46,11 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         searchBar.delegate = self
         searchBar.returnKeyType = .search
         searchBar.enablesReturnKeyAutomatically = false
+        // Dismiss keyboard when tapping outside the search bar
+        let dismissTap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        // Allow touches to pass through so tableView and other controls still receive taps
+        dismissTap.cancelsTouchesInView = false
+        view.addGestureRecognizer(dismissTap)
         loadExpenses()
        // ReportsButton.isHidden = !isReportScenario
     }
@@ -410,6 +415,11 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     @objc private func outsideTapped() { hideActionMenu() }
+
+    @objc private func dismissKeyboard() {
+        // Resign any first responder (including the searchBar)
+        view.endEditing(true)
+    }
 
     private func hideActionMenu() {
         actionMenuView?.removeFromSuperview()
