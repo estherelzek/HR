@@ -127,6 +127,8 @@ class ReportsViewController: UIViewController {
     private func setupUI() {
         reportsTitleLabel.text = NSLocalizedString("reports", comment: "")
         searchBar.delegate = self
+        searchBar.returnKeyType = .search
+        searchBar.enablesReturnKeyAutomatically = false
         searchBar.placeholder = NSLocalizedString("common.search", comment: "Search")
         hideKeyboardWhenTappedAround()
         tableView.delegate = self

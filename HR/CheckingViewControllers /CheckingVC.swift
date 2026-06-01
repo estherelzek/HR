@@ -187,11 +187,18 @@ class CheckingVC: UIViewController {
                 switch result {
                 case .success(let response):
                     if response.result?.status == "success" {
+
                         self.isCheckedIn = response.result?.attendanceStatus == "checked_in"
                         self.lastCheckIn = response.result?.lastCheckIn
                         self.lastCheckOut = response.result?.lastCheckOut ?? response.result?.checkOutTime
                         self.workedHours = response.result?.workedHours
+
+                        if response.result?.attendanceStatus == "checked_out" {
+                            NotificationManager.shared.cancelCheckoutReminder()
+                        }
+
                         self.reloadTexts()
+                    
                     } else if response.result?.errorCode == "INVALID_TOKEN" || response.result?.errorCode == "TOKEN_EXPIRED" {
                         self.handleTokenExpiry(token: token)
                     } else {
@@ -277,6 +284,7 @@ class CheckingVC: UIViewController {
         }
         view.isUserInteractionEnabled = !shouldShow
     }
+    
     private func setUpLisgnerstoViewModel() {
         
         viewModel.onSuccess = { [weak self] response in

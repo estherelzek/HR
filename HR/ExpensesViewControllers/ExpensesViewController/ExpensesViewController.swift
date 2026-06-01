@@ -28,7 +28,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     /// true = show ReportsButton, hide submitButton in cells
     /// false = hide ReportsButton, show submitButton in cells
     var isReportScenario: Bool = false
-
+    private var currentFilters: FiltersData = .empty
     private var selectedExpenseIds = Set<Int>()
     private var isMultiSelectMode: Bool = false {
         didSet {
@@ -104,7 +104,6 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     // MARK: - Filter Presentation
-    private var currentFilters: FiltersData = .empty
 
     @IBAction func filterButtonTapped(_ sender: Any) {
         // Present the SwiftUI FiltersView as a bottom sheet
