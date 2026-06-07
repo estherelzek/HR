@@ -121,7 +121,7 @@ final class AttendanceViewModel {
             
             print("🔍 Branch \(branch.id) → dist: \(distance), allowed: \(branch.allowedDistance)")
             
-            if distance <= 1 {
+            if distance <= branch.allowedDistance {
                 matchedBranchID = branch.id
                 print("✅ User inside branch ID \(branch.id)")
                 break
