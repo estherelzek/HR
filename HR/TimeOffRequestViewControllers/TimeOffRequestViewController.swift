@@ -662,8 +662,8 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
         endDatePicker.datePickerMode = .date
         clockFromPicker.datePickerMode = .time
         clockToPicker.datePickerMode = .time
-        clockFromPicker.minuteInterval = 30   // ✅ only allow 30 min steps
-        clockToPicker.minuteInterval = 30
+     //   clockFromPicker.minuteInterval = 30   // ✅ only allow 30 min steps
+      //  clockToPicker.minuteInterval = 30
         
         if #available(iOS 13.4, *) {
             startDatePicker.preferredDatePickerStyle = .wheels

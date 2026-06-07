@@ -68,7 +68,6 @@ class AddExpensesViewController: UIViewController {
     private var expenseCategoriesList: [ExpenseCategory] = []
     private var analyticAccountsList: [AnalyticAccount] = []
     private var taxesList: [Tax] = []
-
     private var selectedCategoryId: Int?
     private var selectedAnalyticDistribution: [Int: Int] = [:]
     private var selectedTaxIds: [Int] = []
@@ -153,7 +152,6 @@ class AddExpensesViewController: UIViewController {
         includeedTaxesTitleLabel.text = NSLocalizedString("expenses.includedTaxes", comment: "")
         paidByTitleLabel.text = NSLocalizedString("expenses.paidBy", comment: "")
         notesTitleLabel.text = NSLocalizedString("expenses.notes", comment: "")
-
         discardButton.setTitle(NSLocalizedString("common.discard", comment: ""), for: .normal)
         saveButton.setTitle(
             isEditMode
@@ -380,7 +378,7 @@ class AddExpensesViewController: UIViewController {
             if selectedCategoryId == nil, !expenseCategoriesList.isEmpty {
                 let cat = expenseCategoriesList[pv.selectedRow(inComponent: 0)]
                 selectedCategoryId = cat.id
-                categoryTextField.text = cat.name
+                categoryTextField.text = "[\(cat.default_code)] \(cat.name)"
             }
         }
         if let pv = includedTaxesTextField.inputView as? UIPickerView, includedTaxesTextField.isFirstResponder {
@@ -401,7 +399,9 @@ class AddExpensesViewController: UIViewController {
         }
         view.endEditing(true)
     }
-
+    private func categoryDisplayText(for cat: ExpenseCategory) -> String {
+        "[\(cat.default_code)] \(cat.name)"
+    }
     private func setupKeyboardDismissal() {
         let tap = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tap.cancelsTouchesInView = false
@@ -721,7 +721,7 @@ class AddExpensesViewController: UIViewController {
 
         if let cat = expenseCategoriesList.first(where: { $0.id == expense.product_id }) {
             selectedCategoryId = cat.id
-            categoryTextField.text = cat.name
+            categoryTextField.text = "[\(cat.default_code)] \(cat.name)"
         }
 
         if let matched = expensesViewModel.currencies.first(where: {
@@ -798,7 +798,7 @@ extension AddExpensesViewController: UIPickerViewDelegate, UIPickerViewDataSourc
 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         switch pickerView.tag {
-        case 1: return expenseCategoriesList[row].name
+        case 1: return "[\(expenseCategoriesList[row].default_code)] \(expenseCategoriesList[row].name)"
         case 3: return taxesList[row].name
         case 4:
             let c = expensesViewModel.currencies[row]
@@ -812,7 +812,7 @@ extension AddExpensesViewController: UIPickerViewDelegate, UIPickerViewDataSourc
         case 1:
             let cat = expenseCategoriesList[row]
             selectedCategoryId = cat.id
-            categoryTextField.text = cat.name
+            categoryTextField.text = "[\(cat.default_code)] \(cat.name)"
         case 3:
             let tax = taxesList[row]
             if selectedTaxIds.contains(tax.id) {

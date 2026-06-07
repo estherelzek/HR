@@ -129,7 +129,7 @@
 "filter.all" = "الكل";
 
 "status.draft" = "مسودة";
-"status.reported" = "تم الإبلاغ";
+"status.reported" = "تم الإرسال";
 "status.approved" = "معتمد";
 "status.refused" = "مرفوض";
 
@@ -332,7 +332,8 @@
 "expenses.includedTaxes" = "الضرائب المضمنة";
 "expenses.paidBy" = "الدفع عن طريق";
 "expenses.notes" = "ملاحظات";
-
+"expenses.validationTitle" = "التحقق";
+"expenses.analyticRequired" = "يرجى اختيار توزيع تحليلي واحد على الأقل.";
 "expenses.descriptionPlaceholder" = "أدخل وصف المصروف";
 "expenses.categoryPlaceholder" = "اختر الفئة";
 "expenses.datePlaceholder" = "اختر التاريخ";

@@ -23,8 +23,11 @@ class SettingScreenViewController: UIViewController, DarkModeTableViewCellDelega
     @IBOutlet weak var backButton: UIButton!
     
     var isLanguageExpanded = false
-    var selectedLanguage: (String, String)? = nil
-    let languages = [(NSLocalizedString("english", comment: ""), "english"),(NSLocalizedString("arabic", comment: ""), "egypt")]
+    var selectedLanguage: (titleKey: String, iconName: String, code: String)? = nil
+    let languages: [(titleKey: String, iconName: String, code: String)] = [
+        ("english", "english", "en"),
+        ("arabic", "egypt", "ar")
+    ]
     let generalItemsKeys = [("change_company", "building.2"),("language", "globe"),("dark_mode", "moon.fill")]
     let securityItemsKeys = [
         ("change_protection", "lock.fill")      //  ("notifications", "bell.fill")
@@ -148,7 +151,7 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
                 item = SettingItem(titleKey: general.0,iconName: general.1,isDropdownVisible: indexPath.row == 1,isDarkModeRow: false)
             } else if isLanguageExpanded && indexPath.row > 1 && indexPath.row <= 1 + languages.count {
                 let lang = languages[indexPath.row - 2]
-                item = SettingItem(titleKey: lang.0,iconName: lang.1,isDropdownVisible: false,isDarkModeRow: false)
+                item = SettingItem(titleKey: lang.titleKey,iconName: lang.iconName,isDropdownVisible: false,isDarkModeRow: false)
             } else {
                 let adjustedIndex = indexPath.row - (isLanguageExpanded ? languages.count : 0)
                 let general = generalItemsKeys[adjustedIndex]
@@ -187,8 +190,7 @@ extension SettingScreenViewController: UITableViewDelegate, UITableViewDataSourc
                 let lang = languages[indexPath.row - 2]
                 selectedLanguage = lang
                 isLanguageExpanded = false
-                let code = (lang.0 == NSLocalizedString("english", comment: "")) ? "en" : "ar"
-                LanguageManager.shared.setLanguage(code)
+                LanguageManager.shared.setLanguage(lang.code)
                 tableView.reloadData()
             } else {
                 let adjustedIndex = indexPath.row - (isLanguageExpanded && indexPath.row > 1 + languages.count ? languages.count : 0)

@@ -58,7 +58,7 @@
 "filter.all" = "All";
 
 "status.draft" = "Draft";
-"status.reported" = "Reported";
+"status.reported" = "Submitted";
 "status.approved" = "Approved";
 "status.refused" = "Refused";
 
@@ -338,7 +338,8 @@
 "expenses.includedTaxesPlaceholder" = "Enter tax amount";
 "expenses.paidByPlaceholder" = "Select payment method";
 "expenses.notesPlaceholder" = "Enter additional notes";
-
+"expenses.validationTitle" = "Validation";
+"expenses.analyticRequired" = "Please select at least one analytic distribution.";
 "expenses.categoryFood" = "Food";
 "expenses.categoryTransport" = "Transport";
 "expenses.categorySupplies" = "Supplies";
