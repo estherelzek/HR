@@ -8,7 +8,7 @@
 import UIKit
 
 class CheckingVC: UIViewController {
-    
+    // try to push with right way
     @IBOutlet weak var titleOfCheckingInOrOut: UILabel!
     @IBOutlet weak var discreptionOfCurrecntAttendence: UILabel!
     @IBOutlet weak var checkingButton: InspectableButton!
