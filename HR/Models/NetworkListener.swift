@@ -6,12 +6,7 @@
 //
 
 import Network
-
-
-import Network
 import Foundation
-
-import Network
 
 final class NetworkListener {
     static let shared = NetworkListener()
@@ -38,6 +33,7 @@ final class NetworkListener {
                 if self.isConnected {
                     self.isConnected = false
                     print("🚫 Network disconnected")
+                    NotificationCenter.default.post(name: .networkUnreachable, object: nil)
                 }
             }
         }
@@ -61,7 +57,7 @@ final class NetworkListener {
 //        var successfullyResent: [OfflineRequest] = []
 //        let session = URLSession.shared
 //        let dispatchGroup = DispatchGroup()
-//        
+//
 //        for (index, request) in stored.enumerated() {
 //            guard let url = URL(string: request.url) else { continue }
 //

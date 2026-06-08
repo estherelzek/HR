@@ -64,7 +64,6 @@ class AddExpensesViewController: UIViewController {
     private let expensesViewModel = ExpensesViewModel()
     var selectedCurrency: Currency?
     private var selectedCurrencyId: Int?
-
     private var expenseCategoriesList: [ExpenseCategory] = []
     private var analyticAccountsList: [AnalyticAccount] = []
     private var taxesList: [Tax] = []
@@ -74,7 +73,6 @@ class AddExpensesViewController: UIViewController {
     private var selectedPaidBy: String = "employee"
 
     // MARK: - Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         print("expenseToEdit: \(String(describing: expenseToEdit))")
@@ -101,7 +99,6 @@ class AddExpensesViewController: UIViewController {
     }
 
     // MARK: - Load Data
-
     private func loadExpenseData() {
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
             showAlert(title: NSLocalizedString("expenses.error", comment: ""),

@@ -9,6 +9,7 @@
 
 
 "logout" = "تسجيل الخروج";
+"offline_banner_message" = "أنت غير متصل. يتم عرض آخر حالة معروفة.";
 // launch
 "scan-QR" = "مسح رمز QR";
 "done_button" = "تم";

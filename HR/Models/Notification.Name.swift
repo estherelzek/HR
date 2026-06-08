@@ -15,4 +15,5 @@ extension Notification.Name {
 }
 extension Notification.Name {
     static let networkReachable = Notification.Name("NetworkReachable")
+    static let networkUnreachable = Notification.Name("NetworkUnreachable")
 }

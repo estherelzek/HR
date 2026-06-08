@@ -6,6 +6,7 @@
   Copyright © 2025 orgName. All rights reserved.
 */
 "change_company" = "Change Company";
+"offline_banner_message" = "You're offline. Showing last known status.";
 "language" = "Language";
 "dark_mode" = "Dark Mode";
 "light_mode" = "Light Mode";

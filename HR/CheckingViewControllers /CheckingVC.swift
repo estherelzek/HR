@@ -19,18 +19,64 @@ class CheckingVC: UIViewController {
     private var lastCheckIn: String?
     private var lastCheckOut: String?
     private var workedHours: Double?
-    
+
+    // MARK: - Offline persistence keys
+    private enum AttendanceCache {
+        static let isCheckedIn  = "cachedIsCheckedIn"
+        static let lastCheckIn  = "cachedLastCheckIn"
+        static let lastCheckOut = "cachedLastCheckOut"
+        static let workedHours  = "cachedWorkedHours"
+    }
+
+    // MARK: - Offline banner
+    private lazy var offlineBannerView: UIView = {
+        let container = UIView()
+        container.backgroundColor = UIColor.red
+        container.translatesAutoresizingMaskIntoConstraints = false
+
+        let icon = UILabel()
+        icon.text = "📡"
+        icon.font = .systemFont(ofSize: 14)
+        icon.translatesAutoresizingMaskIntoConstraints = false
+
+        let label = UILabel()
+        label.text = NSLocalizedString("offline_banner_message", comment: "Offline banner")
+        label.textColor = .white
+        label.font = .systemFont(ofSize: 13, weight: .medium)
+        label.numberOfLines = 0
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        let stack = UIStackView(arrangedSubviews: [icon, label])
+        stack.axis = .horizontal
+        stack.spacing = 6
+        stack.alignment = .center
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.topAnchor.constraint(equalTo: container.topAnchor, constant: 8),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8),
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
+        ])
+
+        container.isHidden = true
+        return container
+    }()
+
     private var isLoadingAttendance: Bool = false {
         didSet { updateLoaderState() }
     }
-    
+
     private var isFetchingStatus: Bool = false {
         didSet { updateLoaderState() }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
+        setupOfflineBanner()
+
         loader.startAnimating()
         setUpLisgnerstoViewModel()
         
@@ -55,6 +101,13 @@ class CheckingVC: UIViewController {
             object: nil
         )
 
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(networkBecameUnreachable),
+            name: .networkUnreachable,
+            object: nil
+        )
+
         NetworkManager.shared.resendOfflineRequests {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                 self.fetchAttendanceStatus()
@@ -64,9 +117,36 @@ class CheckingVC: UIViewController {
         calculateClockDifference()
     }
 
+    // MARK: - Offline Banner Setup
+    private func setupOfflineBanner() {
+        view.addSubview(offlineBannerView)
+        NSLayoutConstraint.activate([
+            offlineBannerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            offlineBannerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            offlineBannerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+    }
+
+    private func showOfflineBanner(_ show: Bool) {
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: 0.3) {
+                self.offlineBannerView.isHidden = !show
+            }
+        }
+    }
+
     @objc private func networkBecameReachable() {
         print("🌐 Network became reachable → resending offline requests...")
+        showOfflineBanner(false)
         NetworkManager.shared.resendOfflineRequests()
+        fetchAttendanceStatus()
+    }
+
+    @objc private func networkBecameUnreachable() {
+        print("🚫 Network lost → showing offline banner with last known status")
+        showOfflineBanner(true)
+        loadCachedAttendanceStatus()
+        reloadTexts()
     }
 
     @objc private func handleLanguageChange() {
@@ -171,6 +251,16 @@ class CheckingVC: UIViewController {
 
     // MARK: - Fetch Attendance Status
     private func fetchAttendanceStatus(completion: (() -> Void)? = nil) {
+        // If offline, show cached status immediately
+        guard NetworkListener.shared.isConnected else {
+            loadCachedAttendanceStatus()
+            showOfflineBanner(true)
+            isFetchingStatus = false
+            reloadTexts()
+            completion?()
+            return
+        }
+
         isFetchingStatus = true
         guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
             isFetchingStatus = false
@@ -193,6 +283,10 @@ class CheckingVC: UIViewController {
                         self.lastCheckOut = response.result?.lastCheckOut ?? response.result?.checkOutTime
                         self.workedHours = response.result?.workedHours
 
+                        // ✅ Persist latest status for offline use
+                        self.cacheAttendanceStatus()
+                        self.showOfflineBanner(false)
+
                         if response.result?.attendanceStatus == "checked_out" {
                             NotificationManager.shared.cancelCheckoutReminder()
                         }
@@ -206,11 +300,36 @@ class CheckingVC: UIViewController {
                     }
                 case .failure(let error):
                     print("❌ Request failed: \(error.localizedDescription)")
-//                    self.showAlert(title: NSLocalizedString("error", comment: ""), message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
+                    // Fall back to cached status silently
+                    self.loadCachedAttendanceStatus()
+                    self.showOfflineBanner(!NetworkListener.shared.isConnected)
+                    self.reloadTexts()
                 }
                 completion?()
             }
         }
+    }
+
+    // MARK: - Cache Helpers
+    private func cacheAttendanceStatus() {
+        let defaults = UserDefaults.standard
+        defaults.set(isCheckedIn, forKey: AttendanceCache.isCheckedIn)
+        defaults.set(lastCheckIn, forKey: AttendanceCache.lastCheckIn)
+        defaults.set(lastCheckOut, forKey: AttendanceCache.lastCheckOut)
+        if let hours = workedHours {
+            defaults.set(hours, forKey: AttendanceCache.workedHours)
+        } else {
+            defaults.removeObject(forKey: AttendanceCache.workedHours)
+        }
+    }
+
+    private func loadCachedAttendanceStatus() {
+        let defaults = UserDefaults.standard
+        isCheckedIn  = defaults.bool(forKey: AttendanceCache.isCheckedIn)
+        lastCheckIn  = defaults.string(forKey: AttendanceCache.lastCheckIn)
+        lastCheckOut = defaults.string(forKey: AttendanceCache.lastCheckOut)
+        let hours = defaults.double(forKey: AttendanceCache.workedHours)
+        workedHours = hours > 0 ? hours : nil
     }
     
     private func handleTokenExpiry(token: String) {
@@ -416,6 +535,7 @@ class CheckingVC: UIViewController {
             workedHours = response.result?.workedHours
             NotificationManager.shared.cancelCheckoutReminder()
         }
+        cacheAttendanceStatus()
         reloadTexts()
     }
 }
