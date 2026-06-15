@@ -516,11 +516,31 @@ class AddExpensesViewController: UIViewController {
     }
 
     @IBAction func discardButtonTapped(_ sender: Any) {
-        clearForm()
+        showDiscardConfirmation()
     }
-
     // MARK: - Validation
+    private func showDiscardConfirmation() {
+        let alert = UIAlertController(
+            title: NSLocalizedString("expenses.discardTitle", comment: "Discard confirmation title"),
+            message: NSLocalizedString("expenses.discardMessage", comment: "Discard confirmation message"),
+            preferredStyle: .alert
+        )
 
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("common.cancel", comment: "Cancel"),
+            style: .cancel
+        ))
+
+        alert.addAction(UIAlertAction(
+            title: NSLocalizedString("common.discard", comment: "Discard"),
+            style: .destructive
+        ) { [weak self] _ in
+            self?.clearForm()
+        })
+
+        present(alert, animated: true)
+    }
+    
     private func validateForm() -> Bool {
         guard let desc = descriptionTextField.text, !desc.trimmingCharacters(in: .whitespaces).isEmpty else {
             showAlert(title: NSLocalizedString("expenses.validationTitle", comment: ""),

@@ -502,3 +502,49 @@
 "report.submitInProgress" = "Submitting report...";
 "report.sheetAlreadySubmitted" = "Report already submitted.";
 "report.employeeIdMissing" = "Employee ID not available. Please login.";
+
+// ── Structured Error Codes ─────────────────────────────────────────────────
+// These keys are used by AppErrorCode.userMessage
+// Show the error code (e.g. ERR-1001) alongside the message in alerts.
+
+// 1xxx – Network / Connectivity
+"error_no_internet"        = "No internet connection. Please check your network.";
+"error_server_unreachable" = "Cannot reach the server. Please try again later.";
+"error_timeout"            = "The request timed out. Please try again.";
+"error_connection_lost"    = "Connection was lost. Please try again.";
+"error_dns"                = "Cannot find the server address. Please try again.";
+
+// 2xxx – Server HTTP Errors
+"error_server_internal"    = "The server encountered an error. Please try again later.";
+"error_bad_gateway"        = "Server is temporarily unavailable (gateway error).";
+"error_server_unavailable" = "Server is currently under maintenance. Please try again later.";
+"error_gateway_timeout"    = "The server is taking too long to respond. Please try again.";
+
+// 3xxx – Client HTTP Errors
+"error_bad_request"        = "Invalid request. Please try again or contact support.";
+"error_unauthorized"       = "Your session has expired. Please log in again.";
+"error_forbidden"          = "You don't have permission to perform this action.";
+"error_not_found"          = "The requested resource was not found on the server.";
+"error_method_not_allowed" = "This action is not allowed. Please contact support.";
+
+// 4xxx – Data / Parsing Errors
+"error_decoding"           = "Unexpected response from the server. Please try again.";
+"error_empty_response"     = "No data received from the server. Please try again.";
+"error_invalid_response"   = "Invalid server response. Please contact support.";
+
+// 5xxx – App-Level Errors
+"error_invalid_url"        = "Invalid server address. Please check your settings.";
+
+// 9xxx
+"error_unknown"            = "An unexpected error occurred. Please try again.";
+
+// Label shown before the error code in an alert, e.g. "(Code: ERR-1002)"
+"error_code_label"         = "Code";
+
+// Alert UI
+"error_alert_title"        = "Error";
+"retry_button"             = "Retry";
+"login_button"             = "Login";
+"expenses.discardTitle" = "Discard Changes";
+"expenses.discardMessage" = "Are you sure you want to discard your changes?";
+"expenses.emptyState" = "No expenses yet. Tap New Expenses to add one.";

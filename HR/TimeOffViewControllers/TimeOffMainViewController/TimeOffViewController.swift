@@ -166,6 +166,7 @@ class TimeOffViewController: UIViewController {
 
                 case .failure(let error):
                     print("❌ Holiday API Error: \(error.localizedDescription)")
+                    self?.showAPIError(error)
                 }
                 completion() // ✅ Always call completion
             }
@@ -201,6 +202,7 @@ class TimeOffViewController: UIViewController {
                     }
                 case .failure(let error):
                     print("❌ TimeOff API Error:", error)
+                    self?.showAPIError(error)
                 }
                 completion()
             }
@@ -290,7 +292,7 @@ class TimeOffViewController: UIViewController {
 
                         self?.calender.reloadData()
                     case .failure(let error):
-                        self?.showAlert(title: NSLocalizedString("error", comment: ""), message: NSLocalizedString("weak_network_message", comment: "Alert shown when network is weak"))
+                        self?.showAPIError(error)
                     }
                     self?.loaderIndicator.stopAnimating()
                     self?.loaderIndicator.hidesWhenStopped = true

@@ -304,6 +304,15 @@ class CheckingVC: UIViewController {
                     self.loadCachedAttendanceStatus()
                     self.showOfflineBanner(!NetworkListener.shared.isConnected)
                     self.reloadTexts()
+                    // Only show alert for non-connectivity errors (offline banner covers no-internet)
+                    if case .coded(let code) = error,
+                       code != .noInternet && code != .connectionLost && code != .serverUnreachable {
+                        self.showAPIError(error)
+                    } else if case .coded(_) = error {
+                        // connectivity errors: banner is enough
+                    } else {
+                        self.showAPIError(error)
+                    }
                 }
                 completion?()
             }

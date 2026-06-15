@@ -65,6 +65,7 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
     private var currentWarningState: WarningState = .hidden
     private var warningWorkItem: DispatchWorkItem?
     private let loader = UIActivityIndicatorView(style: .large)
+    private var durationRequestVersion: Int = 0
     
     
     override func viewDidLoad() {
@@ -72,8 +73,8 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
 
         warningContainer.isHidden = true
           warningContainer.alpha = 0  // ✅ correct place
-     
-        
+
+
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleOutsideTap(_:)))
         tapGesture.cancelsTouchesInView = false
         ouSideView.addGestureRecognizer(tapGesture)
@@ -86,8 +87,8 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
         )
         selectLeaveTypeTextField.delegate = self
         setUpTexts()
-        setupPickers()
         initialState()
+        setupPickers()
         setupLoader()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
           NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -97,14 +98,13 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        let lang = LanguageManager.shared.currentLanguage()
-        setupPickers()
+
         if let date = preselectedDate {
             startDatePicker.date = date
             endDatePicker.date = date
             startDateCalender.text = formatDate(date)
             endDateCalender.text = formatDate(date)
+            getDuration()
         }
     }
     
@@ -469,6 +469,9 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
         let hourFrom = isCustomHours ? formatToAPITime(clockFrom.text) : nil
         let hourTo   = isCustomHours ? formatToAPITime(ClockTo.text)   : nil
 
+        durationRequestVersion += 1
+        let requestVersion = durationRequestVersion
+
         leaveDurationVM.fetchLeaveDuration(
             token: token,
             leaveTypeId: leaveTypeId,
@@ -481,20 +484,24 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
             requestUnitHours: isCustomHours
         ) { [weak self] result in
             DispatchQueue.main.async {
+                guard let self = self else { return }
+                guard requestVersion == self.durationRequestVersion else { return }
+
                 switch result {
                 case .success(let result):
                     // ✅ Handle business error first
                     if result.status == "error" {
-                        self?.updateWarning(state: .hidden, text: nil, color: nil)
+                        self.updateWarning(state: .hidden, text: nil, color: nil)
                         return
                     }
 
                     let data = result.data  // ✅ unwrap once here, then use data.days / data.hours normally
 
-                    self?.durationCountLabel.text =
-                        "\(data?.days ?? 0) days (\(data?.hours ?? 0) hrs)"
+                    let daysText = String(format: "%.2f", data?.days ?? 0)
+                    let hoursText = String(format: "%.2f", data?.hours ?? 0)
+                    self.durationCountLabel.text = "\(daysText) days (\(hoursText) hrs)"
 
-                    self?.warningWorkItem?.cancel()
+                    self.warningWorkItem?.cancel()
 
                     let workItem = DispatchWorkItem { [weak self] in
                         guard let self = self else { return }
@@ -522,15 +529,15 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
                         }
                     }
 
-                    self?.warningWorkItem = workItem
+                    self.warningWorkItem = workItem
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: workItem)
 
                 case .failure:
-                    self?.updateWarning(state: .hidden, text: nil, color: nil)
+                    self.updateWarning(state: .hidden, text: nil, color: nil)
                 }
             }
 
-            
+
         }
     }
 
@@ -763,9 +770,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
     // MARK: PickerView Delegate
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         if pickerView == leaveTypePicker {
-            let type = filteredLeaveTypes[row]
-            selectLeaveTypeTextField.text = type.name
-            handleUnitSelection(for: type)
             return filteredLeaveTypes[row].name
         } else {
             return morningNightOptions[row]
@@ -811,7 +815,6 @@ extension TimeOffRequestViewController: UIPickerViewDelegate, UIPickerViewDataSo
         }
 
         doneTapped()
-        getDuration()
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {

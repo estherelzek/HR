@@ -101,44 +101,47 @@ final class NetworkManager {
 
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
-                print("❌ Network error: \(error.localizedDescription)")
+                // ── Map NSURLError → structured AppErrorCode ──────────────
+                let appCode = AppErrorCode.from(urlError: error)
+                print("❌ Network error [\(appCode.displayCode)] \(appCode.debugDescription)")
+                print("   NSError: \(error.localizedDescription)")
 
-//                // ⛔ Skip offline save if user time is manual
-//                if !OfflineURLStorage.shared.isTimeSetAutomatically() {
-//                    print("⚠️ Manual time setting detected — not saving offline request.")
-//                    completion(.failure(.requestFailed("⚠️ Manual time setting detected — not saving offline request")))
-//                    return
-//                }
-
-                // ✅ Otherwise, save offline request
-                let actionType: String? = {
-                    if request.url?.absoluteString.contains("check_in") == true { return "check_in" }
-                    if request.url?.absoluteString.contains("check_out") == true { return "check_out" }
-                    return nil
-                }()
-print("endpoint.actionType: \(endpoint.actionType))")
-                print("request.url: \(String(describing: request.url))")
+                // ✅ Save offline for attendance actions
                 let offlineRequest = OfflineRequest(
                     url: request.url?.absoluteString ?? "",
                     method: request.httpMethod ?? "POST",
                     headers: request.allHTTPHeaderFields ?? [:],
                     body: request.httpBody.flatMap { String(data: $0, encoding: .utf8) },
                     timestamp: Date(),
-                    actionType: endpoint.actionType // ← now it’s correct
+                    actionType: endpoint.actionType
                 )
-
+                print("endpoint.actionType: \(String(describing: endpoint.actionType))")
                 print("offlineRequest: \(offlineRequest)")
                 OfflineURLStorage.shared.save(offlineRequest)
-                completion(.failure(.requestFailed(NSLocalizedString("the_request_saved_locally", comment: "Alert shown when network is weak"))))
+
+                completion(.failure(.coded(appCode)))
                 return
             }
 
+            // ── Validate HTTP status code ──────────────────────────────────
             if let httpResponse = response as? HTTPURLResponse {
                 print("✅ [API RESPONSE] Status Code: \(httpResponse.statusCode)")
+                if let httpErrorCode = AppErrorCode.from(httpStatusCode: httpResponse.statusCode) {
+                    print("❌ HTTP error [\(httpErrorCode.displayCode)] \(httpErrorCode.debugDescription)")
+                    completion(.failure(.coded(httpErrorCode)))
+                    return
+                }
+            } else if response != nil {
+                let code = AppErrorCode.invalidResponse
+                print("❌ [\(code.displayCode)] \(code.debugDescription)")
+                completion(.failure(.coded(code)))
+                return
             }
 
             guard let data = data else {
-                completion(.failure(.noData))
+                let code = AppErrorCode.emptyResponse
+                print("❌ [\(code.displayCode)] \(code.debugDescription)")
+                completion(.failure(.coded(code)))
                 return
             }
             // 🪶 Print Raw Response Data (as JSON or string)
@@ -152,8 +155,10 @@ print("endpoint.actionType: \(endpoint.actionType))")
                 let decoded = try JSONDecoder().decode(T.self, from: data)
                 completion(.success(decoded))
             } catch {
-                print("❌ Decoding Error: \(error)")
-                completion(.failure(.decodingError))
+                let code = AppErrorCode.decodingFailed
+                print("❌ [\(code.displayCode)] \(code.debugDescription)")
+                print("   Swift error: \(error)")
+                completion(.failure(.coded(code)))
             }
         }.resume()
     }

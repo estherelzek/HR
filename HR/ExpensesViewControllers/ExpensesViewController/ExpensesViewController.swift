@@ -21,10 +21,24 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     private var actionMenuView: UIView?
     private var overlayView: UIView?
     private let expensesViewModel = ExpensesViewModel()
-    private var expensesList: [EmployeeExpense] = []
+    private var expensesList: [EmployeeExpense] = [] {
+        didSet {
+            if isViewLoaded {
+                updateEmptyState()
+            }
+        }
+    }
     /// Keep the unfiltered list as fetched from server
     private var allExpensesList: [EmployeeExpense] = []
     private let refreshControl = UIRefreshControl()
+    private lazy var emptyStateLabel: UILabel = {
+        let label = UILabel()
+        label.textAlignment = .center
+        label.numberOfLines = 0
+        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        label.textColor = .secondaryLabel
+        return label
+    }()
     /// true = show ReportsButton, hide submitButton in cells
     /// false = hide ReportsButton, show submitButton in cells
     var isReportScenario: Bool = false
@@ -36,7 +50,6 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
             tableView.reloadData()
         }
     }
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,6 +64,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         // Allow touches to pass through so tableView and other controls still receive taps
         dismissTap.cancelsTouchesInView = false
         view.addGestureRecognizer(dismissTap)
+        updateEmptyState()
         loadExpenses()
        // ReportsButton.isHidden = !isReportScenario
     }
@@ -183,14 +197,10 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     // MARK: - SearchBar (search by name only)
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         let trimmed = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-
-        // Start from the filtered results according to currentFilters, then apply name filter
         var base = filteredExpenses(from: currentFilters)
-
         if !trimmed.isEmpty {
             base = base.filter { $0.name.range(of: trimmed, options: .caseInsensitive) != nil }
         }
-
         self.expensesList = base
         tableView.reloadData()
     }
@@ -202,7 +212,6 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = ""
         searchBar.resignFirstResponder()
-        // restore filtered results
         self.expensesList = filteredExpenses(from: currentFilters)
         tableView.reloadData()
     }
@@ -363,6 +372,7 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         expensesLabelTitle.text = NSLocalizedString("expenses_title", comment: "")
         NewButton.setTitle(NSLocalizedString("new_expenses", comment: ""), for: .normal)
         ReportsButton.setTitle(NSLocalizedString("reports", comment: ""), for: .normal)
+        emptyStateLabel.text = NSLocalizedString("expenses.emptyState", comment: "No expenses found")
         let isArabic = LanguageManager.shared.currentLanguage() == "ar"
         NewButton.contentHorizontalAlignment = isArabic ? .right : .left
         ReportsButton.contentHorizontalAlignment = isArabic ? .right : .left
@@ -414,6 +424,10 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
     }
 
     @objc private func outsideTapped() { hideActionMenu() }
+
+    private func updateEmptyState() {
+        tableView.backgroundView = expensesList.isEmpty ? emptyStateLabel : nil
+    }
 
     @objc private func dismissKeyboard() {
         // Resign any first responder (including the searchBar)

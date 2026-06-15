@@ -166,8 +166,52 @@ extension UIViewController {
        case .decodingError: return "Failed to decode server response."
        case .noData: return "No data from server."
        case .unknown: return "Unknown error occurred."
+       case .coded(_):
+           return "An error occurred. Please try again."
        }
    }
+
+    /// Shows a user-friendly alert for any APIError.
+    /// - Skips showing an alert for `.offlineSaved` (request saved silently).
+    /// - Navigates to login automatically on `unauthorized` (ERR-3002).
+    func showAPIError(_ error: APIError, retryAction: (() -> Void)? = nil) {
+        // Don't bother the user if we just saved the request offline
+        if case .coded(let code) = error, code == .offlineSaved { return }
+
+        DispatchQueue.main.async {
+            let title = NSLocalizedString("error_alert_title", comment: "Error")
+            let message = error.alertMessage
+
+            let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+
+            // Optional retry button
+            if let retry = retryAction {
+                alert.addAction(UIAlertAction(
+                    title: NSLocalizedString("retry_button", comment: "Retry"),
+                    style: .default,
+                    handler: { _ in retry() }
+                ))
+            }
+
+            alert.addAction(UIAlertAction(
+                title: NSLocalizedString("ok_button", comment: "OK"),
+                style: .cancel
+            ))
+
+            self.present(alert, animated: true)
+
+            // Auto-handle session expiry
+            if case .coded(let code) = error, code == .unauthorized {
+                alert.addAction(UIAlertAction(
+                    title: NSLocalizedString("login_button", comment: "Login"),
+                    style: .default,
+                    handler: { [weak self] _ in
+                        self?.goToLogInViewController()
+                    }
+                ))
+            }
+        }
+    }
      func apiWeekday(for date: Date) -> Int {
         let iosWeekday = Calendar.current.component(.weekday, from: date) // 1 = Sunday ... 7 = Saturday
         switch iosWeekday {

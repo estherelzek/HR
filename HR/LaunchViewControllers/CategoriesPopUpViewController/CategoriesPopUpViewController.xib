@@ -31,12 +31,14 @@
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="JZz-W8-TKP">
                             <rect key="frame" x="8" y="524" width="328" height="40"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nuv-rA-9SR" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nuv-rA-9SR" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="160" height="40"/>
                                     <color key="backgroundColor" red="0.71764705880000002" green="0.96862745100000003" blue="0.24313725489999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Apply"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Apply">
+                                        <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </buttonConfiguration>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                             <real key="value" value="8"/>
@@ -46,12 +48,14 @@
                                         <action selector="applyButtonTapped:" destination="-1" eventType="touchUpInside" id="BOe-va-08i"/>
                                     </connections>
                                 </button>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A9e-1d-VhL" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="A9e-1d-VhL" customClass="InspectableButton" customModule="HR" customModuleProvider="target">
                                     <rect key="frame" x="168" y="0.0" width="160" height="40"/>
                                     <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <state key="normal" title="Button"/>
-                                    <buttonConfiguration key="configuration" style="plain" title="Discard"/>
+                                    <buttonConfiguration key="configuration" style="plain" title="Discard">
+                                        <color key="baseForegroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                    </buttonConfiguration>
                                     <userDefinedRuntimeAttributes>
                                         <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
                                             <real key="value" value="8"/>
@@ -70,18 +74,6 @@
                             <rect key="frame" x="8" y="106" width="328" height="406"/>
                             <color key="backgroundColor" red="0.12941176470588234" green="0.12941176470588234" blue="0.12941176470588234" alpha="0.92864216549295775" colorSpace="custom" customColorSpace="sRGB"/>
                         </tableView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="u42-Gb-PUD">
-                            <rect key="frame" x="268" y="8" width="68" height="58"/>
-                            <constraints>
-                                <constraint firstAttribute="width" constant="68" id="kkr-Vc-fvV"/>
-                                <constraint firstAttribute="height" constant="58" id="qSZ-dH-5Pp"/>
-                            </constraints>
-                            <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain" image="close-with-transparency.png"/>
-                            <connections>
-                                <action selector="closeButtonTapped:" destination="-1" eventType="touchUpInside" id="zn8-Nk-Vbi"/>
-                            </connections>
-                        </button>
                         <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="40" translatesAutoresizingMaskIntoConstraints="NO" id="mXf-S5-cRu">
                             <rect key="frame" x="8" y="74" width="328" height="25"/>
                             <subviews>
@@ -109,9 +101,8 @@
                     </subviews>
                     <color key="backgroundColor" red="0.12941176470588234" green="0.12941176470588234" blue="0.12941176470588234" alpha="0.87194652288732399" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
-                        <constraint firstAttribute="trailing" secondItem="u42-Gb-PUD" secondAttribute="trailing" constant="8" id="3lp-sa-1Oh"/>
+                        <constraint firstItem="mXf-S5-cRu" firstAttribute="top" secondItem="la5-LU-p7R" secondAttribute="top" constant="74" id="0vq-z5-gAe"/>
                         <constraint firstAttribute="trailing" secondItem="JZz-W8-TKP" secondAttribute="trailing" constant="8" id="CBp-NA-rcQ"/>
-                        <constraint firstItem="u42-Gb-PUD" firstAttribute="top" secondItem="la5-LU-p7R" secondAttribute="top" constant="8" id="EjS-H6-KQ4"/>
                         <constraint firstItem="GON-fU-X2P" firstAttribute="leading" secondItem="la5-LU-p7R" secondAttribute="leading" constant="8" id="H6T-A1-duc"/>
                         <constraint firstItem="GON-fU-X2P" firstAttribute="top" secondItem="mXf-S5-cRu" secondAttribute="bottom" constant="7" id="LAJ-Qf-mpG"/>
                         <constraint firstAttribute="trailing" secondItem="GON-fU-X2P" secondAttribute="trailing" constant="8" id="Lgw-Ug-WYF"/>
@@ -119,7 +110,6 @@
                         <constraint firstItem="JZz-W8-TKP" firstAttribute="leading" secondItem="la5-LU-p7R" secondAttribute="leading" constant="8" id="Ua3-i9-OIn"/>
                         <constraint firstAttribute="trailing" secondItem="mXf-S5-cRu" secondAttribute="trailing" constant="8" id="irs-b9-SZR"/>
                         <constraint firstItem="mXf-S5-cRu" firstAttribute="leading" secondItem="la5-LU-p7R" secondAttribute="leading" constant="8" id="kk7-T5-Fy0"/>
-                        <constraint firstItem="mXf-S5-cRu" firstAttribute="top" secondItem="u42-Gb-PUD" secondAttribute="bottom" constant="8" id="nCH-aU-9J3"/>
                         <constraint firstItem="JZz-W8-TKP" firstAttribute="top" secondItem="GON-fU-X2P" secondAttribute="bottom" constant="12" id="xP8-cp-lOb"/>
                     </constraints>
                     <userDefinedRuntimeAttributes>
@@ -141,7 +131,6 @@
         </view>
     </objects>
     <resources>
-        <image name="close-with-transparency.png" width="44" height="44"/>
         <image name="square" catalog="system" width="128" height="114"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
