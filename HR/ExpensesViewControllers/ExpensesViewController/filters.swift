@@ -257,7 +257,6 @@ struct FiltersView: View {
 }
 
 // MARK: - Helper components
-
 private struct FilterSectionHeader: View {
     let title: String
     @Binding var isOn: Bool
@@ -336,7 +335,6 @@ private struct FlowLayout<Data: RandomAccessCollection, Content: View>: View whe
     }
 
     var body: some View {
-        // Horizontal scroll with spacing to mimic chips layout
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 10) {
                 ForEach(items) { item in

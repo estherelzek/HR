@@ -131,7 +131,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         print("🟢 ==============================================")
 
-   //     saveNotification(title: title, body: body)
+        saveNotification(title: title, body: body)
         completionHandler([.banner, .sound, .badge])
     }
 
@@ -178,7 +178,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
         let title = userInfo["title"] as? String ?? "New"
         let body = userInfo["body"] as? String ?? "Message"
-        saveNotification(title: title, body: body)
+
+        // Only save here when the app is backgrounded/killed.
+        // When the app is in the foreground, willPresent fires first and saves it there,
+        // so saving here too would cause a duplicate entry.
+        if UIApplication.shared.applicationState != .active {
+            saveNotification(title: title, body: body)
+        }
        // showNotification(title: title, body: body)
         completionHandler(.newData)
     }

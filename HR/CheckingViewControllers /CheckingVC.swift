@@ -157,31 +157,31 @@ class CheckingVC: UIViewController {
     @IBAction func checkingButtonTapped(_ sender: Any) {
         isLoadingAttendance = true
         checkingButton.isEnabled = false
-        // Fetch latest attendance status first
         fetchAttendanceStatus { [weak self] in
             guard let self = self else { return }
             self.isLoadingAttendance = false
-            // Confirm check-out if already checked in
             if self.isCheckedIn {
-                let hoursText = self.workedHours != nil ? String(format: "%.2f hours", self.workedHours!) : NSLocalizedString("unknown", comment: "")
-                
+                let liveWorkedHours = self.calculateWorkedHoursForConfirmation()
+                let hoursText = liveWorkedHours != nil
+                    ? String(format: "%.2f hours", liveWorkedHours!)
+                    : NSLocalizedString("unknown", comment: "")
+
                 let title = NSLocalizedString("confirm_checkout_title", comment: "")
                 let messageFormat = NSLocalizedString("confirm_checkout_message", comment: "")
                 let message = String(format: messageFormat, hoursText)
-                
+
                 let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-                
+
                 alert.addAction(UIAlertAction(title: NSLocalizedString("cancel_button", comment: ""), style: .cancel) { _ in
                     self.finishLoadingUI()
                 })
-                
+
                 alert.addAction(UIAlertAction(title: NSLocalizedString("confirm_button", comment: ""), style: .destructive) { _ in
                     self.performCheckInOut(isCheckedIn: true)
                 })
-                
+
                 self.present(alert, animated: true)
             } else {
-                // Direct check-in
                 self.performCheckInOut(isCheckedIn: false)
             }
         }
@@ -189,7 +189,6 @@ class CheckingVC: UIViewController {
     }
 
 
-    
     private func performCheckInOut(isCheckedIn: Bool) {
         self.isCheckedIn = !isCheckedIn
         isLoadingAttendance = true
@@ -204,39 +203,39 @@ class CheckingVC: UIViewController {
                     }
                 } else {
                     print("⚠️ Offline → request saved locally")
-                    
+
                     let now = Date()
                     let formatter = DateFormatter()
                     formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
                     formatter.timeZone = TimeZone(identifier: "UTC")
-                    
+
                     // Apply same clock diff adjustment as online flow
-                    let diffMinutes = UserDefaults.standard.double(forKey: "clockDiffMinutes")
+                    let diffMinutes = self.effectiveClockDiffMinutes()
                     let adjustedDate = now.addingTimeInterval(-diffMinutes * 60)
                     let currentTimeString = formatter.string(from: adjustedDate)
-                    
+
                     if self.isCheckedIn {
                         self.lastCheckIn = currentTimeString
                         self.workedHours = nil
                     } else {
                         self.lastCheckOut = currentTimeString
-                        
+
                         if let checkInString = self.lastCheckIn,
                            let checkInDate = formatter.date(from: checkInString) {
                             let hours = adjustedDate.timeIntervalSince(checkInDate) / 3600
                             self.workedHours = round(hours * 100) / 100
                         }
                     }
-                    
+
                     self.reloadTexts()
-                    
+
                     self.showAlert(
                         title: "Offline Mode",
                         message: self.isCheckedIn
                         ? "You're offline. Check-in saved locally and will sync when online."
                         : "You're offline. Check-out saved locally and will sync when online."
                     )
-                    
+
                     self.finishLoadingUI()
                 }
             }
@@ -413,6 +412,31 @@ class CheckingVC: UIViewController {
         view.isUserInteractionEnabled = !shouldShow
     }
     
+    /// Use a live calculation from last check-in so checkout confirmation is accurate in offline mode.
+    private func calculateWorkedHoursForConfirmation() -> Double? {
+        guard let checkInString = lastCheckIn else { return workedHours }
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        formatter.timeZone = TimeZone(identifier: "UTC")
+
+        guard let checkInDate = formatter.date(from: checkInString) else { return workedHours }
+
+        let adjustedNow = Date().addingTimeInterval(-effectiveClockDiffMinutes() * 60)
+        let interval = adjustedNow.timeIntervalSince(checkInDate)
+        guard interval >= 0 else { return 0 }
+
+        let hours = interval / 3600
+        return round(hours * 100) / 100
+    }
+
+    /// Clock tampering flow may store a sentinel value (-1000). Ignore outlier values in local calculations.
+    private func effectiveClockDiffMinutes() -> Double {
+        let diff = UserDefaults.standard.double(forKey: "clockDiffMinutes")
+        if abs(diff) > 900 { return 0 }
+        return diff
+    }
+
     private func setUpLisgnerstoViewModel() {
         
         viewModel.onSuccess = { [weak self] response in
