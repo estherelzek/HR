@@ -64,7 +64,7 @@ struct FiltersView: View {
     enum ExpenseStatus: String, CaseIterable, Identifiable {
         case all
         case draft
-        case reported
+        case submitted
         case approved
         case refused
 
@@ -76,7 +76,7 @@ struct FiltersView: View {
                 return NSLocalizedString("filter.all", comment: "")
             case .draft:
                 return NSLocalizedString("status.draft", comment: "")
-            case .reported:
+            case .submitted:
                 return NSLocalizedString("status.reported", comment: "")
             case .approved:
                 return NSLocalizedString("status.approved", comment: "")
@@ -225,13 +225,10 @@ struct FiltersView: View {
     }
 
     private func applyTapped() {
-        // Validate before applying
         if dateFilterEnabled && !dateRangeIsValid {
-            // keep the sheet open and maybe show an inline validation (already present)
             return
         }
 
-        // Build FiltersData and call callback
         let data = FiltersData(
             dateEnabled: dateFilterEnabled,
             fromDate: fromDate,
@@ -247,7 +244,6 @@ struct FiltersView: View {
     }
 
     private func resetTapped() {
-        // Reset UI state
         dateFilterEnabled = false
         fromDate = Date()
         toDate = Date()
@@ -255,8 +251,6 @@ struct FiltersView: View {
         selectedStatus = .all
         attachmentFilterEnabled = false
         hasAttachment = nil
-
-        // Notify parent that filters were reset so table can be refreshed
         let empty = FiltersData.empty
         onReset?(empty)
     }
@@ -359,7 +353,6 @@ private let dateFormatter: DateFormatter = {
     f.dateFormat = "dd/MM/yyyy"
     return f
 }()
-
 
 // Preview
 #Preview {

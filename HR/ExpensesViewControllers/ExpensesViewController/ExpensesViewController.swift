@@ -166,8 +166,9 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
 
         // Status filtering
         if filters.statusEnabled, let sel = filters.selectedStatus, !sel.isEmpty {
-            let target = sel.lowercased()
-            filtered = filtered.filter { $0.state.lowercased() == target }
+            filtered = filtered.filter { expense in
+                statusMatchesFilter(expenseState: expense.state, selectedFilterState: sel)
+            }
         }
 
         // Attachment filtering
@@ -180,6 +181,19 @@ class ExpensesViewController: UIViewController, UITableViewDelegate, UITableView
         }
 
         return filtered
+    }
+
+    /// Normalizes UI/backend status aliases to avoid empty results on equivalent states.
+    private func statusMatchesFilter(expenseState: String, selectedFilterState: String) -> Bool {
+        let normalizedExpense = expenseState.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let normalizedFilter = selectedFilterState.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+
+        switch normalizedFilter {
+        case "reported", "submit", "submitted":
+            return normalizedExpense == "submit" || normalizedExpense == "submitted"
+        default:
+            return normalizedExpense == normalizedFilter
+        }
     }
 
     private func parseExpenseDate(_ s: String) -> Date? {
@@ -471,7 +485,6 @@ extension ExpensesViewController {
         let expense = expensesList[indexPath.row]
         cell.configure(with: expense)
         cell.contentView.layoutMargins = UIEdgeInsets(top: 6, left: 10, bottom: 6, right: 10)
-
         // Pass scenario flag to cell
         cell.isReportScenario = self.isReportScenario
 

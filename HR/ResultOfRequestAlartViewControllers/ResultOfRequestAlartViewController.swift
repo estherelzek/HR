@@ -12,21 +12,17 @@ class ResultOfRequestAlartViewController: UIViewController {
 
     @IBOutlet weak var tilteLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
-  //  @IBOutlet weak var requestData: UIStackView!
- //   @IBOutlet weak var coloredButton: InspectableButton!
-   // @IBOutlet weak var ActionButton: InspectableButton!
     @IBOutlet weak var contentView: InspectableView!
     @IBOutlet var outSideView: UIView!
-   // @IBOutlet weak var numberOfAnnualLeaveLabel: UILabel!
-    
     @IBOutlet weak var tableView: UITableView!
+    
     private let viewModel = EmployeeUnlinkTimeOffViewModel()
     private var cancellables = Set<AnyCancellable>()
     var leaveId: Int?
     var  parentObject: TimeOffViewController?
     var selectedDate: Date?
     var allRecords: EmployeeTimeOffResult? // ⬅️ pass all records here
-        var filteredRecords: [LeaveRecord] = [] // ⬅️ will hold records of selected day
+    var filteredRecords: [LeaveRecord] = [] // ⬅️ will hold records of selected day
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -128,11 +124,9 @@ class ResultOfRequestAlartViewController: UIViewController {
             leaveId = daily.leaveID
             print("Daily leave for \(daily.durationDays) days")
         } else if let hourly = record as? HourlyRecord {
-            let from = hourly.requestHourFrom?.formattedHour(using: hourly.leaveDay)
-            let to = hourly.requestHourTo?.formattedHour(using: hourly.leaveDay)
-
-            dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"
-            dateLabel.text = "\(hourly.leaveDay) | \(from) → \(to)"
+            let from = hourly.requestHourFrom?.formattedHour(using: hourly.leaveDay) ?? "--:--"
+            let to = hourly.requestHourTo?.formattedHour(using: hourly.leaveDay) ?? "--:--"
+            dateLabel.text = "\(hourly.leaveDay) | \(from) -> \(to)"
             leaveId = hourly.leaveID
             print("Hourly leave for \(hourly.durationHours) hours")
         }
@@ -160,8 +154,9 @@ extension ResultOfRequestAlartViewController: UITableViewDelegate, UITableViewDa
         } else if let hourly = record as? HourlyRecord {
             cell.numberOfAnnualLeaveLabel.text = "\(hourly.leaveType): \(hourly.durationHours) hour(s)"
             cell.statusLabel.text = "Status: \(hourly.state)"
-            print("hhhhh \(hourly.startDate)\(hourly.startDate)")
-            cell.periodLabel.text = "From: \(hourly.startDate) -> To: \(hourly.endDate)"
+            let from = hourly.requestHourFrom?.formattedHour(using: hourly.leaveDay) ?? "--:--"
+            let to = hourly.requestHourTo?.formattedHour(using: hourly.leaveDay) ?? "--:--"
+            cell.periodLabel.text = "From: \(from) -> To: \(to)"
             cell.coloredButton.drawLeaveState(hourly.state, colorHex: hourly.color ?? "#B7F73E")
             leaveId = hourly.leaveID
         }
