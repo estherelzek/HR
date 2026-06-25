@@ -339,16 +339,16 @@ extension TimeOffViewController: FSCalendarDelegate,
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let targetDateString = dateFormatter.string(from: normalizedDate)
         let matchingDaily = allRecords.dailyRecords.filter {
-            $0.startDate == targetDateString || $0.endDate == targetDateString
+            ($0.startDate == targetDateString || $0.endDate == targetDateString) && $0.state.lowercased() != "cancel"
         }
 
         let matchingHourly = allRecords.hourlyRecords.filter {
-            $0.leaveDay == targetDateString
+            $0.leaveDay == targetDateString && $0.state.lowercased() != "cancel"
         }
         let combinedRecords: [LeaveRecord] =
             matchingDaily.map { $0 as LeaveRecord } + matchingHourly.map { $0 as LeaveRecord }
 
-        if !combinedRecords.isEmpty {
+        if !combinedRecords.isEmpty  {
             goToResultOfRequest(for: normalizedDate, records: combinedRecords)
 
         } else {

@@ -72,6 +72,36 @@ final class OfflineURLStorage {
     }
 }
 
+final class RequestCounter {
+    static let shared = RequestCounter()
+
+    private let key = "TotalSentRequestsCount"
+    private let queue = DispatchQueue(label: "com.hr.requestCounter")
+
+    private init() {}
+
+    var total: Int {
+        queue.sync {
+            UserDefaults.standard.integer(forKey: key)
+        }
+    }
+
+    @discardableResult
+    func increment() -> Int {
+        queue.sync {
+            let next = UserDefaults.standard.integer(forKey: key) + 1
+            UserDefaults.standard.set(next, forKey: key)
+            return next
+        }
+    }
+
+    func reset() {
+        queue.sync {
+            UserDefaults.standard.set(0, forKey: key)
+        }
+    }
+}
+
 final class NetworkManager {
     static let shared = NetworkManager()
     private init() {}
@@ -88,6 +118,8 @@ final class NetworkManager {
         }
 
         print("🌍 [API REQUEST]")
+        let requestNumber = RequestCounter.shared.increment()
+        print("📊 Request Number: #\(requestNumber)")
         print("➡️ URL: \(request.url?.absoluteString ?? "nil")")
         print("➡️ Method: \(request.httpMethod ?? "nil")")
         print("➡️ Headers: \(request.allHTTPHeaderFields ?? [:])")
@@ -219,6 +251,8 @@ final class NetworkManager {
         request.httpBody = body
 
         print("🌍 [MULTIPART UPLOAD]")
+        let requestNumber = RequestCounter.shared.increment()
+        print("📊 Request Number: #\(requestNumber)")
         print("➡️ URL: \(url.absoluteString)")
         print("➡️ File: \(fileName ?? "none") (\(fileData?.count ?? 0) bytes)")
 
