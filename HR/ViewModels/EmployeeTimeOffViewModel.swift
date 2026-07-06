@@ -7,10 +7,9 @@
 
 import Foundation
 
-import Foundation
-
 final class EmployeeTimeOffViewModel {
-
+    
+    // MARK: - Completion-based method (legacy)
     func fetchEmployeeTimeOffs(
         token: String,
         completion: @escaping (Result<EmployeeTimeOffResult, APIError>) -> Void
@@ -26,5 +25,21 @@ final class EmployeeTimeOffViewModel {
                 completion(.failure(error))
             }
         }
+    }
+    
+    // MARK: - Async/Await method (modern)
+    
+    /// Fetch employee time offs using async/await
+    /// - Parameter token: Employee authentication token
+    /// - Returns: EmployeeTimeOffResult
+    /// - Throws: APIError if request fails
+    func fetchEmployeeTimeOffs(token: String) async throws -> EmployeeTimeOffResult {
+        let endpoint = API.getEmployeeTimeOffs(token: token, action: "time_off_status")
+        
+        // ✅ Await the network call
+        let response = try await NetworkManager.shared.requestDecodable(endpoint, as: EmployeeTimeOffResponse.self)
+        print("result Of time off : \(response)")
+        
+        return response.result
     }
 }

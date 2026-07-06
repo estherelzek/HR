@@ -168,6 +168,7 @@
 "checking_in_title" = "Checking In";
 "checking_out_title" = "Checking Out";
 "notification_title" = "Notifications";
+"attendance_title" = "Attendance History";
 ///////////////////////////////////////////////
 
 
@@ -548,3 +549,32 @@
 "expenses.discardTitle" = "Discard Changes";
 "expenses.discardMessage" = "Are you sure you want to discard your changes?";
 "expenses.emptyState" = "No expenses yet. Tap New Expenses to add one.";
+
+// Attendance Header
+"attendance.summary" = "Summary";
+"attendance.history" = "History";
+"attendance.summary_subtitle" = "Your attendance overview";
+"attendance.history_subtitle" = "Attendance records";
+
+// Attendance Filter
+"attendance.filter.status.title" = "Attendance Status:";
+"attendance.filter.status.all" = "All";
+"attendance.filter.status.present" = "Present";
+"attendance.filter.status.late" = "Late";
+"attendance.filter.status.absent" = "Absent";
+
+"attendance.filter.period.title" = "Time Period:";
+"attendance.filter.period.all" = "All";
+"attendance.filter.period.day" = "Day";
+"attendance.filter.period.week" = "Week";
+"attendance.filter.period.month" = "Month";
+"attendance.filter.period.quarter" = "Quarter";
+"attendance.filter.period.year" = "Year";
+"attendance.filter.period.custom" = "Custom";
+
+"attendance.filter.date.from" = "From:";
+"attendance.filter.date.to" = "To:";
+"attendance.filter.date.error" = "Please check the date you entered";
+
+"attendance.filter.button.apply" = "Apply";
+"attendance.filter.button.reset" = "Reset";

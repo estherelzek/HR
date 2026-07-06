@@ -91,12 +91,27 @@ class TimeOffViewController: UIViewController {
             LanguageManager.shared.currentLanguage() == "ar" ? "ar" : "en_US"
         )
         setUpTexts()
+        
+        // ✅ Configure loader before starting
+        setupLoader()
         loaderIndicator.startAnimating()
       
-        loadAllData { [weak self] in
-            self?.loaderIndicator.stopAnimating()
-            print("✅ All APIs finished")
+        // ✅ Create a Task to run async code from non-async context
+        // Task automatically runs on the main actor since this is a UIViewController
+        Task {
+            do {
+                try await loadAllData()  // ✅ Simply await - no completion handler needed!
+                print("✅ All APIs finished")
+            } catch {
+                print("❌ Error loading data: \(error)")
+                if let apiError = error as? APIError {
+                    showAPIError(apiError)
+                }
+            }
+            // ✅ Stop and hide loader when done
+            loaderIndicator.stopAnimating()
         }
+        
         let nib = UINib(nibName: "CollectionViewCell", bundle: nil)
         collectionView.register(nib, forCellWithReuseIdentifier: "CollectionViewCell")
         NotificationCenter.default.addObserver(self,selector: #selector(languageChanged),name: NSNotification.Name("LanguageChanged"),object: nil)
@@ -117,6 +132,29 @@ class TimeOffViewController: UIViewController {
             emptyStateLabel.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor, constant: -16)
         ])
     }
+    
+    // MARK: - Loader Setup
+    private func setupLoader() {
+        // ✅ Ensure loader hides automatically when stopped
+        loaderIndicator.hidesWhenStopped = true
+        
+        // ✅ Bring loader to front so it's visible above other views
+        view.bringSubviewToFront(loaderIndicator)
+        
+        // ✅ Set style for better visibility
+        if #available(iOS 13.0, *) {
+            loaderIndicator.style = .medium
+        } else {
+            loaderIndicator.style = .medium
+        }
+        
+        // ✅ Set color based on dark/light mode
+        if traitCollection.userInterfaceStyle == .dark {
+            loaderIndicator.color = .white
+        } else {
+            loaderIndicator.color = .gray
+        }
+    }
 
     @IBAction func backButtonTapped(_ sender: Any) {
         dismiss(animated: true, completion: nil)
@@ -126,92 +164,80 @@ class TimeOffViewController: UIViewController {
         setUpTexts()
     }
 
-    private func loadHolidays(completion: @escaping () -> Void) {
+    // MARK: - Async/Await version
+    @MainActor
+    private func loadHolidays() async throws {
         guard let token = UserDefaults.standard.employeeToken else {
             print("⚠️ No employee token found.")
-            return completion()
+            return
         }
+        
         print("📡 Fetching holidays and weekends from API...")
-        viewModel.fetchHolidays(token: token) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let data):
-                    print("✅ Holiday API Success: \(data)")
-                    if let offs = data.weekly_offs {
-                        self?.weekendDays = offs.keys.compactMap { Int($0) }
-                        print("🗓 Weekend days (from API): \(self?.weekendDays ?? [])")
-                    } else {
-                        print("⚠️ No weekend days found in response.")
-                    }
-                    if let holidays = data.public_holidays {
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "yyyy-MM-dd"
-
-                        self?.publicHolidays = holidays.compactMap { holiday in
-                            let date = formatter.date(from: holiday.start_date)
-                            if let d = date {
-                             //   print("🎉 Parsed public holiday: \(holiday.start_date) → \(d)")
-                            } else {
-                                print("⚠️ Failed to parse holiday date: \(holiday.start_date)")
-                            }
-                            return date
-                        }
-
-                        print("📅 All parsed public holidays: \(self?.publicHolidays ?? [])")
-                    } else {
-                        print("⚠️ No public holidays found in response.")
-                    }
-                    self?.calender.reloadData()
-                    print("🔄 Calendar reloaded after holidays update.")
-
-                case .failure(let error):
-                    print("❌ Holiday API Error: \(error.localizedDescription)")
-                    self?.showAPIError(error)
-                }
-                completion() // ✅ Always call completion
-            }
+        
+        // ✅ Simply await the result - no completion handlers!
+        let data = try await viewModel.fetchHolidays(token: token)
+        
+        print("✅ Holiday API Success: \(data)")
+        
+        if let offs = data.weekly_offs {
+            weekendDays = offs.keys.compactMap { Int($0) }
+            print("🗓 Weekend days (from API): \(weekendDays)")
+        } else {
+            print("⚠️ No weekend days found in response.")
         }
+        
+        if let holidays = data.public_holidays {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            
+            publicHolidays = holidays.compactMap { holiday in
+                let date = formatter.date(from: holiday.start_date)
+                if date == nil {
+                    print("⚠️ Failed to parse holiday date: \(holiday.start_date)")
+                }
+                return date
+            }
+            
+            print("📅 All parsed public holidays: \(publicHolidays)")
+        } else {
+            print("⚠️ No public holidays found in response.")
+        }
+        
+        calender.reloadData()
+        print("🔄 Calendar reloaded after holidays update.")
     }
 
-    private func loadTimeOffData(completion: @escaping () -> Void) {
-        guard let token = UserDefaults.standard.employeeToken else { return completion() }
-        viewModel.fetchTimeOff(token: token) { [weak self] result in
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let response):
-                    print("raw response: \(response)")
-                    if let leaveTypes = response.result?.leaveTypes {
-                        self?.leaveTypes = leaveTypes
-                        self?.leaveTypesCollectionView.reloadData()
-                        self?.statesTypesCollectionView.reloadData()
-                        self?.filteredLeaveTypes = leaveTypes.filter { leave in
-                            !(leave.requiresAllocation == "no")
-                        }
-                        self?.filteredLeaveTypes = leaveTypes.filter { leave in
-                            !(leave.requiresAllocation == "no")
-                        }
-
-                        print("leaveTypes.count: \(leaveTypes.count)")
-                       // if self?.leaveTypes.count != 0 {
-                            self?.collectionView.reloadData()
-                            self?.updateEmptyState()
-//                        } else {
-//                            print("label should be shown")
-//                        }
-                        
-                    }
-                case .failure(let error):
-                    print("❌ TimeOff API Error:", error)
-                    self?.showAPIError(error)
-                }
-                completion()
+    @MainActor
+    private func loadTimeOffData() async throws {
+        guard let token = UserDefaults.standard.employeeToken else { return }
+        
+        // ✅ Simply await the result
+        let response = try await viewModel.fetchTimeOff(token: token)
+        
+        print("raw response: \(response)")
+        
+        if let leaveTypes = response.result?.leaveTypes {
+            self.leaveTypes = leaveTypes
+            leaveTypesCollectionView.reloadData()
+            statesTypesCollectionView.reloadData()
+            
+            filteredLeaveTypes = leaveTypes.filter { leave in
+                !(leave.requiresAllocation == "no")
             }
+            
+            print("leaveTypes.count: \(leaveTypes.count)")
+            collectionView.reloadData()
+            updateEmptyState()
         }
     }
     
     func refreshAfterCancellation() {
-        setupBindings { [weak self] in
-            self?.calender.reloadData()
+        loaderIndicator.startAnimating()  // ✅ Show loader during refresh
+        
+        Task {
+            await setupBindings()
+            calender.reloadData()
+            loaderIndicator.stopAnimating()  // ✅ Hide loader when done
         }
     }
     
@@ -222,107 +248,103 @@ class TimeOffViewController: UIViewController {
         emptyStateLabel.isHidden = !isEmpty
     }
     
-    private func setupBindings(completion: @escaping () -> Void) {
-        loaderIndicator.startAnimating()
-        if let token = UserDefaults.standard.string(forKey: "employeeToken") {
-            viewModelTimeOff.fetchEmployeeTimeOffs(token: token) { [weak self] result in
-                DispatchQueue.main.async {
-                    switch result {
-                    case .success(let records):
-                        print("records: \(records)")
-                        self?.employeeTimeOffRecords = records.records
-                        self?.leaveDayColors.removeAll()
-                        self?.leaveDayRecords.removeAll()
-                        self?.leaveHourRecords.removeAll()
-                        
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "yyyy-MM-dd"
-                        
-                        for record in records.records.dailyRecords {
-                            guard
-                                let start = formatter.date(from: record.startDate),
-                                let end = formatter.date(from: record.endDate)
-                            else { continue }
-
-                            let colorHex = self?.leaveTypes.first(where: { $0.name == record.leaveType })?.color
-                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E"
-                            let color = UIColor.fromHex(finalHex)
-                            let days = self?.datesBetween(start: start, end: end) ?? []
-
-                            for day in days {
-                                // Append to array like we do for hourly
-                                if var arr = self?.leaveDayRecords[day] {
-                                    arr.append(record)
-                                    arr[arr.count - 1].color = finalHex
-                                    self?.leaveDayRecords[day] = arr
-                                } else {
-                                    var newArr: [DailyRecord] = [record]
-                                    newArr[0].color = finalHex
-                                    self?.leaveDayRecords[day] = newArr
-                                }
-                                self?.leaveDayColors[day] = color
-                            }
-                        }
-
-                        for record in records.records.hourlyRecords {
-                            guard let leaveDay = formatter.date(from: record.leaveDay) else { continue }
-
-                            // 🎨 Find color for this leave type
-                            let colorHex = self?.leaveTypes.first(where: { $0.name == record.leaveType })?.color
-                            let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E"
-                            let color = UIColor.fromHex(finalHex)
-
-                            // Append the record into the array for that day
-                            if var arr = self?.leaveHourRecords[leaveDay] {
-                                arr.append(record)
-                                // update the color inside the appended value (structs are value types)
-                                arr[arr.count - 1].color = finalHex
-                                self?.leaveHourRecords[leaveDay] = arr
-                                print("🔁 Appended hourly record for \(leaveDay) → now \(arr.count) records")
-                            } else {
-                                var newArr: [HourlyRecord] = [record]
-                                newArr[0].color = finalHex
-                                self?.leaveHourRecords[leaveDay] = newArr
-                            //    print("➕ Created hourly records array for \(leaveDay)")
-                            }
-
-                            // Save color for calendar cell using the last record's color (last wins)
-                            self?.leaveDayColors[leaveDay] = color
-                        }
-
-                        self?.calender.reloadData()
-                    case .failure(let error):
-                        self?.showAPIError(error)
+    @MainActor
+    private func setupBindings() async {
+        guard let token = UserDefaults.standard.string(forKey: "employeeToken") else {
+            return
+        }
+        
+        do {
+            // ✅ Await the API call
+            let result = try await viewModelTimeOff.fetchEmployeeTimeOffs(token: token)
+            
+            print("records: \(result)")
+            employeeTimeOffRecords = result.records
+            leaveDayColors.removeAll()
+            leaveDayRecords.removeAll()
+            leaveHourRecords.removeAll()
+            
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            
+            // Process daily records
+            for record in result.records.dailyRecords {
+                guard
+                    let start = formatter.date(from: record.startDate),
+                    let end = formatter.date(from: record.endDate)
+                else { continue }
+                
+                let colorHex = leaveTypes.first(where: { $0.name == record.leaveType })?.color
+                let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E"
+                let color = UIColor.fromHex(finalHex)
+                let days = datesBetween(start: start, end: end)
+                
+                for day in days {
+                    if var arr = leaveDayRecords[day] {
+                        arr.append(record)
+                        arr[arr.count - 1].color = finalHex
+                        leaveDayRecords[day] = arr
+                    } else {
+                        var newArr: [DailyRecord] = [record]
+                        newArr[0].color = finalHex
+                        leaveDayRecords[day] = newArr
                     }
-                    self?.loaderIndicator.stopAnimating()
-                    self?.loaderIndicator.hidesWhenStopped = true
-                    completion() // ✅ tell DispatchGroup we’re done
+                    leaveDayColors[day] = color
                 }
             }
-        } else {
-            completion() // no token, finish immediately
-        }
-    }
-    func loadAllData(completion: @escaping () -> Void) {
-        let group = DispatchGroup()
-
-        group.enter()
-        loadHolidays {
-            group.leave()
-        }
-
-        group.enter()
-        loadTimeOffData {
-            group.leave()
-        }
-
-        group.notify(queue: .main) {
-            // Only now leaveTypes are guaranteed loaded
-            self.setupBindings {
-                self.updateEmptyState()
-                completion()
+            
+            // Process hourly records
+            for record in result.records.hourlyRecords {
+                guard let leaveDay = formatter.date(from: record.leaveDay) else { continue }
+                
+                let colorHex = leaveTypes.first(where: { $0.name == record.leaveType })?.color
+                let finalHex = (colorHex?.isEmpty == false) ? colorHex! : "#B7F73E"
+                let color = UIColor.fromHex(finalHex)
+                
+                if var arr = leaveHourRecords[leaveDay] {
+                    arr.append(record)
+                    arr[arr.count - 1].color = finalHex
+                    leaveHourRecords[leaveDay] = arr
+                    print("🔁 Appended hourly record for \(leaveDay) → now \(arr.count) records")
+                } else {
+                    var newArr: [HourlyRecord] = [record]
+                    newArr[0].color = finalHex
+                    leaveHourRecords[leaveDay] = newArr
+                }
+                
+                leaveDayColors[leaveDay] = color
+            }
+            
+            calender.reloadData()
+            
+        } catch {
+            print("❌ Error fetching employee time offs: \(error)")
+            if let apiError = error as? APIError {
+                showAPIError(apiError)
             }
         }
+    }
+    
+    // MARK: - Main data loading function with async/await
+    /// Loads all data concurrently using async/await
+    /// This demonstrates parallel API calls using async let
+    @MainActor
+    func loadAllData() async throws {
+        print("🚀 Starting to load all data using async/await...")
+        
+        // ✅ Option 1: Run APIs in parallel using async let
+        async let holidaysTask: Void = loadHolidays()
+        async let timeOffTask: Void = loadTimeOffData()
+        
+        // Wait for both to complete (they run in parallel!)
+        try await holidaysTask
+        try await timeOffTask
+        
+        // ✅ Now that leaveTypes are loaded, fetch employee time offs
+        await setupBindings()
+        updateEmptyState()
+        
+        print("✅ All data loaded successfully!")
     }
 }
 

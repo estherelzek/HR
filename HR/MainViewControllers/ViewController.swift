@@ -7,6 +7,7 @@
 
 import UIKit
 import AVFoundation
+import SwiftUI
 
 class ViewController: UIViewController {
     
@@ -182,13 +183,16 @@ class ViewController: UIViewController {
                     let titles = [
                         NSLocalizedString("settings_title", comment: ""),
                         NSLocalizedString("lunch_title", comment: ""),
-                        NSLocalizedString("expenses_title", comment: "")
+                        NSLocalizedString("expenses_title", comment: ""),
+                        NSLocalizedString("attendance_title", comment: "Attendance History")
                     ]
-                    btn.setTitle(titles[index], for: .normal)
-                    
-                    // Adjust alignment for Arabic
-                    let isArabic = LanguageManager.shared.currentLanguage() == "ar"
-                    btn.contentHorizontalAlignment = isArabic ? .right : .left
+                    if index < titles.count {
+                        btn.setTitle(titles[index], for: .normal)
+                        
+                        // Adjust alignment for Arabic
+                        let isArabic = LanguageManager.shared.currentLanguage() == "ar"
+                        btn.contentHorizontalAlignment = isArabic ? .right : .left
+                    }
                 }
             }
         }
@@ -241,10 +245,18 @@ class ViewController: UIViewController {
         ) { [weak self] _ in
             self?.openExpenses()
         }
+        
+        let attendanceAction = UIAction(
+            title: NSLocalizedString("attendance_title", comment: "Attendance History"),
+            image: UIImage(systemName: "calendar.badge.clock")
+        ) { [weak self] _ in
+            self?.openAttendance()
+        }
+        
         let menu = UIMenu(
             title: "",
             options: .displayInline,
-            children: [settingsAction, lunchAction , expensesAction]
+            children: [settingsAction, lunchAction, expensesAction, attendanceAction]
         )
 
         settingButton.menu = menu
@@ -286,7 +298,7 @@ class ViewController: UIViewController {
         }
 
         let menuWidth: CGFloat = 160
-        let menuHeight: CGFloat = 160  // Increased for 3 items with proper spacing
+        let menuHeight: CGFloat = 206  // Increased for 4 items with proper spacing
 
         let menuView = UIView()
         menuView.backgroundColor = .white
@@ -327,9 +339,17 @@ class ViewController: UIViewController {
         )
         expensesBtn.addTarget(self, action: #selector(openExpenses), for: .touchUpInside)
 
+        // Attendance Button
+        let attendanceBtn = createMenuButton(
+            title: NSLocalizedString("attendance_title", comment: "Attendance History"),
+            y: 146
+        )
+        attendanceBtn.addTarget(self, action: #selector(openAttendance), for: .touchUpInside)
+
         menuView.addSubview(settingsBtn)
         menuView.addSubview(lunchBtn)
         menuView.addSubview(expensesBtn)
+        menuView.addSubview(attendanceBtn)
 
         view.addSubview(menuView)
         moreMenuView = menuView
@@ -360,7 +380,30 @@ class ViewController: UIViewController {
         settingButton.tintColor = .purplecolor
         switchTo(viewController: expensesVC)
     }
-    
+    @objc private func openAttendance() {
+        hideMoreMenu()
+        
+        let attendanceView = AttendenceHistoryList { [weak self] in
+            // Go back to home screen
+            let homeVC = CheckingVC(nibName: "CheckingVC", bundle: nil)
+            self?.homeButton.tintColor = .purplecolor
+            self?.timeOffButton.tintColor = .lightGray
+            self?.settingButton.tintColor = .lightGray
+            self?.notificationButton.tintColor = .lightGray
+            self?.bottomBarView.isHidden = false
+            self?.titlesBarView.isHidden = false
+            self?.switchTo(viewController: homeVC)
+        }
+        let hostingVC = UIHostingController(rootView: attendanceView)
+
+        homeButton.tintColor = .lightGray
+        timeOffButton.tintColor = .lightGray
+        notificationButton.tintColor = .lightGray
+        settingButton.tintColor = .purplecolor
+        bottomBarView.isHidden = true
+        titlesBarView.isHidden = true
+        switchTo(viewController: hostingVC)
+    }
     private func createMenuButton(title: String, y: CGFloat) -> UIButton {
         let button = UIButton(type: .system)
         button.setTitle(title, for: .normal)

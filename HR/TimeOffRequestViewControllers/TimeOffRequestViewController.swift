@@ -389,7 +389,10 @@ class TimeOffRequestViewController: UIViewController , UITextFieldDelegate {
                     if response.result?.status == "success" {
                         // ✅ Happy path — dismiss and refresh
                         self.dismiss(animated: true) {
-                            self.parentViewControllerRef?.loadAllData(completion: {})
+                            // ✅ Call async function using Task wrapper
+                            Task {
+                                try? await self.parentViewControllerRef?.loadAllData()
+                            }
                         }
 
                     } else {

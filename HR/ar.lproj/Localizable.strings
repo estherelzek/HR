@@ -172,6 +172,7 @@
 "attendance_processing" = "جاري معالجة تسجيل الحضور...";
 "checking_in_title" = "تسجيل الحضور";
 "checking_out_title" = "تسجيل الانصراف";
+"attendance_title" = "سجل الحضور";
 ///////////////////
 /* Home Tabs */
 "home_title" = "الرئيسية";
@@ -545,3 +546,32 @@
 "expenses.discardTitle" = "تجاهل التعديلات";
 "expenses.discardMessage" = "هل أنت متأكد أنك تريد تجاهل التعديلات؟";
 "expenses.emptyState" = "لا توجد مصروفات حالياً. اضغط مصروف جديد لإضافة مصروف.";
+
+// Attendance Header
+"attendance.summary" = "ملخص";
+"attendance.history" = "السجل";
+"attendance.summary_subtitle" = "نظرة عامة على حضورك";
+"attendance.history_subtitle" = "سجلات الحضور";
+
+// Attendance Filter
+"attendance.filter.status.title" = "حالة الحضور:";
+"attendance.filter.status.all" = "الكل";
+"attendance.filter.status.present" = "حاضر";
+"attendance.filter.status.late" = "متأخر";
+"attendance.filter.status.absent" = "غائب";
+
+"attendance.filter.period.title" = "الفترة الزمنية:";
+"attendance.filter.period.all" = "الكل";
+"attendance.filter.period.day" = "يوم";
+"attendance.filter.period.week" = "أسبوع";
+"attendance.filter.period.month" = "شهر";
+"attendance.filter.period.quarter" = "ربع سنوي";
+"attendance.filter.period.year" = "سنة";
+"attendance.filter.period.custom" = "مخصص";
+
+"attendance.filter.date.from" = "من:";
+"attendance.filter.date.to" = "إلى:";
+"attendance.filter.date.error" = "يرجى التحقق من التاريخ الذي أدخلته";
+
+"attendance.filter.button.apply" = "تطبيق";
+"attendance.filter.button.reset" = "إعادة تعيين";

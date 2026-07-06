@@ -285,4 +285,58 @@ final class NetworkManager {
             }
         }.resume()
     }
+    
+    // MARK: - Async/Await Versions
+    /// Modern async/await version of requestDecodable
+    /// - Parameters:
+    /// - endpoint: The API endpoint
+    /// - type: The type to decode into
+    /// - Returns: The decoded object
+    /// - Throws: APIError if the request fails
+    func requestDecodable<T: Decodable>(
+        _ endpoint: Endpoint,
+        as type: T.Type
+    ) async throws -> T {
+        // ✅ Use continuation to bridge completion-based API to async/await
+        return try await withCheckedThrowingContinuation { continuation in
+            requestDecodable(endpoint, as: type) { result in
+                switch result {
+                case .success(let data):
+                    continuation.resume(returning: data)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    
+    /// Modern async/await version of uploadMultipart
+    func uploadMultipart<T: Decodable>(
+        url: URL,
+        params: [String: Any],
+        fileData: Data?,
+        fileName: String?,
+        fileMimeType: String?,
+        fileFieldName: String = "attachment",
+        as type: T.Type
+    ) async throws -> T {
+        return try await withCheckedThrowingContinuation { continuation in
+            uploadMultipart(
+                url: url,
+                params: params,
+                fileData: fileData,
+                fileName: fileName,
+                fileMimeType: fileMimeType,
+                fileFieldName: fileFieldName,
+                as: type
+            ) { result in
+                switch result {
+                case .success(let data):
+                    continuation.resume(returning: data)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
 }
