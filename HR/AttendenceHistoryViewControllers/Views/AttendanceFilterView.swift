@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct AttendanceFilterView: View {
+    
     @Binding var filter: AttendanceFilter
     @State private var selectedDate = Date()
-  
     @Binding var isPresented: Bool
     @State private var tempFilter: AttendanceFilter
     @State private var showDateError: Bool = false
@@ -55,13 +55,12 @@ struct AttendanceFilterView: View {
                         Text(NSLocalizedString("attendance.filter.status.title", comment: "Attendance Status filter section title"))
                             .font(.system(size: 16, weight: .bold))
                             .foregroundStyle(.white)
-                        
                         FlexibleButtonGrid(
                             items: FilterStatus.allCases,
-                            selectedItem: $tempFilter.selectedStatus
+                            selectedItem: $tempFilter.selectedStatus,
+                            icon: { $0.icon }
                         ) { status in
                             Text(status.localizedTitle)
-                                .font(.system(size: 14, weight: .semibold))
                         }
                     }
                     
@@ -72,29 +71,59 @@ struct AttendanceFilterView: View {
                             .foregroundStyle(.white)
                         
                         FlexibleButtonGrid(
-                            items: TimePeriod.allCases.filter { $0 != .custom },  // Show all including .all
-                            selectedItem: $tempFilter.selectedTimePeriod
+                            items: TimePeriod.allCases.filter { $0 != .custom && $0 != .all },
+                            selectedItem: $tempFilter.selectedTimePeriod,
+                            icon: { $0.icon }
                         ) { period in
                             Text(period.localizedTitle)
-                                .font(.system(size: 14, weight: .semibold))
                         }
                         
-                        // Custom button separately
-                        Button(action: {
-                            tempFilter.selectedTimePeriod = .custom
-                            // Initialize dates if not set
-                            if tempFilter.customStartDate == nil {
-                                tempFilter.customStartDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())
+                        // All and Custom buttons separately
+                        HStack(spacing: 12) {
+                            Button(action: {
+                                tempFilter.selectedTimePeriod = .all
+                            }) {
+                                HStack {
+                                    Image(systemName: TimePeriod.all.icon)
+                                        .font(.system(size: 14))
+                                    Text(TimePeriod.all.localizedTitle)
+                                        .font(.system(size: 14, weight: .semibold))
+                                }
+                                .foregroundStyle(tempFilter.selectedTimePeriod == .all ? Color("greens") : .white)
+                                .padding(.horizontal, 20)
+                                .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
+                                .background(
+                                    tempFilter.selectedTimePeriod == .all ?
+                                    Color(attendanceAccentColor) : Color.clear
+                                )
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(tempFilter.selectedTimePeriod == .all ? Color.clear : Color(attendanceAccentColor), lineWidth: 1.5)
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
-                            if tempFilter.customEndDate == nil {
-                                tempFilter.customEndDate = Date()
-                            }
-                        }) {
-                            Text(NSLocalizedString("attendance.filter.period.custom", comment: "Custom time period option"))
-                                .font(.system(size: 14, weight: .semibold))
+                            
+                            Button(action: {
+                                tempFilter.selectedTimePeriod = .custom
+                                // Initialize dates if not set
+                                if tempFilter.customStartDate == nil {
+                                    tempFilter.customStartDate = Calendar.current.date(byAdding: .day, value: -7, to: Date())
+                                }
+                                if tempFilter.customEndDate == nil {
+                                    tempFilter.customEndDate = Date()
+                                }
+                            }) {
+                                HStack {
+                                    Image(systemName: TimePeriod.custom.icon)
+                                        .font(.system(size: 14))
+                                    Text(TimePeriod.custom.localizedTitle)
+                                        .font(.system(size: 14, weight: .semibold))
+                                }
                                 .foregroundStyle(tempFilter.selectedTimePeriod == .custom ? Color("greens") : .white)
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 10)
+                                .frame(maxWidth: .infinity)
                                 .background(
                                     tempFilter.selectedTimePeriod == .custom ?
                                     Color(attendanceAccentColor) : Color.clear
@@ -104,6 +133,7 @@ struct AttendanceFilterView: View {
                                         .stroke(tempFilter.selectedTimePeriod == .custom ? Color.clear : Color(attendanceAccentColor), lineWidth: 1.5)
                                 )
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
+                            }
                         }
                     }
                     
@@ -193,24 +223,35 @@ struct AttendanceFilterView: View {
 struct FlexibleButtonGrid<Item: Identifiable & Equatable, Content: View>: View {
     let items: [Item]
     @Binding var selectedItem: Item
+    let icon: (Item) -> String
     let content: (Item) -> Content
     
+      
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        let remainingItems = Array(items.dropFirst(3))
+        let placeholdersNeeded = remainingItems.isEmpty ? 0 : 3 - remainingItems.count
+        
+        return VStack(alignment: .leading, spacing: 12) {
             // Status buttons row
             HStack(spacing: 12) {
                 ForEach(items.prefix(3)) { item in
                     createButton(for: item)
+                        .frame(maxWidth: .infinity)
                 }
             }
             
          //    Additional items if more than 3
             if items.count > 3 {
                 HStack(spacing: 12) {
-                    ForEach(items.dropFirst(3)) { item in
+                    ForEach(remainingItems, id: \.id) { item in
                         createButton(for: item)
+                            .frame(maxWidth: .infinity)
                     }
-                    Spacer()
+                    // Add empty placeholders to match first row's layout
+                    ForEach(0..<placeholdersNeeded, id: \.self) { _ in
+                        Color.clear
+                            .frame(maxWidth: .infinity)
+                    }
                 }
             }
         }
@@ -222,19 +263,34 @@ struct FlexibleButtonGrid<Item: Identifiable & Equatable, Content: View>: View {
                 selectedItem = item
             }
         }) {
-            content(item)
-                .foregroundStyle(selectedItem == item ? Color("greens") : .white)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-                .background(
-                    selectedItem == item ?
-                    Color(attendanceAccentColor) : Color.clear
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 8)
-                        .stroke(selectedItem == item ? Color.clear : Color(attendanceAccentColor), lineWidth: 1.5)
-                )
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+            Label {
+                content(item)
+                    .font(.system(size: 14, weight: .semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+            } icon: {
+                Image(systemName: icon(item))
+                    .font(.system(size: 14))
+            }
+            .labelStyle(.titleAndIcon)
+            .foregroundStyle(selectedItem == item ? Color("greens") : .white)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity)
+            .background(
+                selectedItem == item ?
+                Color(attendanceAccentColor) : Color.clear
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(
+                        selectedItem == item
+                        ? Color.clear
+                        : Color(attendanceAccentColor),
+                        lineWidth: 1.5
+                    )
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 8))
         }
     }
     

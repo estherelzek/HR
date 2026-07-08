@@ -52,19 +52,19 @@ enum FilterStatus: String, CaseIterable, Identifiable {
     case present = "Present"
     case late = "Late"
     case absent = "Absent"
-    
+
     var id: String { rawValue }
-    
+
     var localizedTitle: String {
         switch self {
         case .all:
-            return NSLocalizedString("attendance.filter.status.all", comment: "All attendance statuses")
+            return NSLocalizedString("attendance.filter.status.all", comment: "")
         case .present:
-            return NSLocalizedString("attendance.filter.status.present", comment: "Present status")
+            return NSLocalizedString("attendance.filter.status.present", comment: "")
         case .late:
-            return NSLocalizedString("attendance.filter.status.late", comment: "Late status")
+            return NSLocalizedString("attendance.filter.status.late", comment: "")
         case .absent:
-            return NSLocalizedString("attendance.filter.status.absent", comment: "Absent status")
+            return NSLocalizedString("attendance.filter.status.absent", comment: "")
         }
     }
     
@@ -80,7 +80,20 @@ enum FilterStatus: String, CaseIterable, Identifiable {
             return status == .absent
         }
     }
-}
+    
+        var icon: String {
+            switch self {
+            case .all:
+                return "tray.full"
+            case .present:
+                return "checkmark.circle.fill"
+            case .late:
+                return "clock.fill"
+            case .absent:
+                return "xmark.circle.fill"
+            }
+        }
+    }
 
 // MARK: - Time Period Options
 
@@ -113,7 +126,30 @@ enum TimePeriod: String, CaseIterable, Identifiable {
             return NSLocalizedString("attendance.filter.period.custom", comment: "Custom time period")
         }
     }
-    
+    var icon: String {
+           switch self {
+           case .all:
+               return "tray.full"
+
+           case .day:
+               return "calendar"
+
+           case .week:
+               return "calendar.badge.clock"
+
+           case .month:
+               return "calendar.circle"
+
+           case .quarter:
+               return "chart.bar"
+
+           case .year:
+               return "calendar.badge.plus"
+
+           case .custom:
+               return "slider.horizontal.3"
+           }
+       }
     // Get date range for the period
     func dateRange(from referenceDate: Date = Date()) -> (start: Date, end: Date)? {
         // ✅ Return nil for .all to skip date filtering

@@ -9,9 +9,9 @@ import SwiftUI
 import UIKit
 
 struct AttendenceHistoryList: View {
-    @State private var selectedMode: DisplayMode
-    @State private var cardsLayoutMode: CardsLayoutMode = .list
-    @State private var selectedScreen: ScreenOption = .history  // ✅ Start on History screen
+    @State private var selectedMode: DisplayMode = .timeline
+    @State private var cardsLayoutMode: CardsLayoutMode = .grid
+    @State private var selectedScreen: ScreenOption = .summary  // ✅ Start on History screen
     @State private var isDragging: Bool = false
     @State private var isSidebarExpanded: Bool = true  // ✅ Track sidebar state
     @State private var attendanceFilter = AttendanceFilter()  // ✅ Filter state
@@ -41,88 +41,120 @@ struct AttendenceHistoryList: View {
         self.availableModes = availableModes.isEmpty ? [.list, .timeline, .detailedTimeline] : availableModes
         self.onFilterTapped = onFilterTapped
         self.onBackTapped = onBackTapped
-        _selectedMode = State(initialValue: self.availableModes.contains(initialMode) ? initialMode : self.availableModes[0])
+        
+        // 🎯 Set default display mode based on initial screen
+        // Summary screen → Detailed Timeline
+        // History screen → List (Small)
+        let defaultMode: DisplayMode = .detailedTimeline  // Start with detailed timeline for summary screen
+        _selectedMode = State(initialValue: self.availableModes.contains(defaultMode) ? defaultMode : self.availableModes[0])
     }
 
     var body: some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-
-            HStack(spacing: 0) {
-                // Left Sidebar Slider
-                SidebarView(selectedScreen: $selectedScreen, isExpanded: $isSidebarExpanded, onBackTapped: onBackTapped)
-                VStack(spacing: 0) {
-                    // Header
-                    HeaderView(selectedScreen: selectedScreen)
-                    
-                    // Mode Switcher (Large/Small/Detailing options)
-                    ModeSwitcherView(
-                        selectedMode: $selectedMode,
-                        cardsLayoutMode: $cardsLayoutMode,
-                        selectedScreen: selectedScreen,
-                        onFilterTapped: {
-                            showFilterSheet = true
+        if #available(iOS 17.0, *) {
+            ZStack {
+                Color.black.ignoresSafeArea()
+                
+                HStack(spacing: 0) {
+                    // Left Sidebar Slider
+                    SidebarView(selectedScreen: $selectedScreen, isExpanded: $isSidebarExpanded, onBackTapped: onBackTapped)
+                    VStack(spacing: 0) {
+                        // Header
+                        HeaderView(selectedScreen: selectedScreen)
+                        
+                        // Mode Switcher (Large/Small/Detailing options)
+                        ModeSwitcherView(
+                            selectedMode: $selectedMode,
+                            cardsLayoutMode: $cardsLayoutMode,
+                            selectedScreen: selectedScreen,
+                            onFilterTapped: {
+                                showFilterSheet = true
+                            }
+                        )
+                        
+                        // Content
+                        Group {
+                            switch selectedMode {
+                            case .list:
+                                ListContentView(
+                                    selectedScreen: $selectedScreen,
+                                    cardsLayoutMode: $cardsLayoutMode,
+                                    entries: filteredEntries,  // ✅ Use filtered entries
+                                    summaryContent: AnyView(SummaryContentView(entries: filteredEntries))
+                                )
+                                .onAppear { print("📱 Showing LIST view") }
+                            case .timeline:
+                                TimelineContentView(
+                                    selectedScreen: $selectedScreen,
+                                    cardsLayoutMode: $cardsLayoutMode,
+                                    entries: filteredEntries,  // ✅ Use filtered entries
+                                    summaryContent: AnyView(SummaryContentView(entries: filteredEntries))
+                                )
+                                .onAppear { print("📱 Showing TIMELINE view") }
+                            case .detailedTimeline:
+                                DetailedTimelineContentView(
+                                    selectedScreen: $selectedScreen,
+                                    entries: filteredEntries,  // ✅ Use filtered entries
+                                    summaryContent: AnyView(SummaryContentView(entries: filteredEntries))
+                                )
+                                .onAppear { print("📱 Showing DETAILED TIMELINE view ⭐") }
+                            case .calendar:
+                                calendarContent(entries: filteredEntries)  // ✅ Use filtered entries
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .onAppear { print("📱 Showing CALENDAR view") }
+                            }
                         }
-                    )
-
-                    // Content
-                    Group {
-                        switch selectedMode {
-                        case .list:
-                            ListContentView(
-                                selectedScreen: $selectedScreen,
-                                cardsLayoutMode: $cardsLayoutMode,
-                                entries: filteredEntries,  // ✅ Use filtered entries
-                                summaryContent: AnyView(SummaryContentView(entries: filteredEntries))
-                            )
-                            .onAppear { print("📱 Showing LIST view") }
-                        case .timeline:
-                            TimelineContentView(
-                                selectedScreen: $selectedScreen,
-                                cardsLayoutMode: $cardsLayoutMode,
-                                entries: filteredEntries,  // ✅ Use filtered entries
-                                summaryContent: AnyView(SummaryContentView(entries: filteredEntries))
-                            )
-                            .onAppear { print("📱 Showing TIMELINE view") }
-                        case .detailedTimeline:
-                            DetailedTimelineContentView(
-                                selectedScreen: $selectedScreen,
-                                entries: filteredEntries,  // ✅ Use filtered entries
-                                summaryContent: AnyView(SummaryContentView(entries: filteredEntries))
-                            )
-                            .onAppear { print("📱 Showing DETAILED TIMELINE view ⭐") }
-                        case .calendar:
-                            calendarContent(entries: filteredEntries)  // ✅ Use filtered entries
-                                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                .onAppear { print("📱 Showing CALENDAR view") }
-                        }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            }
+            .fullScreenCover(isPresented: $showFilterSheet) {
+                ZStack(alignment: .bottom) {
+                    // Semi-transparent background
+                    Color.black.opacity(0.5)
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            showFilterSheet = false
+                        }
+                    
+                    // Filter view as bottom sheet
+                    VStack {
+                        Spacer()
+                        
+                        AttendanceFilterView(filter: $attendanceFilter, isPresented: $showFilterSheet)
+                            .frame(maxHeight: 600)
+                            .clipShape(RoundedRectangle(cornerRadius: 20))
+                            .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: -5)
+                            .transition(.move(edge: .bottom))
+                    }
+                    .ignoresSafeArea(edges: .bottom)
+                }
+                .background(BackgroundClearView())
+            }
+        .onChange(of: selectedScreen) { oldValue, newValue in
+            // 🎯 Automatically adjust display mode based on selected screen
+            switch newValue {
+            case .summary:
+                // When on Summary screen, use detailed timeline view
+                if selectedMode != .detailedTimeline {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        selectedMode = .detailedTimeline
+                    }
+                    print("📱 Switched to Summary → Mode changed to: Detailed Timeline")
+                }
+                
+            case .history:
+                // When on History screen, use timeline mode with list layout (Small option)
+                if selectedMode != .timeline {
+                    withAnimation(.easeInOut(duration: 0.3)) {
+                        selectedMode = .timeline
+                        cardsLayoutMode = .list  // Small cards in 2-column grid
+                    }
+                    print("📱 Switched to History → Mode changed to: Timeline (Small)")
                 }
             }
         }
-        .fullScreenCover(isPresented: $showFilterSheet) {
-            ZStack(alignment: .bottom) {
-                // Semi-transparent background
-                Color.black.opacity(0.5)
-                    .ignoresSafeArea()
-                    .onTapGesture {
-                        showFilterSheet = false
-                    }
-                
-                // Filter view as bottom sheet
-                VStack {
-                    Spacer()
-                    
-                    AttendanceFilterView(filter: $attendanceFilter, isPresented: $showFilterSheet)
-                        .frame(maxHeight: 600)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .shadow(color: .black.opacity(0.3), radius: 20, x: 0, y: -5)
-                        .transition(.move(edge: .bottom))
-                }
-                .ignoresSafeArea(edges: .bottom)
-            }
-            .background(BackgroundClearView())
+        } else {
+            // Fallback on earlier versions
         }
     }
     

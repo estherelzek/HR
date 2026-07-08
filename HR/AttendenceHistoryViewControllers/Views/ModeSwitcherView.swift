@@ -132,7 +132,7 @@ struct ModeSwitcherView: View {
         
         var body: some View {
             ModeSwitcherView(
-                selectedMode: $selectedMode,
+                selectedMode: $selectedMode,  // ✅ Use $ to pass binding
                 cardsLayoutMode: $cardsLayoutMode,
                 selectedScreen: .history,
                 onFilterTapped: nil
